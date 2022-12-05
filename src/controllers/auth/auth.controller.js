@@ -307,7 +307,7 @@ export const updateEmailPassword = async (req, res) => {
 
     let query = {};
     if (user[0].user_group_id == 2) {
-      if (user[0].is_password_change == 0) {
+      if (user[0].is_password_change == 1) {
         query.is_password_change = "1";
       }
     }
