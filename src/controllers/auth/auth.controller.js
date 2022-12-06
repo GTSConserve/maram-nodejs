@@ -248,8 +248,8 @@ export const sendPasswordResetEmail = async (req,res) => {
     if (email) {
       // console.log(email)
       const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        host:  "smtp.gmail.com",
+        service: 'gmail',                                             
+        host:  "smtp.gmail.com",                                                             
         auth: {
           user: 'bhoobalan.gts@gmail.com',
           pass: 'ggvmpjcbdafvwjcg'
