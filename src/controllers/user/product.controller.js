@@ -7,6 +7,7 @@ import {
   search_products,
   additional_product,
   addon_order,
+  additional_order,
 } from "../../models/user/product.model";
 
 export const getProducts = async (req, res) => {
@@ -203,11 +204,17 @@ export const additionalProduct = async (req,res) => {
 //   }
 // }
 
-export const 
-addon_Order = async (req,res) => {
+export const addon_Order = async (req,res) => {
   try{
-    const {user_id,delivery_date,products,address_id} = req.body;
-    const addon = await addon_order(user_id,delivery_date,products,address_id);
+    const {user_id,delivery_date,address_id,products} = req.body;
+    if (!user_id || !delivery_date || !address_id || !products ) {
+      return res
+        .status(responseCode.FAILURE.BAD_REQUEST)
+        .json({ status: false, message: messages.MANDATORY_ERROR });
+    }
+
+    const addon = await addon_order(user_id,delivery_date,address_id,products);
+
     return res.status(responseCode.SUCCESS).json({
       status: true,
       message:"order added"
@@ -220,3 +227,26 @@ addon_Order = async (req,res) => {
   }
  }
 
+
+ export const additional_Order = async (req,res) => {
+  try{
+    const {user_id,delivery_date,subscribe_type_id,product_id,quantity} = req.body;
+    if (!user_id || !delivery_date || !subscribe_type_id || !product_id || !quantity) {
+      return res
+        .status(responseCode.FAILURE.BAD_REQUEST)
+        .json({ status: false, message: messages.MANDATORY_ERROR });
+    }
+
+    const addon = await additional_order(user_id,delivery_date,subscribe_type_id,product_id,quantity);
+
+    return res.status(responseCode.SUCCESS).json({
+      status: true,
+      message:"order added"
+    });
+
+  }
+  catch (error) {
+    console.log(error);
+    res.status(500).json({ status: false ,error});
+  }
+ }

@@ -5,7 +5,8 @@ import { createToken, parseJwtPayload } from "../../services/jwt.service";
 
 import { checkUser,getPassword } from "../../models/super_admin/login.module";
 
-import { transporter, getPasswordResetURL, resetPasswordTemplate } from "../../notifications/message.sender"
+// 
+// import { transporter, getPasswordResetURL, resetPasswordTemplate } from "../../notifications/message.sender"
 
 export const updateChangePassword = async (req, res) => {
   try {

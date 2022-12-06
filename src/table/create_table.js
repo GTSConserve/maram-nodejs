@@ -421,27 +421,27 @@ export const createTable = async (req, res) => {
       }
     });
 
- // feed back message 
+//  //feed back message 
 
-    // await knex.schema.hasTable("feedback_message").then(function (exists) {
-    //   if (!exists) {
-    //     return knex.schema.createTable("feedback_message", function (t) {
-    //       t.increments("id").primary().unsigned().notNullable();
+    await knex.schema.hasTable("feedback_message").then(function (exists) {
+      if (!exists) {
+        return knex.schema.createTable("feedback_message", function (t) {
+          t.increments("id").primary().unsigned().notNullable();
 
-    //       t.integer("branch_id").unsigned().notNullable();
-    //       t.foreign("branch_id").references("id").inTable("admin_users");
+          t.integer("branch_id").unsigned().notNullable();
+          t.foreign("branch_id").references("id").inTable("admin_users");
 
-    //       t.string("name", 255).notNullable();
-    //       t.string("user_name", 255).notNullable();
-    //       t.string("mobile_number", 255).nullable();
+          t.string("name", 255).notNullable();
+          t.string("user_name", 255).notNullable();
+          t.string("mobile_number", 255).nullable();
 
-    //       t.string("password", 255).notNullable();
-    //       t.string("address", 255).nullable();
-    //       t.enu("status", ["0", "1"]).defaultTo("1");
-    //       t.timestamps(true, true);
-    //     });
-    //   }
-    // });
+          t.string("password", 255).notNullable();
+          t.string("address", 255).nullable();
+          t.enu("status", ["0", "1"]).defaultTo("1");
+          t.timestamps(true, true);
+        });
+      }
+    });
 
 
 // // feed back 
@@ -449,11 +449,15 @@ export const createTable = async (req, res) => {
       if (!exists) {
         return knex.schema.createTable("feedbacks", function (t) {
           t.increments("id").primary();
+
           t.integer("user_id").unsigned().notNullable();
           t.foreign("user_id").references("id").inTable("users");
+
           t.string("comments", 255).nullable();
+
           t.integer("message_id").unsigned().notNullable();
           t.foreign("message_id").references("id").inTable("feedback_message");
+
           t.timestamps(true, true);
         });
       }
@@ -690,60 +694,132 @@ export const createTable = async (req, res) => {
 
 
 
-      // add on orders
+    // add on orders
     await knex.schema.hasTable("add_on_orders").then(function (exists) {
       if (!exists) {
       return knex.schema.createTable("add_on_orders", function (t) {
         t.increments("id").primary();
+
         t.integer("user_id").unsigned().notNullable();
         t.foreign("user_id").references("id").inTable("users");
+
         t.integer("address_id").unsigned().notNullable();
         t.foreign("address_id").references("id").inTable("user_address");
+
         t.date("delivery_date").nullable();
+
         t.enu("status", [
           "pending",
           "delivery",
-          "not delivery"
+          "not delivery",
+          "no order"
           
-        ]).defaultTo("pending")
+        ]).defaultTo("no order")
+
         t.integer("tip_amount").nullable();
+
         t.integer("grand_total").nullable();
+
         t.integer("sub_total").nullable();
+
         t.integer("coupon_id").nullable();
+
         t.string("coupon_code").nullable();
+
         t.integer("coupon_amount").nullable();
+
         t.timestamps(true, true);
       });
       }
       });
   
-      // add on order items
-       await knex.schema.hasTable("add_on_order_items").then(function (exists) {
-     if (!exists) {
-      return knex.schema.createTable("add_on_order_items", function (t) {
+  
+      // add on order items 
+      await knex.schema.hasTable("add_on_order_items").then(function (exists) {
+        if (!exists) {
+        return knex.schema.createTable("add_on_order_items", function (t) {
+          t.increments("id").primary();
+
+          t.integer("add_on_order_id").notNullable();
+          t.foreign("add_on_order_id").references("id").inTable("add_on_orders");
+
+          t.integer("user_id").notNullable();
+          t.foreign("user_id").references("id").inTable("users");  
+
+          t.integer("product_id",255).unsigned().notNullable();
+          t.foreign("product_id").references("id").inTable("products");
+          // t.date("delivery_date").nullable();
+
+          t.enu("status", [
+            "pending",
+            "delivery",
+            "not delivery",
+            " no order"
+            
+          ]).defaultTo("pending")
+
+          t.string("quantity", 255).nullable();
+
+          t.integer("tax_price").nullable();
+
+          t.integer("price").nullable();
+
+          t.integer("total_price").nullable();
+
+          t.integer("tax_id").nullable();
+        
+          t.timestamps(true, true);
+        });
+        }
+        });
+
+
+      // additional  orders
+    await knex.schema.hasTable("additional_orders").then(function (exists) {
+      if (!exists) {
+      return knex.schema.createTable("additional_orders", function (t) {
         t.increments("id").primary();
-        t.integer("add_on_order_id").Nullable();
-        t.foreign("add_on_order_id").references("id").inTable("add_on_orders");
+
         t.integer("user_id").unsigned().notNullable();
-        t.foreign("user_id").references("id").inTable("users");     
-        t.integer("product_id").unsigned().notNullable();
+        t.foreign("user_id").references("id").inTable("users");
+
+        t.integer("subscribe_type_id").unsigned().nullable();
+          t.foreign("subscribe_type_id").references("id").inTable("subscription_type");
+
+        t.integer("product_id",255).unsigned().notNullable();
         t.foreign("product_id").references("id").inTable("products");
+
+        t.date("delivery_date").nullable();
+
+        t.string("quantity", 255).nullable();
+
+        t.integer("price").nullable();
+
+        t.integer("total_price").nullable();
+
+        t.integer("tax_id").nullable();
+
+        t.integer("tax_price").nullable();
+
         t.enu("status", [
           "pending",
           "delivery",
-          "not delivery"
+          "not delivery",
+          "no order"
           
-        ]).defaultTo("pending");
-        t.string("quantity", 255).nullable();
-        t.integer("tax_price").nullable();
-        t.integer("price").nullable();
-        t.integer("total_price").nullable();
-        t.integer("tax_id").nullable();
-  
+        ]).defaultTo("pending")
+      
+        t.integer("coupon_id").nullable();
+
+        t.string("coupon_code").nullable();
+
+        t.integer("coupon_amount").nullable();
+
         t.timestamps(true, true);
       });
-    }
-  });
+      }
+      });
+  
 
     return res
       .status(200)

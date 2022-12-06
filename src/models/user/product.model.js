@@ -111,76 +111,103 @@ try{
   }
 }
 
-
-// export const get_bill = async (product_id) => {
-//   const bill_details = await knex.('bill_history').
-// }
-
-export const addon_order = async (user_id,delivery_date,products,address_id) =>{
+// // addon orders
+export const addon_order = async (user_id,delivery_date,address_id,products) => {
   try {
-  //   let products_id = [];
-  //   await products.map((id) => products_id.push(id.product_id));
+    
+    let query ={
+      user_id:user_id,
+      delivery_date:delivery_date,
+      address_id:address_id,
+      status:'delivery'   
+    }
+    
+ 
+    const product_list = await knex('add_on_orders').join('add_on_order_items', "add_on_order_items.add_on_order_id", "=", "add_on_orders.id")
+    .insert(query)
 
-let query ={
-  user_id:user_id,
-  delivery_date:delivery_date,
-  address_id:address_id
-
-  // sub_total:quantity*100
-  // quantity:quantity
-  
-}
-console.log(query)
-const order = await knex('add_on_orders').insert(query);
-
-const order1 = await knex.select('id').from('add_on_orders').where({user_id:user_id});
-
-console.log(order1)
-let query1 = {
-  add_on_order_id:order1.id
-}
-
-// const query1 = await knex.select(['id']).from('add_on_orders');
-
-console.log(query1)
-
-// let new_products = []
-
-// for( let i=0;i<=products.length;i++){
-  
-//     new_products.push({
-//       products:query1.id
-//     }) 
+    console.log(product_list)
 
 
-// console.log(query)
+    const product1= await knex.select('id','user_id').from('add_on_orders').where({user_id:user_id,status:'delivery'});
+    
+    const product = [];
 
-// const data2 = knex.select('price').from('products').where({id:product_id});
-// return data2
-// const table = await knex ('add_on_order_items')
-// .join('products', 'products.id', '=', 'add_on_orders.product_id')
-// .select('products.id', 'products.price')
+    for (let i = 0; i < products.length; i++) {
+      product.push({
+        product_id:  products[i]. product_id,
+        quantity: products[i].quantity,
+        add_on_order_id: product1[i].id,
+        user_id: product1[i].user_id,
+      });
+    
+      const price_list= await knex.select('price').from('products').where({id:products[i]. product_id});
+
+      console.log(price_list)
+
+      const order_list = await knex('add_on_order_items').insert({ 
+      product_id:  products[i]. product_id,
+      quantity: products[i].quantity,
+      add_on_order_id: product1[i].id,
+      user_id: product1[i].user_id,
+      price:price_list[0].price,
+      total_price : products[i].quantity * price_list[0].price,
+      
+      
+        
+    })
+     
+    // subtotal =[];
+    // for (let i = 0; i < add_on_order_items.length; i++) {
+    //   total_price +=add_on_order_items.products[i].total_price;
+    // }
+
+    //  const subtotal = await knex.select('total_price').from('add_on_order_items').where({ add_on_order_id:product1[i].id,status:"pending"});
+
+    //  console.log(subtotal);
 
 
-// let new_products = []
+    }
 
-// for( let i=0;i<=products.length;i++){
-  
-//   new_products.push({
-
-//   }) 
-//   console.log(products)
-  
-}
-// }
-// } 
+    console.log(product)
    
+  } catch (error) {
+    console.log(error);
+    return { status: false, message: "Something Went Wrong", error };
+  }
+}
+
+
+export const additional_order = async (user_id,delivery_date,subscribe_type_id,product_id,quantity) =>{
+  try {
+    const price_list= await knex.select('price').from('products').where({id:product_id});
+
+    console.log(price_list)
+
+    let query ={
+      user_id:user_id,
+      subscribe_type_id:subscribe_type_id,
+      product_id:product_id,
+      quantity:quantity,
+      delivery_date:delivery_date,
+      price:price_list[0].price
+    }
+
+    console.log(query)
+    // const price_list1= await knex.select('price').from('products').where({id:product_id});
+
+
+    const additional = await knex ('additional_orders').insert(query)
+
+    // const total = {
+    //   total_price : quantity * price_list.price
+    // }
+     
+    // const addition_order = await knex  ('additional_orders').insert(price_list,total)
+ 
+  }
   catch (error) {
     console.log(error);
     return { status: false, message: "Something Went Wrong", error };
   }
-};
-
-
-
-
+}
