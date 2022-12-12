@@ -5,11 +5,72 @@ import {
   get_categories,
   get_subscription_or_add_on_products,
   search_products,
-  additional_product,
   addon_order,
 } from "../../models/user/product.model";
 
 import { parseJwtPayload } from "../../services/jwt.service";
+import knex from "../../services/db.service";
+
+export const removeAddOnOrder = async (req, res) => {
+  try {
+
+    const {product_id , delivery_date} = req.body
+
+    if(!product_id || !delivery_date){
+      return res.status(responseCode.FAILURE.BAD_REQUEST).json({status : false , message : messages.MANDATORY_ERROR})
+    } 
+
+    await knex("add_on_order_items").update({status : "removed"}).where({product_id,delivery_date})
+
+
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
+      .json({ status: false, message: messages.SERVER_ERROR });
+  }
+};
+
+export const getSingleProduct = async (req, res) => {
+  try {
+    const { product_id } = req.body;
+
+    if (!product_id) {
+      return res
+        .status(responseCode.FAILURE.BAD_REQUEST)
+        .json({ status: false, message: messages.MANDATORY_ERROR });
+    }
+
+    const product = await knex("products")
+      .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
+      .select(
+        "products.id as product_id",
+        "products.name",
+        "products.image",
+        "products.unit_value",
+        "unit_types.value as unit_type",
+        "products.price"
+      )
+      .where({ "products.id": product_id });
+
+    if (product.length === 0) {
+      return res
+        .status(responseCode.FAILURE.DATA_NOT_FOUND)
+        .json({ status: false, message: "Product Not Found" });
+    }
+
+    product[0].image = process.env.BASE_URL + product[0].image;
+
+    return res
+      .status(responseCode.SUCCESS)
+      .json({ status: true, data: product[0] });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
+      .json({ status: false, message: messages.SERVER_ERROR });
+  }
+};
 
 export const getProducts = async (req, res) => {
   try {
@@ -166,59 +227,6 @@ export const searchProducts = async (req, res) => {
   }
 };
 
-export const additionalProduct = async (req, res) => {
-  try {
-    const { user_id, subscribe_type_id, product_id, name, quantity, price } =
-      req.body;
-    if (!user_id) {
-      return res
-        .status(responseCode.FAILURE.BAD_REQUEST)
-        .json({ status: false, message: "user id is missing" });
-    }
-    if (!subscribe_type_id) {
-      return res
-        .status(responseCode.FAILURE.BAD_REQUEST)
-        .json({ status: false, message: "subscribe_type_id is missing" });
-    }
-    if (!product_id) {
-      return res
-        .status(responseCode.FAILURE.BAD_REQUEST)
-        .json({ status: false, message: "product_id is missing" });
-    }
-    if (!name) {
-      return res
-        .status(responseCode.FAILURE.BAD_REQUEST)
-        .json({ status: false, message: "name is missing" });
-    }
-    if (!quantity) {
-      return res
-        .status(responseCode.FAILURE.BAD_REQUEST)
-        .json({ status: false, message: "quantity is missing" });
-    }
-    // if (!price) {
-    //   return res
-    //     .status(responseCode.FAILURE.BAD_REQUEST)
-    //     .json({ status: false, message: "price is missing" });
-    // }
-    const product = await additional_product(
-      user_id,
-      subscribe_type_id,
-      product_id,
-      name,
-      quantity,
-      price
-    );
-
-    return res.status(responseCode.SUCCESS).json({
-      status: true,
-      message: "product added",
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ status: false });
-  }
-};
-
 // export const getBill = async (req,res) => {
 //   try{
 //     const{product_id} = req.body;
@@ -229,9 +237,9 @@ export const additionalProduct = async (req, res) => {
 
 export const addon_Order = async (req, res) => {
   try {
-    const { user_id, delivery_date, products, address_id } = req.body;
+    const { userId, delivery_date, products, address_id } = req.body;
     const addon = await addon_order(
-      user_id,
+      userId,
       delivery_date,
       products,
       address_id

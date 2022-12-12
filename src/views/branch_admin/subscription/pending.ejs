@@ -281,7 +281,7 @@
                                                     <option value="" disabled selected>Select your Route</option>
                                                         <% for(route of routes){ %>
     
-                                                            <option style="font-weight: bold;" value="<%=route.id %>"><%=route.starting_point %> -- <%=route.ending_point %> </option>
+                                                            <option style="font-weight: bold;" value="<%=route.id %>"><%=route.name %>  </option>
                                                         <% } %>
     
                                                     </select>
@@ -293,7 +293,7 @@
                                             <div class="widget-content widget-content-area">
                                                 <p>Choose A Date To Start Subscription</p>
                                                 <div class="form-group mb-0">
-                                                    <input required id="basicFlatpickr" name="date" class="form-control flatpickr flatpickr-input active" type="date" placeholder="<%=user.start_date  %>" >
+                                                    <input required id="basicFlatpickr" name="date" class="form-control flatpickr flatpickr-input active" type="date" placeholder="<%=user.start_date  %>" value="<%=user.start_date  %>" >
                                                 </div>
             
                                                 

@@ -1,19 +1,19 @@
-// let knex;
-// try {
-//   knex = require("knex")({
-//     client: "mysql2",
-//     connection: {
-//         host : '127.0.0.1',
-//         port : 3306,
-//         user : 'root',
-//         password : 'root',
-//         database : 'maram'
-//     },
-//   });
-// } catch (error) {
-//   console.log(error, "error at connecting database");
-// }
-// console.log("database Connected");
+let knex;
+try {
+  knex = require("knex")({
+    client: "mysql2",
+    connection: {
+        host : '127.0.0.1',
+        port : 3306,
+        user : 'root',
+        password : 'root',
+        database : 'maram'
+    },
+  });
+} catch (error) {
+  console.log(error, "error at connecting database");
+}
+console.log("database Connected");
 
 
 
@@ -31,11 +31,12 @@
 // }
 // hl();
 // console.log(knex)
-// export default knex;
+export default knex;
 
 
 
-var mysql = require('mysql2');
+// var mysql = require('mysql2');
+
 
 
 var connection = mysql.createConnection({
@@ -46,13 +47,14 @@ var connection = mysql.createConnection({
 });
 
 
-connection.connect(function(err) {
-  if (err) {
-    console.error('Database connection failed: ' + err.stack);
-    return;
-  }
 
-  console.log('Connected to database.');
-});
+// connection.connect(function(err) {
+//   if (err) {
+//     console.error('Database connection failed: ' + err.stack);
+//     return;
+//   }
 
-connection.end();
+//   console.log('Connected to database.');
+// });
+
+// connection.end();

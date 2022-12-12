@@ -18,7 +18,7 @@ export const getAppSettings = async (req, res) => {
   
       if (searchKeyword) {
         const search_data_length = await knex.raw(
-          `SELECT name,key,value FROM app_settings WHERE name LIKE '%${searchKeyword}%'`
+          `SELECT name,key_id,value FROM app_settings WHERE name LIKE '%${searchKeyword}%'`
         );
   
         data_length = search_data_length[0];
@@ -27,22 +27,21 @@ export const getAppSettings = async (req, res) => {
           loading = false;
           req.query.searchKeyword = "";
           req.flash("error", "No App Found");
-          return res.redirect("super_admin/settings/app_settings");
+          return res.redirect("/super_admin/settings/app_settings");
         }
       } else {
         data_length = await knex("app_settings").select("id");
       }
   
-  
+   
       if (data_length.length === 0) {
-        loading = false
+        loading = false;
         return res.render("super_admin/settings/app_settings", {
           data: data_length,
           searchKeyword,
          
         });
       }
-  
   
       let {
         startingLimit,
@@ -51,30 +50,23 @@ export const getAppSettings = async (req, res) => {
         numberOfPages,
         iterator,
         endingLink,
-      } = await getPageNumber(req,res, data_length, "settings/app_settings");
+      } = await getPageNumber(req, res, data_length, "settings/app_settings");
   
       let results;
       let is_search = false;
       if (searchKeyword) {
         results = await knex.raw(
-          `SELECT name FROM app_settings  WHERE name LIKE '%${searchKeyword}%' LIMIT ${startingLimit},${resultsPerPage}`
+          `SELECT name,key_id,value FROM app_settings
+          WHERE app_settings.name LIKE '%${searchKeyword}%' LIMIT ${startingLimit},${resultsPerPage}`
         );
         is_search = true;
       } else {
         results = await knex.raw(
-          `SELECT name FROM app_settings LIMIT ${startingLimit},${resultsPerPage}`
+          `SELECT name,key_id,value FROM app_settings  LIMIT ${startingLimit},${resultsPerPage}`
         );
       }
-
-    
-
-      
   
       const data = results[0];
-  
-      for (let i = 0; i < data.length; i++) {
-        data[i].key = results.key + data[i].key;
-      }
   
       loading = false;
       res.render("super_admin/settings/app_settings", {
@@ -86,40 +78,144 @@ export const getAppSettings = async (req, res) => {
         is_search,
         searchKeyword,
         loading,
+       
       });
+  
+      // res.render("super_admin/places/zone");
     } catch (error) {
       console.log(error);
       res.redirect("/home");
     }
   };
-
-  export const createAppsettings  = async (req, res) => {
+  
+  export const createAppsettings = async (req, res) => {
     try {
-      const { name } = req.body;
+      const { name,key_id,value } = req.body;
   
       if (!name) {
         req.flash("error", "Name is missing");
-        return res.redirect("super_admin/settings/app_settings");
+        return res.redirect("/super_admin/settings/app_settings");
       }
   
-      if (!key_id) {
-        req.flash("error", "key is missing");
-        return res.redirect("super_admin/settings/app_settings");
-      }
-      if (!value) {
-        req.flash("error", "value is missing");
-        return res.redirect("super_admin/settings/app_settings");
-      }
+      let query = {
+        name,
       
+   
+      }
   
-      await knex("app_settings").insert({ name, key,value });
-      req.flash("success", "App Created SuccessFully");
-      res.redirect("super_admin/settings/app_settings");
+      if(key_id){
+        query.key_id=  key_id
+      }
+      if(value){
+        query.value = value
+      }
+  
+      await knex("app_settings").insert(query);
+      req.flash("success", "APP Created SuccessFully");
+      res.redirect("/super_admin/settings/app_settings");
+    } catch (error) {
+      console.log(error);
+      res.redirect("/home");
+    }
+  };
+
+
+  export const updateappsettings = async (req, res) => {
+    try {
+      const { name,key_id,value,id } = req.body;
+  
+      if (!name) {
+        req.flash("error", "Name is missing");
+        return res.redirect("/super_admin/settings/app_settings");
+      }
+  
+      let query = {};
+  
+      query.name = name;
+     
+    
+      if (key_id) {
+        query.key_id = key_id;
+      }
+      if (value) {
+        query.value = value;
+      }
+  
+      await knex("app_settings").update(query).where({ id: id });
+  
+      req.flash("success", "Updated SuccessFully");
+      res.redirect("/super_admin/settings/app_settings");
     } catch (error) {
       console.log(error);
       res.redirect("/home");
     }
   };
   
+  export const updateSettingsStatus = async (req, res) => {
+    try {
+      const { status, id } = req.body;
+  
+      if (status == "1") {
+        await knex("app_settings").update({ status: "0" }).where({ id: id });
+      } else {
+        await knex("app_settings").update({ status: "1" }).where({ id: id });
+      }
+  
+      req.flash("success", "Updated SuccessFully");
+      return res.redirect("/super_admin/settings/app_settings");
+    } catch (error) {
+      console.log(error);
+      res.redirect("/home");
+    }
 
+  };
+
+  // export const updateCity = async (req, res) => {
+  //   try {
+  //     const { name, id,latitude,longitude } = req.body;
+  
+  //     if (!name) {
+  //       req.flash("error", "Name is missing");
+  //       return res.redirect("/super_admin/places/city");
+  //     }
+  
+  //     let query = {};
+  
+  //     query.name = name;
+     
+    
+  //     if (latitude) {
+  //       query.latitude = latitude;
+  //     }
+  //     if (longitude) {
+  //       query.longitude = longitude;
+  //     }
+  
+  //     await knex("cities").update(query).where({ id: id });
+  
+  //     req.flash("success", "Updated SuccessFully");
+  //     res.redirect("/super_admin/places/city");
+  //   } catch (error) {
+  //     console.log(error);
+  //     res.redirect("/home");
+  //   }
+  // };
+  
+  // export const updateCityStatus = async (req, res) => {
+  //   try {
+  //     const { status, id } = req.body;
+  
+  //     if (status == "1") {
+  //       await knex("cities").update({ status: "0" }).where({ id: id });
+  //     } else {
+  //       await knex("cities").update({ status: "1" }).where({ id: id });
+  //     }
+  
+  //     req.flash("success", "Updated SuccessFully");
+  //     return res.redirect("/super_admin/places/city");
+  //   } catch (error) {
+  //     console.log(error);
+  //     res.redirect("/home");
+  //   }
+  // };
   

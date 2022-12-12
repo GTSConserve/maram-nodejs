@@ -117,7 +117,7 @@
     
                                 <div>
 
-                                    <!-- <td style="text-align: center; vertical-align: middle;">
+                                    <td style="text-align: center; vertical-align: middle;">
                                         <div class="custom-control custom-switch">
                                                 <input <%= user.status == "1" ? "checked"  :""  %>  type="checkbox"   class="custom-control-input" name="status" 
                                                 value="<%=user.status %>"  onChange="onToDochange(this)" id=<%=user.id %>>
@@ -125,7 +125,7 @@
                                             
                                                 <script >
                                                     async function onToDochange(event) {
-                                                    await fetch('/super_admin/users_subscription/update_all_users_status', {
+                                                    await fetch('/super_admin/users_subscription/get_all_users', {
                                                     method: 'POST',
                                                     headers: {
                                                         'Accept': 'application/json',
@@ -139,7 +139,7 @@
                                                 </script>
                                          
                                         </div>
-                                    </td> -->
+                                    </td>
                                     
                                     <td  class="text-center" > 
                                         <button style="font-weight: bold;" class="btn  btn-md  btn-info" data-toggle="modal"

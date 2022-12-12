@@ -104,12 +104,12 @@
 
                                             </div>
                                             <div class="col-sm-6  p-1">
-                                                <label>City</label>
-                                                <select wire:model="countryid" class="form-control" name="city_id" required>
-                                                  
-                                                    <% for(city of cities){ %>
+                                                <label>Zone</label>
+                                                <select wire:model="countryid" class="form-control" name="zone_id" required>
+                                                    <option name="" value="">Choose A Zone</option>
+                                                    <% for(zone of zones){ %>
 
-                                                        <option name="<%=city.name %>" value="<%=city.id %>"><%=city.name %></option>
+                                                        <option name="<%=zone.name %>" value="<%=zone.id %>"><%=zone.name %></option>
                                                     <% } %>
 
                                                 </select>
@@ -199,7 +199,7 @@
                                 <td ><%=user.email %></td>
                              
                                 <td><%=user.mobile_number %></td>
-                                <td><%=user.city_name %></td>
+                                <td><%=user.zone_name %></td>
 
                                 <td><%=user.location %></td>
     
@@ -270,11 +270,11 @@
                                         </div>
                                         <div class="col-sm-6">
                                             <label>City</label>
-                                                <select wire:model="countryid" class="form-control" name="city_id" required>
-                                                    <option value="<%=user.city_id  %>" ><%=user.city_name %></option>
-                                                    <% for(city of cities){ %>
+                                                <select wire:model="countryid" class="form-control" name="zone_id" required>
+                                                    <option value="<%=user.zone_id  %>" ><%=user.zone_name %></option>
+                                                    <% for(zone of zones){ %>
 
-                                                        <option name="<%=city.name %>" value="<%=city.id %>"><%=city.name %></option>
+                                                        <option name="<%=zone.name %>" value="<%=zone.id %>"><%=zone.name %></option>
                                                     <% } %>
 
                                                 </select>

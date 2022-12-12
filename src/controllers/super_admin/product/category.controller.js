@@ -3,8 +3,10 @@ import { getPageNumber } from "../../../utils/helper.util";
 
 export const updateCategory = async (req, res) => {
   try {
-    const { name, id, product_type_id } = req.body;
+    const { name, id, addon, subscription } = req.body;
     const file = req.file;
+
+    console.log(req.body)
 
     if (!name) {
       req.flash("error", "Name is missing");
@@ -20,11 +22,35 @@ export const updateCategory = async (req, res) => {
       query.image = image;
     }
 
-    if (product_type_id) {
-      query.product_type_id = product_type_id;
+    if (subscription) {
+
+
+      const is_sub = await knex("categories_product_type").select("id").where({category_id : id , product_type_id : 1})
+
+      if(is_sub.length === 0){
+        await knex("categories_product_type").insert({
+          category_id: cat[0],
+          product_type_id: 1,
+        });
+      }else{
+
+      }
+     const sub =  await knex("categories_product_type")
+        .update({ product_type_id: 1 })
+        .where({ id });
+
+        console.log(sub)
     }
 
-    await knex("categories").update(query).where({ id: id });
+    if (addon) {
+      const add = await knex("categories_product_type")
+        .update({ product_type_id: 2 })
+        .where({ id });
+
+        console.log(add)
+    }
+
+    await knex("categories").update(query).where({ id });
 
     req.flash("success", "Updated SuccessFully");
     res.redirect("/super_admin/product/get_category");
@@ -54,12 +80,15 @@ export const updateCategoryStatus = async (req, res) => {
 
 export const createCategory = async (req, res) => {
   try {
-    const { name, product_type_id } = req.body;
+    const { name, subscription, addon } = req.body;
     if (!name) {
       req.flash("error", "Name is missing");
       return res.redirect("/super_admin/product/get_category");
     }
-    if (!product_type_id) {
+
+    console.log(req.body);
+
+    if (!subscription || !addon) {
       req.flash("error", "Please Choose a Product Type");
       return res.redirect("/super_admin/product/get_category");
     }
@@ -71,7 +100,21 @@ export const createCategory = async (req, res) => {
 
     const image = req.file.destination.slice(1) + "/" + req.file.filename;
 
-    await knex("categories").insert({ name, product_type_id, image });
+    const cat = await knex("categories").insert({ name, image });
+
+    if (subscription) {
+      await knex("categories_product_type").insert({
+        category_id: cat[0],
+        product_type_id: 1,
+      });
+    }
+
+    if (addon) {
+      await knex("categories_product_type").insert({
+        category_id: cat[0],
+        product_type_id: 2,
+      });
+    }
 
     req.flash("success", "Successfully Created");
     res.redirect("/super_admin/product/get_category");
@@ -105,7 +148,6 @@ export const getCategory = async (req, res) => {
       data_length = await knex("categories").select("id");
     }
 
-
     const productType = await knex("product_type")
       .select("name", "id")
       .where({ status: "1" });
@@ -131,12 +173,19 @@ export const getCategory = async (req, res) => {
     let is_search = false;
     if (searchKeyword) {
       results = await knex.raw(
-        `SELECT categories.id,categories.name,categories.image,categories.status,product_type.name as product_type,product_type.id as product_type_id FROM categories JOIN product_type ON categories.product_type_id=product_type.id WHERE categories.name LIKE '%${searchKeyword}%' LIMIT ${startingLimit},${resultsPerPage}`
+        `SELECT categories.id,categories.name,categories.image,categories.status,product_type.name as product_type,
+        product_type.id as product_type_id 
+        FROM categories 
+        JOIN product_type ON categories.product_type_id=product_type.id 
+        WHERE categories.name LIKE '%${searchKeyword}%' LIMIT ${startingLimit},${resultsPerPage}`
       );
       is_search = true;
     } else {
       results = await knex.raw(
-        `SELECT categories.id,categories.name,categories.image,categories.status,product_type.name as product_type,product_type.id as product_type_id FROM categories JOIN product_type ON categories.product_type_id=product_type.id LIMIT ${startingLimit},${resultsPerPage}`
+        `SELECT id,name,image,status
+        FROM categories 
+        
+        LIMIT ${startingLimit},${resultsPerPage}`
       );
     }
 
@@ -158,6 +207,7 @@ export const getCategory = async (req, res) => {
       loading,
       productType,
     });
+
     // `SELECT categories.id,categories.name,categories.image,categories.status,product_type.name as product_type,product_type.id as product_type_id FROM categories JOIN product_type WHERE categories.product_type_id=product_type.id  name LIKE '%${searchKeyword}%'`
 
     // const categories = await knex("categories")
@@ -175,10 +225,6 @@ export const getCategory = async (req, res) => {
     //     "=",
     //     "product_type.id"
     //   );
-
-    // for (let i = 0; i < categories.length; i++) {
-    //   categories[i].image = "http://" + req.headers.host + categories[i].image;
-    // }
 
     // res.render("super_admin/product/category", {
     //   data: categories,

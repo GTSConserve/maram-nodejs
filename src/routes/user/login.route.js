@@ -1,6 +1,6 @@
 import express  from 'express';
 import { authenticateJWT } from '../../middlewares/authToken.middleware';
-import {login,verifyUserOtp,logout} from '../../controllers/user/login.controller'
+import {login,verifyUserOtp,logout,accountDelete} from '../../controllers/user/login.controller'
 
 const loginRouter = express.Router({
   caseSensitive: true,
@@ -11,5 +11,6 @@ const loginRouter = express.Router({
 loginRouter.post('/login', login)
 loginRouter.post('/verifyotp', verifyUserOtp)
 loginRouter.post('/logout',authenticateJWT, logout)
+loginRouter.post('/account_delete',authenticateJWT, accountDelete)
 
 export default loginRouter

@@ -67,27 +67,16 @@
                                     </div>
 
                                     <div class="widget-content widget-content-area br-6">
-                                        <div class="row m-2 ">
-                                            <!-- <h4 class="modal-title" id="exampleModalLabel"> Add Admin</h4> -->
-                                            <div class="col-sm-3  ml-auto">
-
-                                            </div>
-
                                         
-                                        </div>
 
 
                                         <form action="/branch_admin/route/create_route" method="post">
 
                                         <div class="form-row mb-4">
-                                            <div class="col-sm-6 p-1">
-                                                <label>Starting Point</label>
-                                                <input type="text" wire:model="name" placeholder="Starting Location" required name="starting_point"
-                                                    class="form-control">
-                                            </div>
-                                            <div class="col-sm-6 p-1">
-                                                <label>Ending Point</label>
-                                                <input type="text" wire:model="name" placeholder="Ending Location" required name="ending_point"
+                                           
+                                            <div class="col-sm-12 mb-4">
+                                                <label>Route Name</label>
+                                                <input type="text" wire:model="name" placeholder="Eg. OMR Road" required name="name"
                                                     class="form-control">
                                             </div>
 
@@ -158,11 +147,11 @@
                         <th  class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
                             colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
                             style="width: 20px;">#</th>
-                        <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                        <!-- <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
                             colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
-                            style="width: 86px;">Starting Point</th>
+                            style="width: 86px;">Starting Point</th> -->
                         <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
-                            aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">Ending Point</th>
+                            aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">Route Name</th>
                             <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
                             aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">Rider Name</th>
                         <!-- <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
@@ -181,8 +170,8 @@
     
                         <% for(user of data){ %>
                                 <td class="sorting_1"><%=user.id %></td>
-                                <td><%=user.starting_point %></td>
-                                <td ><%=user.ending_point %></td>
+                              
+                                <td ><%=user.route_name %></td>
                                 <td><%=user.rider_name ? user.rider_name : "N/A" %></td>
                                 <!-- <td><%=user.city_name %></td>     -->
                                 <!-- <div>
@@ -260,7 +249,7 @@
     <!-- edit -->
                 <div wire:ignore.self="" class="modal fade bd-example-modal-xl" id="editCategory<%=user.id %>" tabindex="-1"
                     aria-labelledby="addCategoryTitle" style="display: none;" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalCenterTitle">Edit Route</h5>
@@ -278,14 +267,10 @@
                             <div class="modal-body">
                                 <form method="post" action="/branch_admin/route/update_route"  >
                                     <div class="form-row mb-4">
-                                        <div class="col-sm-6 p-1">
-                                            <label>Starting Point</label>
-                                            <input type="text" wire:model="name" value="<%= user.starting_point %>" placeholder="Starting Location" required name="starting_point"
-                                                class="form-control">
-                                        </div>
-                                        <div class="col-sm-6 p-1">
-                                            <label>Ending Point</label>
-                                            <input type="text" wire:model="name" value="<%= user.ending_point %>" placeholder="Ending Location" required name="ending_point"
+                                       
+                                        <div class="col-sm-12 p-1">
+                                            <label>Route Name</label>
+                                            <input type="text" wire:model="name" value="<%= user.route_name %>" placeholder="Ending Location" required name="name"
                                                 class="form-control">
                                         </div>
 

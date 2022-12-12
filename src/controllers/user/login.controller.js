@@ -18,6 +18,24 @@ import { userGroup } from "../../constants/controls";
 import logger from "../../logger/logger";
 import { updateUserToken } from "../../models/user/user.model";
 import knex from "../../services/db.service";
+import messages from "../../constants/messages";
+
+export const accountDelete = async (req,res) => {
+  try {
+      const {userId} = req.body
+
+      await knex("users").update({status : "0"}).where({id : userId})
+
+      return res.status(responseCode.SUCCESS).json({status : true , message : "Account Deleted Successfully"})
+
+  } catch (error) {
+    console.log(error)
+    return res.status(responseCode.FAILURE.INTERNAL_SERVER_ERROR).json({status : false , message : messages.SERVER_ERROR})
+  }
+}
+
+
+
 
 export const login = async (req, res) => {
   try {

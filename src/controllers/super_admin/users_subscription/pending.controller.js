@@ -75,7 +75,7 @@ export const getNewUsers = async (req, res) => {
     if (searchKeyword) {
       results = await knex.raw(
         `SELECT sub.id , sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,
-        user_address.address,user_address.landmark,products.name as product_name,products.price,products.unit_value,
+        user_address.address,user_address.id as user_address_id ,user_address.landmark,products.name as product_name,products.price,products.unit_value,
         unit_types.value,categories.name as category_name
         FROM subscribed_user_details AS sub 
         JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id 
@@ -91,7 +91,7 @@ export const getNewUsers = async (req, res) => {
     } else {
       results = await knex.raw(
         `SELECT sub.id ,sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,
-        user_address.address,user_address.landmark,products.name as product_name,products.price,products.unit_value,
+        user_address.address,user_address.id as user_address_id ,user_address.landmark,products.name as product_name,products.price,products.unit_value,
         unit_types.value,categories.name as category_name
         FROM subscribed_user_details AS sub 
         JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id 
@@ -138,7 +138,7 @@ export const  getAllUsers = async (req,res) => {
 
     if (searchKeyword) {
       const search_data_length = await knex.raw(
-        `SELECT subscribed_user_details.id FROM subscribed_user_details JOIN users ON users.id = subscribed_user_details.user_id WHERE subscribed_user_details.subscription_status = "subscribed" AND users.user_unique_id LIKE '%${searchKeyword}%'`
+        `SELECT admin_users. FROM admin_users JOIN subscription_type ON subscription_type.id = admin_users.id WHERE admin_users.first_name AND subscription_type.name LIKE '%${searchKeyword}%'`
       );
 
       data_length = search_data_length[0];
@@ -247,7 +247,7 @@ export const  getAllUsers = async (req,res) => {
 
 export const updatePendingList = async (req, res) => {
   try {
-    const { sub_id, branch_id } = req.body;
+    const { sub_id, branch_id,address_id } = req.body;
 
     await knex("subscribed_user_details")
       .update({
@@ -256,6 +256,8 @@ export const updatePendingList = async (req, res) => {
         assigned_date: new Date().toISOString().slice(0, 19).replace("T", " "),
       })
       .where({ id: sub_id });
+
+      await knex("user_address").update({branch_id}).where({id : address_id})
 
     req.flash("success", "Subscription Moved To Branch");
     res.redirect("/super_admin/users_subscription/get_new_users");

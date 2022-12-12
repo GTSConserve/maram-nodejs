@@ -33,18 +33,31 @@ export const new_subscription = async (
       query.customized_days = JSON.stringify(store_weekdays);
     }
 
-    const branch_id = await knex("subscribed_user_details")
-      .select("branch_id", "router_id")
-      .where({
-        user_id: userId,
-        subscription_status: "subscribed",
-        user_address_id,
-      });
-    if (branch_id.length !== 0) {
-      query.branch_id = branch_id[0].branch_id;
-      query.router_id = branch_id[0].router_id;
+    const is_exist_address = await knex("user_address")
+      .select("branch_id")
+      .whereNotNull("branch_id")
+      .where({ user_id: userId, id: user_address_id });
+
+    console.log(is_exist_address)
+
+
+    if(is_exist_address.length !== 0){
+      query.branch_id = is_exist_address[0].branch_id;
       query.subscription_status = "branch_pending";
     }
+
+    // const branch_id = await knex("subscribed_user_details")
+    //   .select("branch_id", "router_id")
+    //   .where({
+    //     user_id: userId,
+    //     subscription_status: "subscribed",
+    //     user_address_id,
+    //   });
+    // if (branch_id.length !== 0) {
+    //   query.branch_id = branch_id[0].branch_id;
+    //   query.router_id = branch_id[0].router_id;
+    //   query.subscription_status = "branch_pending";
+    // }
 
     await knex("subscribed_user_details").insert(query);
 

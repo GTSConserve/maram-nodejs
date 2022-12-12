@@ -57,7 +57,7 @@
                                 <div class="modal-dialog modal-dialog-centered" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalCenterTitle">Add Product Type</h5>
+                                            <h5 class="modal-title" id="exampleModalCenterTitle">Add Category</h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
                                                     height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -72,26 +72,36 @@
                                         <div class="modal-body">
                                             <form method="post" action="/super_admin/product/create_category"  enctype="multipart/form-data">
                                                 <div class="form-row mb-4">
-                                                    <div class="col-sm-6">
+                                                    <div class="col-sm-12">
                                                         <label>Name</label>
                                                         <input type="text" class="form-control" wire:model="name" required
                                                             placeholder="Name" name="name">
 
                                                     </div>
-                                                    <div class="col-6">
-                                                        <label>Product Type</label>
-                                                        <select wire:model="countryid" class="form-control" name="product_type_id" required>
-                                                            <option value="">Select Product Type</option>
-                                                            <% for(product_type of productType){ %>
-
-                                                                <option name="<%=product_type.name %>" value="<%=product_type.id %>"><%=product_type.name %></option>
-                                                            <% } %>
-
-                                                        </select>
-        
-                                                    </div>
+                                                    
+                                                    
                                                 </div>
                                             
+                                                <div class="form-row mb-4">
+                                                    <div class="row">
+                                                        <div class="col-xl-12 col-md-12 col-sm-12 col-12">
+                                                            <h6>Product Types</h6>
+                                                        </div>
+                                                    </div>
+                                                    <div class="n-chk col-12">
+                                                        <label for="subscription"  class="new-control new-checkbox checkbox-primary" style="font-weight:900 ;">
+                                                          <input type="checkbox" id="subscription" name="subscription" class="new-control-input ">
+                                                          <span class="new-control-indicator"></span>Subscription
+                                                        </label>
+                                                    </div>
+                                                    <div class="n-chk col-12">
+                                                        <label for="addon" class="new-control new-checkbox checkbox-primary" style="font-weight:900 ;">
+                                                          <input type="checkbox" id="addon" name="addon" class="new-control-input">
+                                                          <span class="new-control-indicator"></span>Add On
+                                                        </label>
+                                                    </div>
+                                                    </div>
+                                                
                                                 <div class="form-row mb-4">
                                                     <div class="col-sm-12">
                                                         <label>Image</label>
@@ -144,8 +154,8 @@
                                 style="width: 86px;">Name</th>
                             <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
                                 aria-label="NAME: activate to sort column ascending" style="width: 100px;">IMAGE</th>
-                            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
-                                aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">PRODUCT TYPE</th>
+                            <!-- <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                                aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">PRODUCT TYPE</th> -->
                             <th class="text-center sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
                                 colspan="1" aria-label="Status: activate to sort column ascending" style="width: 49px;">
                                 Status</th>
@@ -162,7 +172,7 @@
                                     <td class="sorting_1"><%=category.id %></td>
                                     <td><%=category.name %></td>
                                     <td><img style="width: 150px;height : 120px" src="<%=category.image %>"></td>
-                                    <td><%=category.product_type %></td>
+                                  
 
                                     <div>
                                         <td style="text-align: center; vertical-align: middle;">
@@ -219,18 +229,28 @@
                                                     placeholder="Name" name="name" value="<%=category.name %>" required>
 
                                             </div>
-                                            <div class="col-6">
-                                                <label>Product Type</label>
-                                                <select wire:model="countryid" class="form-control" name="product_type_id" required>
-                                                    <option value="<%=category.product_type_id %>"><%=category.product_type %></option>
-                                                    <% for(product_type of productType){ %>
-
-                                                        <option  value="<%=product_type.id %>"><%=product_type.name %></option>
-                                                    <% } %>
-
-                                                </select>
-
-                                            </div>
+                                            <div class="form-row mb-4">
+                                                <div class="row">
+                                                    <div class="col-xl-12 col-md-12 col-sm-12 col-12">
+                                                        <h6>Product Types</h6>
+                                                    </div>
+                                                </div>
+                                                <div class="n-chk col-12">
+                                                    <label for="subscription"  class="new-control new-checkbox checkbox-primary"
+                                                     style="font-weight:900 ;">
+                                                      <input type="checkbox" id="subscription" name="subscription" checked 
+                                                      class="new-control-input ">
+                                                      <span class="new-control-indicator"></span>Subscription
+                                                    </label>
+                                                </div>
+                                                <div class="n-chk col-12">
+                                                    <label for="addon" class="new-control new-checkbox checkbox-primary" 
+                                                    style="font-weight:900 ;">
+                                                      <input type="checkbox" id="addon" name="addon" class="new-control-input">
+                                                      <span class="new-control-indicator"></span>Add On
+                                                    </label>
+                                                </div>
+                                                </div>
                                         </div>
                                         <div class="form-row mb-4">
                                             <div class="col-sm-10">

@@ -103,7 +103,7 @@ export const getNewUsers = async (req, res) => {
     }
 
     const routes = await knex("routes")
-      .select("starting_point", "ending_point", "id")
+      .select("name", "id")
       .where({ status: "1", branch_id: admin_id });
 
     if (data_length.length === 0) {
@@ -161,7 +161,8 @@ export const getNewUsers = async (req, res) => {
     const data = results[0];
 
     for (let i = 0; i < data.length; i++) {
-      data[i].start_date = data[i].start_date.toString().slice(4, 16);
+      console.log( data[i].start_date)
+      data[i].start_date = moment(data[i].start_date).format('YYYY-MM-DD')
     }
 
     loading = false;
@@ -211,7 +212,7 @@ export const getExistUsers = async (req,res) => {
     }
 
     const routes = await knex("routes")
-      .select("starting_point", "ending_point", "id")
+      .select("name", "id")
       .where({ status: "1", branch_id: admin_id });
 
     if (data_length.length === 0) {
@@ -269,6 +270,7 @@ export const getExistUsers = async (req,res) => {
     const data = results[0];
 
     for (let i = 0; i < data.length; i++) {
+    
       data[i].start_date = data[i].start_date.toString().slice(4, 16);
     }
 

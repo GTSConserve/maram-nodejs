@@ -288,10 +288,11 @@
                                                     </select>
         
                                             </div>
+                                            <input type="hidden" id="custId" name="address_id" value="<%= user.user_address_id %>">
                                         </div>
                                         <div class="modal-footer">
                                             <button class="btn" type="button" style="border-color: #006E33;" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancel</button>
-                                            <button type="submit" name="sub_id"  value="<%=user.id %>" class="btn btn-primary">Proceed</button>
+                                            <button type="submit" name="sub_id"  value="<%=user.id %>" class="btn btn-primary">Assign And Proceed</button>
                                         </div>
                                     </form>
                         </div>

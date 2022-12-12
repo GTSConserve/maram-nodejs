@@ -1,16 +1,15 @@
 import express from "express";
-// import { authenticateJWT } from "../../middlewares/authToken.middleware";
+import { authenticateJWT } from "../../middlewares/authToken.middleware";
 import {
   getProducts,
   getCategories,
   getSubscriptionProducts,
   getAddOnProducts,
   searchProducts,
-  addProduct,
-  additionalProduct,
   addon_Order,
+  getSingleProduct,
+  removeAddOnOrder
 } from "../../controllers/user/product.controller";
-
 
 const productRouter = express.Router({
   caseSensitive: true,
@@ -24,11 +23,9 @@ productRouter.post("/search_products", searchProducts);
 productRouter.get("/get_subscription_product", getSubscriptionProducts);
 productRouter.get("/get_add_on_product", getAddOnProducts);
 
-productRouter.post("/additional_products", additionalProduct);
-productRouter.post("/addon_order", addon_Order);
+productRouter.post("/get_single_product", getSingleProduct);
 
+productRouter.post("/create_add_on_products", authenticateJWT, addon_Order);
+productRouter.post("/remove_add_on_products", authenticateJWT, removeAddOnOrder);
 
-
-
-
-export default productRouter
+export default productRouter;

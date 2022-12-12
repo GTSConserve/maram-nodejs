@@ -9,6 +9,20 @@ export const getViewMapping = async (req,res) => {
     const { searchKeyword,route_id } = req.query;
 
     let data_length = [];
+    // user_mapping
+
+    const users = await knex("routes").select("user_mapping").where({id  :route_id})
+    console.log(users)
+
+
+    if (data_length.length === 0) {
+          loading = false;
+         
+          req.flash("error", "No User Found");
+          return res.redirect("/branch_admin/route/user_mapping");
+        }
+
+    // const users2 = await knex("routes").select("id").whereIn("user_mapping")
 
     // if (searchKeyword) {
     //   const search_data_length = await knex.raw(
@@ -205,24 +219,21 @@ export const getUserMapping = async(req,res) => {
 
 export const updateRoute = async (req, res) => {
   try {
-    const { starting_point, ending_point, city_id, rider_id, id } = req.body;
+    const { name, city_id, rider_id, id } = req.body;
 
-    if (!starting_point) {
-      req.flash("error", "Staring Point is missing");
-      return res.redirect("/branch_admin/route/get_route");
-    }
-    if (!ending_point) {
-      req.flash("error", "Ending Point is missing");
+  
+    if (!name) {
+      req.flash("error", "Route Name is missing");
       return res.redirect("/branch_admin/route/get_route");
     }
 
     let query = {};
 
-    query.starting_point = starting_point;
-    query.ending_point = ending_point;
-    if (city_id) {
-      query.city_id = city_id;
-    }
+    query.name = name;
+    
+    // if (city_id) {
+    //   query.city_id = city_id;
+    // }
     if (rider_id) {
       query.rider_id = rider_id;
     }
@@ -257,31 +268,27 @@ export const updateRouteStatus = async (req, res) => {
 
 export const createRoute = async (req, res) => {
   try {
-    const { starting_point, ending_point, admin_id, city_id, rider_id } =
+    const { name, admin_id, city_id, rider_id } =
       req.body;
-    if (!starting_point) {
-      req.flash("error", "starting_point is missing");
+  
+    if (!name) {
+      req.flash("error", "Route Name is missing");
       return res.redirect("/branch_admin/route/get_route");
     }
 
-    if (!ending_point) {
-      req.flash("error", "ending_point is missing");
-      return res.redirect("/branch_admin/route/get_route");
-    }
-
-    if (!city_id) {
-      req.flash("error", "City  is missing");
-      return res.redirect("/branch_admin/route/get_route");
-    }
+    // if (!city_id) {
+    //   req.flash("error", "City  is missing");
+    //   return res.redirect("/branch_admin/route/get_route");
+    // }
 
     let query = {}
     if (rider_id) {
       query.rider_id = rider_id
     }
 
-    query.starting_point = starting_point
-    query.ending_point = ending_point
-    query.city_id = city_id
+    query.name = name
+  
+    // query.city_id = city_id
     query.branch_id = admin_id
 
     await knex("routes").insert(query);
@@ -304,7 +311,7 @@ export const getRoute = async (req, res) => {
 
     if (searchKeyword) {
       const search_data_length = await knex.raw(
-        `SELECT id,rider_id FROM routes WHERE branch_id = ${admin_id} AND starting_point LIKE '%${searchKeyword}%' OR ending_point LIKE '%${searchKeyword}%'`
+        `SELECT id,rider_id FROM routes WHERE branch_id = ${admin_id} AND name LIKE '%${searchKeyword}%'`
       );
 
       data_length = search_data_length[0];
@@ -364,11 +371,11 @@ export const getRoute = async (req, res) => {
     let is_search = false;
     if (searchKeyword) {
       results = await knex.raw(
-        `SELECT routes.id,routes.starting_point,routes.ending_point,routes.status,routes.rider_id,
-        cities.id as city_id, rider_details.id as rider_id,
-        rider_details.name as rider_name,cities.name as city_name FROM routes 
+        `SELECT routes.id,routes.name as route_name,routes.status,routes.rider_id,
+        rider_details.id as rider_id,
+        rider_details.name as rider_name FROM routes 
         LEFT JOIN rider_details ON rider_details.id = routes.rider_id
-        LEFT JOIN cities ON cities.id = routes.city_id
+        
         WHERE routes.branch_id = ${admin_id} 
         AND routes.starting_point LIKE '%${searchKeyword}%' OR routes.ending_point LIKE '%${searchKeyword}%' 
         LIMIT ${startingLimit},${resultsPerPage}`
@@ -376,11 +383,11 @@ export const getRoute = async (req, res) => {
       is_search = true;
     } else {
       results = await knex.raw(
-        `SELECT routes.id,routes.starting_point,routes.ending_point,routes.status,routes.rider_id,
-        cities.id as city_id, rider_details.id as rider_id,
-        rider_details.name as rider_name,cities.name as city_name FROM routes 
+        `SELECT routes.id,routes.name as route_name,routes.status,routes.rider_id,
+        rider_details.id as rider_id,
+        rider_details.name as rider_name FROM routes 
         LEFT JOIN rider_details ON rider_details.id = routes.rider_id
-        LEFT JOIN cities ON cities.id = routes.city_id
+        
         WHERE routes.branch_id = ${admin_id}  LIMIT ${startingLimit},${resultsPerPage}`
       );
     }

@@ -30,7 +30,7 @@ export const get_subscription_or_add_on_products = async (id, userId) => {
   }
 };
 
-export const get_products = async (category_id,product_type_id, userId) => {
+export const get_products = async (category_id, product_type_id, userId) => {
   try {
     const product = await knex("products")
       .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
@@ -42,7 +42,7 @@ export const get_products = async (category_id,product_type_id, userId) => {
         "unit_types.value as unit_type",
         "products.price"
       )
-      .where({ category_id,product_type_id });
+      .where({ category_id, product_type_id });
 
     const response = await GetProduct(product, userId);
 
@@ -104,42 +104,6 @@ export const search_products = async (
   }
 };
 
-export const additional_product = async (
-  user_id,
-  subscribe_type_id,
-  product_id,
-  name,
-  quantity,
-  price,
-  total_days
-) => {
-  if (subscribe_type_id == 1) {
-    const added = await knex("orders").insert({
-      user_id: user_id,
-      subscribe_type_id: subscribe_type_id,
-      product_id: product_id,
-      name: name,
-      quantity: quantity,
-      total_days: 1,
-    });
-  } else {
-    const added = await knex("orders").insert({
-      user_id: user_id,
-      subscribe_type_id: subscribe_type_id,
-      product_id: product_id,
-      name: name,
-      quantity: quantity,
-      total_days: 15,
-    });
-  }
-
-  try {
-    return { status: true, body: added };
-  } catch (error) {
-    return { status: false, error };
-  }
-};
-
 export const addon_order = async (
   user_id,
   delivery_date,
@@ -147,49 +111,38 @@ export const addon_order = async (
   address_id
 ) => {
   try {
-    let query = {
-      user_id: user_id,
-      delivery_date: delivery_date,
-      address_id: address_id,
-    };
-    console.log(query);
+    const order = await knex("add_on_orders").insert({
+      user_id,
+      delivery_date,
+      address_id,
+    });
 
-    const order = await knex("add_on_orders").insert(query);
+    let order_id = order[0];
 
-    const product1 = await knex
-      .select("id", "user_id")
-      .from("add_on_orders")
-      .where({ user_id: user_id });
-
-    const product = [];
+    let sub_total = 0;
 
     for (let i = 0; i < products.length; i++) {
-      product.push({
+      const product_price = await knex("products")
+        .select("price")
+        .where({ id: products[i].product_id });
+
+      console.log(product_price);
+
+      await knex("add_on_order_items").insert({
+        add_on_order_id: order_id,
+        user_id,
         product_id: products[i].product_id,
-        quantity: products[i].quantity,
-        add_on_order_id: product1[i].id,
-        user_id: product1[i].user_id,
+        quantity: products[i].qty,
+        price: product_price[0].price,
+        total_price: product_price[0].price * products[i].qty,
       });
 
-      const sum_values = await knex("add_on_order_items").select(
-        knex.raw("sum(quantity * price) as total_price")
-      );
-      console.log(sum_values);
-
-      const order_list = await knex("add_on_order_items").insert({
-        product_id: products[i].product_id,
-        quantity: products[i].quantity,
-        add_on_order_id: product1[i].id,
-        user_id: product1[i].user_id,
-        price: product1[0].price,
-        total_price: sum_values[0].total_price,
-      });
-
-      const sub_value = await knex("add_on_orders")
-        .insert({ sub_total: order_list.total_price })
-        .where({ user_id: user_id });
-      console.log(sub_value);
+      sub_total = sub_total + product_price[0].price * products[i].qty;
     }
+
+    await knex("add_on_orders").update({ sub_total }).where({ id: order_id });
+
+    return { status: true, message: "SuccessFully Created" };
   } catch (error) {
     console.log(error);
     return { status: false, message: "Something Went Wrong", error };
