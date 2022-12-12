@@ -18,13 +18,13 @@ var createTable = /*#__PURE__*/function () {
           case 0:
             _context.prev = 0;
             _context.next = 3;
-            return _db["default"].schema.hasTable("countries").then(function (exists) {
+            return _db["default"].schema.hasTable("cities").then(function (exists) {
               if (!exists) {
-                return _db["default"].schema.createTable("countries", function (t) {
+                return _db["default"].schema.createTable("cities", function (t) {
                   t.increments("id").primary();
                   t.string("name", 255).nullable();
-                  t.string("code", 255).nullable();
-                  t.string("phone_code", 255).nullable();
+                  t.string("latitude", 255).nullable();
+                  t.string("longitude", 255).nullable();
                   t.enu("status", ["0", "1"]).defaultTo("1");
                   t.timestamps(true, true);
                 });
@@ -37,117 +37,16 @@ var createTable = /*#__PURE__*/function () {
                 return _db["default"].schema.createTable("zones", function (t) {
                   t.increments("id").primary();
                   t.string("name", 255).nullable();
-                  t.string("code", 255).nullable();
-                  t.integer("country_id").unsigned().notNullable();
-                  t.foreign("country_id").references("id").inTable("countries");
+                  t.integer("city_id").unsigned().notNullable();
+                  t.foreign("city_id").references("id").inTable("cities");
+                  t.string("latitude", 255).nullable();
+                  t.string("longitude", 255).nullable();
                   t.enu("status", ["0", "1"]).defaultTo("1");
-                  t.timestamps(true, true);
                 });
               }
             });
           case 5:
             _context.next = 7;
-            return _db["default"].schema.hasTable("countries").then(function (exists) {
-              if (!exists) {
-                return _db["default"].schema.createTable("countries", function (t) {
-                  t.increments("id").primary();
-                  t.string("name", 255).nullable();
-                  t.string("code", 255).nullable();
-                  t.string("phone_code", 255).nullable();
-                  t.enu("status", ["0", "1"]).defaultTo("1");
-                  t.timestamps(true, true);
-                });
-              }
-            });
-          case 7:
-            _context.next = 9;
-            return _db["default"].schema.hasTable("zones").then(function (exists) {
-              if (!exists) {
-                return _db["default"].schema.createTable("zones", function (t) {
-                  t.increments("id").primary();
-                  t.string("name", 255).nullable();
-                  t.string("code", 255).nullable();
-                  t.integer("country_id").unsigned().notNullable();
-                  t.foreign("country_id").references("id").inTable("countries");
-                });
-              }
-            });
-          case 9:
-            _context.next = 11;
-            return _db["default"].schema.hasTable("cities").then(function (exists) {
-              if (!exists) {
-                return _db["default"].schema.createTable("cities", function (t) {
-                  t.increments("id").primary();
-                  t.string("name", 255).nullable();
-                  t.string("code", 255).nullable();
-                  t.integer("zone_id").unsigned().notNullable();
-                  t.foreign("zone_id").references("id").inTable("zones");
-                  t.integer("country_id").unsigned().notNullable();
-                  t.foreign("country_id").references("id").inTable("countries");
-                  t.string("latitude", 255).nullable();
-                  t.string("longitude", 255).nullable();
-                  t.enu("status", ["0", "1"]).defaultTo("1");
-                  t.timestamps(true, true);
-                });
-              }
-            });
-          case 11:
-            _context.next = 13;
-            return _db["default"].schema.hasTable("cities").then(function (exists) {
-              if (!exists) {
-                return _db["default"].schema.createTable("cities", function (t) {
-                  t.increments("id").primary();
-                  t.string("name", 255).nullable();
-                  t.string("code", 255).nullable();
-                  t.integer("zone_id").unsigned().notNullable();
-                  t.foreign("zone_id").references("id").inTable("zones");
-                  t.integer("country_id").unsigned().notNullable();
-                  t.foreign("country_id").references("id").inTable("countries");
-                  t.string("latitude", 255).nullable();
-                  t.string("longitude", 255).nullable();
-                  t.enu("status", ["0", "1"]).defaultTo("1");
-                  t.timestamps(true, true);
-                });
-              }
-            });
-          case 13:
-            _context.next = 15;
-            return _db["default"].schema.hasTable("postcodes").then(function (exists) {
-              if (!exists) {
-                return _db["default"].schema.createTable("postcodes", function (t) {
-                  t.increments("id").primary();
-                  t.string("code", 255).nullable();
-                  t.integer("zone_id").unsigned().notNullable();
-                  t.foreign("zone_id").references("id").inTable("zones");
-                  t.integer("country_id").unsigned().notNullable();
-                  t.foreign("country_id").references("id").inTable("countries");
-                  t.integer("city_id").unsigned().notNullable();
-                  t.foreign("city_id").references("id").inTable("cities");
-                  t.enu("status", ["0", "1"]).defaultTo("1");
-                  t.timestamps(true, true);
-                });
-              }
-            });
-          case 15:
-            _context.next = 17;
-            return _db["default"].schema.hasTable("postcodes").then(function (exists) {
-              if (!exists) {
-                return _db["default"].schema.createTable("postcodes", function (t) {
-                  t.increments("id").primary();
-                  t.string("code", 255).nullable();
-                  t.integer("zone_id").unsigned().notNullable();
-                  t.foreign("zone_id").references("id").inTable("zones");
-                  t.integer("country_id").unsigned().notNullable();
-                  t.foreign("country_id").references("id").inTable("countries");
-                  t.integer("city_id").unsigned().notNullable();
-                  t.foreign("city_id").references("id").inTable("cities");
-                  t.enu("status", ["0", "1"]).defaultTo("1");
-                  t.timestamps(true, true);
-                });
-              }
-            });
-          case 17:
-            _context.next = 19;
             return _db["default"].schema.hasTable("user_groups").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("user_groups", function (t) {
@@ -158,8 +57,8 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 19:
-            _context.next = 21;
+          case 7:
+            _context.next = 9;
             return _db["default"].schema.hasTable("admin_users").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("admin_users", function (t) {
@@ -168,8 +67,8 @@ var createTable = /*#__PURE__*/function () {
                   t.foreign("user_group_id").references("id").inTable("user_groups");
                   t.string("first_name", 255).notNullable();
                   t.string("last_name", 255).nullable();
-                  t.integer("city_id").unsigned().nullable();
-                  t.foreign("city_id").references("id").inTable("cities");
+                  t.integer("zone_id").unsigned().nullable();
+                  t.foreign("zone_id").references("id").inTable("zones");
                   t.string("location", 255).nullable();
                   t.string("mobile_number", 255).nullable();
                   t.string("alternate_mobile_number", 255).nullable();
@@ -189,8 +88,8 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 21:
-            _context.next = 23;
+          case 9:
+            _context.next = 11;
             return _db["default"].schema.hasTable("users").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("users", function (t) {
@@ -203,6 +102,7 @@ var createTable = /*#__PURE__*/function () {
                   t.string("user_name", 255);
                   t.string("password", 255);
                   t.integer("otp", 10);
+                  t.string("monthly_amount", 255).nullable();
                   t.string("refresh_token", 255);
                   t.string("email", 255);
                   t.timestamp("email_verified_at").nullable();
@@ -223,14 +123,16 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 23:
-            _context.next = 25;
+          case 11:
+            _context.next = 13;
             return _db["default"].schema.hasTable("user_address").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("user_address", function (t) {
                   t.increments("id").primary();
                   t.integer("user_id").unsigned().notNullable();
                   t.foreign("user_id").references("id").inTable("users");
+                  t.integer("branch_id").unsigned().notNullable();
+                  t.foreign("branch_id").references("id").inTable("admin_users");
                   t.string("title", 255).nullable();
                   t.string("address", 255).nullable();
                   t.string("landmark", 255).nullable();
@@ -241,8 +143,8 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 25:
-            _context.next = 27;
+          case 13:
+            _context.next = 15;
             return _db["default"].schema.hasTable("app_settings").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("app_settings", function (t) {
@@ -255,8 +157,8 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 27:
-            _context.next = 29;
+          case 15:
+            _context.next = 17;
             return _db["default"].schema.hasTable("coupons").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("coupons", function (t) {
@@ -277,8 +179,8 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 29:
-            _context.next = 31;
+          case 17:
+            _context.next = 19;
             return _db["default"].schema.hasTable("banners").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("banners", function (t) {
@@ -290,8 +192,8 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 31:
-            _context.next = 33;
+          case 19:
+            _context.next = 21;
             return _db["default"].schema.hasTable("tax_types").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("tax_types", function (t) {
@@ -303,8 +205,8 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 33:
-            _context.next = 35;
+          case 21:
+            _context.next = 23;
             return _db["default"].schema.hasTable("product_type").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("product_type", function (t) {
@@ -316,23 +218,37 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 35:
-            _context.next = 37;
+          case 23:
+            _context.next = 25;
             return _db["default"].schema.hasTable("categories").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("categories", function (t) {
                   t.increments("id").primary();
                   t.string("name", 255);
                   t.string("image", 255);
-                  t.integer("product_type_id").unsigned().notNullable();
-                  t.foreign("product_type_id").references("id").inTable("product_type");
+                  // t.integer("product_type_id").unsigned().notNullable();
+                  // t.foreign("product_type_id").references("id").inTable("product_type");
                   t.enu("status", ["0", "1"]).defaultTo("1");
                   t.timestamps(true, true);
                 });
               }
             });
-          case 37:
-            _context.next = 39;
+          case 25:
+            _context.next = 27;
+            return _db["default"].schema.hasTable("categories_product_type").then(function (exists) {
+              if (!exists) {
+                return _db["default"].schema.createTable("categories_product_type", function (t) {
+                  t.increments("id").primary();
+                  t.integer("category_id").unsigned().notNullable();
+                  t.foreign("category_id").references("id").inTable("categories");
+                  t.integer("product_type_id").unsigned().notNullable();
+                  t.foreign("product_type_id").references("id").inTable("product_type");
+                  t.timestamps(true, true);
+                });
+              }
+            });
+          case 27:
+            _context.next = 29;
             return _db["default"].schema.hasTable("unit_types").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("unit_types", function (t) {
@@ -344,8 +260,8 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 39:
-            _context.next = 41;
+          case 29:
+            _context.next = 31;
             return _db["default"].schema.hasTable("subscription_type").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("subscription_type", function (t) {
@@ -356,8 +272,8 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 41:
-            _context.next = 43;
+          case 31:
+            _context.next = 33;
             return _db["default"].schema.hasTable("products").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("products", function (t) {
@@ -384,8 +300,8 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 43:
-            _context.next = 45;
+          case 33:
+            _context.next = 35;
             return _db["default"].schema.hasTable("weekdays").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("weekdays", function (t) {
@@ -397,23 +313,35 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 45:
-            _context.next = 47;
+          case 35:
+            _context.next = 37;
+            return _db["default"].schema.hasTable("feedback_message").then(function (exists) {
+              if (!exists) {
+                return _db["default"].schema.createTable("feedback_message", function (t) {
+                  t.increments("id").primary().unsigned().notNullable();
+                  t.text("message").notNullable();
+                  t.enu("status", ["0", "1"]).defaultTo("1");
+                  t.timestamps(true, true);
+                });
+              }
+            });
+          case 37:
+            _context.next = 39;
             return _db["default"].schema.hasTable("feedbacks").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("feedbacks", function (t) {
                   t.increments("id").primary();
                   t.integer("user_id").unsigned().notNullable();
                   t.foreign("user_id").references("id").inTable("users");
-                  t.string("comments", 255).nullable();
+                  t.text("comments").nullable();
                   t.integer("message_id").unsigned().notNullable();
                   t.foreign("message_id").references("id").inTable("feedback_message");
                   t.timestamps(true, true);
                 });
               }
             });
-          case 47:
-            _context.next = 49;
+          case 39:
+            _context.next = 41;
             return _db["default"].schema.hasTable("rider_details").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("rider_details", function (t) {
@@ -421,7 +349,7 @@ var createTable = /*#__PURE__*/function () {
                   t.string("name", 255).notNullable();
                   t.string("user_name", 255).notNullable();
                   t.string("mobile_number", 255).nullable();
-                  t.integer("branch_id").unsigned().notNullable();
+                  t.integer("branch_id").unsigned().nullable();
                   t.foreign("branch_id").references("id").inTable("admin_users");
                   t.string("password", 255).notNullable();
                   t.string("address", 255).nullable();
@@ -430,25 +358,27 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 49:
-            _context.next = 51;
+          case 41:
+            _context.next = 43;
             return _db["default"].schema.hasTable("routes").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("routes", function (t) {
                   t.increments("id").primary().unsigned().notNullable();
                   t.integer("rider_id").unsigned().nullable();
                   t.foreign("rider_id").references("id").inTable("rider_details");
-                  t.integer("city_id").unsigned().notNullable();
-                  t.foreign("city_id").references("id").inTable("cities");
-                  t.string("starting_point", 255).nullable();
-                  t.string("ending_point", 255).nullable();
+                  t.integer("branch_id").unsigned().notNullable();
+                  t.foreign("branch_id").references("id").inTable("admin_users");
+                  t.json("user_mapping").nullable();
+                  t.string("name", 255).nullable();
+                  // t.string("ending_point", 255).nullable();
+
                   t.enu("status", ["0", "1"]).defaultTo("1");
                   t.timestamps(true, true);
                 });
               }
             });
-          case 51:
-            _context.next = 53;
+          case 43:
+            _context.next = 45;
             return _db["default"].schema.hasTable("subscribed_user_details").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("subscribed_user_details", function (t) {
@@ -471,8 +401,87 @@ var createTable = /*#__PURE__*/function () {
                   t.integer("product_id").unsigned().notNullable();
                   t.foreign("product_id").references("id").inTable("products");
                   t.integer("quantity").notNullable();
-                  t.enu("subscription_status", ["pending", "assigned", "cancelled", "subscribed", "unsubscribed", "branch_cancelled", "change_date", "change_qty", "change_address"]).defaultTo("pending");
+                  t.enu("subscription_status", ["pending", "assigned", "cancelled", "subscribed", "unsubscribed", "branch_cancelled", "branch_pending", "change_date", "change_qty", "change_address"]).defaultTo("pending");
                   t.enu("status", ["0", "1"]).defaultTo("1");
+                  t.timestamps(true, true);
+                });
+              }
+            });
+          case 45:
+            _context.next = 47;
+            return _db["default"].schema.hasTable("add_on_orders").then(function (exists) {
+              if (!exists) {
+                return _db["default"].schema.createTable("add_on_orders", function (t) {
+                  t.increments("id").primary();
+                  t.integer("user_id").unsigned().notNullable();
+                  t.foreign("user_id").references("id").inTable("users");
+                  t.integer("branch_id").unsigned().nullable();
+                  t.foreign("branch_id").references("id").inTable("admin_users");
+                  t.integer("address_id").unsigned().notNullable();
+                  t.foreign("address_id").references("id").inTable("user_address");
+                  t.date("delivery_date").nullable();
+                  t.enu("status", ["pending", "delivered", "undelivered"]).defaultTo("pending");
+                  t.integer("tip_amount").nullable();
+                  t.integer("grand_total").nullable();
+                  t.integer("sub_total").nullable();
+                  t.integer("coupon_id").nullable();
+                  t.string("coupon_code").nullable();
+                  t.integer("coupon_amount").nullable();
+                  t.timestamps(true, true);
+                });
+              }
+            });
+          case 47:
+            _context.next = 49;
+            return _db["default"].schema.hasTable("add_on_order_items").then(function (exists) {
+              if (!exists) {
+                return _db["default"].schema.createTable("add_on_order_items", function (t) {
+                  t.increments("id").primary();
+                  t.integer("add_on_order_id").unsigned().nullable();
+                  t.foreign("add_on_order_id").references("id").inTable("add_on_orders");
+                  t.integer("user_id").unsigned().notNullable();
+                  t.foreign("user_id").references("id").inTable("users");
+                  t.integer("product_id").unsigned().notNullable();
+                  t.foreign("product_id").references("id").inTable("products");
+                  t.enu("status", ["pending", "delivered", "undelivered", "removed"]).defaultTo("pending");
+                  t.string("quantity", 255).nullable();
+                  t.integer("tax_price").nullable();
+                  t.integer("price").nullable();
+                  t.integer("total_price").nullable();
+                  t.integer("tax_id").nullable();
+                  t.timestamps(true, true);
+                });
+              }
+            });
+          case 49:
+            _context.next = 51;
+            return _db["default"].schema.hasTable("additional_orders").then(function (exists) {
+              if (!exists) {
+                return _db["default"].schema.createTable("additional_orders", function (t) {
+                  t.increments("id").primary();
+                  t.integer("subscription_id").unsigned().nullable();
+                  t.foreign("subscription_id").references("id").inTable("subscribed_user_details");
+                  t.integer("user_id").unsigned().notNullable();
+                  t.foreign("user_id").references("id").inTable("users");
+                  t.date("date").nullable();
+                  t.enu("status", ["pending", "delivered", "undelivered"]).defaultTo("pending");
+                  t.string("quantity", 255).nullable();
+                  t.integer("price").nullable();
+                  t.timestamps(true, true);
+                });
+              }
+            });
+          case 51:
+            _context.next = 53;
+            return _db["default"].schema.hasTable("pause_dates").then(function (exists) {
+              if (!exists) {
+                return _db["default"].schema.createTable("pause_dates", function (t) {
+                  t.increments("id").primary().unsigned().notNullable();
+                  t.integer("user_id").unsigned().nullable();
+                  t.foreign("user_id").references("id").inTable("users");
+                  t.integer("subscription_id").unsigned().nullable();
+                  t.foreign("subscription_id").references("id").inTable("subscribed_user_details");
+                  t.date("date").nullable();
                   t.timestamps(true, true);
                 });
               }
@@ -490,15 +499,25 @@ var createTable = /*#__PURE__*/function () {
                   t.date("date").nullable();
                   t.integer("subscription_id").unsigned().nullable();
                   t.foreign("subscription_id").references("id").inTable("subscribed_user_details");
-                  t.integer("product_id").unsigned().nullable();
-                  t.foreign("product_id").references("id").inTable("products");
+                  t.integer("add_on_order_id").unsigned().nullable();
+                  t.foreign("add_on_order_id").references("id").inTable("add_on_orders");
+                  t.integer("additional_order_id").unsigned().nullable();
+                  t.foreign("additional_order_id").references("id").inTable("additional_orders");
+
+                  // t.integer("product_id").unsigned().nullable();
+                  // t.foreign("product_id").references("id").inTable("products");
+
                   t.integer("router_id").unsigned().nullable();
                   t.foreign("router_id").references("id").inTable("routes");
-                  t.integer("rider_id").unsigned().nullable();
-                  t.foreign("rider_id").references("id").inTable("rider_details");
+
+                  // t.integer("rider_id").unsigned().nullable();
+                  // t.foreign("rider_id").references("id").inTable("rider_details");
+
                   t.integer("user_address_id").unsigned().nullable();
                   t.foreign("user_address_id").references("id").inTable("user_address");
                   t.integer("qty").nullable();
+                  t.integer("additional_order_qty").nullable();
+                  t.integer("total_qty").nullable();
                   t.enu("status", ["pending", "delivered", "undelivered"]).defaultTo("pending");
                   t.timestamps(true, true);
                 });
@@ -530,21 +549,6 @@ var createTable = /*#__PURE__*/function () {
             });
           case 57:
             _context.next = 59;
-            return _db["default"].schema.hasTable("pause_dates").then(function (exists) {
-              if (!exists) {
-                return _db["default"].schema.createTable("pause_dates", function (t) {
-                  t.increments("id").primary().unsigned().notNullable();
-                  t.integer("user_id").unsigned().nullable();
-                  t.foreign("user_id").references("id").inTable("users");
-                  t.integer("subscription_id").unsigned().nullable();
-                  t.foreign("subscription_id").references("id").inTable("subscribed_user_details");
-                  t.date("date").nullable();
-                  t.timestamps(true, true);
-                });
-              }
-            });
-          case 59:
-            _context.next = 61;
             return _db["default"].schema.hasTable("monthly_paused_dates").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("monthly_paused_dates", function (t) {
@@ -558,46 +562,66 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
+          case 59:
+            _context.next = 61;
+            return _db["default"].schema.hasTable("price_change").then(function (exists) {
+              if (!exists) {
+                return _db["default"].schema.createTable("price_change", function (t) {
+                  t.increments("id").primary();
+                  t.integer("product_id").unsigned().notNullable();
+                  t.foreign("product_id").references("id").inTable("products");
+                  t.date("changed_date").nullable();
+                  t.integer("old_price").nullable();
+                  t.integer("new_price").nullable();
+                  t.timestamps(true, true);
+                });
+              }
+            });
           case 61:
             _context.next = 63;
-            return _db["default"].schema.hasTable("add_on_orders").then(function (exists) {
+            return _db["default"].schema.hasTable("monthly_bill").then(function (exists) {
               if (!exists) {
-                return _db["default"].schema.createTable("add_on_orders", function (t) {
+                return _db["default"].schema.createTable("monthly_bill", function (t) {
                   t.increments("id").primary();
+                  t.string("bill_no").nullable();
+                  t.integer("subscription_id").unsigned().notNullable();
+                  t.foreign("subscription_id").references("id").inTable("subscribed_user_details");
                   t.integer("user_id").unsigned().notNullable();
                   t.foreign("user_id").references("id").inTable("users");
-                  t.integer("address_id").unsigned().notNullable();
-                  t.foreign("address_id").references("id").inTable("user_address");
-                  t.date("delivery_date").nullable();
-                  t.enu("status", ["pending", "delivery", "not delivery"]).defaultTo("pending");
-                  t.integer("tip_amount").nullable();
-                  t.integer("grand_total").nullable();
+                  t.string("date").nullable();
+                  t.integer("discount").nullable();
                   t.integer("sub_total").nullable();
-                  t.integer("coupon_id").nullable();
-                  t.string("coupon_code").nullable();
-                  t.integer("coupon_amount").nullable();
+                  t.integer("grand_total").nullable();
+                  t.enu("payment_status", ["pending", "done", "cancelled"]).defaultTo("pending");
                   t.timestamps(true, true);
                 });
               }
             });
           case 63:
             _context.next = 65;
-            return _db["default"].schema.hasTable("add_on_order_items").then(function (exists) {
+            return _db["default"].schema.hasTable("user_address_subscribe_branch").then(function (exists) {
               if (!exists) {
-                return _db["default"].schema.createTable("add_on_order_items", function (t) {
+                return _db["default"].schema.createTable("user_address_subscribe_branch", function (t) {
                   t.increments("id").primary();
-                  t.integer("add_on_order_id").Nullable();
-                  t.foreign("add_on_order_id").references("id").inTable("add_on_orders");
                   t.integer("user_id").unsigned().notNullable();
                   t.foreign("user_id").references("id").inTable("users");
+                  t.integer("address_id").unsigned().notNullable();
+                  t.foreign("address_id").references("id").inTable("user_address");
+                  t.integer("branch_id").unsigned().notNullable();
+                  t.foreign("branch_id").references("id").inTable("admin_users");
+                  t.integer("subscription_id").unsigned().nullable();
+                  t.foreign("subscription_id").references("id").inTable("subscribed_user_details");
                   t.integer("product_id").unsigned().notNullable();
                   t.foreign("product_id").references("id").inTable("products");
-                  t.enu("status", ["pending", "delivery", "not delivery"]).defaultTo("pending");
-                  t.string("quantity", 255).nullable();
-                  t.integer("tax_price").nullable();
-                  t.integer("price").nullable();
-                  t.integer("total_price").nullable();
-                  t.integer("tax_id").nullable();
+                  // t.enu("status", ["pending", "delivery", "not delivery"]).defaultTo(
+                  //   "pending"
+                  // );
+                  // t.string("quantity", 255).nullable();
+                  // t.integer("tax_price").nullable();
+                  // t.integer("price").nullable();
+                  // t.integer("total_price").nullable();
+                  // t.integer("tax_id").nullable();
+
                   t.timestamps(true, true);
                 });
               }

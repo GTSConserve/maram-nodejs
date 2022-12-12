@@ -14,8 +14,13 @@ var users_subscriptionRouter = _express["default"].Router({
   strict: true
 });
 
+//new users
+users_subscriptionRouter.get("/get_new_users", _pending.getNewUsers);
+users_subscriptionRouter.get("/get_all_users", _pending.getAllUsers);
+users_subscriptionRouter.post("/update_all_users_status", _pending.updateAllUsersStatus);
+
 // pending
-users_subscriptionRouter.get('/get_pending_list', _pending.getPendingList);
+// users_subscriptionRouter.get('/get_new_users',getNewUsers)
 users_subscriptionRouter.post('/approve_pending_list', _pending.updatePendingList);
 users_subscriptionRouter.post('/cancel_pending_list', _pending.cancelPendingList);
 

@@ -15,5 +15,10 @@ rootRouter.get('/get_route', _route.getRoute);
 rootRouter.post('/create_route', _route.createRoute);
 rootRouter.post('/update_route_status', _route.updateRouteStatus);
 rootRouter.post('/update_route', _route.updateRoute);
+
+//user mapping
+rootRouter.get('/user_mapping', _route.getUserMapping);
+rootRouter.get('/view_mapping', _route.getViewMapping);
+// rootRouter.post('/update_view_mapping',updateViewMapping)
 var _default = rootRouter;
 exports["default"] = _default;

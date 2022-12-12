@@ -75,72 +75,73 @@ var authenticateJWT = /*#__PURE__*/function () {
           case 0:
             optionalToken = (_res$locals$optionalT = res.locals.optionalToken) !== null && _res$locals$optionalT !== void 0 ? _res$locals$optionalT : false;
             if (!req.headers.authorization) {
-              _context2.next = 55;
+              _context2.next = 56;
               break;
             }
             token = req.headers.authorization;
             if (!token) {
-              _context2.next = 52;
+              _context2.next = 53;
               break;
             }
             currentTokenPayload = (0, _jwt.parseJwtPayload)(token);
-            _context2.next = 7;
+            console.log(currentTokenPayload);
+            _context2.next = 8;
             return (0, _user.getAccountModal)({
               userId: currentTokenPayload.user_id
             });
-          case 7:
+          case 8:
             checkUser = _context2.sent;
             if (!(checkUser.status == _responseCode["default"].SUCCESS)) {
-              _context2.next = 49;
+              _context2.next = 50;
               break;
             }
-            _context2.prev = 9;
-            _context2.next = 12;
+            _context2.prev = 10;
+            _context2.next = 13;
             return (0, _jwt.verifyToken)(token, process.env.TOKEN_SECRET);
-          case 12:
+          case 13:
             req.body.userId = currentTokenPayload.user_id;
             res.set('Authorization', token);
             next();
-            _context2.next = 47;
+            _context2.next = 48;
             break;
-          case 17:
-            _context2.prev = 17;
-            _context2.t0 = _context2["catch"](9);
+          case 18:
+            _context2.prev = 18;
+            _context2.t0 = _context2["catch"](10);
             if (!_context2.t0.isExpired) {
-              _context2.next = 46;
+              _context2.next = 47;
               break;
             }
-            _context2.next = 22;
+            _context2.next = 23;
             return (0, _user.getUserToken)(currentTokenPayload.user_id);
-          case 22:
+          case 23:
             _yield$getUserToken = _context2.sent;
             status = _yield$getUserToken.status;
             refreshToken = _yield$getUserToken.refreshToken;
             languageId = _yield$getUserToken.languageId;
             if (!status) {
-              _context2.next = 43;
+              _context2.next = 44;
               break;
             }
-            _context2.prev = 27;
-            _context2.next = 30;
+            _context2.prev = 28;
+            _context2.next = 31;
             return (0, _jwt.verifyToken)(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-          case 30:
+          case 31:
             tokens = (0, _jwt.createToken)({
               user_id: currentTokenPayload.user_id,
               user_group_id: userGroup.USER_GROUP_ID,
               language_id: languageId
             });
-            _context2.next = 33;
+            _context2.next = 34;
             return (0, _user.updateUserToken)(tokens.refreshToken, currentTokenPayload.user_id);
-          case 33:
+          case 34:
             req.body.userId = currentTokenPayload.user_id;
             res.set('Authorization', tokens.token);
             next();
-            _context2.next = 41;
+            _context2.next = 42;
             break;
-          case 38:
-            _context2.prev = 38;
-            _context2.t1 = _context2["catch"](27);
+          case 39:
+            _context2.prev = 39;
+            _context2.t1 = _context2["catch"](28);
             if (optionalToken) {
               next();
             } else {
@@ -148,21 +149,10 @@ var authenticateJWT = /*#__PURE__*/function () {
                 message: 'Invalid token'
               });
             }
-          case 41:
-            _context2.next = 44;
+          case 42:
+            _context2.next = 45;
             break;
-          case 43:
-            if (optionalToken) {
-              next();
-            } else {
-              res.status(_responseCode["default"].FAILURE.UNAUTHORIZED).json({
-                message: 'Invalid token'
-              });
-            }
           case 44:
-            _context2.next = 47;
-            break;
-          case 46:
             if (optionalToken) {
               next();
             } else {
@@ -170,10 +160,21 @@ var authenticateJWT = /*#__PURE__*/function () {
                 message: 'Invalid token'
               });
             }
-          case 47:
-            _context2.next = 50;
+          case 45:
+            _context2.next = 48;
             break;
-          case 49:
+          case 47:
+            if (optionalToken) {
+              next();
+            } else {
+              res.status(_responseCode["default"].FAILURE.UNAUTHORIZED).json({
+                message: 'Invalid token'
+              });
+            }
+          case 48:
+            _context2.next = 51;
+            break;
+          case 50:
             if (optionalToken) {
               next();
             } else {
@@ -181,10 +182,10 @@ var authenticateJWT = /*#__PURE__*/function () {
                 message: 'User not found'
               });
             }
-          case 50:
-            _context2.next = 53;
+          case 51:
+            _context2.next = 54;
             break;
-          case 52:
+          case 53:
             if (optionalToken) {
               next();
             } else {
@@ -192,10 +193,10 @@ var authenticateJWT = /*#__PURE__*/function () {
                 message: 'Invalid token'
               });
             }
-          case 53:
-            _context2.next = 56;
+          case 54:
+            _context2.next = 57;
             break;
-          case 55:
+          case 56:
             if (optionalToken) {
               next();
             } else {
@@ -204,12 +205,12 @@ var authenticateJWT = /*#__PURE__*/function () {
                 message: 'Token Missing in Header'
               });
             }
-          case 56:
+          case 57:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[9, 17], [27, 38]]);
+    }, _callee2, null, [[10, 18], [28, 39]]);
   }));
   return function authenticateJWT(_x4, _x5, _x6) {
     return _ref2.apply(this, arguments);

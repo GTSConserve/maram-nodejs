@@ -12,7 +12,7 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 var new_subscription = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(userId, subscription_plan_id, product_id, user_address_id, start_date, qty, customized_days) {
-    var query, weekdays, store_weekdays, i, j;
+    var query, weekdays, store_weekdays, i, j, is_exist_address;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
@@ -45,26 +45,50 @@ var new_subscription = /*#__PURE__*/function () {
             query.customized_days = JSON.stringify(store_weekdays);
           case 9:
             _context.next = 11;
-            return (0, _db["default"])("subscribed_user_details").insert(query);
+            return (0, _db["default"])("user_address").select("branch_id").whereNotNull("branch_id").where({
+              user_id: userId,
+              id: user_address_id
+            });
           case 11:
-            console.log(query);
+            is_exist_address = _context.sent;
+            console.log(is_exist_address);
+            if (is_exist_address.length !== 0) {
+              query.branch_id = is_exist_address[0].branch_id;
+              query.subscription_status = "branch_pending";
+            }
+
+            // const branch_id = await knex("subscribed_user_details")
+            //   .select("branch_id", "router_id")
+            //   .where({
+            //     user_id: userId,
+            //     subscription_status: "subscribed",
+            //     user_address_id,
+            //   });
+            // if (branch_id.length !== 0) {
+            //   query.branch_id = branch_id[0].branch_id;
+            //   query.router_id = branch_id[0].router_id;
+            //   query.subscription_status = "branch_pending";
+            // }
+            _context.next = 16;
+            return (0, _db["default"])("subscribed_user_details").insert(query);
+          case 16:
             return _context.abrupt("return", {
               status: true
             });
-          case 15:
-            _context.prev = 15;
+          case 19:
+            _context.prev = 19;
             _context.t0 = _context["catch"](0);
             console.log(_context.t0);
             return _context.abrupt("return", {
               status: false,
               message: _context.t0
             });
-          case 19:
+          case 23:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 15]]);
+    }, _callee, null, [[0, 19]]);
   }));
   return function new_subscription(_x, _x2, _x3, _x4, _x5, _x6, _x7) {
     return _ref.apply(this, arguments);
@@ -176,7 +200,7 @@ var get_subcription_order = /*#__PURE__*/function () {
           case 0:
             _context4.prev = 0;
             _context4.next = 3;
-            return (0, _db["default"])('orders').join('users', 'users.id', '=', 'orders.user_id').insert({
+            return (0, _db["default"])("orders").join("users", "users.id", "=", "orders.user_id").insert({
               user_id: user_id,
               type_id: type_id,
               name: name,

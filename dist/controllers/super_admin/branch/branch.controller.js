@@ -120,13 +120,13 @@ var updateBranchStatus = /*#__PURE__*/function () {
 exports.updateBranchStatus = updateBranchStatus;
 var createBranchAdmin = /*#__PURE__*/function () {
   var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(req, res) {
-    var _req$body3, name, email, password, location, mobile_number, city_id, hash_password;
+    var _req$body3, name, email, password, location, mobile_number, zone_id, hash_password;
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.prev = 0;
-            _req$body3 = req.body, name = _req$body3.name, email = _req$body3.email, password = _req$body3.password, location = _req$body3.location, mobile_number = _req$body3.mobile_number, city_id = _req$body3.city_id;
+            _req$body3 = req.body, name = _req$body3.name, email = _req$body3.email, password = _req$body3.password, location = _req$body3.location, mobile_number = _req$body3.mobile_number, zone_id = _req$body3.zone_id;
             if (name) {
               _context3.next = 5;
               break;
@@ -181,7 +181,7 @@ var createBranchAdmin = /*#__PURE__*/function () {
               location: location,
               mobile_number: mobile_number,
               email: email,
-              city_id: city_id
+              zone_id: zone_id
             });
           case 25:
             req.flash("success", "Successfully Created");
@@ -207,7 +207,7 @@ var createBranchAdmin = /*#__PURE__*/function () {
 exports.createBranchAdmin = createBranchAdmin;
 var getBranchAdmin = /*#__PURE__*/function () {
   var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(req, res) {
-    var loading, searchKeyword, data_length, search_data_length, cities, _yield$getPageNumber, startingLimit, page, resultsPerPage, numberOfPages, iterator, endingLink, results, is_search, data;
+    var loading, searchKeyword, data_length, search_data_length, zones, _yield$getPageNumber, startingLimit, page, resultsPerPage, numberOfPages, iterator, endingLink, results, is_search, data;
     return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
@@ -245,11 +245,11 @@ var getBranchAdmin = /*#__PURE__*/function () {
             data_length = _context4.sent;
           case 19:
             _context4.next = 21;
-            return (0, _db["default"])("cities").select("id", "name").where({
+            return (0, _db["default"])("zones").select("id", "name").where({
               status: "1"
             });
           case 21:
-            cities = _context4.sent;
+            zones = _context4.sent;
             if (!(data_length.length === 0)) {
               _context4.next = 25;
               break;
@@ -258,7 +258,7 @@ var getBranchAdmin = /*#__PURE__*/function () {
             return _context4.abrupt("return", res.render("super_admin/branch/branch", {
               data: data_length,
               searchKeyword: searchKeyword,
-              cities: cities
+              zones: zones
             }));
           case 25:
             _context4.next = 27;
@@ -277,7 +277,7 @@ var getBranchAdmin = /*#__PURE__*/function () {
               break;
             }
             _context4.next = 38;
-            return _db["default"].raw("SELECT admin_users.id,admin_users.first_name,admin_users.location,admin_users.mobile_number,admin_users.email,admin_users.status,admin_users.password,admin_users.is_password_change,cities.name as city_name,cities.id as city_id FROM admin_users JOIN cities ON cities.id = admin_users.city_id WHERE admin_users.user_group_id = \"2\" AND admin_users.first_name LIKE '%".concat(searchKeyword, "%' LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
+            return _db["default"].raw("SELECT admin_users.id,admin_users.first_name,admin_users.location,admin_users.mobile_number,admin_users.email,admin_users.status,admin_users.password,admin_users.is_password_change,zones.name as zone_name,zones.id as zone_id FROM admin_users \n        JOIN zones ON zones.id = admin_users.zone_id \n        WHERE admin_users.user_group_id = \"2\" AND admin_users.first_name LIKE '%".concat(searchKeyword, "%' LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
           case 38:
             results = _context4.sent;
             is_search = true;
@@ -285,7 +285,7 @@ var getBranchAdmin = /*#__PURE__*/function () {
             break;
           case 42:
             _context4.next = 44;
-            return _db["default"].raw("SELECT admin_users.id,admin_users.first_name,admin_users.location,admin_users.mobile_number,admin_users.email,admin_users.status,admin_users.password,admin_users.is_password_change,cities.name as city_name,cities.id as city_id FROM admin_users JOIN cities ON cities.id = admin_users.city_id WHERE admin_users.user_group_id = \"2\" LIMIT ".concat(startingLimit, ",").concat(resultsPerPage));
+            return _db["default"].raw("SELECT admin_users.id,admin_users.first_name,admin_users.location,admin_users.mobile_number,admin_users.email,admin_users.status,admin_users.password,admin_users.is_password_change,zones.name as zone_name,zones.id as zone_id FROM admin_users \n        JOIN zones ON zones.id = admin_users.zone_id\n         WHERE admin_users.user_group_id = \"2\" LIMIT ".concat(startingLimit, ",").concat(resultsPerPage));
           case 44:
             results = _context4.sent;
           case 45:
@@ -302,7 +302,7 @@ var getBranchAdmin = /*#__PURE__*/function () {
               is_search: is_search,
               searchKeyword: searchKeyword,
               loading: loading,
-              cities: cities
+              zones: zones
             });
             _context4.next = 54;
             break;

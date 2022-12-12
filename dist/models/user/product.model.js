@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.search_products = exports.get_subscription_or_add_on_products = exports.get_products = exports.get_categories = exports.addon_order = exports.additional_product = void 0;
+exports.search_products = exports.get_subscription_or_add_on_products = exports.get_products = exports.get_categories = exports.addon_order = void 0;
 var _db = _interopRequireDefault(require("../../services/db.service"));
 var _helper = require("../../utils/helper.util");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -66,7 +66,7 @@ var get_subscription_or_add_on_products = /*#__PURE__*/function () {
 }();
 exports.get_subscription_or_add_on_products = get_subscription_or_add_on_products;
 var get_products = /*#__PURE__*/function () {
-  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(category_id, userId) {
+  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(category_id, product_type_id, userId) {
     var product, response;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) {
@@ -74,8 +74,9 @@ var get_products = /*#__PURE__*/function () {
           case 0:
             _context2.prev = 0;
             _context2.next = 3;
-            return (0, _db["default"])("products").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id", "products.name", "products.image", "products.unit_value", "unit_types.value as unit_type", "products.price").where({
-              category_id: category_id
+            return (0, _db["default"])("products").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id as product_id", "products.name", "products.image", "products.unit_value", "unit_types.value as unit_type", "products.price").where({
+              category_id: category_id,
+              product_type_id: product_type_id
             });
           case 3:
             product = _context2.sent;
@@ -114,7 +115,7 @@ var get_products = /*#__PURE__*/function () {
       }
     }, _callee2, null, [[0, 14]]);
   }));
-  return function get_products(_x3, _x4) {
+  return function get_products(_x3, _x4, _x5) {
     return _ref2.apply(this, arguments);
   };
 }();
@@ -128,30 +129,31 @@ var get_categories = /*#__PURE__*/function () {
           case 0:
             _context3.prev = 0;
             _context3.next = 3;
-            return _db["default"].select("id as category_id", "name", "image", "product_type_id").from("categories").where({
-              product_type_id: product_type_id
+            return _db["default"].select("categories.id as category_id", "categories.name", "categories.image").from("categories_product_type as cat").join("categories", "categories.id", "=", "cat.category_id").where({
+              "cat.product_type_id": product_type_id
             });
           case 3:
             getcategories = _context3.sent;
+            console.log(getcategories);
             return _context3.abrupt("return", {
               status: true,
               body: getcategories
             });
-          case 7:
-            _context3.prev = 7;
+          case 8:
+            _context3.prev = 8;
             _context3.t0 = _context3["catch"](0);
             return _context3.abrupt("return", {
               status: false,
               error: _context3.t0
             });
-          case 10:
+          case 11:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3, null, [[0, 7]]);
+    }, _callee3, null, [[0, 8]]);
   }));
-  return function get_categories(_x5) {
+  return function get_categories(_x6) {
     return _ref3.apply(this, arguments);
   };
 }();
@@ -203,156 +205,87 @@ var search_products = /*#__PURE__*/function () {
       }
     }, _callee4, null, [[0, 14]]);
   }));
-  return function search_products(_x6, _x7, _x8) {
+  return function search_products(_x7, _x8, _x9) {
     return _ref4.apply(this, arguments);
   };
 }();
 exports.search_products = search_products;
-var additional_product = /*#__PURE__*/function () {
-  var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(user_id, subscribe_type_id, product_id, name, quantity, price, total_days) {
-    var _added, _added2;
+var addon_order = /*#__PURE__*/function () {
+  var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(user_id, delivery_date, products, address_id) {
+    var order, order_id, sub_total, i, product_price;
     return _regeneratorRuntime().wrap(function _callee5$(_context5) {
       while (1) {
         switch (_context5.prev = _context5.next) {
           case 0:
-            if (!(subscribe_type_id == 1)) {
-              _context5.next = 6;
-              break;
-            }
+            _context5.prev = 0;
             _context5.next = 3;
-            return (0, _db["default"])('orders').insert({
+            return (0, _db["default"])("add_on_orders").insert({
               user_id: user_id,
-              subscribe_type_id: subscribe_type_id,
-              product_id: product_id,
-              name: name,
-              quantity: quantity,
-              total_days: 1
+              delivery_date: delivery_date,
+              address_id: address_id
             });
           case 3:
-            _added = _context5.sent;
-            _context5.next = 9;
-            break;
-          case 6:
-            _context5.next = 8;
-            return (0, _db["default"])('orders').insert({
-              user_id: user_id,
-              subscribe_type_id: subscribe_type_id,
-              product_id: product_id,
-              name: name,
-              quantity: quantity,
-              total_days: 15
+            order = _context5.sent;
+            order_id = order[0];
+            sub_total = 0;
+            i = 0;
+          case 7:
+            if (!(i < products.length)) {
+              _context5.next = 18;
+              break;
+            }
+            _context5.next = 10;
+            return (0, _db["default"])("products").select("price").where({
+              id: products[i].product_id
             });
-          case 8:
-            _added2 = _context5.sent;
-          case 9:
-            _context5.prev = 9;
+          case 10:
+            product_price = _context5.sent;
+            console.log(product_price);
+            _context5.next = 14;
+            return (0, _db["default"])("add_on_order_items").insert({
+              add_on_order_id: order_id,
+              user_id: user_id,
+              product_id: products[i].product_id,
+              quantity: products[i].qty,
+              price: product_price[0].price,
+              total_price: product_price[0].price * products[i].qty
+            });
+          case 14:
+            sub_total = sub_total + product_price[0].price * products[i].qty;
+          case 15:
+            i++;
+            _context5.next = 7;
+            break;
+          case 18:
+            _context5.next = 20;
+            return (0, _db["default"])("add_on_orders").update({
+              sub_total: sub_total
+            }).where({
+              id: order_id
+            });
+          case 20:
             return _context5.abrupt("return", {
               status: true,
-              body: added
+              message: "SuccessFully Created"
             });
-          case 13:
-            _context5.prev = 13;
-            _context5.t0 = _context5["catch"](9);
+          case 23:
+            _context5.prev = 23;
+            _context5.t0 = _context5["catch"](0);
+            console.log(_context5.t0);
             return _context5.abrupt("return", {
               status: false,
+              message: "Something Went Wrong",
               error: _context5.t0
             });
-          case 16:
+          case 27:
           case "end":
             return _context5.stop();
         }
       }
-    }, _callee5, null, [[9, 13]]);
+    }, _callee5, null, [[0, 23]]);
   }));
-  return function additional_product(_x9, _x10, _x11, _x12, _x13, _x14, _x15) {
+  return function addon_order(_x10, _x11, _x12, _x13) {
     return _ref5.apply(this, arguments);
-  };
-}();
-
-// export const get_bill = async (product_id) => {
-//   const bill_details = await knex.('bill_history').
-// }
-exports.additional_product = additional_product;
-var addon_order = /*#__PURE__*/function () {
-  var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(user_id, delivery_date, products, address_id) {
-    var query, order, order1, query1;
-    return _regeneratorRuntime().wrap(function _callee6$(_context6) {
-      while (1) {
-        switch (_context6.prev = _context6.next) {
-          case 0:
-            _context6.prev = 0;
-            //   let products_id = [];
-            //   await products.map((id) => products_id.push(id.product_id));
-            query = {
-              user_id: user_id,
-              delivery_date: delivery_date,
-              address_id: address_id
-
-              // sub_total:quantity*100
-              // quantity:quantity
-            };
-
-            console.log(query);
-            _context6.next = 5;
-            return (0, _db["default"])('add_on_orders').insert(query);
-          case 5:
-            order = _context6.sent;
-            _context6.next = 8;
-            return _db["default"].select('id').from('add_on_orders').where({
-              user_id: user_id
-            });
-          case 8:
-            order1 = _context6.sent;
-            console.log(order1);
-            query1 = {
-              add_on_order_id: order1.id
-            }; // const query1 = await knex.select(['id']).from('add_on_orders');
-            console.log(query1);
-
-            // let new_products = []
-
-            // for( let i=0;i<=products.length;i++){
-
-            //     new_products.push({
-            //       products:query1.id
-            //     }) 
-
-            // console.log(query)
-
-            // const data2 = knex.select('price').from('products').where({id:product_id});
-            // return data2
-            // const table = await knex ('add_on_order_items')
-            // .join('products', 'products.id', '=', 'add_on_orders.product_id')
-            // .select('products.id', 'products.price')
-
-            // let new_products = []
-
-            // for( let i=0;i<=products.length;i++){
-
-            //   new_products.push({
-
-            //   }) 
-            //   console.log(products)
-            _context6.next = 18;
-            break;
-          case 14:
-            _context6.prev = 14;
-            _context6.t0 = _context6["catch"](0);
-            console.log(_context6.t0);
-            return _context6.abrupt("return", {
-              status: false,
-              message: "Something Went Wrong",
-              error: _context6.t0
-            });
-          case 18:
-          case "end":
-            return _context6.stop();
-        }
-      }
-    }, _callee6, null, [[0, 14]]);
-  }));
-  return function addon_order(_x16, _x17, _x18, _x19) {
-    return _ref6.apply(this, arguments);
   };
 }();
 exports.addon_order = addon_order;

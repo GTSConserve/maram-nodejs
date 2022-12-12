@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updatePendingList = exports.getPendingList = exports.cancelPendingList = void 0;
+exports.updatePendingList = exports.updateAllUsersStatus = exports.getNewUsers = exports.getAllUsers = exports.cancelPendingList = void 0;
 var _db = _interopRequireDefault(require("../../../services/db.service"));
 var _helper = require("../../../utils/helper.util");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -28,7 +28,7 @@ var cancelPendingList = /*#__PURE__*/function () {
             });
           case 4:
             req.flash("success", "SuccessFully Cancelled the Subscription");
-            return _context.abrupt("return", res.redirect("/super_admin/users_subscription/get_pending_list"));
+            return _context.abrupt("return", res.redirect("/super_admin/users_subscription/get_new_users"));
           case 8:
             _context.prev = 8;
             _context.t0 = _context["catch"](0);
@@ -46,7 +46,7 @@ var cancelPendingList = /*#__PURE__*/function () {
   };
 }();
 exports.cancelPendingList = cancelPendingList;
-var getPendingList = /*#__PURE__*/function () {
+var getNewUsers = /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(req, res) {
     var loading, searchKeyword, data_length, search_data_length, branches, _yield$getPageNumber, startingLimit, page, resultsPerPage, numberOfPages, iterator, endingLink, results, is_search, data, i;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
@@ -73,7 +73,7 @@ var getPendingList = /*#__PURE__*/function () {
             loading = false;
             req.query.searchKeyword = "";
             req.flash("error", "No Product Type Found");
-            return _context2.abrupt("return", res.redirect("/super_admin/users_subscription/get_pending_list"));
+            return _context2.abrupt("return", res.redirect("/super_admin/users_subscription/get_new_users"));
           case 14:
             _context2.next = 19;
             break;
@@ -103,7 +103,7 @@ var getPendingList = /*#__PURE__*/function () {
             }));
           case 25:
             _context2.next = 27;
-            return (0, _helper.getPageNumber)(req, res, data_length, "users_subscription/get_pending_list");
+            return (0, _helper.getPageNumber)(req, res, data_length, "users_subscription/get_new_users");
           case 27:
             _yield$getPageNumber = _context2.sent;
             startingLimit = _yield$getPageNumber.startingLimit;
@@ -118,7 +118,7 @@ var getPendingList = /*#__PURE__*/function () {
               break;
             }
             _context2.next = 38;
-            return _db["default"].raw("SELECT sub.id , sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n        user_address.address,user_address.landmark,products.name as product_name,products.price,products.unit_value,\n        unit_types.value,categories.name as category_name\n        FROM subscribed_user_details AS sub \n        JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id \n        JOIN users ON users.id = sub.user_id \n        JOIN user_address ON user_address.id = sub.user_address_id\n        JOIN products ON products.id = sub.product_id\n        JOIN unit_types ON unit_types.id = products.unit_type_id\n        JOIN categories ON categories.id = products.category_id\n        WHERE sub.subscription_status = \"pending\" \n        AND users.user_unique_id LIKE '%".concat(searchKeyword, "%' LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
+            return _db["default"].raw("SELECT sub.id , sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n        user_address.address,user_address.id as user_address_id ,user_address.landmark,products.name as product_name,products.price,products.unit_value,\n        unit_types.value,categories.name as category_name\n        FROM subscribed_user_details AS sub \n        JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id \n        JOIN users ON users.id = sub.user_id \n        JOIN user_address ON user_address.id = sub.user_address_id\n        JOIN products ON products.id = sub.product_id\n        JOIN unit_types ON unit_types.id = products.unit_type_id\n        JOIN categories ON categories.id = products.category_id\n        WHERE sub.subscription_status = \"pending\" \n        AND users.user_unique_id LIKE '%".concat(searchKeyword, "%' LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
           case 38:
             results = _context2.sent;
             is_search = true;
@@ -126,7 +126,7 @@ var getPendingList = /*#__PURE__*/function () {
             break;
           case 42:
             _context2.next = 44;
-            return _db["default"].raw("SELECT sub.id ,sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n        user_address.address,user_address.landmark,products.name as product_name,products.price,products.unit_value,\n        unit_types.value,categories.name as category_name\n        FROM subscribed_user_details AS sub \n        JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id \n        JOIN users ON users.id = sub.user_id \n        JOIN user_address ON user_address.id = sub.user_address_id\n        JOIN products ON products.id = sub.product_id\n        JOIN unit_types ON unit_types.id = products.unit_type_id\n        JOIN categories ON categories.id = products.category_id\n        WHERE sub.subscription_status = \"pending\"  LIMIT ".concat(startingLimit, ",").concat(resultsPerPage));
+            return _db["default"].raw("SELECT sub.id ,sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n        user_address.address,user_address.id as user_address_id ,user_address.landmark,products.name as product_name,products.price,products.unit_value,\n        unit_types.value,categories.name as category_name\n        FROM subscribed_user_details AS sub \n        JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id \n        JOIN users ON users.id = sub.user_id \n        JOIN user_address ON user_address.id = sub.user_address_id\n        JOIN products ON products.id = sub.product_id\n        JOIN unit_types ON unit_types.id = products.unit_type_id\n        JOIN categories ON categories.id = products.category_id\n        WHERE sub.subscription_status = \"pending\"  LIMIT ".concat(startingLimit, ",").concat(resultsPerPage));
           case 44:
             results = _context2.sent;
           case 45:
@@ -160,21 +160,141 @@ var getPendingList = /*#__PURE__*/function () {
       }
     }, _callee2, null, [[0, 51]]);
   }));
-  return function getPendingList(_x3, _x4) {
+  return function getNewUsers(_x3, _x4) {
     return _ref2.apply(this, arguments);
   };
 }();
-exports.getPendingList = getPendingList;
-var updatePendingList = /*#__PURE__*/function () {
+exports.getNewUsers = getNewUsers;
+var getAllUsers = /*#__PURE__*/function () {
   var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(req, res) {
-    var _req$body, sub_id, branch_id;
+    var loading, searchKeyword, data_length, search_data_length, branches, _yield$getPageNumber2, startingLimit, page, resultsPerPage, numberOfPages, iterator, endingLink, results, is_search, data, i;
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.prev = 0;
-            _req$body = req.body, sub_id = _req$body.sub_id, branch_id = _req$body.branch_id;
-            _context3.next = 4;
+            loading = true;
+            searchKeyword = req.query.searchKeyword;
+            data_length = [];
+            if (!searchKeyword) {
+              _context3.next = 16;
+              break;
+            }
+            _context3.next = 7;
+            return _db["default"].raw("SELECT admin_users. FROM admin_users JOIN subscription_type ON subscription_type.id = admin_users.id WHERE admin_users.first_name AND subscription_type.name LIKE '%".concat(searchKeyword, "%'"));
+          case 7:
+            search_data_length = _context3.sent;
+            data_length = search_data_length[0];
+            if (!(data_length.length === 0)) {
+              _context3.next = 14;
+              break;
+            }
+            loading = false;
+            req.query.searchKeyword = "";
+            req.flash("error", "No Product Type Found");
+            return _context3.abrupt("return", res.redirect("/super_admin/users_subscription/get_all_users"));
+          case 14:
+            _context3.next = 19;
+            break;
+          case 16:
+            _context3.next = 18;
+            return (0, _db["default"])("subscribed_user_details").select("id").where({
+              subscription_status: "subscribed"
+            });
+          case 18:
+            data_length = _context3.sent;
+          case 19:
+            _context3.next = 21;
+            return (0, _db["default"])("admin_users").select("first_name", "id", "location").where({
+              user_group_id: "2"
+            });
+          case 21:
+            branches = _context3.sent;
+            if (!(data_length.length === 0)) {
+              _context3.next = 25;
+              break;
+            }
+            loading = false;
+            return _context3.abrupt("return", res.render("super_admin/users_subscription/approve", {
+              data: data_length,
+              searchKeyword: searchKeyword,
+              branches: branches
+            }));
+          case 25:
+            _context3.next = 27;
+            return (0, _helper.getPageNumber)(req, res, data_length, "users_subscription/get_all_users");
+          case 27:
+            _yield$getPageNumber2 = _context3.sent;
+            startingLimit = _yield$getPageNumber2.startingLimit;
+            page = _yield$getPageNumber2.page;
+            resultsPerPage = _yield$getPageNumber2.resultsPerPage;
+            numberOfPages = _yield$getPageNumber2.numberOfPages;
+            iterator = _yield$getPageNumber2.iterator;
+            endingLink = _yield$getPageNumber2.endingLink;
+            is_search = false;
+            if (!searchKeyword) {
+              _context3.next = 43;
+              break;
+            }
+            _context3.next = 38;
+            return _db["default"].raw("SELECT sub.id , sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n        user_address.address,user_address.landmark,products.name as product_name,products.price,products.unit_value,\n        unit_types.value,categories.name as category_name,admin_users.first_name as first_name\n        FROM subscribed_user_details AS sub \n        JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id \n        JOIN users ON users.id = sub.user_id \n        JOIN user_address ON user_address.id = sub.user_address_id\n        JOIN products ON products.id = sub.product_id\n        JOIN unit_types ON unit_types.id = products.unit_type_id\n        JOIN categories ON categories.id = products.category_id\n        JOIN admin_users ON admin_users.user_group_id = subscription_type.id\n        WHERE sub.subscription_status = \"subscribed\" \n        AND users.user_unique_id LIKE '%".concat(searchKeyword, "%' LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
+          case 38:
+            results = _context3.sent;
+            is_search = true;
+            console.log(results);
+            _context3.next = 46;
+            break;
+          case 43:
+            _context3.next = 45;
+            return _db["default"].raw("SELECT sub.id ,sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n        user_address.address,user_address.landmark,products.name as product_name,products.price,products.unit_value,\n        unit_types.value,categories.name as category_name,admin_users.first_name as first_name\n        FROM subscribed_user_details AS sub \n        JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id \n        JOIN users ON users.id = sub.user_id \n        JOIN user_address ON user_address.id = sub.user_address_id\n        JOIN products ON products.id = sub.product_id\n        JOIN unit_types ON unit_types.id = products.unit_type_id\n        JOIN categories ON categories.id = products.category_id\n        JOIN admin_users ON admin_users.user_group_id = subscription_type.id\n        WHERE sub.subscription_status = \"subscribed\"  LIMIT ".concat(startingLimit, ",").concat(resultsPerPage));
+          case 45:
+            results = _context3.sent;
+          case 46:
+            data = results[0];
+            for (i = 0; i < data.length; i++) {
+              data[i].start_date = data[i].start_date.toString().slice(4, 16);
+            }
+            loading = false;
+            res.render("super_admin/users_subscription/approve", {
+              data: data,
+              page: page,
+              iterator: iterator,
+              endingLink: endingLink,
+              numberOfPages: numberOfPages,
+              is_search: is_search,
+              searchKeyword: searchKeyword,
+              loading: loading,
+              branches: branches
+            });
+            _context3.next = 56;
+            break;
+          case 52:
+            _context3.prev = 52;
+            _context3.t0 = _context3["catch"](0);
+            console.log(_context3.t0);
+            res.redirect("/home");
+          case 56:
+          case "end":
+            return _context3.stop();
+        }
+      }
+    }, _callee3, null, [[0, 52]]);
+  }));
+  return function getAllUsers(_x5, _x6) {
+    return _ref3.apply(this, arguments);
+  };
+}();
+exports.getAllUsers = getAllUsers;
+var updatePendingList = /*#__PURE__*/function () {
+  var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(req, res) {
+    var _req$body, sub_id, branch_id, address_id;
+    return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+      while (1) {
+        switch (_context4.prev = _context4.next) {
+          case 0:
+            _context4.prev = 0;
+            _req$body = req.body, sub_id = _req$body.sub_id, branch_id = _req$body.branch_id, address_id = _req$body.address_id;
+            _context4.next = 4;
             return (0, _db["default"])("subscribed_user_details").update({
               branch_id: branch_id,
               subscription_status: "assigned",
@@ -183,24 +303,81 @@ var updatePendingList = /*#__PURE__*/function () {
               id: sub_id
             });
           case 4:
+            _context4.next = 6;
+            return (0, _db["default"])("user_address").update({
+              branch_id: branch_id
+            }).where({
+              id: address_id
+            });
+          case 6:
             req.flash("success", "Subscription Moved To Branch");
-            res.redirect("/super_admin/users_subscription/get_pending_list");
-            _context3.next = 12;
+            res.redirect("/super_admin/users_subscription/get_new_users");
+            _context4.next = 14;
             break;
-          case 8:
-            _context3.prev = 8;
-            _context3.t0 = _context3["catch"](0);
-            console.log(_context3.t0);
+          case 10:
+            _context4.prev = 10;
+            _context4.t0 = _context4["catch"](0);
+            console.log(_context4.t0);
             res.redirect("/home");
-          case 12:
+          case 14:
           case "end":
-            return _context3.stop();
+            return _context4.stop();
         }
       }
-    }, _callee3, null, [[0, 8]]);
+    }, _callee4, null, [[0, 10]]);
   }));
-  return function updatePendingList(_x5, _x6) {
-    return _ref3.apply(this, arguments);
+  return function updatePendingList(_x7, _x8) {
+    return _ref4.apply(this, arguments);
   };
 }();
 exports.updatePendingList = updatePendingList;
+var updateAllUsersStatus = /*#__PURE__*/function () {
+  var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(req, res) {
+    var _req$body2, status, id;
+    return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+      while (1) {
+        switch (_context5.prev = _context5.next) {
+          case 0:
+            _context5.prev = 0;
+            _req$body2 = req.body, status = _req$body2.status, id = _req$body2.id;
+            if (!(status == "1")) {
+              _context5.next = 7;
+              break;
+            }
+            _context5.next = 5;
+            return (0, _db["default"])("admin_users").update({
+              status: "1"
+            }).where({
+              id: id
+            });
+          case 5:
+            _context5.next = 9;
+            break;
+          case 7:
+            _context5.next = 9;
+            return (0, _db["default"])("admin_users").update({
+              status: "0"
+            }).where({
+              id: id
+            });
+          case 9:
+            console.log("hell");
+            req.flash("success", "Updated SuccessFully");
+            return _context5.abrupt("return", res.redirect("/super_admin/users_subscription/update_all_users_status"));
+          case 14:
+            _context5.prev = 14;
+            _context5.t0 = _context5["catch"](0);
+            console.log(_context5.t0);
+            res.redirect("/home");
+          case 18:
+          case "end":
+            return _context5.stop();
+        }
+      }
+    }, _callee5, null, [[0, 14]]);
+  }));
+  return function updateAllUsersStatus(_x9, _x10) {
+    return _ref5.apply(this, arguments);
+  };
+}();
+exports.updateAllUsersStatus = updateAllUsersStatus;

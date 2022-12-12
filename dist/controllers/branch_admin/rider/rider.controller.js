@@ -26,14 +26,14 @@ var updateRider = /*#__PURE__*/function () {
               break;
             }
             req.flash("error", "location is missing");
-            return _context.abrupt("return", res.redirect("branch_admin/rider/get_rider"));
+            return _context.abrupt("return", res.redirect("/branch_admin/rider/get_rider"));
           case 5:
             if (mobile_number) {
               _context.next = 8;
               break;
             }
             req.flash("error", "mobile number is missing");
-            return _context.abrupt("return", res.redirect("branch_admin/rider/get_rider"));
+            return _context.abrupt("return", res.redirect("/branch_admin/rider/get_rider"));
           case 8:
             query = {};
             query.name = name;
@@ -45,7 +45,7 @@ var updateRider = /*#__PURE__*/function () {
             });
           case 14:
             req.flash("success", "Updated SuccessFully");
-            res.redirect("branch_admin/rider/get_rider");
+            res.redirect("/branch_admin/rider/get_rider");
             _context.next = 22;
             break;
           case 18:
@@ -96,7 +96,7 @@ var updateRiderStatus = /*#__PURE__*/function () {
             });
           case 9:
             req.flash("success", "Updated SuccessFully");
-            res.redirect("branch_admin/rider/get_rider");
+            res.redirect("/branch_admin/rider/get_rider");
             _context2.next = 17;
             break;
           case 13:
@@ -130,28 +130,28 @@ var createRider = /*#__PURE__*/function () {
               break;
             }
             req.flash("error", "Name is missing");
-            return _context3.abrupt("return", res.redirect("branch_admin/rider/get_rider"));
+            return _context3.abrupt("return", res.redirect("/branch_admin/rider/get_rider"));
           case 5:
             if (password) {
               _context3.next = 8;
               break;
             }
             req.flash("error", "password is missing");
-            return _context3.abrupt("return", res.redirect("branch_admin/rider/get_rider"));
+            return _context3.abrupt("return", res.redirect("/branch_admin/rider/get_rider"));
           case 8:
             if (mobile_number) {
               _context3.next = 11;
               break;
             }
             req.flash("error", "mobile number is missing");
-            return _context3.abrupt("return", res.redirect("branch_admin/rider/get_rider"));
+            return _context3.abrupt("return", res.redirect("/branch_admin/rider/get_rider"));
           case 11:
             if (!(password.length < 8)) {
               _context3.next = 14;
               break;
             }
             req.flash("error", "password Should be atleast 8 characters");
-            return _context3.abrupt("return", res.redirect("branch_admin/rider/get_rider"));
+            return _context3.abrupt("return", res.redirect("/branch_admin/rider/get_rider"));
           case 14:
             _context3.next = 16;
             return _bcrypt["default"].hash(password, 10);
@@ -172,7 +172,7 @@ var createRider = /*#__PURE__*/function () {
             });
           case 22:
             req.flash("success", "Successfully Created");
-            res.redirect("branch_admin/rider/get_rider");
+            res.redirect("/branch_admin/rider/get_rider");
             _context3.next = 30;
             break;
           case 26:
@@ -220,7 +220,7 @@ var getRiders = /*#__PURE__*/function () {
             loading = false;
             req.query.searchKeyword = "";
             req.flash("error", "No Rider Found");
-            return _context4.abrupt("return", res.redirect("branch_admin/rider/get_rider"));
+            return _context4.abrupt("return", res.redirect("/branch_admin/rider/get_rider"));
           case 15:
             _context4.next = 20;
             break;

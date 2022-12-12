@@ -118,7 +118,7 @@ var GetProduct = /*#__PURE__*/function () {
               }
             }
             for (_i = 0; _i < product.length; _i++) {
-              product[_i].image = process.env.BASE_URL + product[_i].image;
+              product[_i].image = product[_i].image ? process.env.BASE_URL + product[_i].image : null;
               if (!userId || sub_product.length == 0) {
                 product[_i].is_subscribed = "0";
               }

@@ -13,7 +13,7 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 var getCities = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(req, res) {
-    var loading, searchKeyword, data_length, search_data_length, countries, zones, _yield$getPageNumber, startingLimit, page, resultsPerPage, numberOfPages, iterator, endingLink, results, is_search, data;
+    var loading, searchKeyword, data_length, search_data_length, _yield$getPageNumber, startingLimit, page, resultsPerPage, numberOfPages, iterator, endingLink, results, is_search, data;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
@@ -48,33 +48,19 @@ var getCities = /*#__PURE__*/function () {
           case 18:
             data_length = _context.sent;
           case 19:
-            _context.next = 21;
-            return (0, _db["default"])("countries").select("id", "name").where({
-              status: "1"
-            });
-          case 21:
-            countries = _context.sent;
-            _context.next = 24;
-            return (0, _db["default"])("zones").select("id", "name").where({
-              status: "1"
-            });
-          case 24:
-            zones = _context.sent;
             if (!(data_length.length === 0)) {
-              _context.next = 28;
+              _context.next = 22;
               break;
             }
             loading = false;
             return _context.abrupt("return", res.render("super_admin/places/city", {
               data: data_length,
-              searchKeyword: searchKeyword,
-              countries: countries,
-              zones: zones
+              searchKeyword: searchKeyword
             }));
-          case 28:
-            _context.next = 30;
+          case 22:
+            _context.next = 24;
             return (0, _helper.getPageNumber)(req, res, data_length, "places/city");
-          case 30:
+          case 24:
             _yield$getPageNumber = _context.sent;
             startingLimit = _yield$getPageNumber.startingLimit;
             page = _yield$getPageNumber.page;
@@ -84,22 +70,22 @@ var getCities = /*#__PURE__*/function () {
             endingLink = _yield$getPageNumber.endingLink;
             is_search = false;
             if (!searchKeyword) {
-              _context.next = 45;
+              _context.next = 39;
               break;
             }
-            _context.next = 41;
-            return _db["default"].raw("SELECT cities.id,cities.name,cities.code,cities.status,cities.latitude,cities.longitude, countries.name as country_name ,countries.id as country_id,zones.name as zone_name ,zones.id as zone_id\n        FROM cities JOIN countries ON countries.id = cities.country_id \n        JOIN zones ON zones.id = cities.zone_id \n        WHERE cities.name LIKE '%".concat(searchKeyword, "%' LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
-          case 41:
+            _context.next = 35;
+            return _db["default"].raw("SELECT id,name,status,latitude,longitude FROM cities\n        WHERE cities.name LIKE '%".concat(searchKeyword, "%' LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
+          case 35:
             results = _context.sent;
             is_search = true;
-            _context.next = 48;
+            _context.next = 42;
             break;
-          case 45:
-            _context.next = 47;
-            return _db["default"].raw("SELECT cities.id,cities.name,cities.code,cities.status ,cities.latitude,cities.longitude,countries.name as country_name,countries.id as country_id,zones.name as zone_name ,zones.id as zone_id\n        FROM cities JOIN countries ON countries.id = cities.country_id \n        JOIN zones ON zones.id = cities.zone_id LIMIT ".concat(startingLimit, ",").concat(resultsPerPage));
-          case 47:
+          case 39:
+            _context.next = 41;
+            return _db["default"].raw("SELECT id,name,status,latitude,longitude FROM cities  LIMIT ".concat(startingLimit, ",").concat(resultsPerPage));
+          case 41:
             results = _context.sent;
-          case 48:
+          case 42:
             data = results[0];
             loading = false;
             res.render("super_admin/places/city", {
@@ -110,25 +96,23 @@ var getCities = /*#__PURE__*/function () {
               numberOfPages: numberOfPages,
               is_search: is_search,
               searchKeyword: searchKeyword,
-              loading: loading,
-              countries: countries,
-              zones: zones
+              loading: loading
             });
 
             // res.render("super_admin/places/zone");
-            _context.next = 57;
+            _context.next = 51;
             break;
-          case 53:
-            _context.prev = 53;
+          case 47:
+            _context.prev = 47;
             _context.t0 = _context["catch"](0);
             console.log(_context.t0);
             res.redirect("/home");
-          case 57:
+          case 51:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 53]]);
+    }, _callee, null, [[0, 47]]);
   }));
   return function getCities(_x, _x2) {
     return _ref.apply(this, arguments);
@@ -137,13 +121,13 @@ var getCities = /*#__PURE__*/function () {
 exports.getCities = getCities;
 var createCity = /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(req, res) {
-    var _req$body, name, code, country_id, zone_id, latitude, longitude, query;
+    var _req$body, name, latitude, longitude, query;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
             _context2.prev = 0;
-            _req$body = req.body, name = _req$body.name, code = _req$body.code, country_id = _req$body.country_id, zone_id = _req$body.zone_id, latitude = _req$body.latitude, longitude = _req$body.longitude;
+            _req$body = req.body, name = _req$body.name, latitude = _req$body.latitude, longitude = _req$body.longitude;
             if (name) {
               _context2.next = 5;
               break;
@@ -151,32 +135,8 @@ var createCity = /*#__PURE__*/function () {
             req.flash("error", "Name is missing");
             return _context2.abrupt("return", res.redirect("/super_admin/places/city"));
           case 5:
-            if (code) {
-              _context2.next = 8;
-              break;
-            }
-            req.flash("error", "code is missing");
-            return _context2.abrupt("return", res.redirect("/super_admin/places/city"));
-          case 8:
-            if (country_id) {
-              _context2.next = 11;
-              break;
-            }
-            req.flash("error", "Country is missing");
-            return _context2.abrupt("return", res.redirect("/super_admin/places/city"));
-          case 11:
-            if (zone_id) {
-              _context2.next = 14;
-              break;
-            }
-            req.flash("error", "Zone  is missing");
-            return _context2.abrupt("return", res.redirect("/super_admin/places/city"));
-          case 14:
             query = {
-              name: name,
-              code: code,
-              country_id: country_id,
-              zone_id: zone_id
+              name: name
             };
             if (latitude) {
               query.latitude = latitude;
@@ -184,24 +144,24 @@ var createCity = /*#__PURE__*/function () {
             if (longitude) {
               query.latitude = longitude;
             }
-            _context2.next = 19;
+            _context2.next = 10;
             return (0, _db["default"])("cities").insert(query);
-          case 19:
+          case 10:
             req.flash("success", "City Created SuccessFully");
             res.redirect("/super_admin/places/city");
-            _context2.next = 27;
+            _context2.next = 18;
             break;
-          case 23:
-            _context2.prev = 23;
+          case 14:
+            _context2.prev = 14;
             _context2.t0 = _context2["catch"](0);
             console.log(_context2.t0);
             res.redirect("/home");
-          case 27:
+          case 18:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[0, 23]]);
+    }, _callee2, null, [[0, 14]]);
   }));
   return function createCity(_x3, _x4) {
     return _ref2.apply(this, arguments);
@@ -210,13 +170,13 @@ var createCity = /*#__PURE__*/function () {
 exports.createCity = createCity;
 var updateCity = /*#__PURE__*/function () {
   var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(req, res) {
-    var _req$body2, name, id, code, country_id, zone_id, latitude, longitude, query;
+    var _req$body2, name, id, latitude, longitude, query;
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.prev = 0;
-            _req$body2 = req.body, name = _req$body2.name, id = _req$body2.id, code = _req$body2.code, country_id = _req$body2.country_id, zone_id = _req$body2.zone_id, latitude = _req$body2.latitude, longitude = _req$body2.longitude;
+            _req$body2 = req.body, name = _req$body2.name, id = _req$body2.id, latitude = _req$body2.latitude, longitude = _req$body2.longitude;
             if (name) {
               _context3.next = 5;
               break;
@@ -226,39 +186,32 @@ var updateCity = /*#__PURE__*/function () {
           case 5:
             query = {};
             query.name = name;
-            query.code = code;
-            if (country_id) {
-              query.country_id = country_id;
-            }
-            if (zone_id) {
-              query.zone_id = zone_id;
-            }
             if (latitude) {
               query.latitude = latitude;
             }
             if (longitude) {
               query.longitude = longitude;
             }
-            _context3.next = 14;
+            _context3.next = 11;
             return (0, _db["default"])("cities").update(query).where({
               id: id
             });
-          case 14:
+          case 11:
             req.flash("success", "Updated SuccessFully");
             res.redirect("/super_admin/places/city");
-            _context3.next = 22;
+            _context3.next = 19;
             break;
-          case 18:
-            _context3.prev = 18;
+          case 15:
+            _context3.prev = 15;
             _context3.t0 = _context3["catch"](0);
             console.log(_context3.t0);
             res.redirect("/home");
-          case 22:
+          case 19:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3, null, [[0, 18]]);
+    }, _callee3, null, [[0, 15]]);
   }));
   return function updateCity(_x5, _x6) {
     return _ref3.apply(this, arguments);

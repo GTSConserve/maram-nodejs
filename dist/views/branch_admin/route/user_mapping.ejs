@@ -1,0 +1,347 @@
+<% layout('layouts/boilerPlate') %>
+    <div class="widget-content widget-content-area br-6">
+        <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+            <div class="dt--top-section">
+                <div class="row">
+                    <div class="col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center">
+                        <div class="dataTables_length" id="DataTables_Table_0_length">
+                            <h4>User Mapping</h4>
+                        </div>
+                    </div>
+
+                    
+                    <div class="col-1"></div>
+                    <div class="col-3  filtered-list-search mx-auto">
+                        <div class="form-inline my-2 my-lg-0 justify-content-center">
+                            <div class="w-100 row">
+
+                                <div class="w-100">
+                                    <input type="text" name="searchKeyword" oninput="onChangeSearch()" value="<%= searchKeyword? searchKeyword : ""  %>" class="w-100 form-control product-search br-30 col-7" id="searchText" placeholder="Search...">
+                                    <button class="btn btn-primary" type="submit" onclick="onSearch()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
+                                </div>
+
+
+
+                    
+                                <script>
+
+                                    async function onChangeSearch(event){
+                                        const text = document.getElementById("searchText").value;
+                                        if(!text){
+
+                                            return window.location.href = `/branch_admin/route/user_mapping?route_id=<%=router_id %>`
+                                        }
+
+                                    }
+
+                                    async function onSearch(event) {
+                                       
+                                        const text = document.getElementById("searchText").value;
+                            
+                                        window.location.href = `/branch_admin/route/user_mapping?route_id=<%=router_id %>&searchKeyword=${text}`
+                              
+                                 
+                                };
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <button onclick="goBackHandler()" class="btn btn-md btn-primary">Go Back</button>
+                    </div>
+                    <script>
+                        function goBackHandler(){
+                            return window.location.href = `/branch_admin/route/get_route`
+                        }
+                    </script>
+                </div>
+
+            </div>
+        </div>
+        <% if(data.length === 0){ %> 
+            <h2>No Data Found</h2>
+            <% }else if(loading) { %>
+                <div class="row">
+                    <div class="col-5">
+    
+                    </div>
+                    <div class="col-2">
+                        <button class="btn btn-success btn-lg mb-3 mr-3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-loader spin mr-2"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg>  Loading</button>
+                    </div>
+                </div>
+    
+                <% } else {  %>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped mb-4" style="width: 100%;  font-weight: bold; box-shadow: 8px 5px 5px 0px #aaa;" id="DataTables_Table_0"
+                role="grid" aria-describedby="DataTables_Table_0_info">
+                <thead >
+    
+                    <tr role="row"  >
+                        <th  class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                            colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
+                            style="width: 20px;">Customer Id</th>
+                        <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                            colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
+                            style="width: 86px;">Address</th>
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                            aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">Product Name</th>
+                            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                            aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">Product Value</th>
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                            aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">Subscription Type</th>
+                        <!-- <th class="text-center sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                            colspan="1" aria-label="Status: activate to sort column ascending" style="width: 49px;">
+                            Status</th> -->
+                        <th class="text-center dt-no-sorting sorting" tabindex="0"
+                            aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                            aria-label="Action: activate to sort column ascending" style="width: 64px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+    
+                    <tr role="row" >
+    
+                        <% for(user of data){ %>
+                                <td class="sorting_1"><%=user.user_unique_id %></td>
+                                <td><%=user.address %></td>
+                                <td ><%=user.product_name %></td>
+                                <td ><%=user.unit_value %> <%=user.value %></td>
+                                <td ><%=user.sub_name %> </td>
+                              
+                                <!-- <div>
+                                    <td style="text-align: center; vertical-align: middle;">
+                                        <div class="custom-control custom-switch" style="cursor: pointer;">
+                                                <input style="cursor: pointer;" <%= user.status == "1" ? "checked"  :""  %>   type="checkbox"   class="custom-control-input" name="status" 
+                                                value="<%=user.status %>"  onChange="onToDochange(this)" id=<%=user.id %>>
+                                                <label class="custom-control-label"  for=<%=user.id %>></label>
+                                            
+                                                <script >
+                                                    async function onToDochange(event) {
+                                                    await fetch('/branch_admin/route/update_route_status', {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'Accept': 'application/json',
+                                                        'Content-Type': 'application/json'
+                                                    },
+                                                    body: JSON.stringify({"id": event.id , "status" : event.value})
+                                                    })
+                                                    
+                                                   
+                                                 window.location.reload("/branch_admin/route/user_mapping")
+                                                 
+    
+                                                    
+                                                };
+                                                </script>
+                                         
+                                        </div> -->
+                                    </td>
+                         
+                                    <td class="text-center">
+                                        <!-- <a  class="btn mb-2 btn-sm  btn-primary"  id=<%=user.id %> data-toggle="modal" onclick="viewHandler(this)"
+                                      >View Orders</a> -->
+                                       <button class="btn mb-2 btn-md  btn-secondary" data-toggle="modal"
+                                        data-target="#editCategory<%=user.id %>">View</button>
+                                         
+                                        
+                                    
+                                </div>
+                                <script>
+                                    // async function userMapping(event){
+                                    //     window.location.href = `/branch_admin/order/daily_orders?route_id=${event.id}`
+                                    //     // await fetch('/branch_admin/order/daily_orders', {
+                                    //     //     method: 'get',
+                                    //     //     headers: {
+                                    //     //         'Accept': 'application/json',
+                                    //     //         'Content-Type': 'application/json'
+                                    //     //             },
+                                    //     //             body: JSON.stringify({"route_id": event.id })
+                                    //     //         })
+                                                
+                                                    
+                                    // }
+                                    async function userMapping(event){
+                                        window.location.href = `/branch_admin/route/user_mapping?route_id=${event.id}`
+                                     
+                                                    
+                                    }
+                                </script>
+                                
+                            </tr>
+    
+    <!-- edit -->
+                <div wire:ignore.self="" class="modal fade bd-example-modal-xl" id="editCategory<%=user.id %>" tabindex="-1"
+                    aria-labelledby="addCategoryTitle" style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalCenterTitle"> View user Mapping</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                        height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                        class="feather feather-x">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </button>
+                            </div>
+    
+                            <div class="modal-body">
+                                <div class="form-row mb-4" >
+                                      
+
+                                    <div class="col-sm-4 pb-4" >
+                                        <label>Customer Id</label>
+                                        <p style="font-weight: 900;"><%=user.user_unique_id %></p>
+                                        
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <label>User Name</label>
+                                        <p style="font-weight: 900;"><%=user.user_name %></p>
+                                        
+                                    </div>
+                                    <div class="col-sm-4 ">
+                                        <label>Mobile Number</label>
+                                        <p style="font-weight: 900;"><%=user.mobile_number %></p>
+                                       
+                                        
+                                    </div>
+                                    <div class="col-sm-4 pb-4">
+                                        <label>Product name</label>
+                                        <p style="font-weight: 900;"><%=user.product_name %></p>
+
+                                        
+                                    </div>
+                                    
+                                    <div class="col-sm-4 pb-4">
+                                        <label>Price</label>
+                                        <p style="font-weight: 900;"><%=user.price %></p>
+                                        
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <label>Value</label>
+                                        <p style="font-weight: 900;"><%=user.unit_value %> <%=user.value %></p>
+                                        
+                                    </div>
+                                  
+                                    <div class="col-sm-4 ">
+                                        <label>Quantity</label>
+                                        <p style="font-weight: 900;"><%=user.quantity %></p>
+                                        
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <label> Start date</label>
+                                        <p style="font-weight: 900;"><%=user.subscription_start_date %></p>
+                                        
+                                        
+                                    </div>
+                                
+                                    <div class="col-sm-4 ">
+                                        <label>Subscription Type</label>
+                                        <p style="font-weight: 900;"><%=user.sub_name  %></p>
+                                       
+                                        
+                                    </div>
+                                    <div class="col-sm-6 mt-3">
+                                        <label>Address</label>
+                                        <p style="font-weight: 900;"><%=user.address %></p>
+                                        
+                                    </div>
+                                    <div class="col-sm-6 mt-3">
+                                        <label>Landmark</label>
+                                        <p style="font-weight: 900;"><%=user.landmark %></p>
+                                      
+                                        
+                                    </div>
+                                  
+                                    <% if(user.customized_days){ %> 
+                                    <div class="col-sm-4 mt-4">
+                                        <label>Customized Days</label>
+                                        <div class="element-background">
+                                            <ul class="list-icon">
+                                                <% for(day of user.customized_days){ %> 
+                                                <li>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                                                    <span style="font-weight: 900;" class="list-text"><%= day%></span>
+                                                </li>
+                                                <% } %> 
+                                                
+                                            </ul>
+                                        </div>
+                                        
+                                    </div>
+                                    <% } %> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+    
+  
+    
+    
+  
+    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    <% } %>
+                    
+                </tbody>
+                
+            </table>
+        </div>
+        <div class="dt--bottom-section d-sm-flex justify-content-sm-between text-center pt-4 ">
+            <div class="dt--pages-count  mb-sm-0 mb-3">
+              <% let search_query =  is_search ? `&searchKeyword=${searchKeyword}` : "" %>
+            </div>
+            <div class="widget-content widget-content-area text-center">
+            <nav class="paginating-container " aria-label="...">
+                <ul class="pagination-default pagination">
+                    <% if(page > 1) { %> 
+                        <li class="prev">
+                            <a href="/branch_admin/route/user_mapping?route_id=<%=router_id %>&page=<%=page-1%><%= search_query %>"  style="padding-left: 5px;">Prev</a>
+                  
+                         <% } %>
+                   
+                         <% for(let i = iterator==0 ? 1 : iterator; i <= endingLink; i++) { %>
+                            <% if(i === page) { %>
+                                <li class="page-item active" style="padding-left: 5px;"><a  href="#"><%=i%></a></li>
+                                
+                                <% continue; %>
+                                <% } %>
+                                <li class="page-item" style="padding-left: 5px;"><a  href="/branch_admin/route/user_mapping?route_id=<%=router_id %>&page=<%=i%><%= search_query %>"><%=i%></a></li>
+                        <% } %>
+                        
+                        <% if(page < numberOfPages) { %>
+                            <li class="next" style="padding-left: 5px;">
+                                <a  href="/branch_admin/route/user_mapping?route_id=<%=router_id %>&page=<%=page+1%><%= search_query %>">Next</a>
+                            </li>
+                      
+                         <% } %>
+                         
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <% } %>
+    <div id="DataTables_Table_1_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+        <div class="dt--top-section">
+            <div class="row">
+
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="multi-table table table-bordered table-hover non-hover dataTable" style="width: 100%;"
+                id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info">
+
+            </table>
+        </div>
+    </div>
+    </div>
+    </div>
+    </div>

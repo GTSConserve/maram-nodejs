@@ -11,6 +11,7 @@ var _rider = _interopRequireDefault(require("./branch_admin/rider.router"));
 var _purchaseOrder = _interopRequireDefault(require("./branch_admin/purchaseOrder.route"));
 var _home = _interopRequireDefault(require("./branch_admin/home.route"));
 var _order = _interopRequireDefault(require("./branch_admin/order.route"));
+var _user = _interopRequireDefault(require("./branch_admin/user.route"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 var mainRouter = _express["default"].Router({
   caseSensitive: true,
@@ -34,6 +35,9 @@ var defaultRoutes = [{
 }, {
   path: "/order",
   route: _order["default"]
+}, {
+  path: "/user",
+  route: _user["default"]
 }];
 defaultRoutes.forEach(function (route) {
   mainRouter.use(route.path, route.route);

@@ -13,50 +13,96 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 var updateCategory = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(req, res) {
-    var _req$body, name, id, product_type_id, file, query, image;
+    var _req$body, name, id, addon, subscription, file, query, image, is_sub, sub, add;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             _context.prev = 0;
-            _req$body = req.body, name = _req$body.name, id = _req$body.id, product_type_id = _req$body.product_type_id;
+            _req$body = req.body, name = _req$body.name, id = _req$body.id, addon = _req$body.addon, subscription = _req$body.subscription;
             file = req.file;
+            console.log(req.body);
             if (name) {
-              _context.next = 6;
+              _context.next = 7;
               break;
             }
             req.flash("error", "Name is missing");
             return _context.abrupt("return", res.redirect("/super_admin/product/get_category"));
-          case 6:
+          case 7:
             query = {};
             query.name = name;
             if (file) {
               image = req.file.destination.slice(1) + "/" + req.file.filename;
               query.image = image;
             }
-            if (product_type_id) {
-              query.product_type_id = product_type_id;
+            if (!subscription) {
+              _context.next = 23;
+              break;
             }
-            _context.next = 12;
+            _context.next = 13;
+            return (0, _db["default"])("categories_product_type").select("id").where({
+              category_id: id,
+              product_type_id: 1
+            });
+          case 13:
+            is_sub = _context.sent;
+            if (!(is_sub.length === 0)) {
+              _context.next = 19;
+              break;
+            }
+            _context.next = 17;
+            return (0, _db["default"])("categories_product_type").insert({
+              category_id: cat[0],
+              product_type_id: 1
+            });
+          case 17:
+            _context.next = 19;
+            break;
+          case 19:
+            _context.next = 21;
+            return (0, _db["default"])("categories_product_type").update({
+              product_type_id: 1
+            }).where({
+              id: id
+            });
+          case 21:
+            sub = _context.sent;
+            console.log(sub);
+          case 23:
+            if (!addon) {
+              _context.next = 28;
+              break;
+            }
+            _context.next = 26;
+            return (0, _db["default"])("categories_product_type").update({
+              product_type_id: 2
+            }).where({
+              id: id
+            });
+          case 26:
+            add = _context.sent;
+            console.log(add);
+          case 28:
+            _context.next = 30;
             return (0, _db["default"])("categories").update(query).where({
               id: id
             });
-          case 12:
+          case 30:
             req.flash("success", "Updated SuccessFully");
             res.redirect("/super_admin/product/get_category");
-            _context.next = 20;
+            _context.next = 38;
             break;
-          case 16:
-            _context.prev = 16;
+          case 34:
+            _context.prev = 34;
             _context.t0 = _context["catch"](0);
             console.log(_context.t0);
             res.redirect("/home");
-          case 20:
+          case 38:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 16]]);
+    }, _callee, null, [[0, 34]]);
   }));
   return function updateCategory(_x, _x2) {
     return _ref.apply(this, arguments);
@@ -116,13 +162,13 @@ var updateCategoryStatus = /*#__PURE__*/function () {
 exports.updateCategoryStatus = updateCategoryStatus;
 var createCategory = /*#__PURE__*/function () {
   var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(req, res) {
-    var _req$body3, name, product_type_id, image;
+    var _req$body3, name, subscription, addon, image, _cat;
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.prev = 0;
-            _req$body3 = req.body, name = _req$body3.name, product_type_id = _req$body3.product_type_id;
+            _req$body3 = req.body, name = _req$body3.name, subscription = _req$body3.subscription, addon = _req$body3.addon;
             if (name) {
               _context3.next = 5;
               break;
@@ -130,43 +176,64 @@ var createCategory = /*#__PURE__*/function () {
             req.flash("error", "Name is missing");
             return _context3.abrupt("return", res.redirect("/super_admin/product/get_category"));
           case 5:
-            if (product_type_id) {
-              _context3.next = 8;
+            console.log(req.body);
+            if (!(!subscription || !addon)) {
+              _context3.next = 9;
               break;
             }
             req.flash("error", "Please Choose a Product Type");
             return _context3.abrupt("return", res.redirect("/super_admin/product/get_category"));
-          case 8:
+          case 9:
             if (req.file) {
-              _context3.next = 11;
+              _context3.next = 12;
               break;
             }
             req.flash("error", "Please Choose a image");
             return _context3.abrupt("return", res.redirect("/super_admin/product/get_category"));
-          case 11:
+          case 12:
             image = req.file.destination.slice(1) + "/" + req.file.filename;
-            _context3.next = 14;
+            _context3.next = 15;
             return (0, _db["default"])("categories").insert({
               name: name,
-              product_type_id: product_type_id,
               image: image
             });
-          case 14:
+          case 15:
+            _cat = _context3.sent;
+            if (!subscription) {
+              _context3.next = 19;
+              break;
+            }
+            _context3.next = 19;
+            return (0, _db["default"])("categories_product_type").insert({
+              category_id: _cat[0],
+              product_type_id: 1
+            });
+          case 19:
+            if (!addon) {
+              _context3.next = 22;
+              break;
+            }
+            _context3.next = 22;
+            return (0, _db["default"])("categories_product_type").insert({
+              category_id: _cat[0],
+              product_type_id: 2
+            });
+          case 22:
             req.flash("success", "Successfully Created");
             res.redirect("/super_admin/product/get_category");
-            _context3.next = 22;
+            _context3.next = 30;
             break;
-          case 18:
-            _context3.prev = 18;
+          case 26:
+            _context3.prev = 26;
             _context3.t0 = _context3["catch"](0);
             console.log(_context3.t0);
             res.redirect("/home");
-          case 22:
+          case 30:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3, null, [[0, 18]]);
+    }, _callee3, null, [[0, 26]]);
   }));
   return function createCategory(_x5, _x6) {
     return _ref3.apply(this, arguments);
@@ -242,7 +309,7 @@ var getCategory = /*#__PURE__*/function () {
               break;
             }
             _context4.next = 37;
-            return _db["default"].raw("SELECT categories.id,categories.name,categories.image,categories.status,product_type.name as product_type,product_type.id as product_type_id FROM categories JOIN product_type ON categories.product_type_id=product_type.id WHERE categories.name LIKE '%".concat(searchKeyword, "%' LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
+            return _db["default"].raw("SELECT categories.id,categories.name,categories.image,categories.status,product_type.name as product_type,\n        product_type.id as product_type_id \n        FROM categories \n        JOIN product_type ON categories.product_type_id=product_type.id \n        WHERE categories.name LIKE '%".concat(searchKeyword, "%' LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
           case 37:
             results = _context4.sent;
             is_search = true;
@@ -250,7 +317,7 @@ var getCategory = /*#__PURE__*/function () {
             break;
           case 41:
             _context4.next = 43;
-            return _db["default"].raw("SELECT categories.id,categories.name,categories.image,categories.status,product_type.name as product_type,product_type.id as product_type_id FROM categories JOIN product_type ON categories.product_type_id=product_type.id LIMIT ".concat(startingLimit, ",").concat(resultsPerPage));
+            return _db["default"].raw("SELECT id,name,image,status\n        FROM categories \n        \n        LIMIT ".concat(startingLimit, ",").concat(resultsPerPage));
           case 43:
             results = _context4.sent;
           case 44:
@@ -270,6 +337,7 @@ var getCategory = /*#__PURE__*/function () {
               loading: loading,
               productType: productType
             });
+
             // `SELECT categories.id,categories.name,categories.image,categories.status,product_type.name as product_type,product_type.id as product_type_id FROM categories JOIN product_type WHERE categories.product_type_id=product_type.id  name LIKE '%${searchKeyword}%'`
 
             // const categories = await knex("categories")
@@ -287,10 +355,6 @@ var getCategory = /*#__PURE__*/function () {
             //     "=",
             //     "product_type.id"
             //   );
-
-            // for (let i = 0; i < categories.length; i++) {
-            //   categories[i].image = "http://" + req.headers.host + categories[i].image;
-            // }
 
             // res.render("super_admin/product/category", {
             //   data: categories,

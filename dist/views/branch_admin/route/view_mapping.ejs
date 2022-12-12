@@ -1,0 +1,116 @@
+<% layout('layouts/boilerPlate') %>
+    <div class="widget-content widget-content-area br-6">
+        <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+            <div class="dt--top-section">
+                <div class="row">
+                    <div class="col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center">
+                        <div class="dataTables_length" id="DataTables_Table_0_length">
+                            <h4>View Mapping</h4>
+                        </div>
+                    </div>
+
+                    
+                    <div class="col-2"></div>
+                    
+                    <div class="col">
+                        <button onclick="goBackHandler()" class="btn btn-md btn-info">Go Back</button>
+                    </div>
+                    <div class="col">
+                        <button onclick="submitHandler()" class="btn btn-md btn-primary">Save Changes</button>
+                    </div>
+                    <div class="col">
+                        <button onclick="goBackHandler()" class="btn btn-md btn-secondary">Cancel</button>
+                    </div>
+                    <script>
+                        function goBackHandler(){
+                            return window.location.href = `/branch_admin/route/get_route`
+                        }
+                    </script>
+                </div>
+
+            </div>
+        </div>
+        <% if(data.length === 0){ %> 
+            <h2>No Data Found</h2>
+            <% }else if(loading) { %>
+                <div class="row">
+                    <div class="col-5">
+    
+                    </div>
+                    <div class="col-2">
+                        <button class="btn btn-success btn-lg mb-3 mr-3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-loader spin mr-2"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg>  Loading</button>
+                    </div>
+                </div>
+    
+                <% } else {  %>
+        
+                    <div class="widget-content widget-content-area">
+
+                        <div class='parent ex-1'>
+                            <div class="row">
+                                <div class="col-2"></div>
+                                <div class="col-sm-8" style="box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;">
+                                    <div id='left-defaults' class='dragula'>
+
+                                        <% for(let i = 0 ; i< data.length; i++ ){ %> 
+
+                                        <div class="media  d-md-flex d-block text-sm-left text-center" style="border-width:3px ;border-color:#80C659">
+                                            <!-- <img alt="avatar" src="assets/img/90x90.jpg" class="img-fluid "> -->
+                                            <div class="media-body">
+                                                <div class="d-xl-flex d-block justify-content-between">
+                                                    <div class="viewMappingValue" data-value="<%= data[i].id %>">
+                                                        <h4 class=""><%= i + 1 %>.  <%= data[i].user_name %>   (<%= data[i].user_unique_id %>)  </h4>
+                                                        <p class=""> <span style="font-size:14px;font-weight : bold ;color: black;"><%= data[i].address %></span> </p>
+                                                        <!-- <p class=""> Landmark - <%= user.landmark %> </p> -->
+                                                    </div>
+                                                    <!-- <div>
+                                                        <button class="btn btn-primary btn-sm">View</button>
+                                                    </div> -->
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <% } %> 
+
+                                    </div>
+                                </div>
+
+                                <script>
+                                    function submitHandler(){
+                                      
+                                        let elements = document.querySelectorAll(".viewMappingValue");
+                                        let values = []
+                                        for(let i = 0; i < elements.length; i++) {
+                                           values.push(elements[i].dataset.value)
+                                        }
+                                      
+                                    }
+                                </script>
+
+                                <div class="col-2"></div>
+
+                            </div>
+                        </div>
+
+                        
+
+                    </div>
+
+       
+        <% } %>
+    <div id="DataTables_Table_1_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+        <div class="dt--top-section">
+            <div class="row">
+
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="multi-table table table-bordered table-hover non-hover dataTable" style="width: 100%;"
+                id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info">
+
+            </table>
+        </div>
+    </div>
+    </div>
+    </div>
+    </div>

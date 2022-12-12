@@ -13,7 +13,8 @@ var subscriptionRouter = _express["default"].Router({
   caseSensitive: true,
   strict: true
 });
-subscriptionRouter.get('/assigned', _pending.getAssigned);
+subscriptionRouter.get('/get_new_users', _pending.getNewUsers);
+subscriptionRouter.get('/get_exist_users', _pending.getExistUsers);
 subscriptionRouter.post('/subscribed', _pending.updateSubscribed);
 subscriptionRouter.post('/cancel', _pending.updateCancel);
 subscriptionRouter.get('/subscribed', _subscribed.getSubscription);

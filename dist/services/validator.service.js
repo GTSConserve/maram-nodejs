@@ -145,18 +145,16 @@ var latLongValidator = function latLongValidator(payload) {
 };
 exports.latLongValidator = latLongValidator;
 var userAddressValidator = function userAddressValidator(payload) {
-  var _payload$address, _payload$title, _payload$landmark, _payload$type, _payload$user_id2;
+  var _payload$address, _payload$title, _payload$landmark, _payload$type;
   var address = (_payload$address = payload.address) !== null && _payload$address !== void 0 ? _payload$address : null;
   var title = (_payload$title = payload.title) !== null && _payload$title !== void 0 ? _payload$title : null;
   var landmark = (_payload$landmark = payload.landmark) !== null && _payload$landmark !== void 0 ? _payload$landmark : null;
   var type = (_payload$type = payload.type) !== null && _payload$type !== void 0 ? _payload$type : null;
-  var user_id = (_payload$user_id2 = payload.user_id) !== null && _payload$user_id2 !== void 0 ? _payload$user_id2 : null;
-  if (address && landmark && title && user_id && type) {
+  if (address && landmark && title && type) {
     return {
       status: true,
       address: address,
       landmark: landmark,
-      user_id: user_id,
       type: type,
       title: title
     };

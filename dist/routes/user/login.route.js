@@ -15,5 +15,6 @@ var loginRouter = _express["default"].Router({
 loginRouter.post('/login', _login.login);
 loginRouter.post('/verifyotp', _login.verifyUserOtp);
 loginRouter.post('/logout', _authToken.authenticateJWT, _login.logout);
+loginRouter.post('/account_delete', _authToken.authenticateJWT, _login.accountDelete);
 var _default = loginRouter;
 exports["default"] = _default;

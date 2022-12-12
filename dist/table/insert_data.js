@@ -14,7 +14,7 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 var insertData = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(req, res) {
-    var get_random_id, password, product_type_id, i, category_id, _i, product_id, product_variations_data, _i2;
+    var get_random_id, password, product_type_id;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
@@ -60,65 +60,27 @@ var insertData = /*#__PURE__*/function () {
             return (0, _db["default"])("product_type").select("id");
           case 21:
             product_type_id = _context.sent;
-            // const variation_type_id = await knex("variation_types").select("id");
-
-            // category
-            for (i = 0; i < _dummy_data.category.length; i++) {
-              _dummy_data.category[i].product_type_id = get_random_id(product_type_id);
-            }
-            _context.next = 25;
+            _context.next = 24;
             return (0, _db["default"])("categories").insert(_dummy_data.category);
-          case 25:
-            _context.next = 27;
-            return (0, _db["default"])("categories").select("id");
-          case 27:
-            category_id = _context.sent;
-            _dummy_data.products;
-            for (_i = 0; _i < _dummy_data.products.length; _i++) {
-              _dummy_data.products[_i].admin_id = "1";
-              _dummy_data.products[_i].category_id = get_random_id(category_id);
-              // products[i].variation_type_id = get_random_id(variation_type_id);
-              _dummy_data.products[_i].product_type_id = get_random_id(product_type_id);
-            }
-            _context.next = 32;
-            return (0, _db["default"])("products").insert(_dummy_data.products);
-          case 32:
-            _context.next = 34;
-            return (0, _db["default"])("products").select("id");
-          case 34:
-            product_id = _context.sent;
-            // dont need
-            _dummy_data.product_variations;
-            product_variations_data = [];
-            for (_i2 = 0; _i2 < product_id.length; _i2++) {
-              product_variations_data.push({
-                product_id: get_random_id(product_id),
-                variation_type_id: get_random_id(variation_type_id),
-                value: _dummy_data.product_variations[Math.floor(Math.random() * _dummy_data.product_variations.length)].value,
-                price: _dummy_data.product_variations[Math.floor(Math.random() * _dummy_data.product_variations.length)].price
-              });
-            }
-            _context.next = 40;
-            return (0, _db["default"])("product_variations").insert(product_variations_data);
-          case 40:
+          case 24:
             return _context.abrupt("return", res.status(200).json({
               status: true,
               message: "Successfully data inserted"
             }));
-          case 43:
-            _context.prev = 43;
+          case 27:
+            _context.prev = 27;
             _context.t0 = _context["catch"](0);
             console.log(_context.t0);
             return _context.abrupt("return", res.status(500).json({
               status: false,
               message: "Error at seeding data"
             }));
-          case 47:
+          case 31:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 43]]);
+    }, _callee, null, [[0, 27]]);
   }));
   return function insertData(_x, _x2) {
     return _ref.apply(this, arguments);

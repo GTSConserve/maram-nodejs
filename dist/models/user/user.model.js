@@ -13,15 +13,15 @@ function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyri
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 var loginUser = /*#__PURE__*/function () {
-  var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(password) {
+  var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(mobile_number) {
     var checkPhoneNumber;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             _context.next = 2;
-            return _db["default"].select('*').from('users').where({
-              'password': password
+            return _db["default"].select("id").from("users").where({
+              mobile_number: mobile_number
             });
           case 2:
             checkPhoneNumber = _context.sent;
@@ -57,20 +57,20 @@ var verifyOtp = /*#__PURE__*/function () {
         switch (_context2.prev = _context2.next) {
           case 0:
             _context2.next = 2;
-            return _db["default"].select('*').from('users').where({
+            return _db["default"].select("*").from("users").where({
               otp: otp,
               id: userId,
               first_otp_verified_at: null
             });
           case 2:
             queryCheck = _context2.sent;
-            updateOtpQuery = '';
+            updateOtpQuery = "";
             if (!(queryCheck.body > 0)) {
               _context2.next = 10;
               break;
             }
             _context2.next = 7;
-            return (0, _db["default"])('users').where({
+            return (0, _db["default"])("users").where({
               otp: otp,
               id: userId
             }).update({
@@ -83,7 +83,7 @@ var verifyOtp = /*#__PURE__*/function () {
             break;
           case 10:
             _context2.next = 12;
-            return (0, _db["default"])('users').where({
+            return (0, _db["default"])("users").where({
               otp: otp,
               id: userId
             }).update({
@@ -93,7 +93,7 @@ var verifyOtp = /*#__PURE__*/function () {
             updateOtpQuery = _context2.sent;
           case 13:
             _context2.next = 15;
-            return _db["default"].select(['id']).from('users').where({
+            return _db["default"].select(["id"]).from("users").where({
               otp: otp,
               id: userId
             });
@@ -133,7 +133,7 @@ var updateUserLocation = /*#__PURE__*/function () {
             updateLocationQuery = queryBuilder.update({
               latitude: payload.latitude,
               longitude: payload.longitude
-            }).into('users').where({
+            }).into("users").where({
               id: payload.userId
             }).toString();
             _context3.prev = 1;
@@ -171,21 +171,15 @@ var updateUserLocation = /*#__PURE__*/function () {
 }();
 exports.updateUserLocation = updateUserLocation;
 var insertUser = /*#__PURE__*/function () {
-  var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(payload, otp, today) {
-    var user_query, user_length, generate_id, mobile_number, fcmToken, device, appOsFormat, appVersion, email, name, query;
+  var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(payload, otp, users_length) {
+    var generate_id, mobile_number, fcmToken, device, appOsFormat, appVersion, query;
     return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
-            _context4.next = 2;
-            return _db["default"].select(['id']).from('users');
-          case 2:
-            user_query = _context4.sent;
-            user_length = user_query.body;
-            user_length += 1;
-            generate_id = 'MARAM' + user_length;
-            mobile_number = payload.mobile_number, fcmToken = payload.fcmToken, device = payload.device, appOsFormat = payload.appOsFormat, appVersion = payload.appVersion, email = payload.email, name = payload.name;
-            _context4.next = 9;
+            generate_id = "CUSTOMER" + users_length;
+            mobile_number = payload.mobile_number, fcmToken = payload.fcmToken, device = payload.device, appOsFormat = payload.appOsFormat, appVersion = payload.appVersion;
+            _context4.next = 4;
             return _db["default"].insert([{
               user_unique_id: generate_id,
               mobile_number: mobile_number,
@@ -194,33 +188,28 @@ var insertUser = /*#__PURE__*/function () {
               device: device,
               app_os_format: appOsFormat,
               app_version: appVersion,
-              user_group_id: '3'
-              // email:email,
-              // name:name
-              // user_id: userGroup.USER_GROUP_ID,
-              // app_version:'1.0',
-              // status:'1',
-            }]).into('users');
-          case 9:
+              user_group_id: "3"
+            }]).into("users");
+          case 4:
             query = _context4.sent;
-            _context4.prev = 10;
+            _context4.prev = 5;
             return _context4.abrupt("return", {
               status: _responseCode["default"].SUCCESS,
               body: query
             });
-          case 14:
-            _context4.prev = 14;
-            _context4.t0 = _context4["catch"](10);
+          case 9:
+            _context4.prev = 9;
+            _context4.t0 = _context4["catch"](5);
             return _context4.abrupt("return", {
               status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
               message: _context4.t0.message
             });
-          case 17:
+          case 12:
           case "end":
             return _context4.stop();
         }
       }
-    }, _callee4, null, [[10, 14]]);
+    }, _callee4, null, [[5, 9]]);
   }));
   return function insertUser(_x6, _x7, _x8) {
     return _ref4.apply(this, arguments);
@@ -235,12 +224,12 @@ var insertRider = /*#__PURE__*/function () {
         switch (_context5.prev = _context5.next) {
           case 0:
             _context5.next = 2;
-            return _db["default"].select(['id']).from('rider_details');
+            return _db["default"].select(["id"]).from("rider_details");
           case 2:
             user_query = _context5.sent;
             user_length = user_query.body;
             user_length += 1;
-            generate_id = 'MARAM' + user_length;
+            generate_id = "MARAM" + user_length;
             user_name = payload.user_name, password = payload.password;
             _context5.next = 9;
             return _db["default"].insert([{
@@ -257,7 +246,7 @@ var insertRider = /*#__PURE__*/function () {
               // user_id: userGroup.USER_GROUP_ID,
               // app_version:'1.0',
               // status:'1',
-            }]).into('rider_details');
+            }]).into("rider_details");
           case 9:
             query = _context5.sent;
             _context5.prev = 10;
@@ -286,21 +275,18 @@ var insertRider = /*#__PURE__*/function () {
 exports.insertRider = insertRider;
 var updateUserOtp = /*#__PURE__*/function () {
   var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(payload, otp) {
-    var mobile_number, fcmToken, query;
+    var mobile_number, query;
     return _regeneratorRuntime().wrap(function _callee6$(_context6) {
       while (1) {
         switch (_context6.prev = _context6.next) {
           case 0:
-            mobile_number = payload.mobile_number, fcmToken = payload.fcmToken;
+            mobile_number = payload.mobile_number;
             _context6.next = 3;
-            return (0, _db["default"])('users').where({
-              mobile_number: mobile_number,
-              fcm_token: fcmToken,
-              otp: otp
+            return (0, _db["default"])("users").where({
+              mobile_number: mobile_number
             }).update({
-              'fcm_token': fcmToken,
-              'otp': 1234,
-              'refresh_token': null
+              otp: otp,
+              refresh_token: null
             });
           case 3:
             query = _context6.sent;
@@ -336,7 +322,7 @@ var verifyUserOtp = /*#__PURE__*/function () {
         switch (_context7.prev = _context7.next) {
           case 0:
             _context7.prev = 0;
-            today = format(new Date(), 'yyyy-MM-dd H:i:s');
+            today = format(new Date(), "yyyy-MM-dd H:i:s");
             payload = verifyOtpValidator(req.body);
             otp = payload.otp, userId = payload.userId;
             if (!(payload.status === true)) {
@@ -397,8 +383,8 @@ var verifyUserOtp = /*#__PURE__*/function () {
           case 26:
             _context7.prev = 26;
             _context7.t0 = _context7["catch"](0);
-            logger.error('Whooops! This broke with error: ', _context7.t0);
-            res.status(500).send('Error!');
+            logger.error("Whooops! This broke with error: ", _context7.t0);
+            res.status(500).send("Error!");
           case 30:
           case "end":
             return _context7.stop();
@@ -422,9 +408,9 @@ var updateUser = /*#__PURE__*/function () {
               name: payload.name,
               email: payload.email,
               profile_photo_path: payload.profilePhoto
-              // online_status:payload.onlineStatus,  
+              // online_status:payload.onlineStatus,
               // language_id:payload.languageId,
-            }).into('users').where({
+            }).into("users").where({
               id: userId
             }).toString();
             _context8.prev = 1;
@@ -464,7 +450,7 @@ var updateUserLanguage = /*#__PURE__*/function () {
           case 0:
             query = queryBuilder.update({
               language_id: languageId
-            }).into('users').where({
+            }).into("users").where({
               id: userId
             }).toString();
             _context9.prev = 1;
@@ -503,7 +489,7 @@ var updateUserToken = /*#__PURE__*/function () {
         switch (_context10.prev = _context10.next) {
           case 0:
             _context10.next = 2;
-            return (0, _db["default"])('users').update({
+            return (0, _db["default"])("users").update({
               refresh_token: refresh_token
             }).where({
               id: userId
@@ -542,7 +528,7 @@ var getUserToken = /*#__PURE__*/function () {
         switch (_context11.prev = _context11.next) {
           case 0:
             _context11.next = 2;
-            return _db["default"].select('refresh_token').from('users').where({
+            return _db["default"].select("refresh_token").from("users").where({
               id: userId
             });
           case 2:
@@ -584,7 +570,7 @@ var getUser = /*#__PURE__*/function () {
         switch (_context12.prev = _context12.next) {
           case 0:
             _context12.next = 2;
-            return _db["default"].select('user_id', 'address_name', 'address_details', 'address_landmark', 'address_longitude', 'alternate_mobile').from('user_addresses');
+            return _db["default"].select("user_id", "address_name", "address_details", "address_landmark", "address_longitude", "alternate_mobile").from("user_addresses");
           case 2:
             query = _context12.sent;
             _context12.prev = 3;
@@ -616,7 +602,7 @@ var userDetail = /*#__PURE__*/function () {
         switch (_context13.prev = _context13.next) {
           case 0:
             _context13.next = 2;
-            return _db["default"].select('*').from('users').where({
+            return _db["default"].select("*").from("users").where({
               id: userId
             });
           case 2:
@@ -644,49 +630,47 @@ var userDetail = /*#__PURE__*/function () {
 exports.userDetail = userDetail;
 var getAccountModal = /*#__PURE__*/function () {
   var _ref14 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee14(payload) {
-    var userId, responce, mobile_number;
+    var userId, responce;
     return _regeneratorRuntime().wrap(function _callee14$(_context14) {
       while (1) {
         switch (_context14.prev = _context14.next) {
           case 0:
             userId = payload.userId;
             _context14.next = 3;
-            return _db["default"].select(['mobile_number']).from('users').where({
+            return _db["default"].select("mobile_number").from("users").where({
               id: userId
             });
           case 3:
             responce = _context14.sent;
             _context14.prev = 4;
-            if (!responce.body.length) {
-              _context14.next = 10;
+            if (!(responce.length !== 0)) {
+              _context14.next = 9;
               break;
             }
-            mobile_number = responce.body[0].mobile_number;
             return _context14.abrupt("return", {
-              status: _responseCode["default"].SUCCESS,
-              mobile_number: mobile_number
+              status: _responseCode["default"].SUCCESS
             });
-          case 10:
+          case 9:
             return _context14.abrupt("return", {
               status: _responseCode["default"].FAILURE.DATA_NOT_FOUND,
-              message: 'User not found'
+              message: "User not found"
             });
-          case 11:
-            _context14.next = 16;
+          case 10:
+            _context14.next = 15;
             break;
-          case 13:
-            _context14.prev = 13;
+          case 12:
+            _context14.prev = 12;
             _context14.t0 = _context14["catch"](4);
             return _context14.abrupt("return", {
               status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
               message: _context14.t0.message
             });
-          case 16:
+          case 15:
           case "end":
             return _context14.stop();
         }
       }
-    }, _callee14, null, [[4, 13]]);
+    }, _callee14, null, [[4, 12]]);
   }));
   return function getAccountModal(_x25) {
     return _ref14.apply(this, arguments);
@@ -701,7 +685,7 @@ var getAddress = /*#__PURE__*/function () {
         switch (_context15.prev = _context15.next) {
           case 0:
             _context15.next = 2;
-            return _db["default"].select('user_id', 'name', 'details', 'landmark', 'landmark', 'longitude').from('user_addresses');
+            return _db["default"].select("user_id", "name", "details", "landmark", "landmark", "longitude").from("user_addresses");
           case 2:
             query = _context15.sent;
             _context15.prev = 3;
@@ -736,12 +720,12 @@ var addUser = /*#__PURE__*/function () {
         switch (_context16.prev = _context16.next) {
           case 0:
             _context16.next = 2;
-            return (0, _db["default"])('user_address').insert({
+            return (0, _db["default"])("user_address").insert({
               user_id: payload.user_id,
               address_details: payload.address_details,
               address_name: payload.address_name,
               address_landmark: payload.address_landmark,
-              created_at: new Date().toISOString().slice(0, 19).replace('T', ' ')
+              created_at: new Date().toISOString().slice(0, 19).replace("T", " ")
             });
           case 2:
             userAddress = _context16.sent;
@@ -778,7 +762,7 @@ var getCities = /*#__PURE__*/function () {
         switch (_context17.prev = _context17.next) {
           case 0:
             _context17.next = 2;
-            return _db["default"].select('*').from('cities');
+            return _db["default"].select("*").from("cities");
           case 2:
             query = _context17.sent;
             _context17.prev = 3;
@@ -812,7 +796,7 @@ var getPromo = /*#__PURE__*/function () {
       while (1) {
         switch (_context18.prev = _context18.next) {
           case 0:
-            query = queryBuilder.select('*').from('offers').toString();
+            query = queryBuilder.select("*").from("offers").toString();
             _context18.prev = 1;
             _context18.next = 4;
             return mysqlRequest(query);
@@ -849,7 +833,7 @@ var getSinglecoupon = /*#__PURE__*/function () {
         switch (_context19.prev = _context19.next) {
           case 0:
             _context19.next = 2;
-            return _db["default"].select('*').from('offers');
+            return _db["default"].select("*").from("offers");
           case 2:
             query = _context19.sent;
             _context19.prev = 3;
@@ -900,7 +884,7 @@ var logoutUser = /*#__PURE__*/function () {
           case 0:
             _context20.prev = 0;
             _context20.next = 3;
-            return (0, _db["default"])('users').where({
+            return (0, _db["default"])("users").where({
               id: userId
             }).update({
               refresh_token: null

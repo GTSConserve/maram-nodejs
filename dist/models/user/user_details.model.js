@@ -28,80 +28,91 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 // }
 
 var get_address = /*#__PURE__*/function () {
-  var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(req, res) {
+  var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(userId) {
     var getaddress;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             _context.next = 2;
-            return _db["default"].select('user_id', 'title', 'address', 'landmark', 'type', 'status').from('user_address');
+            return _db["default"].select("id as address_id", "title", "address", "landmark", "type").from("user_address").where({
+              user_id: userId,
+              status: "1"
+            });
           case 2:
             getaddress = _context.sent;
             _context.prev = 3;
-            console.log('hi');
             return _context.abrupt("return", {
               status: _responseCode["default"].SUCCESS,
               body: getaddress
             });
-          case 8:
-            _context.prev = 8;
+          case 7:
+            _context.prev = 7;
             _context.t0 = _context["catch"](3);
             return _context.abrupt("return", {
               status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
               message: _context.t0
             });
-          case 11:
+          case 10:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[3, 8]]);
+    }, _callee, null, [[3, 7]]);
   }));
-  return function get_address(_x, _x2) {
+  return function get_address(_x) {
     return _ref.apply(this, arguments);
   };
 }();
 exports.get_address = get_address;
 var edit_address = /*#__PURE__*/function () {
-  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(user_id, title, address, landmark, type) {
-    var user;
+  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(user_id, address_id, title, address, landmark, type) {
+    var query, user;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
-            _context2.next = 2;
-            return (0, _db["default"])('user_address').update({
-              address: address,
-              title: title,
-              landmark: landmark,
-              type: type
-            }).where({
-              user_id: user_id
+            query = {};
+            if (title) {
+              query.title = title;
+            }
+            if (address) {
+              query.address = address;
+            }
+            if (landmark) {
+              query.landmark = landmark;
+            }
+            if (type) {
+              query.type = type;
+            }
+            _context2.next = 7;
+            return (0, _db["default"])("user_address").update(query).where({
+              user_id: user_id,
+              id: address_id
             });
-          case 2:
+          case 7:
             user = _context2.sent;
-            _context2.prev = 3;
+            _context2.prev = 8;
             return _context2.abrupt("return", {
               status: _responseCode["default"].SUCCESS,
               body: user
             });
-          case 7:
-            _context2.prev = 7;
-            _context2.t0 = _context2["catch"](3);
+          case 12:
+            _context2.prev = 12;
+            _context2.t0 = _context2["catch"](8);
             console.log(_context2.t0);
             return _context2.abrupt("return", {
               status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
               error: _context2.t0
             });
-          case 11:
+          case 16:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[3, 7]]);
+    }, _callee2, null, [[8, 12]]);
   }));
-  return function edit_address(_x3, _x4, _x5, _x6, _x7) {
+  return function edit_address(_x2, _x3, _x4, _x5, _x6, _x7) {
     return _ref2.apply(this, arguments);
   };
 }();
@@ -114,7 +125,7 @@ var get_user = /*#__PURE__*/function () {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.next = 2;
-            return _db["default"].select('name', 'image', 'mobile_number', 'email').from('users').where({
+            return _db["default"].select("id", "name", "image", "mobile_number", "email").from("users").where({
               id: id
             });
           case 2:
@@ -145,17 +156,18 @@ var get_user = /*#__PURE__*/function () {
 }();
 exports.get_user = get_user;
 var delete_user_address = /*#__PURE__*/function () {
-  var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(user_id) {
+  var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(address_id, userId) {
     var deluser;
     return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
             _context4.next = 2;
-            return (0, _db["default"])('user_address').update({
-              status: '0'
+            return (0, _db["default"])("user_address").update({
+              status: "0"
             }).where({
-              user_id: user_id
+              user_id: userId,
+              id: address_id
             });
           case 2:
             deluser = _context4.sent;
@@ -179,7 +191,7 @@ var delete_user_address = /*#__PURE__*/function () {
       }
     }, _callee4, null, [[3, 7]]);
   }));
-  return function delete_user_address(_x9) {
+  return function delete_user_address(_x9, _x10) {
     return _ref4.apply(this, arguments);
   };
 }();
@@ -192,7 +204,7 @@ var remove_order = /*#__PURE__*/function () {
         switch (_context5.prev = _context5.next) {
           case 0:
             _context5.next = 2;
-            return (0, _db["default"])('orders').where({
+            return (0, _db["default"])("orders").where({
               user_id: user_id
             }).del();
           case 2:
@@ -217,7 +229,7 @@ var remove_order = /*#__PURE__*/function () {
       }
     }, _callee5, null, [[3, 7]]);
   }));
-  return function remove_order(_x10) {
+  return function remove_order(_x11) {
     return _ref5.apply(this, arguments);
   };
 }();
@@ -230,7 +242,7 @@ var edit = /*#__PURE__*/function () {
         switch (_context6.prev = _context6.next) {
           case 0:
             _context6.next = 2;
-            return (0, _db["default"])('orders').where({
+            return (0, _db["default"])("orders").where({
               id: id,
               user_id: user_id
             }).update({
@@ -258,7 +270,7 @@ var edit = /*#__PURE__*/function () {
       }
     }, _callee6, null, [[3, 7]]);
   }));
-  return function edit(_x11, _x12, _x13) {
+  return function edit(_x12, _x13, _x14) {
     return _ref6.apply(this, arguments);
   };
 }();
@@ -275,16 +287,16 @@ var change_plan = /*#__PURE__*/function () {
               _context7.next = 14;
               break;
             }
-            if (!(changeplan_name == 'alternate')) {
+            if (!(changeplan_name == "alternate")) {
               _context7.next = 9;
               break;
             }
-            console.log('hi');
+            console.log("hi");
             _context7.next = 6;
-            return (0, _db["default"])('subscribed_user_details').update({
+            return (0, _db["default"])("subscribed_user_details").update({
               subscribe_type_id: 2,
               start_date: start_date,
-              status: 'plan changed'
+              status: "plan changed"
             });
           case 6:
             change = _context7.sent;
@@ -292,10 +304,10 @@ var change_plan = /*#__PURE__*/function () {
             break;
           case 9:
             _context7.next = 11;
-            return (0, _db["default"])('subscribed_user_details').update({
+            return (0, _db["default"])("subscribed_user_details").update({
               subscribe_type_id: 3,
               start_date: start_date,
-              status: 'plan changed'
+              status: "plan changed"
             });
           case 11:
             _change = _context7.sent;
@@ -307,15 +319,15 @@ var change_plan = /*#__PURE__*/function () {
               _context7.next = 26;
               break;
             }
-            if (!(changeplan_name == 'daily')) {
+            if (!(changeplan_name == "daily")) {
               _context7.next = 21;
               break;
             }
             _context7.next = 18;
-            return (0, _db["default"])('subscribed_user_details').update({
+            return (0, _db["default"])("subscribed_user_details").update({
               subscribe_type_id: 1,
               start_date: start_date,
-              status: 'plan changed'
+              status: "plan changed"
             });
           case 18:
             _change2 = _context7.sent;
@@ -323,10 +335,10 @@ var change_plan = /*#__PURE__*/function () {
             break;
           case 21:
             _context7.next = 23;
-            return (0, _db["default"])('subscribed_user_details').update({
+            return (0, _db["default"])("subscribed_user_details").update({
               subscribe_type_id: 3,
               start_date: start_date,
-              status: 'plan changed'
+              status: "plan changed"
             });
           case 23:
             _change3 = _context7.sent;
@@ -334,15 +346,15 @@ var change_plan = /*#__PURE__*/function () {
             _context7.next = 35;
             break;
           case 26:
-            if (!(changeplan_name == 'daily')) {
+            if (!(changeplan_name == "daily")) {
               _context7.next = 32;
               break;
             }
             _context7.next = 29;
-            return (0, _db["default"])('subscribed_user_details').update({
+            return (0, _db["default"])("subscribed_user_details").update({
               subscribe_type_id: 1,
               start_date: start_date,
-              status: 'plan changed'
+              status: "plan changed"
             });
           case 29:
             _change4 = _context7.sent;
@@ -350,10 +362,10 @@ var change_plan = /*#__PURE__*/function () {
             break;
           case 32:
             _context7.next = 34;
-            return (0, _db["default"])('subscribed_user_details').update({
+            return (0, _db["default"])("subscribed_user_details").update({
               subscribe_type_id: 2,
               start_date: start_date,
-              status: 'plan changed'
+              status: "plan changed"
             });
           case 34:
             _change5 = _context7.sent;
@@ -375,7 +387,7 @@ var change_plan = /*#__PURE__*/function () {
       }
     }, _callee7, null, [[0, 37]]);
   }));
-  return function change_plan(_x14, _x15, _x16) {
+  return function change_plan(_x15, _x16, _x17) {
     return _ref7.apply(this, arguments);
   };
 }();
