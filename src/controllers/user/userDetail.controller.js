@@ -97,6 +97,12 @@ export const getUser = async (req, res) => {
         : null;
       get_user_detail.mobile_number = data.mobile_number;
       get_user_detail.email = data.email;
+      get_user_detail.total_bill_due_Amount = '0'
+      get_user_detail.total_bill_count = '0'
+      get_user_detail.total_address_count = '0'
+      get_user_detail.total_subcription_count = '0'
+      get_user_detail.total_delivered_product_count = 'No Address'
+      get_user_detail.rider_status = 'No rider Assign'
     });
 
     res
