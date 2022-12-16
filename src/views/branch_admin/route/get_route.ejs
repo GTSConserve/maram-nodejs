@@ -211,7 +211,7 @@
                                        <button class="btn mb-2 btn-md  btn-primary" data-toggle="modal"
                                          id="<%= user.id %>"  onclick="viewMapping(this)">View Mapping</button>
                                        <button class="btn mb-2 btn-md  btn-warning" data-toggle="modal"
-                                        data-target="#editCategory<%=user.id %>">Tommorrow Route Mapping</button>
+                                         onclick="tommorowMapping(this)"  id="<%= user.id %>" >Tommorrow Route Users</button>
                                        <button class="btn mb-2 btn-md  btn-secondary" data-toggle="modal"
                                         data-target="#editCategory<%=user.id %>">Edit Route</button>
                                          
@@ -239,6 +239,11 @@
                                     }
                                     async function viewMapping(event){
                                         window.location.href = `/branch_admin/route/view_mapping?route_id=${event.id}`
+                                       
+                                                    
+                                    }
+                                    async function tommorowMapping(event){
+                                        window.location.href = `/branch_admin/route/tommorrow_route_mapping?route_id=${event.id}`
                                        
                                                     
                                     }

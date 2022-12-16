@@ -140,7 +140,22 @@ export const addon_order = async (
       sub_total = sub_total + product_price[0].price * products[i].qty;
     }
 
-    await knex("add_on_orders").update({ sub_total }).where({ id: order_id });
+    const check_user_is_branch = await knex("user_address")
+      .select("branch_id")
+      .where({ id: address_id });
+    console.log(check_user_is_branch);
+    if (check_user_is_branch.length === 0) {
+      return { status: false, message: "Invalid User Address" };
+    }
+
+    let query = {};
+
+    if (check_user_is_branch[0].branch_id != null) {
+      query.branch_id = check_user_is_branch[0].branch_id;
+    }
+    query.sub_total = sub_total;
+
+    await knex("add_on_orders").update(query).where({ id: order_id });
 
     return { status: true, message: "SuccessFully Created" };
   } catch (error) {

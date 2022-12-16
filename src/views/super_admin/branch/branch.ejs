@@ -80,7 +80,7 @@
 
                                         <div class="form-row mb-4">
                                             <div class="col-sm-12 p-1">
-                                                <label>Name</label>
+                                                <label>Branch Name</label>
                                                 <input type="text" wire:model="name" placeholder="name" required name="name"
                                                     class="form-control">
                                             </div>
@@ -99,7 +99,7 @@
 
                                             <div class="col-sm-12  p-1">
                                                 <label>Mobile Number</label>
-                                                <input type="text" wire:model="name" minlength="10" maxlength="10" name="mobile_number" placeholder="Enter 10 digit mobile number" required
+                                                <input type="number" wire:model="name" minlength="10" maxlength="10" name="mobile_number" placeholder="Enter 10 digit mobile number" required
                                                     class="form-control">
 
                                             </div>
@@ -115,12 +115,12 @@
                                                 </select>
 
                                             </div>
-                                            <div class="col-sm-6  p-1">
+                                            <!-- <div class="col-sm-6  p-1">
                                                 <label>Location</label>
                                                 <input type="text" wire:model="name" placeholder="Brach Location" required name="location"
                                                     class="form-control">
 
-                                            </div>
+                                            </div> -->
 
 
 
@@ -171,16 +171,16 @@
                             style="width: 20px;">#</th>
                         <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
                             colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
-                            style="width: 86px;">Name</th>
+                            style="width: 86px;">Branch Name</th>
                         <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
                             aria-label="NAME: activate to sort column ascending" style="width: 30px;">Email</th>
                         
                         <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
                             aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">Mobile Number</th>
                             <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
-                            aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">City</th>
-                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
-                            aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">Location</th>
+                            aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">Zone</th>
+                        <!-- <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                            aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">Location</th> -->
                         <th class="text-center sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
                             colspan="1" aria-label="Status: activate to sort column ascending" style="width: 49px;">
                             Status</th>
@@ -201,7 +201,7 @@
                                 <td><%=user.mobile_number %></td>
                                 <td><%=user.zone_name %></td>
 
-                                <td><%=user.location %></td>
+                                <!-- <td><%=user.location %></td> -->
     
                                 <div>
                                     <td style="text-align: center; vertical-align: middle;">
@@ -234,8 +234,11 @@
                                     <td class="text-center"> <button class="btn mb-2 btn-sm  btn-primary" data-toggle="modal"
                                         data-target="#editCategory<%=user.id %>">edit</button>
                                          
-                                        <button class="btn btn-sm btn-primary" data-toggle="modal"
-                                        data-target="#viewCategory<%=user.id %>">View</button></td>
+                                        <button class="btn mb-2 btn-sm btn-info" data-toggle="modal"
+                                        data-target="#viewCategory<%=user.id %>">View</button>
+
+                                        <button class="btn btn-sm btn-dark" data-toggle="modal"
+                                        data-target="#passwordCategory<%=user.id %>">Change password</button></td>
                                     
                                 </div>
                                 
@@ -262,12 +265,12 @@
                             <div class="modal-body">
                                 <form method="post" action="/super_admin/branch/update_branch"  >
                                     <div class="form-row mb-4">
-                                        <div class="col-sm-6">
+                                        <!-- <div class="col-sm-6">
                                             <label>Location</label>
                                             <input type="text" class="form-control" wire:model="name"
                                                 placeholder="Location" required  value="<%=user.location %>" name="location">
     
-                                        </div>
+                                        </div> -->
                                         <div class="col-sm-6">
                                             <label>City</label>
                                                 <select wire:model="countryid" class="form-control" name="zone_id" required>
@@ -280,10 +283,59 @@
                                                 </select>
     
                                         </div>
-                                        <div class="col-12">
+                                        <div class="col-6">
                                             <label>Mobile Number</label>
                                             <input type="text" class="form-control" wire:model="name"
                                                 placeholder="10 digit mobile number" minlength="10" maxlength="10" required  value="<%=user.mobile_number %>" name="mobile_number">
+    
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="modal-footer">
+                                        
+                                        <button type="button" name="id" value="<%=user.id %>" class="btn btn-danger" id="addmodalClose" data-dismiss="modal"><i
+                                            class="flaticon-cancel-12"></i>Discard</button>
+                                            <button wire:click="save" name="id" value="<%=user.id %>"  type="submit" class="btn btn-success">Save</button>
+                                    </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                </div>
+
+
+                 <!-- PASSWORD CHANGE -->
+                 <div wire:ignore.self="" class="modal fade" id="passwordCategory<%=user.id %>" tabindex="-1"
+                    aria-labelledby="addCategoryTitle" style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalCenterTitle">Change Password</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                        height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                        class="feather feather-x">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </button>
+                            </div>
+    
+                            <div class="modal-body">
+                                <form method="post" action="/super_admin/branch/update_change_password"  >
+                                    <div class="form-row mb-4">
+                                        <div class="col-sm-12">
+                                            <label>New Password</label>
+                                            <input type="text" class="form-control" minlength="8" wire:model="new_password"
+                                                placeholder="New Password" name="new_password">
+    
+                                        </div>
+                                        <div class="col-sm-12 mt-3">
+                                            <label>Confirm Password</label>
+                                            <input type="text" class="form-control" minlength="8" wire:model="confirm_new_password"
+                                            placeholder="Confirm Password" name="confirm_new_password">
+
     
                                         </div>
                                     </div>
@@ -324,14 +376,15 @@
                     <div class="form-row mb-4">
                         <div class="col-6 ">
                             <label>Name</label>
-                            <input type="text" class="form-control" wire:model="name"  
-                                placeholder="Name"  value="<%= user.first_name %>">
+                            <p style="font-weight: 900;"><%=user.first_name %></p>
+                            <!-- <input type="text" class="form-control" wire:model="name"  
+                                placeholder="Name"  value="<%= user.first_name %>"> -->
     
                         </div>
                         <div class="col-sm-6">
                             <label>email</label>
-                            <input type="text" class="form-control" wire:model="name"
-                            placeholder="email" value="<%= user.email %>" >
+                            <p style="font-weight: 900;"><%=user.email %></p>
+                            
                            
                         </div>
                         
@@ -339,16 +392,17 @@
                     </div>
     
                     <div class="form-row mb-4">
-                        <div class="col-sm-6">
+                        <!-- <div class="col-sm-6">
                             <label>location</label>
-                            <input type="text" class="form-control" wire:model="name"
-                            placeholder="location" value="<%= user.location %>" >
+                            <p style="font-weight: 900;"><%=user.location %></p>
+
     
-                        </div>
+                        </div> -->
                         <div class="col-sm-6  ">
                             <label>Mobile Number</label>
-                            <input type="text" class="form-control" wire:model="name"
-                            placeholder="price" value="<%= user.mobile_number %>" >
+                            <p style="font-weight: 900;"><%=user.mobile_number %></p>
+                            <!-- <input type="text" class="form-control" wire:model="name"
+                            placeholder="price" value="<%= user.mobile_number %>" > -->
     
                         </div>
                     </div>
@@ -377,6 +431,7 @@
     
             </table>
         </div>
+        <% if(numberOfPages != 1){ %> 
         <div class="dt--bottom-section d-sm-flex justify-content-sm-between text-center pt-4 ">
             <div class="dt--pages-count  mb-sm-0 mb-3">
               <% let search_query =  is_search ? `&searchKeyword=${searchKeyword}` : "" %>
@@ -410,6 +465,7 @@
             </nav>
         </div>
         </div>
+        <% } %>
     </div>
     <% } %>
     <div id="DataTables_Table_1_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">

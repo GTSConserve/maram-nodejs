@@ -31,9 +31,9 @@ settingsRouter.post("/update_settings_status", updateSettingsStatus);
 
 // banners
 settingsRouter.get("/get_banner", getBanners);
-settingsRouter.post("/create_banners", createBanners);
-settingsRouter.post("/update_banners", updateBanners);
-settingsRouter.post("/update_banner_status",uploadImg,updateBannerStatus);
+settingsRouter.post("/create_banners",uploadImg, createBanners);
+settingsRouter.post("/update_banners",uploadImg, updateBanners);
+settingsRouter.post("/update_banner_status",updateBannerStatus);
 
 
 

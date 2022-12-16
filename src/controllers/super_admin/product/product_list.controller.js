@@ -165,6 +165,7 @@ export const getProductList = async (req, res) => {
       data[i].image = process.env.BASE_URL + data[i].image;
     }
 
+
     loading = false;
     res.render("super_admin/product/product", {
       data,

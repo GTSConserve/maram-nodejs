@@ -129,6 +129,50 @@ export const createTable = async (req, res) => {
       }
     });
 
+    // rider details
+    await knex.schema.hasTable("rider_details").then(function (exists) {
+      if (!exists) {
+        return knex.schema.createTable("rider_details", function (t) {
+          t.increments("id").primary().unsigned().notNullable();
+
+          t.string("name", 255).notNullable();
+          t.string("user_name", 255).notNullable();
+          t.string("mobile_number", 255).nullable();
+
+          t.integer("branch_id").unsigned().nullable();
+          t.foreign("branch_id").references("id").inTable("admin_users");
+
+          t.string("password", 255).notNullable();
+          t.string("address", 255).nullable();
+          t.enu("status", ["0", "1"]).defaultTo("1");
+          t.timestamps(true, true);
+        });
+      }
+    });
+
+    //  router
+    await knex.schema.hasTable("routes").then(function (exists) {
+      if (!exists) {
+        return knex.schema.createTable("routes", function (t) {
+          t.increments("id").primary().unsigned().notNullable();
+
+          t.integer("rider_id").unsigned().nullable();
+          t.foreign("rider_id").references("id").inTable("rider_details");
+
+          t.integer("branch_id").unsigned().notNullable();
+          t.foreign("branch_id").references("id").inTable("admin_users");
+
+          t.json("user_mapping").nullable();
+
+          t.string("name", 255).nullable();
+          // t.string("ending_point", 255).nullable();
+
+          t.enu("status", ["0", "1"]).defaultTo("1");
+          t.timestamps(true, true);
+        });
+      }
+    });
+
     // user address
     await knex.schema.hasTable("user_address").then(function (exists) {
       if (!exists) {
@@ -138,8 +182,11 @@ export const createTable = async (req, res) => {
           t.integer("user_id").unsigned().notNullable();
           t.foreign("user_id").references("id").inTable("users");
 
-          t.integer("branch_id").unsigned().notNullable();
+          t.integer("branch_id").unsigned().nullable();
           t.foreign("branch_id").references("id").inTable("admin_users");
+
+          t.integer("router_id").unsigned().nullable();
+          t.foreign("router_id").references("id").inTable("routes");
 
           t.string("title", 255).nullable();
           t.string("address", 255).nullable();
@@ -246,25 +293,29 @@ export const createTable = async (req, res) => {
       }
     });
 
+    //categories by product type
+    await knex.schema
+      .hasTable("categories_product_type")
+      .then(function (exists) {
+        if (!exists) {
+          return knex.schema.createTable(
+            "categories_product_type",
+            function (t) {
+              t.increments("id").primary();
 
-    //categories by product type 
-    await knex.schema.hasTable("categories_product_type").then(function (exists) {
-      if (!exists) {
-        return knex.schema.createTable("categories_product_type", function (t) {
-          t.increments("id").primary();
-       
-          t.integer("category_id").unsigned().notNullable();
-          t.foreign("category_id").references("id").inTable("categories");
+              t.integer("category_id").unsigned().notNullable();
+              t.foreign("category_id").references("id").inTable("categories");
 
-          t.integer("product_type_id").unsigned().notNullable();
-          t.foreign("product_type_id").references("id").inTable("product_type");
-      
-          t.timestamps(true, true);
-        });
-      }
-    });
+              t.integer("product_type_id").unsigned().notNullable();
+              t.foreign("product_type_id")
+                .references("id")
+                .inTable("product_type");
 
-
+              t.timestamps(true, true);
+            }
+          );
+        }
+      });
 
     // variation_types
     await knex.schema.hasTable("unit_types").then(function (exists) {
@@ -368,50 +419,6 @@ export const createTable = async (req, res) => {
       }
     });
 
-    // rider details
-    await knex.schema.hasTable("rider_details").then(function (exists) {
-      if (!exists) {
-        return knex.schema.createTable("rider_details", function (t) {
-          t.increments("id").primary().unsigned().notNullable();
-
-          t.string("name", 255).notNullable();
-          t.string("user_name", 255).notNullable();
-          t.string("mobile_number", 255).nullable();
-
-          t.integer("branch_id").unsigned().nullable();
-          t.foreign("branch_id").references("id").inTable("admin_users");
-
-          t.string("password", 255).notNullable();
-          t.string("address", 255).nullable();
-          t.enu("status", ["0", "1"]).defaultTo("1");
-          t.timestamps(true, true);
-        });
-      }
-    });
-
-    //  router
-    await knex.schema.hasTable("routes").then(function (exists) {
-      if (!exists) {
-        return knex.schema.createTable("routes", function (t) {
-          t.increments("id").primary().unsigned().notNullable();
-
-          t.integer("rider_id").unsigned().nullable();
-          t.foreign("rider_id").references("id").inTable("rider_details");
-
-          t.integer("branch_id").unsigned().notNullable();
-          t.foreign("branch_id").references("id").inTable("admin_users");
-
-          t.json("user_mapping").nullable();
-
-          t.string("name", 255).nullable();
-          // t.string("ending_point", 255).nullable();
-
-          t.enu("status", ["0", "1"]).defaultTo("1");
-          t.timestamps(true, true);
-        });
-      }
-    });
-
     //  subscribed user details
     await knex.schema
       .hasTable("subscribed_user_details")
@@ -489,9 +496,13 @@ export const createTable = async (req, res) => {
 
           t.date("delivery_date").nullable();
 
-          t.enu("status", ["pending", "delivered", "undelivered"]).defaultTo(
-            "pending"
-          );
+          t.enu("status", [
+            "pending",
+            "delivered",
+            "undelivered",
+            "assigned",
+            "cancelled",
+          ]).defaultTo("pending");
           t.integer("tip_amount").nullable();
           t.integer("grand_total").nullable();
           t.integer("sub_total").nullable();
@@ -520,9 +531,12 @@ export const createTable = async (req, res) => {
           t.integer("product_id").unsigned().notNullable();
           t.foreign("product_id").references("id").inTable("products");
 
-          t.enu("status", ["pending", "delivered", "undelivered","removed"]).defaultTo(
-            "pending"
-          );
+          t.enu("status", [
+            "pending",
+            "delivered",
+            "undelivered",
+            "removed",
+          ]).defaultTo("pending");
           t.string("quantity", 255).nullable();
           t.integer("tax_price").nullable();
           t.integer("price").nullable();
@@ -794,37 +808,107 @@ export const createTable = async (req, res) => {
       }
     });
 
-  // user address subscribe branch 
-  await knex.schema.hasTable("user_address_subscribe_branch").then(function (exists) {
-    if (!exists) {
-      return knex.schema.createTable("user_address_subscribe_branch", function (t) {
-        t.increments("id").primary();
-        t.integer("user_id").unsigned().notNullable();
-        t.foreign("user_id").references("id").inTable("users");
-        t.integer("address_id").unsigned().notNullable();
-        t.foreign("address_id").references("id").inTable("user_address");
-        t.integer("branch_id").unsigned().notNullable();
-        t.foreign("branch_id").references("id").inTable("admin_users");
-        t.integer("subscription_id").unsigned().nullable();
-        t.foreign("subscription_id")
-          .references("id")
-          .inTable("subscribed_user_details");
-        t.integer("product_id").unsigned().notNullable();
-        t.foreign("product_id").references("id").inTable("products");
-        // t.enu("status", ["pending", "delivery", "not delivery"]).defaultTo(
-        //   "pending"
-        // );
-        // t.string("quantity", 255).nullable();
-        // t.integer("tax_price").nullable();
-        // t.integer("price").nullable();
-        // t.integer("total_price").nullable();
-        // t.integer("tax_id").nullable();
+    // user address subscribe branch
+    await knex.schema
+      .hasTable("user_address_subscribe_branch")
+      .then(function (exists) {
+        if (!exists) {
+          return knex.schema.createTable(
+            "user_address_subscribe_branch",
+            function (t) {
+              t.increments("id").primary();
+              t.integer("user_id").unsigned().notNullable();
+              t.foreign("user_id").references("id").inTable("users");
+              t.integer("address_id").unsigned().notNullable();
+              t.foreign("address_id").references("id").inTable("user_address");
+              t.integer("branch_id").unsigned().notNullable();
+              t.foreign("branch_id").references("id").inTable("admin_users");
+              t.integer("subscription_id").unsigned().nullable();
+              t.foreign("subscription_id")
+                .references("id")
+                .inTable("subscribed_user_details");
+              t.integer("product_id").unsigned().notNullable();
+              t.foreign("product_id").references("id").inTable("products");
+              // t.enu("status", ["pending", "delivery", "not delivery"]).defaultTo(
+              //   "pending"
+              // );
+              // t.string("quantity", 255).nullable();
+              // t.integer("tax_price").nullable();
+              // t.integer("price").nullable();
+              // t.integer("total_price").nullable();
+              // t.integer("tax_id").nullable();
 
-        t.timestamps(true, true);
+              t.timestamps(true, true);
+            }
+          );
+        }
       });
-    }
-  });
 
+    // branch purchase order
+
+    await knex.schema.hasTable("branch_purchase_order").then(function (exists) {
+      if (!exists) {
+        return knex.schema.createTable("branch_purchase_order", function (t) {
+          t.increments("id").primary();
+
+          t.integer("branch_id").unsigned().nullable();
+          t.foreign("branch_id").references("id").inTable("admin_users");
+
+          t.date("date").nullable();
+
+          t.enu("status", ["pending", "approved", "cancelled"]).defaultTo(
+            "pending"
+          );
+          t.integer("grand_total").nullable();
+
+          t.timestamps(true, true);
+        });
+      }
+    });
+
+    // add on order items
+    await knex.schema
+      .hasTable("branch_purchase_order_items")
+      .then(function (exists) {
+        if (!exists) {
+          return knex.schema.createTable(
+            "branch_purchase_order_items",
+            function (t) {
+              t.increments("id").primary();
+
+              t.integer("branch_purchase_order_id").unsigned().nullable();
+              t.foreign("branch_purchase_order_id")
+                .references("id")
+                .inTable("branch_purchase_order");
+
+              t.integer("branch_id").unsigned().notNullable();
+              t.foreign("branch_id").references("id").inTable("admin_users");
+
+              t.integer("product_id").unsigned().notNullable();
+              t.foreign("product_id").references("id").inTable("products");
+
+              t.integer("product_type_id").unsigned().notNullable();
+              t.foreign("product_type_id").references("id").inTable("product_type");
+
+              t.enu("status", ["pending", "approved", "cancelled"]).defaultTo(
+                "pending"
+              );
+
+              t.integer("price").nullable();
+              
+              t.string("qty", 255).nullable();
+              t.string("excess_qty", 255).nullable();
+              t.string("given_excess_qty", 255).nullable();
+              t.string("total_qty", 255).nullable();
+
+              t.string("unit_value", 255).nullable();
+              t.integer("total_price").nullable();
+
+              t.timestamps(true, true);
+            }
+          );
+        }
+      });
 
     return res
       .status(200)

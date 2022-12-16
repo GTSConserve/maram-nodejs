@@ -8,6 +8,7 @@ try {
         user : 'maramdbadmin',
         password : 'q&HJIJ^EWF7N4sBs',
         database : 'maram_live'
+
     },
   });
 } catch (error) {
@@ -49,6 +50,7 @@ console.log("database Connected");
 // hl();
 // console.log(knex)
 export default knex;
+<<<<<<< HEAD
 
 
 
@@ -75,3 +77,5 @@ export default knex;
 // });
 
 // connection.end();
+=======
+>>>>>>> all_users

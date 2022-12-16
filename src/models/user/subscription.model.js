@@ -160,3 +160,85 @@ export const get_subcription_order = async (
     return { status: false, message: error };
   }
 };
+
+// remove subscription 
+export const remove_subscription = async (user_id, subscription_id) => {
+  try {
+    const remove = await knex("subscribed_user_details")
+      .update({ subscription_status: "unsubscribed" })
+      .where({ user_id: user_id, id: subscription_id });
+    return { status: true, message: "SuccessFully Updated" };
+  } catch (error) {
+    console.log(error);
+    return { status: false, message: "Cannot Update the Subscription" };
+  }
+};
+
+
+// change quantity 
+export const change_quantity = async (userId,subscription_id,quantity) => {
+  try {
+       const change = await knex('subscribed_user_details').update({quantity:quantity}).where({id:subscription_id,user_id:userId});
+       return { status: true, message: "SuccessFully Updated" };
+
+  } catch (error) {
+    console.log(error);
+    return { status: false, message: "Cannot Update the Subscription" };
+  }
+
+  }
+
+  // change subscription plan 
+  export const change_subscriptionplan = async (
+    userId,
+    subscription_id,
+    subscription_plan_id,
+    start_date,
+    customized_days
+    ) => {
+    try{
+      let query = {
+        start_date,
+        user_id: userId,
+        subscribe_type_id: subscription_plan_id,
+      };
+      if( subscription_plan_id==1){
+        
+      const subscriptionplan = await knex("subscribed_user_details").update({start_date:start_date,subscribe_type_id: subscription_plan_id}).where({user_id:userId,id:subscription_id})
+
+      return{status:true,message:"plan change to daily"}
+      }
+      else if (subscription_plan_id==2){
+           
+      const subscriptionplan = await knex("subscribed_user_details").update({start_date:start_date,subscribe_type_id: subscription_plan_id}).where({user_id:userId,id:subscription_id})
+
+      return{status:true,message:"plan change to alternate"}
+
+      }
+      else if (subscription_plan_id==3){      
+          let weekdays = await knex("weekdays").select("id", "name");
+          let store_weekdays = [];
+          for (let i = 0; i < customized_days.length; i++) {
+            for (let j = 0; j < weekdays.length; j++) {
+              if (weekdays[j].id == customized_days[i]) {
+                store_weekdays.push(weekdays[j].name);
+              }
+            }
+          }
+          query.customized_days = JSON.stringify(store_weekdays);
+
+          const subscriptionplan = await knex("subscribed_user_details").update({start_date:start_date,subscribe_type_id: subscription_plan_id,customized_days:store_weekdays}).where({user_id:userId,id:subscription_id}) 
+
+          return{status:true,message:"plan change to customized"}
+          }  
+
+  else{
+        return {status:false,message:"cannot change plan"}
+    }
+
+    }
+    catch(error){
+      console.log(error)
+      return {status:false,message:"cannot change plan"}
+    }
+  }

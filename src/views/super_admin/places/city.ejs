@@ -56,7 +56,7 @@
                                 <div class="modal-dialog modal-dialog-centered" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalCenterTitle">Add zone</h5>
+                                            <h5 class="modal-title" id="exampleModalCenterTitle">Add City</h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
                                                     height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -80,7 +80,7 @@
                                                 </div>
                                             
                                                 
-                                                <div class="form-row mb-4">
+                                                <!-- <div class="form-row mb-4">
                                                     <div class="col-sm-6">
                                                         <label>Latitude (optional)</label>
                                                         <input type="text" class="form-control" wire:model="name" 
@@ -93,7 +93,7 @@
                                                             placeholder="Longitude" name="longitude">
                                                        
                                                     </div>
-                                                </div>
+                                                </div> -->
                                                 
                                             </div>
                                             <div class="modal-footer">
@@ -137,10 +137,10 @@
                             <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
                                 colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
                                 style="width: 86px;">City Name</th>
-                            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                            <!-- <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
                                 aria-label="NAME: activate to sort column ascending" style="width: 100px;">Latitude</th>
                             <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
-                                aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">Longitude</th>
+                                aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">Longitude</th> -->
                             <th class="text-center sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
                                 colspan="1" aria-label="Status: activate to sort column ascending" style="width: 49px;">
                                 Status</th>
@@ -156,8 +156,8 @@
                             <% for(city of data){ %>
                                     <td class="sorting_1"><%=city.id %></td>
                                     <td><%=city.name %></td>
-                                    <td><%= city.latitude ? city.latitude : "N/A"  %> </td>
-                                    <td><%=city.longitude ? city.longitude : "N/A" %></td>
+                                    <!-- <td><%= city.latitude ? city.latitude : "N/A"  %> </td>
+                                    <td><%=city.longitude ? city.longitude : "N/A" %></td> -->
                                    
 
                                     <div>
@@ -221,7 +221,7 @@
                                                     </div>
                                                     
                                                     
-                                                    <div class="form-row mb-4">
+                                                    <!-- <div class="form-row mb-4">
                                                         
                                                             <div class="col-6 ">
                                                                 <label>Latitude (optional)</label>
@@ -236,7 +236,7 @@
                                                                
                                                             </div>
                                                     </div>
-                                                </div>
+                                                </div> -->
                                              
                                                     <div class="modal-footer">
                                                         
@@ -258,6 +258,7 @@
 
                 </table>
             </div>
+            <% if(numberOfPages != 1){ %> 
             <div class="dt--bottom-section d-sm-flex justify-content-sm-between text-center pt-4 ">
                 <div class="dt--pages-count  mb-sm-0 mb-3">
                   <% let search_query =  is_search ? `&searchKeyword=${searchKeyword}` : "" %>
@@ -291,6 +292,7 @@
                 </nav>
             </div>
             </div>
+            <% } %>
         </div>
         <% } %>
     <div id="DataTables_Table_1_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">

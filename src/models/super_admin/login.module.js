@@ -12,7 +12,7 @@ export const checkUser = async (email, password) => {
   try {
     const get_user = await knex("admin_users")
       .select("email", "password", "id" , "user_group_id")
-      .where({ email });
+      .where({ email ,status : "1" });
 
     if (get_user.length === 0) {
       return { status: false, message: "Email Not Found" };

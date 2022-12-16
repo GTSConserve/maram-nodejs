@@ -1,0 +1,96 @@
+<% layout('layouts/boilerPlate') %>
+
+  <div class="widget-content widget-content-area br-6">
+        <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+            <div class="dt--top-section">
+                <div class="row">
+                    <div class="col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center">
+                        <div class="dataTables_length" >
+                            <h4>Pending PO</h4>
+                        </div>
+                    </div>
+
+                    <div class="col-1"></div>
+                    
+                    
+                </div>
+            </div>
+            <% if(data.length === 0){ %> 
+                <h2>No Data Found</h2>
+                
+                    
+                    <% } else {  %>
+            <div class="table-responsive">
+                <table class="table table-striped mb-4" style="width: 100%;  font-weight: bold; box-shadow: 8px 5px 5px 0px #aaa;" id="DataTables_Table_0"
+                    role="grid" aria-describedby="DataTables_Table_0_info">
+                    <thead>
+
+                        <tr role="row">
+                            <!-- <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                                colspan="1"  aria-label="#: activate to sort column descending"
+                                style="width: 86px;">#</th> -->
+                            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                                aria-label="NAME: activate to sort column ascending" style="width: 161px;">Branch Name</th>
+                            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                                aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">Zone</th>
+                            <th class="text-center sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                                colspan="1" aria-label="Status: activate to sort column ascending" style="width: 49px;">
+                                date</th>
+                            <th class="text-center dt-no-sorting sorting" tabindex="0"
+                                aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                                aria-label="Action: activate to sort column ascending" style="width: 56px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- start -->
+                       
+                        <% for(po of data){ %>
+                            <tr role="row">
+                                <td class="sorting_1 font-weight: bold;"><%=po.first_name %></td>
+                            <td><%=po.zone_name %></td>
+                            <td><%=po.date %></td>
+                            
+                            
+                             
+
+                            
+                            <td class="text-center" > <button class="btn btn-sm btn-primary" data-toggle="modal"
+                                 onclick="viewPO(this)"  id="<%= po.id %>">View</button> </td>
+                        </tr>   
+
+                     
+                    
+                        
+                        <% } %>
+
+                        <script>
+                            function viewPO(event){
+                                window.location.href = `/super_admin/po/get_single_po_approved?po_id=${event.id}`
+                            }
+                        </script>
+                       
+                        <!-- end -->
+                        
+                    </tbody>
+                </table>
+            </div>
+  
+
+            
+        <% } %>
+        <div id="DataTables_Table_1_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+            <div class="dt--top-section">
+                <div class="row">
+
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="multi-table table table-bordered table-hover non-hover dataTable" style="width: 100%;"
+                    id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info">
+
+                </table>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>

@@ -36,11 +36,17 @@
 
     <link href="/plugins/drag-and-drop/dragula/dragula.css" rel="stylesheet" type="text/css" />
     <link href="/plugins/drag-and-drop/dragula/example.css" rel="stylesheet" type="text/css" />
-
-    <!-- <link rel="stylesheet" type="text/css" href="/plugins/table/datatable/datatables.css">
+    <link href="/assets/css/apps/invoice-preview.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/forms/theme-checkbox-radio.css">
-    <link rel="stylesheet" type="text/css" href="/plugins/table/datatable/dt-global_style.css">
-    <link rel="stylesheet" type="text/css" href="/plugins/table/datatable/custom_dt_custom.css"> -->
+    <link rel="stylesheet" type="text/css" href="/plugins/table/datatable/datatables.css">
+ <!-- <link rel="stylesheet" type="text/css" href="/plugins/table/datatable/dt-global_style.css">  -->
+    <link rel="stylesheet" type="text/css" href="/plugins/table/datatable/custom_dt_custom.css"> 
+
+
+    <!-- <link rel="stylesheet" type="text/css" href="plugins/table/datatable/datatables.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/forms/theme-checkbox-radio.css">
+    <link rel="stylesheet" type="text/css" href="plugins/table/datatable/dt-global_style.css">
+    <link rel="stylesheet" type="text/css" href="plugins/table/datatable/custom_dt_custom.css"> -->
 
 
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
@@ -77,7 +83,13 @@
     /* .btn-sm{
       border-color: #006E33;
     } */
-
+    input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0; 
+}
 
     .custom-controlcustom-switch{
       color: #006E33;
@@ -148,5 +160,6 @@
 <script src="/plugins/table/datatable/datatables.js"></script>
 <script src="/plugins/drag-and-drop/dragula/dragula.min.js"></script>
 <script src="/plugins/drag-and-drop/dragula/custom-dragula.js"></script>
+<script src="/assets/js/apps/invoice-preview.js"></script>
 
 </html>

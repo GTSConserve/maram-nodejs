@@ -24,7 +24,7 @@ export const userValidator = (payload) => {
   const user_name = payload.user_name ?? null;
   const password = payload.password ?? null;
 
-  if (user_name && password) {
+   if (user_name && password) {
     if (integerValidator(password)) {
       return { status: true, user_name, password };
     } else {

@@ -6,6 +6,7 @@ import purchaseOrderRouter from "./branch_admin/purchaseOrder.route";
 import homeRouter from "./branch_admin/home.route";
 import orderRouter from "./branch_admin/order.route";
 import userRouter from "./branch_admin/user.route";
+import poRouter from "./branch_admin/po.route";
 
 const mainRouter = express.Router({
   caseSensitive: true,
@@ -40,6 +41,10 @@ const defaultRoutes = [
   {
     path: "/user",
     route: userRouter,
+  },
+  {
+    path: "/po",
+    route: poRouter,
   },
 ];
 

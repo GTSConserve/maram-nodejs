@@ -151,6 +151,12 @@
                                     <div class="form-row mb-4" >
                                       
 
+                                            <div class="col-sm-12 pb-4" >
+                                                <label>Previous Route</label>
+                                                <p style="font-weight: 900;"><%=user.route_name  %></p>
+                                                
+                                            </div>
+                                         
                                             <div class="col-sm-4 pb-4" >
                                                 <label>Customer Id</label>
                                                 <p style="font-weight: 900;"><%=user.customer_id %></p>
@@ -272,16 +278,16 @@
                                 </button>
                             </div>
             
-                            <form action="/branch_admin/subscription/subscribed" method="post" >
+                            <form action="/branch_admin/subscription/subscribed?is_exist=true" method="post" >
                                         <div class="modal-body">
                                             <div class="col-sm-12">
-                                                <label>Choose a Route</label>
+                                                <label>Previous  Route</label>
                                                     <select required wire:model="countryid" class="form-control"         
                                                     name="router_id" required>
-                                                    <option value="" disabled selected>Select your Route</option>
+                                                    <option value="<%=user.route_id  %>" selected><%=user.route_name  %></option>
                                                         <% for(route of routes){ %>
     
-                                                            <option style="font-weight: bold;" value="<%=route.id %>"><%=route.starting_point %> -- <%=route.ending_point %> </option>
+                                                            <option style="font-weight: bold;" value="<%=route.id %>"><%=route.name %>  </option>
                                                         <% } %>
     
                                                     </select>
@@ -293,7 +299,7 @@
                                             <div class="widget-content widget-content-area">
                                                 <p>Choose A Date To Start Subscription</p>
                                                 <div class="form-group mb-0">
-                                                    <input required id="basicFlatpickr" name="date" class="form-control flatpickr flatpickr-input active" type="date" placeholder="<%=user.start_date  %>" >
+                                                    <input required id="basicFlatpickr" name="date" class="form-control flatpickr flatpickr-input active" type="date" value="<%=user.start_date  %>" >
                                                 </div>
             
                                                 

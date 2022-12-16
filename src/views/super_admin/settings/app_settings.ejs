@@ -49,7 +49,7 @@
                     </div>
                     <div class="form-group col-md-1">
                             <button class="btn btn-sm btn-primary" data-toggle="modal"
-                                data-target="#addbarcategory">App</button>
+                                data-target="#addbarcategory">Add</button>
                             <!-- __category add__ -->
                             <div wire:ignore.self="" class="modal fade" id="addbarcategory" tabindex="-1"
                                 aria-labelledby="addCategoryTitle" style="display: none;" aria-hidden="true">
@@ -71,21 +71,11 @@
                                         <div class="modal-body">
                                             <form method="post" action="/super_admin/settings/create_appsettings" >
                                                 <div class="form-row mb-4">
-                                                    <div class="col-sm-12">
+                                                    <div class="col-sm-6">
                                                         <label>Name</label>
                                                         <input type="text" class="form-control" wire:model="name" required
                                                             placeholder="Name" name="name">
 
-                                                    </div>
-                                                </div>
-                                            
-                                                
-                                                <div class="form-row mb-4">
-                                                    <div class="col-sm-6">
-                                                        <label>key_id</label>
-                                                        <input type="text" class="form-control" wire:model="name" 
-                                                            placeholder="key_id" name="key_id">
-                                                       
                                                     </div>
                                                     <div class="col-sm-6">
                                                         <label>value</label>
@@ -94,6 +84,17 @@
                                                        
                                                     </div>
                                                 </div>
+                                            
+                                                
+                                              
+                                                    <!-- <div class="col-sm-6">
+                                                        <label>key</label>
+                                                        <input type="text" class="form-control" wire:model="name" 
+                                                            placeholder="key" name="key">
+                                                       
+                                                    </div> -->
+                                                   
+                                             
                                                 
                                             </div>
                                             <div class="modal-footer">
@@ -113,7 +114,7 @@
             </div>
 
             <% if(data.length === 0){ %> 
-                <h2>No App Found</h2>
+                <h2>No App Settings Found</h2>
                 <% }else if(loading) { %>
                     <div class="row">
                         <div class="col-5">
@@ -133,12 +134,12 @@
                         <tr role="row">
                             <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
                                 colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
-                                style="width: 86px;">App Id</th>
+                                style="width: 86px;">#</th>
                             <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
                                 colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
                                 style="width: 86px;"> Name</th>
-                            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
-                                aria-label="NAME: activate to sort column ascending" style="width: 100px;">key_id</th>
+                            <!-- <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                                aria-label="NAME: activate to sort column ascending" style="width: 100px;">key</th> -->
                             <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
                                 aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">value</th>
                             <th class="text-center sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
@@ -156,7 +157,7 @@
                             <% for(app_settings of data){ %>
                                     <td class="sorting_1"><%=app_settings.id %></td>
                                     <td><%=app_settings.name %></td>
-                                    <td><%=app_settings.key_id %> </td>
+                                    <!-- <td><%=app_settings.key %> </td> -->
                                     <td><%=app_settings.value %></td>
                                    
 
@@ -212,11 +213,17 @@
                                             <div class="modal-body">
                                                 <form method="post" action="/super_admin/settings/update_appsettings">
                                                     <div class="form-row mb-4">
-                                                        <div class="col-sm-12">
+                                                        <div class="col-sm-6">
                                                             <label> Name</label>
                                                             <input type="text" class="form-control" wire:model="name"
                                                                 placeholder="Name" name="name" value="<%=app_settings.name %>" required>
 
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <label>value</label>
+                                                            <input type="text" class="form-control" wire:model="name" 
+                                                                placeholder="value" name="value" value="<%= app_settings.value %>">
+                                                           
                                                         </div>
 
                                                     </div>
@@ -224,18 +231,13 @@
                                                     
                                                     <div class="form-row mb-4">
                                                         
-                                                            <div class="col-6 ">
-                                                                <label>key_id</label>
+                                                            <!-- <div class="col-6 ">
+                                                                <label>key</label>
                                                                 <input type="text" class="form-control" wire:model="name" 
-                                                                    placeholder="key_id" name="key_id" value="<%= app_settings.key_id %>">
+                                                                    placeholder="key" name="key" value="<%= app_settings.key %>">
                                                                
-                                                            </div>
-                                                            <div class="col-6">
-                                                                <label>value</label>
-                                                                <input type="text" class="form-control" wire:model="name" 
-                                                                    placeholder="value" name="value" value="<%= app_settings.value %>">
-                                                               
-                                                            </div>
+                                                            </div> -->
+                                                           
                                                     </div>
                                                 </div>
                                              
@@ -259,6 +261,7 @@
 
                 </table>
             </div>
+            <% if(numberOfPages != 1){ %> 
             <div class="dt--bottom-section d-sm-flex justify-content-sm-between text-center pt-4 ">
                 <div class="dt--pages-count  mb-sm-0 mb-3">
                   <% let search_query =  is_search ? `&searchKeyword=${searchKeyword}` : "" %>
@@ -282,7 +285,7 @@
                
                
                
-               \
+            
                                     <li class="page-item" style="padding-left: 5px;"><a  href="/super_admin/settings/app_settings?page=<%=i%><%= search_query %>"><%=i%></a></li>
                             <% } %>
                         
@@ -297,6 +300,7 @@
                 </nav>
             </div>
             </div>
+            <% } %>
         </div>
         <% } %>
     <div id="DataTables_Table_1_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">

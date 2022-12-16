@@ -1,6 +1,6 @@
 import express from "express";
 
-import { newSubscription,getAllSubscription,getSubscriptionPlan,singleSubscription,getSubcription_order,createAdditionalOrder,removeAdditionalOrder,editAdditionalOrder } from "../../controllers/user/subscription.controller";
+import { newSubscription,getAllSubscription,getSubscriptionPlan,singleSubscription,getSubcription_order,createAdditionalOrder,removeAdditionalOrder,editAdditionalOrder, Remove_Subscription, changeQuantity, changeSubscriptionplan } from "../../controllers/user/subscription.controller";
 
 import {authenticateJWT} from  '../../middlewares/authToken.middleware'
 
@@ -21,6 +21,10 @@ subscriptionRouter.post("/remove_additional_order",authenticateJWT,removeAdditio
 
 
 subscriptionRouter.post("/subcription_order",authenticateJWT, getSubcription_order);
+subscriptionRouter.post("/remove_subscription",authenticateJWT,Remove_Subscription);
+subscriptionRouter.post("/change_quantity",authenticateJWT,changeQuantity);
+subscriptionRouter.post("/change_subscriptionplan",changeSubscriptionplan);
+
 
 
 export default subscriptionRouter;

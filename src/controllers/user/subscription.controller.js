@@ -7,6 +7,9 @@ import {
   get_subscription_product,
   single_subscription,
   get_subcription_order,
+  remove_subscription,
+  change_quantity,
+  change_subscriptionplan,
 } from "../../models/user/subscription.model";
 import knex from "../../services/db.service";
 
@@ -310,3 +313,91 @@ export const getSubcription_order = async (req, res) => {
       .json({ status: false, message: messages.SERVER_ERROR });
   }
 };
+
+
+
+export const Remove_Subscription = async (req,res)=> {
+  try {
+    const {user_id,subscription_id}= req.body;
+
+    if (!user_id || !subscription_id) {
+      return res
+        .status(responseCode.FAILURE.BAD_REQUEST)
+        .json({ status: false, message: messages.MANDATORY_ERROR });
+    }
+
+    const unsubscription = await remove_subscription(user_id,subscription_id)
+
+    if(unsubscription.status){
+      return res.status(responseCode.SUCCESS).json(unsubscription)
+    }else{
+      return res.status(responseCode.FAILURE.DATA_NOT_FOUND).json(unsubscription)
+
+    }
+
+
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
+      .json({ status: false, message: messages.SERVER_ERROR });
+    
+  }
+}
+
+
+// change  subscription quantity 
+ export const changeQuantity = async (req,res) => {
+  try{
+       const {userId,subscription_id,quantity} = req.body;
+
+       if(!userId || !subscription_id || !quantity){
+        return res
+        .status(responseCode.FAILURE.BAD_REQUEST)
+        .json({ status: false, message: messages.MANDATORY_ERROR });
+       }
+       const quantity1 = await change_quantity(userId,subscription_id,quantity)
+       if(quantity.status){
+        return res.status(responseCode.SUCCESS).json(quantity1)
+    }else{
+      return res.status(responseCode.FAILURE.DATA_NOT_FOUND).json(quantity1)
+
+    }
+
+  }
+  catch(error){
+    console.log(error);
+    return res
+    .status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
+    .json({ status: false, message: messages.SERVER_ERROR });
+  
+  }
+ }
+
+
+//  change subscription plan
+export const changeSubscriptionplan = async (req,res) => {
+  try{
+    const {userId,
+      subscription_id,
+      subscription_plan_id,
+      start_date,
+      customized_days
+    } = req.body;
+    
+    const changeplan = await change_subscriptionplan(userId,
+      subscription_id,
+      subscription_plan_id,
+      start_date,
+      customized_days
+      );
+      return res.status(responseCode.SUCCESS).json(changeplan)
+    
+  }
+  catch(error){
+    console.log(error);
+    return res
+    .status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
+    .json({status:false,message: messages.SERVER_ERROR})
+  }
+}

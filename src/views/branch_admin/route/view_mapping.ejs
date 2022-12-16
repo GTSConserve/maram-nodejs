@@ -76,14 +76,31 @@
                                 </div>
 
                                 <script>
-                                    function submitHandler(){
+                                    async function submitHandler(){
                                       
                                         let elements = document.querySelectorAll(".viewMappingValue");
                                         let values = []
                                         for(let i = 0; i < elements.length; i++) {
-                                           values.push(elements[i].dataset.value)
+                                           values.push(Number(elements[i].dataset.value))
                                         }
                                       
+
+                                        
+                                      
+                                                    await fetch('/branch_admin/route/update_view_mapping?router_id=<%=router_id %>', {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'Accept': 'application/json',
+                                                        'Content-Type': 'application/json'
+                                                    },
+                                                    body: JSON.stringify({"values": values  })
+                                                    })
+                                                    
+                                                   
+                                                 window.location.reload("/branch_admin/route/view_mapping?route_id=<%=router_id %>")
+                                                 
+
+
                                     }
                                 </script>
 

@@ -18,7 +18,7 @@ export const getAppSettings = async (req, res) => {
   
       if (searchKeyword) {
         const search_data_length = await knex.raw(
-          `SELECT name,key_id,value FROM app_settings WHERE name LIKE '%${searchKeyword}%'`
+          `SELECT id,name,value,app_settings.key FROM app_settings WHERE name LIKE '%${searchKeyword}%'`
         );
   
         data_length = search_data_length[0];
@@ -56,13 +56,13 @@ export const getAppSettings = async (req, res) => {
       let is_search = false;
       if (searchKeyword) {
         results = await knex.raw(
-          `SELECT name,key_id,value FROM app_settings
+          `SELECT id,name,app_settings.key,value,status FROM app_settings
           WHERE app_settings.name LIKE '%${searchKeyword}%' LIMIT ${startingLimit},${resultsPerPage}`
         );
         is_search = true;
       } else {
         results = await knex.raw(
-          `SELECT name,key_id,value FROM app_settings  LIMIT ${startingLimit},${resultsPerPage}`
+          `SELECT id,name,app_settings.key,value,status FROM app_settings  LIMIT ${startingLimit},${resultsPerPage}`
         );
       }
   
@@ -90,7 +90,7 @@ export const getAppSettings = async (req, res) => {
   
   export const createAppsettings = async (req, res) => {
     try {
-      const { name,key_id,value } = req.body;
+      const { name,key,value } = req.body;
   
       if (!name) {
         req.flash("error", "Name is missing");
@@ -103,8 +103,8 @@ export const getAppSettings = async (req, res) => {
    
       }
   
-      if(key_id){
-        query.key_id=  key_id
+      if(key){
+        query.key=  key
       }
       if(value){
         query.value = value
@@ -122,7 +122,7 @@ export const getAppSettings = async (req, res) => {
 
   export const updateappsettings = async (req, res) => {
     try {
-      const { name,key_id,value,id } = req.body;
+      const { name,key,value,id } = req.body;
   
       if (!name) {
         req.flash("error", "Name is missing");
@@ -134,8 +134,8 @@ export const getAppSettings = async (req, res) => {
       query.name = name;
      
     
-      if (key_id) {
-        query.key_id = key_id;
+      if (key) {
+        query.key = key;
       }
       if (value) {
         query.value = value;
@@ -153,7 +153,7 @@ export const getAppSettings = async (req, res) => {
   
   export const updateSettingsStatus = async (req, res) => {
     try {
-      const { status, id } = req.body;
+      const { status,id } = req.body;
   
       if (status == "1") {
         await knex("app_settings").update({ status: "0" }).where({ id: id });

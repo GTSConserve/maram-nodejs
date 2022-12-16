@@ -12,10 +12,10 @@ import { add_feedback, get_AppSettings } from '../../models/user/general.model';
         }
         res.status(200).json({ status: true,data: appSettingData }) 
        
-        res.status(200).json({ status: true,data: settings.body }) 
+        // res.status(200).json({ status: true,data: settings.body }) 
       }
       catch (error) {
-       
+        console.log(error);
         res.status(500).json({ status: false,error }) 
       }
       }

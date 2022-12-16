@@ -1,13 +1,4 @@
-<!-- <style>
 
-div.c {
-  position: absolute;
-  right: 150px;  
-  width: 200px;
-  height: 120px;
-  border: 3px solid green;
-} 
-</style> -->
 <% layout('layouts/boilerPlate') %>
     <div class="widget-content widget-content-area br-6">
         <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
@@ -95,8 +86,7 @@ div.c {
                             <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
                             colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
                             style="width: 50px;">product type</th>
-                        <!-- <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
-                            aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">Address</th> -->
+                        
                             
                         <th class="text-center dt-no-sorting sorting" tabindex="0"
                             aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
@@ -106,23 +96,17 @@ div.c {
                 <tbody>
     
                     <tr role="row" >
-    
-                        <% for(user of data){ %>
-                                <td class="sorting_1"><%=user.customer_id %></td>
-                                <td class="sorting_1"><%=user.user_name %></td>
-                                <td ><%=user.route_name%></td>
+
+                        <% for(user1 of data){ %>
+                                <td class="sorting_1"><%=user1.customer_id %></td>
+                                <td class="sorting_1"><%=user1.user_name %></td>
+                                <td ><%=user1.router_name%></td>
                                 
-                                <td><%=user.address %></td>
-                                <td><%=user.mobile_number %> </td>
-                                <!-- <td><%=user.start_date %></td> -->
-                                <!-- <td><%=user.address %></td> -->
-                            
-                                <!-- <div class="col-sm-6 pb-4">
-                                    <label>Address</label>
-                                    <p style="font-weight: 900;"><%=user.address %></p>
-                                    
-                                </div> -->
-                              <td></td>
+                                <td><%=user1.address %></td>
+                                <td><%=user1.mobile_number %> </td>
+                                <td><%=user1.product_type %></td>
+                                
+                          
     
                                 <div>
                                     
@@ -153,7 +137,9 @@ div.c {
                                     </svg>
                                 </button>
                             </div>
-    
+                            <% if(data.address === data2.address){ %> 
+
+                            <% for(user of data2){ %>
                             <div class="modal-body" >
                                
                                     <div class="form-row mb-4" >
@@ -161,7 +147,7 @@ div.c {
 
                                             <div class="col-sm-4 pb-4" >
                                                 <label>Customer Id</label>
-                                                <p style="font-weight: 900;"><%=user.id %></p>
+                                                <p style="font-weight: 900;"><%=user.customer_id%></p>
                                                 
                                             </div>
                                             <div class="col-sm-4">
@@ -175,23 +161,28 @@ div.c {
                                                
                                                 
                                             </div>
-                                  
-                                            
+
                                             <div class="col-sm-4 pb-4">
-                                                <label>Price</label>
-                                                <p style="font-weight: 900;"><%=user.price %></p>
+                                                <label>Address</label>
+                                                <p style="font-weight: 900;"><%=user.address %></p>
                                                 
                                             </div>
+                                  
                                             <div class="col-sm-4">
-                                                <label>Unit Value</label>
-                                                <p style="font-weight: 900;"><%=user.unit_value %></p>
+                                                <label>Landmark</label>
+                                                <p style="font-weight: 900;"><%=user.landmark ? user.landmark : "N/A" %></p>
+                                              
                                                 
                                             </div>
-                                            <div class="col-sm-4 ">
-                                                <label>Unit Type</label>
-                                                <p style="font-weight: 900;"><%=user.value %></p>
+
+                                            <div class="col-sm-4 mt-4">
+                                                <label>Subscription Type</label>
+                                                <p style="font-weight: 900;"><%=user. Subscription_type  %></p>
+                                               
                                                 
-                                            </div>
+                                            </div>                                                                          
+
+                                           
                                             <div class="col-sm-4 pb-4">
                                                 <label>Product name</label>
                                                 <p style="font-weight: 900;"><%=user.product_name %></p>
@@ -203,67 +194,47 @@ div.c {
                                                 <p style="font-weight: 900;"><%=user.category_name %></p>
                                                 
                                             </div>
+
+                                            <div class="col-sm-4">
+                                                <label> Address</label>
+                                                <p style="font-weight: 900;"><%=user.address %></p>
+                                                
+                                            </div>
                                             <div class="col-sm-4 ">
                                                 <label>Quantity</label>
                                                 <p style="font-weight: 900;"><%=user.quantity %></p>
                                                 
                                             </div>
-                                            <div class="col-sm-6 pb-4">
-                                                <label>Address</label>
-                                                <p style="font-weight: 900;"><%=user.address %></p>
+                                            
+
+                                            <div class="col-sm-4">
+                                                <label>Unit Value</label>
+                                                <p style="font-weight: 900;"><%=user.unit_value %></p>
                                                 
                                             </div>
-                                            <div class="col-sm-6">
-                                                <label>Landmark</label>
-                                                <p style="font-weight: 900;"><%=user.Landmark ? user.Landmark : "N/A" %></p>
-                                              
+                                            
+                                            <div class="col-sm-4 ">
+                                                <label>Unit Type</label>
+                                                <p style="font-weight: 900;"><%=user.unit_type %></p>
                                                 
                                             </div>
-                                            <div class="col-sm-6">
-                                                <label> Start date</label>
-                                                <p style="font-weight: 900;"><%=user.start_date %></p>
-                                                
-                                                
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <label>Subscription Start date</label>
-                                                <p style="font-weight: 900;"><%=user.subscription_start_date ? user.subscription_start_date : "N/A" %></p>
-                                                
+                                            <div class="col-sm-4 pb-4">
+                                                <label>Price</label>
+                                                <p style="font-weight: 900;"><%=user.price %></p>
                                                 
                                             </div>
-                                            <div class="col-sm-6 mt-4">
-                                                <label>Subscription Type</label>
-                                                <p style="font-weight: 900;"><%=user.subscription_name  %></p>
-                                               
-                                                
-                                            </div>
-                                            <% if(user.customized_days){ %> 
-                                            <div class="col-sm-4 mt-4">
-                                                <label>Customized Days</label>
-                                                <div class="element-background">
-                                                    <ul class="list-icon">
-                                                        <% for(day of user.customized_days){ %> 
-                                                        <li>
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                                                            <span style="font-weight: 900;" class="list-text"><%= day%></span>
-                                                        </li>
-                                                        <% } %> 
-                                                        
-                                                    </ul>
-                                                </div>
-                                                
-                                            </div>
-                                            <% } %> 
-                                    </div>
-                                    
+                                            <% } %>                           
+                                            <% } %>
+                                        </div>
+                                        
                                     <div class="modal-footer">
                                         
                                         <button type="button" name="id" value="<%=user.id %>" class="btn btn-danger" id="addmodalClose" data-dismiss="modal"><i
                                             class="flaticon-cancel-12"></i>Discard</button>
                                             
                                     </div>
-                           
-                        </div>
+                        </div> 
+                        
                     </div>
                 </div>
                 </div>

@@ -94,7 +94,7 @@
 
                                             <div class="col-sm-6  p-1">
                                                 <label>Mobile Number</label>
-                                                <input type="text" wire:model="name" minlength="10" maxlength="10" name="mobile_number" placeholder="Enter 10 digit mobile number" required
+                                                <input type="number" wire:model="name" minlength="10" max="10" maxlength="10" name="mobile_number" placeholder="Enter 10 digit mobile number" required
                                                     class="form-control">
 
                                             </div>
@@ -145,11 +145,11 @@
                             style="width: 20px;">#</th>
                         <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
                             colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
-                            style="width: 86px;">User Name</th>
+                            style="width: 86px;">Rider Id</th>
                         <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
-                            aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">Mobile Number</th>
+                            aria-label="IMAGE: activate to sort column ascending" style="width: 53px;"> Rider Name</th>
                             <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
-                            aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">Name</th>
+                            aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">Mobile Number</th>
                         <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
                             aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">Address</th>
                         <th class="text-center sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
@@ -167,8 +167,8 @@
                         <% for(user of data){ %>
                                 <td class="sorting_1"><%=user.id %></td>
                                 <td><%=user.user_name %></td>
-                                <td ><%=user.mobile_number %></td>
                                 <td><%=user.name %></td>
+                                <td ><%=user.mobile_number %></td>
                                 <td><%=user.address %></td>    
                                 <div>
                                     <td style="text-align: center; vertical-align: middle;">
@@ -277,6 +277,7 @@
                 
             </table>
         </div>
+        <% if(numberOfPages != 1){ %> 
         <div class="dt--bottom-section d-sm-flex justify-content-sm-between text-center pt-4 ">
             <div class="dt--pages-count  mb-sm-0 mb-3">
               <% let search_query =  is_search ? `&searchKeyword=${searchKeyword}` : "" %>
@@ -310,6 +311,7 @@
                     </nav>
                 </div>
             </div>
+            <% } %>
         </div>
         <% } %>
     <div id="DataTables_Table_1_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">

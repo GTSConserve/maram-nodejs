@@ -176,7 +176,7 @@ export const logoutHandler = async (req, res) => {
   }
 };
 
-export const loginForm = async (req, res) => {
+export const  loginForm = async (req, res) => {
   let token = req.session.token;
 
   if (token) {
@@ -246,7 +246,7 @@ export const sendPasswordResetEmail = async (req,res) => {
   try {
     const email = req.body
     if (email) {
-      // console.log(email)
+      console.log(email)
       const transporter = nodemailer.createTransport({
         service: 'gmail',
         host:  "smtp.gmail.com",
@@ -275,9 +275,12 @@ export const sendPasswordResetEmail = async (req,res) => {
         }
       });
     }
+    res.render("auth/change_password");
     res.status(200).json({ status: true,message:"message send successfully" }) 
   } catch (error) {
-    res.status(500).json({ status: false,error }) 
+    res.render("auth/change_password");
+    res.status(500).json({ status: false,error })
+     
   }
   
 }
@@ -367,7 +370,7 @@ export const updateEmailPassword = async (req, res) => {
 
 export const getPasswordRecovery = async (req, res) => {
   try {
-    console.log("hiiiii")
+    // console.log("hiiiii")
     res.render("auth/auth_pass_recovery");
   } catch (error) {
     console.log(error);

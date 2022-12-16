@@ -183,16 +183,20 @@
                 <tr role="row"  >
                     <th  class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
                         colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
-                        style="width: 30px;">Product Code</th>
+                        style="width: 5px;">#</th>
+                   
                     <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
                         colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
-                        style="width: 86px;">Name</th>
+                        style="width: 86px;">Product Name</th>
                     <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
                         aria-label="NAME: activate to sort column ascending" style="width: 30px;">Unit Value</th>
                     <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
                         aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">Unit Type</th>
                     <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
                         aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">Price</th>
+                        <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                        colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
+                        style="width: 86px;">Product Type</th>
                     <th class="text-center sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
                         colspan="1" aria-label="Status: activate to sort column ascending" style="width: 49px;">
                         Status</th>
@@ -206,11 +210,12 @@
                 <tr role="row" >
 
                     <% for(product of data){ %>
-                            <td class="sorting_1"><%=product.id %></td>
+                            <td  class="sorting_1"><%=product.id %></td>
                             <td><%=product.product_name %></td>
                             <td ><%=product.unit_value %></td>
                             <td><%=product.value %></td>
                             <td><%=product.price %></td>
+                            <td><%=product.product_type_name %></td>
                             <!-- <td><img style="width: 150px;height : 120px" src="<%=product.image %>"></td> -->
                             <!-- <td><%=product.product_type %></td> -->
 
@@ -253,7 +258,7 @@
 <!-- edit -->
                         <div wire:ignore.self="" class="modal fade" id="editCategory<%=product.id %>" tabindex="-1"
                 aria-labelledby="addCategoryTitle" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalCenterTitle">Edit Product</h5>
@@ -271,13 +276,13 @@
                         <div class="modal-body">
                             <form method="post" action="/super_admin/product/update_product"  enctype="multipart/form-data">
                                 <div class="form-row mb-4">
-                                    <div class="col-sm-6">
+                                    <div class="col-sm-4">
                                         <label>Names</label>
                                         <input type="text" class="form-control" wire:model="name"
                                             placeholder="Name"  value="<%=product.product_name %>" name="product_name">
 
                                     </div>
-                                    <div class="col-6">
+                                    <div class="col-sm-4">
                                         <label>Unit Type</label>
                                         <select wire:model="countryid" class="form-control" name="unit_type_id">
                                             <option value=""><%=product.value %></option>
@@ -289,9 +294,8 @@
                                         </select>
 
                                     </div>
-                                </div>
-                                <div class="form-row mb-4">
-                                    <div class="col-sm-6">
+
+                                    <div class="col-sm-4">
                                         <label>Category</label>
                                         <select wire:model="countryid" class="form-control" name="category_id">
                                             <option value=""><%=product.category_name %></option>
@@ -303,7 +307,10 @@
                                         </select>
 
                                     </div>
-                                    <div class="col-6">
+                                </div>
+                                <div class="form-row mb-4">
+                                    
+                                    <div class="col-4">
                                         <label>Product Type</label>
                                         <select wire:model="countryid" class="form-control" name="product_type_id">
                                             <option value=""><%=product.product_type_name %></option>
@@ -315,33 +322,32 @@
                                         </select>
 
                                     </div>
-                                </div>
-                                <div class="form-row mb-4">
-                                    <div class="col-sm-6">
-                                        <label>Description</label>
-                                        <textarea name="description" placeholder="Description..." class="form-control"><%= product.description %></textarea>
-                
-                                    </div>
-                                </div>
-                                <div class="form-row mb-4">
-                                    <div class="col-6 ">
-                                        <label>Price</label>
-                                        <input type="text" class="form-control" wire:model="name"
-                                            placeholder="price" value="<%= product.price %>" name="price">
-                
-                                    </div>
-                                    <div class="col-6 ">
+
+                                    <div class="col-4 ">
                                         <label>Unit Value</label>
                                         <input type="text" class="form-control" wire:model="name"
                                             placeholder="Unit Value" value="<%= product.unit_value %>" name="unit_value">
                 
                                     </div>
+                                    <div class="col-4">
+                                        <label>Price</label>
+                                        <input type="text" class="form-control" wire:model="name"
+                                            placeholder="price" value="<%= product.price %>" name="price">
+                
+                                    </div>
                                 </div>
+                                
+                               
                                 <div class="form-row mb-4">
-                                    <div class="col-sm-10">
+                                    <div class="col-sm-6">
+                                        <label>Description</label>
+                                        <textarea  class="form-control"  name="description"   placeholder="description" ><%=product.description %></textarea> 
+                                            
+                                    </div>
+                                    <div class="col-sm-6">
                                         <label>Image (Old Image)</label>
                                         <div>
-                                            <img style="width: 150px;height : 120px" class="pb-3" src="<%=product.image %>">
+                                            <img style="width: 200px;height : 150px" class="pb-5" src="<%=product.image %>">
                                             <input type="file" wire:model="image" placeholder="Image" name="image"
                                             
                                             class="form-control">
@@ -365,7 +371,7 @@
 
 <div wire:ignore.self="" class="modal fade" id="viewCategory<%=product.id %>" tabindex="-1"
     aria-labelledby="addCategoryTitle" style="display: none;" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalCenterTitle">View Product</h5>
@@ -382,71 +388,69 @@
 
             <div class="modal-body">
                 <div class="form-row mb-4">
-                    <div class="col-6 ">
+                    <div class="col-4 ">
                         <label>Name</label>
+                        <p style="font-weight: 900;"><%=product.product_name %></p>
+                        <!-- <label>Name</label>
                         <input type="text" class="form-control" wire:model="name" name="name" 
-                            placeholder="Name"  value="<%= product.product_name %>">
+                            placeholder="Name"  value="<%= product.product_name %>"> -->
 
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-4">
                         <label>Unit</label>
-                        <input type="text" class="form-control" wire:model="name"
-                        placeholder="price" value="<%= product.value %>" name="price">
+                        <p style="font-weight: 900;"><%=product.value %></p>
                        
                     </div>
-                    
-                    
-                </div>
-
-                <div class="form-row mb-4">
-                    <div class="col-sm-6">
+                    <div class="col-sm-4">
                         <label>Category</label>
-                        <input type="text" class="form-control" wire:model="name"
-                        placeholder="price" value="<%= product.category_name %>" name="price">
+                        <p style="font-weight: 900;"><%=product.category_name %></p>
 
                     </div>
-                    <div class="col-sm-6  ">
+                    
+                </div>
+
+                <div class="form-row mb-4">
+                    
+                    <div class="col-sm-4">
                         <label>Product Type</label>
-                        <input type="text" class="form-control" wire:model="name"
-                        placeholder="price" value="<%= product.product_type_name %>" name="price">
-
-                    </div>
-                </div>
-
-                <div class="form-row mb-4">
-                    <div class="col-sm-12">
-                        <label>Description</label>
-                        <textarea name="description" placeholder="Description..." class="form-control"><%= product.description %></textarea>
-
-                    </div>
-                </div>
-                <div class="form-row mb-4">
-                    <div class="col-6 ">
-                        <label>Price</label>
-                        <input type="text" class="form-control" wire:model="name"
-                            placeholder="price" value="<%= product.price %>" name="price">
-
-                    </div>
-                    <div class="col-6 ">
-                        <label>Unit Value</label>
-                        <input type="text" class="form-control" wire:model="name"
-                            placeholder="Unit Value" value="<%= product.unit_value %>" name="unit_value">
-
-                    </div>
-                </div>
-
-              
-
-                <div class="form-row mb-4">
-                    <div class="col-12 mr-4"></div>
-                    <label>Image</label>
-                    <div class="col-11">
+                        <p style="font-weight: 900;"><%=product.product_type_name %></p>
                         
-                   
-                        <img src="<%=product.image  %>" style="width : 200px ; height : 150px;">
+
+                    </div>
+
+                    <div class="col-4">
+                        <label>Price</label>
+                        <p style="font-weight: 900;"><%=product.price %></p>
+
+                    </div>
+                    
+                    <div class="col-4 ">
+                        <label>Unit Value</label>
+                        <p style="font-weight: 900;"><%=product.unit_value %></p>
 
                     </div>
                 </div>
+
+                <div class="form-row mb-4">
+
+                    <div class="col-sm-6">
+                        <label>Description</label>
+                        <p style="font-weight: 900;"><%=product.description %></p>
+                        <!-- <textarea required name="description" placeholder="Description..." class="form-control"></textarea> -->
+
+                    </div>
+
+                    <div class="form-row mb-4">
+                        <div class="col-12 mr-4"></div>
+                        <label>Image</label>
+                        <div class="col-11">
+                            
+                       
+                            <img src="<%=product.image  %>" style="width: 200px;height : 150px">
+    
+                        </div>
+                    </div>
+                                   </div>
                     <div class="modal-footer">
                         
                         <button type="button" name="id" value="<%=product.id %>" class="btn btn-danger" id="addmodalClose" data-dismiss="modal"><i
@@ -470,6 +474,7 @@
 
         </table>
     </div>
+    <% if(numberOfPages != 1){ %> 
     <div class="dt--bottom-section d-sm-flex justify-content-sm-between text-center pt-4 ">
         <div class="dt--pages-count  mb-sm-0 mb-3">
           <% let search_query =  is_search ? `&searchKeyword=${searchKeyword}` : "" %>
@@ -503,6 +508,7 @@
         </nav>
     </div>
     </div>
+    <% } %>
 </div>
 <% } %>
     <div id="DataTables_Table_1_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">

@@ -22,7 +22,7 @@ export const insertData = async (req, res) => {
 
 
     // weekdays
-    // await knex("weekdays").insert(week_days)
+    await knex("weekdays").insert(week_days)
 
     //banners
     await knex("banners").insert(banners);

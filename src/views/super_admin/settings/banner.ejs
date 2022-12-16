@@ -40,7 +40,7 @@
                                        
                                         const text = document.getElementById("searchText").value;
                             
-                                        window.location.href = `super_admin/settings/get_banner?searchKeyword=${text}`
+                                        window.location.href = `/super_admin/settings/get_banner?searchKeyword=${text}`
                               
                                  
                                 };
@@ -70,7 +70,7 @@
                                         </div>
 
                                         <div class="modal-body">
-                                            <form method="post" action="super_admin/settings/create_banners"  enctype="multipart/form-data">
+                                            <form method="post" action="/super_admin/settings/create_banners"  enctype="multipart/form-data">
                                             <div class="form-row mb-4">
                                                 <div class="col-sm-10">
                                                     <label>Name</label>
@@ -141,7 +141,7 @@
                        
                         <% for(banner of data){ %>
                             <tr role="row">
-                                <td class="sorting_1 font-weight: bold;"><%=banner.id %></td>
+                                <td class="sorting_1"><%=banner.id %></td>
                             <td><%=banner.name %></td>
                             <td><img style="width: 150px;height : 120px" src="<%=banner.image %>"></td>
                             
@@ -156,7 +156,7 @@
                                         
                                             <script >
                                                async function onToDochange(event) {
-                                                await fetch('super_admin/settings/update_banner_status', {
+                                                await fetch('/super_admin/settings/update_banner_status', {
                                                 method: 'POST',
                                                 headers: {
                                                     'Accept': 'application/json',
@@ -165,7 +165,7 @@
                                                 body: JSON.stringify({"id": event.id , "status" : event.value})
                                                 })
                                              
-                                                window.location.reload("super_admin/settings/get_banner")
+                                                window.location.reload("/super_admin/settings/get_banner")
                                             };
                                             </script>
                                      
@@ -196,7 +196,7 @@
                                 </div>
 
                                 <div class="modal-body">
-                                    <form method="post" action="super_admin/settings/update_banners"  enctype="multipart/form-data">
+                                    <form method="post" action="/super_admin/settings/update_banners"  enctype="multipart/form-data">
                                         <div class="form-row mb-4">
                                             <div class="col-sm-10">
                                                 <label>Name</label>
@@ -236,7 +236,7 @@
                 </table>
             </div>
   
-
+            <% if(numberOfPages != 1){ %> 
             <div class="dt--bottom-section d-sm-flex justify-content-sm-between text-center pt-4 ">
                 <div class="dt--pages-count  mb-sm-0 mb-3">
                   <% let search_query =  is_search ? `&searchKeyword=${searchKeyword}` : "" %>
@@ -246,7 +246,7 @@
                     <ul class="pagination-default pagination">
                         <% if(page > 1) { %> 
                             <li class="prev">
-                                <a href="super_admin/settings/get_banners?page=<%=page-1%><%= search_query %>"  style="padding-left: 5px;">Prev</a>
+                                <a href="/super_admin/settings/get_banner?page=<%=page-1%><%= search_query %>"  style="padding-left: 5px;">Prev</a>
                       
                              <% } %>
                        
@@ -256,12 +256,12 @@
                                   
                                     <% continue; %>
                                     <% } %>
-                                    <li class="page-item" style="padding-left: 5px;"><a  href="super_admin/settings/get_banners?page=<%=i%><%= search_query %>"><%=i%></a></li>
+                                    <li class="page-item" style="padding-left: 5px;"><a  href="/super_admin/settings/get_banner?page=<%=i%><%= search_query %>"><%=i%></a></li>
                             <% } %>
                         
                         <% if(page < numberOfPages) { %>
                             <li class="next" style="padding-left: 5px;">
-                                <a  href="super_admin/settings/get_banners?page=<%=page+1%><%= search_query %>">Next</a>
+                                <a  href="/super_admin/settings/get_banner?page=<%=page+1%><%= search_query %>">Next</a>
                             </li>
                           
                              <% } %>
@@ -270,6 +270,7 @@
                 </nav>
             </div>
             </div>
+            <% } %>
         </div>
         <% } %>
         <div id="DataTables_Table_1_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">

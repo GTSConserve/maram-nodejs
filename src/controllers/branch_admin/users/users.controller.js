@@ -15,7 +15,7 @@ export const getusers = async (req, res) => {
 
     if (searchKeyword) {
       const search_data_length = await knex.raw(
-        `SELECT  user_address.id FROM  user_address
+        `SELECT  users.name,users.user_unique_id  FROM  user_address
         JOIN users ON users.id = user_address.user_id
         WHERE user_address.branch_id= ${admin_id} AND users.name LIKE '%${searchKeyword}%'`
       );   
@@ -54,107 +54,39 @@ export const getusers = async (req, res) => {
       iterator,
       endingLink,
     } = await getPageNumber(req, res, data_length, "users/users");
-//     const user = await knex ('add_on_orders').select('user_id').where({branch_id: admin_id });
-//     // console.log(user);
-
-//     const user1 = await knex ('subscribed_user_details').select('user_id').where({branch_id: admin_id });;
-//     // console.log(user1);
-// const user2 =[];
-// const user4 =[];
-// for (let k=0; k<user1.length;k++) {
-//   const user2 = user1[k].user_id;}
-
-
-//   // const numbers = [1, 2, 3, 2, 4, 5, 5, 6];
-
-// const set = new Set(user2);
-
-// const duplicates = user2.filter(item => {
-//     if (set.has(item)) {
-//         set.delete(item);
-//     } else {
-//         return item;
-//     }
-// });
-
-// console.log(duplicates.value);
-// // var values = [
-// //   { name: 'someName1' },
-// //   { name: 'someName2' },
-// //   { name: 'someName4' },
-// //   { name: 'someName2' }
-// // ];
-
-// var valueArr = user1.map(function(item){ return item.user_id });
-// var isDuplicate = valueArr.some(function(item, idx){ 
-//   return valueArr.indexOf(item) != idx 
-// });
-// console.log(isDuplicate);
-
-
-// // return findDuplicates(user1)
-// // console.log( findDuplicates(user1));
-
-// // for (let i=0; i<user1.length ; i++){ 
-// //     for ( let j=i+1; j<user1.length ; j++){
-// //         if(user1[i] == user1[j]){ 
-// //             console.log(user1[j]);
-// //         }
-// //     }          
-// // }
-
-//     // for (let k=0; k<user1.length;k++) {
-//     //   const user2 = user1[k].user_id; 
-
-//   //   for (let m=0; m<user1.length;m++){
-//   //     const user4 = user1[m].user_id;
-//   //     // const user5 = user1[m].date;
-      
-    
-//   //   if(user2[k]==user4[m]){
-//   //     console.log(user4[m]);
-//   //     // console.log(user5);
-//   //   }
-//   //   else{
-//   //     // console.log("hi");
-//   //   }
-//   // }
-// // }   
-// //   // console.log(user2);
-// //     for (let l=0;l<user.length;l++){
-// //       const user3 = user[l].user_id 
-// //       // console.log(user3); }
-// //       if(user2==user3){
-// //         // console.log(user2)
-// //       }
-// //       else{
-// //         // console.log(user3);
-// //       }
-    
-// //     }
-   
-
 
 
     let results;
-    // let results1;
+
+    let results1;
     let is_search = false;
     if (searchKeyword) {
 
-      if(user_id!=sub.user_id)
+      
       results = await knex.raw(
-        `SELECT sub.id , sub.start_date,sub.subscription_start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,
-            user_address.address,user_address.landmark,products.name as product_name,products.price,products.unit_value,
-            unit_types.value,categories.name as category_name
-            FROM user_address AS sub 
-            JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id 
-            JOIN users ON users.id = sub.user_id
-             JOIN add_on_orders ON add_on_orders.user_id  = sub.user_id 
-            JOIN user_address ON user_address.id = sub.user_address_id
-            JOIN products ON products.id = sub.product_id
-            JOIN unit_types ON unit_types.id = products.unit_type_id
-            JOIN categories ON categories.id = products.category_id
-            WHERE  user_address.branch_id = ${admin_id}
+        `SELECT sub.id ,users.name as user_name,sub.router_id,
+        sub.address,sub.landmark,users.user_unique_id as customer_id,
+        subscribed_user_details.date as subscription_start_date,
+        product_type.name as product_type,unit_types.value as unit_type,
+        products.name as product_name,
+        routes.name as route_name,
+        subscription_type.name as Subscription_type,
+        products.price,products.unit_value,
+        categories.name as category_name,
+
+         users.mobile_number AS mobile_number
+         FROM user_address AS sub             
+         JOIN users ON users.id = sub.user_id
+         JOIN routes ON  routes.id = sub.router_id
+         JOIN user_address_subscribe_branch ON  user_address_subscribe_branch.address_id = sub.id
+         JOIN products ON  products.id = user_address_subscribe_branch.product_id
+         JOIN product_type ON  product_type.id = products.product_type_id
+         JOIN categories ON  categories.id = products.category_id
+         JOIN unit_types ON  unit_types.id = products.unit_type_id
+
+         JOIN subscribed_user_details ON subscribed_user_details.user_id = users.id 
+         JOIN subscription_type ON subscription_type.id = subscribed_user_details.subscribe_type_id
+		     WHERE sub.branch_id = ${admin_id } AND sub.id = address_id
             AND users.name LIKE '%${searchKeyword}%' `
       );
       // JOIN add_on_orders ON add_on_orders.user_id  = sub.user_id
@@ -164,96 +96,124 @@ export const getusers = async (req, res) => {
     } else { 
       
       results = await knex.raw(
-        `SELECT sub.id ,sub.start_date,sub.subscription_start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,
-            user_address.address,user_address.landmark,products.name as product_name,
-            products.price,products.unit_value,
-            unit_types.value,categories.name as category_name,
-            routes.name as route_name
-            FROM subscribed_user_details AS sub 
-            JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id 
-            JOIN users ON users.id = sub.user_id 
-            JOIN user_address ON user_address.id = sub.user_address_id
-            JOIN products ON products.id = sub.product_id
-            JOIN routes ON routes.id = sub.router_id
+        `SELECT sub.id ,users.name as user_name,     
+        sub.address,sub.landmark,users.user_unique_id as customer_id,
+        routes.name as router_name,
+        subscribed_user_details.date as subscription_start_date, 
+        users.mobile_number AS mobile_number
+         FROM user_address AS sub
+         
+         left JOIN users ON users.id = sub.user_id		
+         left JOIN routes ON  routes.id = sub.router_id 
+         JOIN subscribed_user_details ON subscribed_user_details.user_id = sub.user_id		
+   
+         WHERE sub.branch_id = ${admin_id} AND  subscribed_user_details.user_address_id = sub.id 
+         GROUP BY users.name,subscribed_user_details.user_address_id;`
+      )
+      ;
+      results1 = await knex.raw(
+        `SELECT sub.id ,users.name as user_name,sub.router_id,     
+        sub.address,sub.landmark,users.user_unique_id as customer_id,     
+        subscribed_user_details.date as subscription_start_date,    
+        subscription_type.name as Subscription_type,    
+        products.price,products.unit_value,     
+        categories.name as category_name,    
+        routes.name as router_name,     
+        product_type.name as product_type,     
+        unit_types.value as unit_type,    
+        products.name as product_name,     
+        users.mobile_number AS mobile_number 
+     
+      FROM user_address AS sub             
             
-            JOIN unit_types ON unit_types.id = products.unit_type_id
-            JOIN categories ON categories.id = products.category_id
-            WHERE sub.subscription_status = "subscribed" AND  sub.branch_id = ${admin_id} LIMIT ${startingLimit},${resultsPerPage}`
-      );
-      // JOIN add_on_orders ON add_on_orders.branch_id  = sub.branch_id
-      // results1 = await knex.raw(
-      //   `SELECT add_order.id ,add_order.delivery_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,
-      //       user_address.address,user_address.landmark,products.name as product_name,
-      //       products.price,products.unit_value,
-      //       unit_types.value,categories.name as category_name,
-      //       routes.name as route_name
-      //       FROM add_on_orders AS add_order
-      //       JOIN users ON users.id = sub.user_id 
-      //       JOIN user_address ON user_address.id = sub.user_address_id
-      //       JOIN products ON products.id = sub.product_id
-      //       JOIN add_on_order_items ON add_on_order_items.id = add_on_orders.id
-      //       JOIN routes ON routes.id = sub.router_id
-      //       JOIN unit_types ON unit_types.id = products.unit_type_id
-      //       JOIN categories ON categories.id = products.category_id
-      //       WHERE sub.subscription_status = "subscribed" AND  sub.branch_id = ${admin_id} LIMIT ${startingLimit},${resultsPerPage}`
-      // );
+      left JOIN users ON users.id = sub.user_id		
+      left JOIN routes ON  routes.id = sub.router_id 
+     
+      left JOIN user_address_subscribe_branch  as c ON c.user_id=sub.user_id
+      
+      left JOIN products ON  products.id = c.product_id      
+      left JOIN product_type ON  product_type.id = products.product_type_id     
+      left JOIN categories ON  categories.id = products.category_id     
+      left JOIN unit_types ON  unit_types.id = products.unit_type_id		 
+      left JOIN subscribed_user_details ON subscribed_user_details.user_id = users.id 		
+      left JOIN subscription_type ON subscription_type.id = subscribed_user_details.subscribe_type_id   
+      WHERE sub.branch_id = 2 AND  subscribed_user_details.user_address_id = sub.id  `
+
+      )
+      
 
     }
-  // }
-  
-  // }
-
-    // routes.name as route_name
-    // JOIN add_on_orders ON add_on_orders.user_id  = sub.user_id 
-
-    // add_on_orders.route_id,sub.route_id
-    // JOIN add_on_orders ON add_on_orders.user_id  = sub.user_id 
-
-    // sub.id ,sub.start_date,sub.subscription_start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,
-    // user_address.address,user_address.landmark,products.name as product_name,products.price,products.unit_value,
-    // unit_types.value,categories.name as category_name
-    // FROM subscribed_user_details AS sub 
-    // JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id 
-    // JOIN users ON users.id = sub.user_id 
-    // JOIN user_address ON user_address.id = sub.user_address_id
-    // JOIN products ON products.id = sub.product_id
-    
-    // JOIN unit_types ON unit_types.id = products.unit_type_id
-    // JOIN categories ON categories.id = products.category_id
-    // WHERE sub.subscription_status = "subscribed" AND sub.branch_id = ${admin_id} LIMIT ${startingLimit},${resultsPerPage}`
-
-    // console.log(results)
-
+ 
+// console.log(results1)
 
 
     const data = results[0];
+    const data2 = results1[0];
     const product = [];
-
-    for (let i = 0; i < data.length; i++) {
-      data[i].start_date = data[i].start_date.toString().slice(4, 16);
-      if (data[i].subscription_start_date) {
-        data[i].subscription_start_date = data[i].subscription_start_date
-          .toString()
-          .slice(4, 16);
-      }
+    const product2 =[];
+    // for (let i = 0; i < data.length; i++) {
+    //   data[i].start_date = data[i].start_date.toString().slice(4, 16);
+    //   if (data[i].subscription_start_date) {
+    //     data[i].subscription_start_date = data[i].subscription_start_date
+    //       .toString()
+    //       .slice(4, 16);
+    //   }
       // const product = [];
-
+    
       for (let j=0 ;j<data.length;j++){
+        
         product.push({
-          id: data[i].id,
-          user_name: data[i].user_name,
-          address: data[i].address,
-          route_name: data[i].route_name,
+          customer_id: data[j].customer_id,
+          user_name: data[j].user_name,
+          address: data[j].address,
+          router_name: data[j].router_name,
+          mobile_number : data[j].mobile_number,
+          landmark : data[j].landmark,
+          subscription_start_date : data[j].subscription_start_date,
+          Subscription_type : data[j].subscription_name,
+          // product_type : data[j].product_type,
+          // price: data[j].price,
+          // unit_value : data[j].unit_value,
+          // category_name : data[j].category_name,
+          // unit_type : data[j].unit_type
         });
       }
+    ;  // run
+    // Once(); 
+    // }
+    // products.price,products.unit_value,
+    if (data2.address==data.address && data2.user_name==data.user_name ){
+    for (let k=0 ;k<data2.length;k++) {
+       
+      product2.push({
+        customer_id: data2[k].customer_id,
+        user_name: data2[k].user_name,
+        address: data2[k].address,
+        router_name: data2[k].router_name,
+        mobile_number : data2[k].mobile_number,
+        landmark : data2[k].landmark,
+        product_name : data2[k].product_name,
+        Subscription_type : data2[k].subscription_name,
+        product_type : data2[k].product_type,
+        price: data2[k].price,
+        unit_value : data2[k].unit_value,
+        category_name : data2[k].category_name,
+        unit_type : data2[k].value,
+        quantity : data2[k].quantity
+
+        
+      });
     }
+  }
+  ;
 
-    // console.log(product)
 
+    console.log(product2)
     loading = false;
     
     res.render("branch_admin/users/users", {
-      data: data,
+      data: product,
+      data2:product2,
       page,
       iterator,
       endingLink,

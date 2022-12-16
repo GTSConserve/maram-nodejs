@@ -13,4 +13,4 @@ loginRouter.post('/verifyotp', verifyUserOtp)
 loginRouter.post('/logout',authenticateJWT, logout)
 loginRouter.post('/account_delete',authenticateJWT, accountDelete)
 
-export default loginRouter
+export default loginRouter 
