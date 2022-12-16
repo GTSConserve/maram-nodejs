@@ -84,7 +84,7 @@ export const edit_address = async (
 
 export const get_user = async (id) => {
   const getuser = await knex
-    .select("id", "name", "image", "mobile_number", "email")
+    .select('*')
     .from("users")
     .where({ id });
   try {
