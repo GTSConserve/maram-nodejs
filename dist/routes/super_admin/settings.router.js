@@ -32,8 +32,8 @@ settingsRouter.post("/update_settings_status", _app_settings.updateSettingsStatu
 
 // banners
 settingsRouter.get("/get_banner", _banner.getBanners);
-settingsRouter.post("/create_banners", _banner.createBanners);
-settingsRouter.post("/update_banners", _banner.updateBanners);
-settingsRouter.post("/update_banner_status", uploadImg, _banner.updateBannerStatus);
+settingsRouter.post("/create_banners", uploadImg, _banner.createBanners);
+settingsRouter.post("/update_banners", uploadImg, _banner.updateBanners);
+settingsRouter.post("/update_banner_status", _banner.updateBannerStatus);
 var _default = settingsRouter;
 exports["default"] = _default;

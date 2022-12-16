@@ -19,6 +19,7 @@ rootRouter.post('/update_route', _route.updateRoute);
 //user mapping
 rootRouter.get('/user_mapping', _route.getUserMapping);
 rootRouter.get('/view_mapping', _route.getViewMapping);
-// rootRouter.post('/update_view_mapping',updateViewMapping)
+rootRouter.post('/update_view_mapping', _route.updateViewMapping);
+rootRouter.get('/tommorrow_route_mapping', _route.tommorowRouteMapping);
 var _default = rootRouter;
 exports["default"] = _default;

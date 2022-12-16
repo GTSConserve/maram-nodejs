@@ -212,7 +212,7 @@ var search_products = /*#__PURE__*/function () {
 exports.search_products = search_products;
 var addon_order = /*#__PURE__*/function () {
   var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(user_id, delivery_date, products, address_id) {
-    var order, order_id, sub_total, i, product_price;
+    var order, order_id, sub_total, i, product_price, check_user_is_branch, query;
     return _regeneratorRuntime().wrap(function _callee5$(_context5) {
       while (1) {
         switch (_context5.prev = _context5.next) {
@@ -258,18 +258,37 @@ var addon_order = /*#__PURE__*/function () {
             break;
           case 18:
             _context5.next = 20;
-            return (0, _db["default"])("add_on_orders").update({
-              sub_total: sub_total
-            }).where({
-              id: order_id
+            return (0, _db["default"])("user_address").select("branch_id").where({
+              id: address_id
             });
           case 20:
+            check_user_is_branch = _context5.sent;
+            console.log(check_user_is_branch);
+            if (!(check_user_is_branch.length === 0)) {
+              _context5.next = 24;
+              break;
+            }
+            return _context5.abrupt("return", {
+              status: false,
+              message: "Invalid User Address"
+            });
+          case 24:
+            query = {};
+            if (check_user_is_branch[0].branch_id != null) {
+              query.branch_id = check_user_is_branch[0].branch_id;
+            }
+            query.sub_total = sub_total;
+            _context5.next = 29;
+            return (0, _db["default"])("add_on_orders").update(query).where({
+              id: order_id
+            });
+          case 29:
             return _context5.abrupt("return", {
               status: true,
               message: "SuccessFully Created"
             });
-          case 23:
-            _context5.prev = 23;
+          case 32:
+            _context5.prev = 32;
             _context5.t0 = _context5["catch"](0);
             console.log(_context5.t0);
             return _context5.abrupt("return", {
@@ -277,12 +296,12 @@ var addon_order = /*#__PURE__*/function () {
               message: "Something Went Wrong",
               error: _context5.t0
             });
-          case 27:
+          case 36:
           case "end":
             return _context5.stop();
         }
       }
-    }, _callee5, null, [[0, 23]]);
+    }, _callee5, null, [[0, 32]]);
   }));
   return function addon_order(_x10, _x11, _x12, _x13) {
     return _ref5.apply(this, arguments);

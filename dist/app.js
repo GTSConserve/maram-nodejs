@@ -19,6 +19,7 @@ var _authToken = require("./middlewares/authToken.middleware");
 var _user_main = _interopRequireDefault(require("./routes/user_main.route"));
 var _super_admin_main = _interopRequireDefault(require("./routes/super_admin_main.route"));
 var _branch_admin_main = _interopRequireDefault(require("./routes/branch_admin_main.route"));
+var _rider_main = _interopRequireDefault(require("./routes/rider_main.route"));
 var _auth_main = _interopRequireDefault(require("./routes/auth_main.route"));
 var _create_table = require("./table/create_table");
 var _insert_data = require("./table/insert_data");
@@ -209,10 +210,12 @@ app.get("/", function (req, res) {
   });
 });
 app.get("/home", _authToken.authenticateJWTSession, function (req, res) {
-  res.render("home");
-});
-app.get("/branch", _authToken.authenticateJWTSession, function (req, res) {
-  res.render("branch_admin");
+  var is_super_admin = req.body.is_super_admin;
+  if (is_super_admin) {
+    res.render("super_admin/home/home");
+  } else {
+    res.render("branch_admin/home/home");
+  }
 });
 
 // app.get("/recovery",(req,res)=>{
@@ -234,5 +237,6 @@ app.use(function (err, req, res, next) {
 app.use("/super_admin", _bodyParser2["default"], _authToken.authenticateJWTSession, _super_admin_main["default"]);
 app.use("/branch_admin", _bodyParser2["default"], _authToken.authenticateJWTSession, _branch_admin_main["default"]);
 app.use("/api", _bodyParser2["default"], _user_main["default"]);
+app.use("/rider_api", _bodyParser2["default"], _rider_main["default"]);
 var _default = app;
 exports["default"] = _default;

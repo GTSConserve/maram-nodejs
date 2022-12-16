@@ -27,7 +27,7 @@ var getAppSettings = /*#__PURE__*/function () {
               break;
             }
             _context.next = 7;
-            return _db["default"].raw("SELECT name,key_id,value FROM app_settings WHERE name LIKE '%".concat(searchKeyword, "%'"));
+            return _db["default"].raw("SELECT id,name,value,app_settings.key FROM app_settings WHERE name LIKE '%".concat(searchKeyword, "%'"));
           case 7:
             search_data_length = _context.sent;
             data_length = search_data_length[0];
@@ -74,7 +74,7 @@ var getAppSettings = /*#__PURE__*/function () {
               break;
             }
             _context.next = 35;
-            return _db["default"].raw("SELECT name,key_id,value FROM app_settings\n          WHERE app_settings.name LIKE '%".concat(searchKeyword, "%' LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
+            return _db["default"].raw("SELECT id,name,app_settings.key,value,status FROM app_settings\n          WHERE app_settings.name LIKE '%".concat(searchKeyword, "%' LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
           case 35:
             results = _context.sent;
             is_search = true;
@@ -82,7 +82,7 @@ var getAppSettings = /*#__PURE__*/function () {
             break;
           case 39:
             _context.next = 41;
-            return _db["default"].raw("SELECT name,key_id,value FROM app_settings  LIMIT ".concat(startingLimit, ",").concat(resultsPerPage));
+            return _db["default"].raw("SELECT id,name,app_settings.key,value,status FROM app_settings  LIMIT ".concat(startingLimit, ",").concat(resultsPerPage));
           case 41:
             results = _context.sent;
           case 42:
@@ -121,13 +121,13 @@ var getAppSettings = /*#__PURE__*/function () {
 exports.getAppSettings = getAppSettings;
 var createAppsettings = /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(req, res) {
-    var _req$body, name, key_id, value, query;
+    var _req$body, name, key, value, query;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
             _context2.prev = 0;
-            _req$body = req.body, name = _req$body.name, key_id = _req$body.key_id, value = _req$body.value;
+            _req$body = req.body, name = _req$body.name, key = _req$body.key, value = _req$body.value;
             if (name) {
               _context2.next = 5;
               break;
@@ -138,8 +138,8 @@ var createAppsettings = /*#__PURE__*/function () {
             query = {
               name: name
             };
-            if (key_id) {
-              query.key_id = key_id;
+            if (key) {
+              query.key = key;
             }
             if (value) {
               query.value = value;
@@ -170,13 +170,13 @@ var createAppsettings = /*#__PURE__*/function () {
 exports.createAppsettings = createAppsettings;
 var updateappsettings = /*#__PURE__*/function () {
   var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(req, res) {
-    var _req$body2, name, key_id, value, id, query;
+    var _req$body2, name, key, value, id, query;
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.prev = 0;
-            _req$body2 = req.body, name = _req$body2.name, key_id = _req$body2.key_id, value = _req$body2.value, id = _req$body2.id;
+            _req$body2 = req.body, name = _req$body2.name, key = _req$body2.key, value = _req$body2.value, id = _req$body2.id;
             if (name) {
               _context3.next = 5;
               break;
@@ -186,8 +186,8 @@ var updateappsettings = /*#__PURE__*/function () {
           case 5:
             query = {};
             query.name = name;
-            if (key_id) {
-              query.key_id = key_id;
+            if (key) {
+              query.key = key;
             }
             if (value) {
               query.value = value;

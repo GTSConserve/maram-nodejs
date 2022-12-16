@@ -20,5 +20,8 @@ subscriptionRouter.post("/create_additional_order", _authToken.authenticateJWT, 
 subscriptionRouter.post("/edit_additional_order", _authToken.authenticateJWT, _subscription.editAdditionalOrder);
 subscriptionRouter.post("/remove_additional_order", _authToken.authenticateJWT, _subscription.removeAdditionalOrder);
 subscriptionRouter.post("/subcription_order", _authToken.authenticateJWT, _subscription.getSubcription_order);
+subscriptionRouter.post("/remove_subscription", _authToken.authenticateJWT, _subscription.Remove_Subscription);
+subscriptionRouter.post("/change_quantity", _authToken.authenticateJWT, _subscription.changeQuantity);
+subscriptionRouter.post("/change_subscriptionplan", _subscription.changeSubscriptionplan);
 var _default = subscriptionRouter;
 exports["default"] = _default;

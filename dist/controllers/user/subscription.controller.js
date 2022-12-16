@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.singleSubscription = exports.removeAdditionalOrder = exports.newSubscription = exports.getSubscriptionPlan = exports.getSubcription_order = exports.getAllSubscription = exports.editAdditionalOrder = exports.createAdditionalOrder = void 0;
+exports.singleSubscription = exports.removeAdditionalOrder = exports.newSubscription = exports.getSubscriptionPlan = exports.getSubcription_order = exports.getAllSubscription = exports.editAdditionalOrder = exports.createAdditionalOrder = exports.changeSubscriptionplan = exports.changeQuantity = exports.Remove_Subscription = void 0;
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 var _messages = _interopRequireDefault(require("../../constants/messages"));
 var _moment = _interopRequireDefault(require("moment"));
@@ -501,3 +501,145 @@ var getSubcription_order = /*#__PURE__*/function () {
   };
 }();
 exports.getSubcription_order = getSubcription_order;
+var Remove_Subscription = /*#__PURE__*/function () {
+  var _ref11 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11(req, res) {
+    var _req$body7, user_id, subscription_id, unsubscription;
+    return _regeneratorRuntime().wrap(function _callee11$(_context11) {
+      while (1) {
+        switch (_context11.prev = _context11.next) {
+          case 0:
+            _context11.prev = 0;
+            _req$body7 = req.body, user_id = _req$body7.user_id, subscription_id = _req$body7.subscription_id;
+            if (!(!user_id || !subscription_id)) {
+              _context11.next = 4;
+              break;
+            }
+            return _context11.abrupt("return", res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
+              status: false,
+              message: _messages["default"].MANDATORY_ERROR
+            }));
+          case 4:
+            _context11.next = 6;
+            return (0, _subscription.remove_subscription)(user_id, subscription_id);
+          case 6:
+            unsubscription = _context11.sent;
+            if (!unsubscription.status) {
+              _context11.next = 11;
+              break;
+            }
+            return _context11.abrupt("return", res.status(_responseCode["default"].SUCCESS).json(unsubscription));
+          case 11:
+            return _context11.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json(unsubscription));
+          case 12:
+            _context11.next = 18;
+            break;
+          case 14:
+            _context11.prev = 14;
+            _context11.t0 = _context11["catch"](0);
+            console.log(_context11.t0);
+            return _context11.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
+              status: false,
+              message: _messages["default"].SERVER_ERROR
+            }));
+          case 18:
+          case "end":
+            return _context11.stop();
+        }
+      }
+    }, _callee11, null, [[0, 14]]);
+  }));
+  return function Remove_Subscription(_x19, _x20) {
+    return _ref11.apply(this, arguments);
+  };
+}();
+
+// change  subscription quantity 
+exports.Remove_Subscription = Remove_Subscription;
+var changeQuantity = /*#__PURE__*/function () {
+  var _ref12 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee12(req, res) {
+    var _req$body8, userId, subscription_id, quantity, quantity1;
+    return _regeneratorRuntime().wrap(function _callee12$(_context12) {
+      while (1) {
+        switch (_context12.prev = _context12.next) {
+          case 0:
+            _context12.prev = 0;
+            _req$body8 = req.body, userId = _req$body8.userId, subscription_id = _req$body8.subscription_id, quantity = _req$body8.quantity;
+            if (!(!userId || !subscription_id || !quantity)) {
+              _context12.next = 4;
+              break;
+            }
+            return _context12.abrupt("return", res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
+              status: false,
+              message: _messages["default"].MANDATORY_ERROR
+            }));
+          case 4:
+            _context12.next = 6;
+            return (0, _subscription.change_quantity)(userId, subscription_id, quantity);
+          case 6:
+            quantity1 = _context12.sent;
+            if (!quantity.status) {
+              _context12.next = 11;
+              break;
+            }
+            return _context12.abrupt("return", res.status(_responseCode["default"].SUCCESS).json(quantity1));
+          case 11:
+            return _context12.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json(quantity1));
+          case 12:
+            _context12.next = 18;
+            break;
+          case 14:
+            _context12.prev = 14;
+            _context12.t0 = _context12["catch"](0);
+            console.log(_context12.t0);
+            return _context12.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
+              status: false,
+              message: _messages["default"].SERVER_ERROR
+            }));
+          case 18:
+          case "end":
+            return _context12.stop();
+        }
+      }
+    }, _callee12, null, [[0, 14]]);
+  }));
+  return function changeQuantity(_x21, _x22) {
+    return _ref12.apply(this, arguments);
+  };
+}();
+
+//  change subscription plan
+exports.changeQuantity = changeQuantity;
+var changeSubscriptionplan = /*#__PURE__*/function () {
+  var _ref13 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee13(req, res) {
+    var _req$body9, userId, subscription_id, subscription_plan_id, start_date, customized_days, changeplan;
+    return _regeneratorRuntime().wrap(function _callee13$(_context13) {
+      while (1) {
+        switch (_context13.prev = _context13.next) {
+          case 0:
+            _context13.prev = 0;
+            _req$body9 = req.body, userId = _req$body9.userId, subscription_id = _req$body9.subscription_id, subscription_plan_id = _req$body9.subscription_plan_id, start_date = _req$body9.start_date, customized_days = _req$body9.customized_days;
+            _context13.next = 4;
+            return (0, _subscription.change_subscriptionplan)(userId, subscription_id, subscription_plan_id, start_date, customized_days);
+          case 4:
+            changeplan = _context13.sent;
+            return _context13.abrupt("return", res.status(_responseCode["default"].SUCCESS).json(changeplan));
+          case 8:
+            _context13.prev = 8;
+            _context13.t0 = _context13["catch"](0);
+            console.log(_context13.t0);
+            return _context13.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
+              status: false,
+              message: _messages["default"].SERVER_ERROR
+            }));
+          case 12:
+          case "end":
+            return _context13.stop();
+        }
+      }
+    }, _callee13, null, [[0, 8]]);
+  }));
+  return function changeSubscriptionplan(_x23, _x24) {
+    return _ref13.apply(this, arguments);
+  };
+}();
+exports.changeSubscriptionplan = changeSubscriptionplan;

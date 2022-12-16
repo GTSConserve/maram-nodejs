@@ -51,21 +51,128 @@ var updateCancel = /*#__PURE__*/function () {
 exports.updateCancel = updateCancel;
 var updateSubscribed = /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(req, res) {
-    var _req$body, sub_id, router_id, date;
+    var _req$body, sub_id, router_id, date, user_id, _req$query, is_exist, is_user_mapping_assign, _address_id, users, arr_users, get_users, get_address_id, address_id, _users, _arr_users, _get_users;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
             _context2.prev = 0;
-            _req$body = req.body, sub_id = _req$body.sub_id, router_id = _req$body.router_id, date = _req$body.date;
+            _req$body = req.body, sub_id = _req$body.sub_id, router_id = _req$body.router_id, date = _req$body.date, user_id = _req$body.user_id;
+            _req$query = req.query, is_exist = _req$query.is_exist, is_user_mapping_assign = _req$query.is_user_mapping_assign;
+            if (!is_user_mapping_assign) {
+              _context2.next = 24;
+              break;
+            }
+            // is_user_mapping_assign - is a router id 
+            _address_id = req.body.address_id;
+            _context2.next = 7;
+            return (0, _db["default"])("routes").select("user_mapping").where({
+              id: is_user_mapping_assign
+            });
+          case 7:
+            users = _context2.sent;
+            if (!(users.length === 0 || users[0].user_mapping === null)) {
+              _context2.next = 14;
+              break;
+            }
+            arr_users = [Number(_address_id)];
+            _context2.next = 12;
+            return (0, _db["default"])("routes").update({
+              user_mapping: JSON.stringify(arr_users)
+            }).where({
+              id: is_user_mapping_assign
+            });
+          case 12:
+            _context2.next = 20;
+            break;
+          case 14:
+            _context2.next = 16;
+            return (0, _db["default"])("routes").select("user_mapping").where({
+              id: is_user_mapping_assign
+            });
+          case 16:
+            get_users = _context2.sent;
+            get_users[0].user_mapping.push(Number(_address_id));
+            _context2.next = 20;
+            return (0, _db["default"])("routes").update({
+              user_mapping: JSON.stringify(get_users[0].user_mapping)
+            }).where({
+              id: is_user_mapping_assign
+            });
+          case 20:
+            _context2.next = 22;
+            return (0, _db["default"])("user_address").update({
+              router_id: is_user_mapping_assign
+            }).where({
+              id: _address_id
+            });
+          case 22:
+            req.flash("success", "Route Assigned Successfully");
+            // return res.redirect(`/branch_admin/route/user_mapping?route_id=${is_user_mapping_assign}`)
+            return _context2.abrupt("return", res.redirect("/branch_admin/route/get_route"));
+          case 24:
             if (date) {
-              _context2.next = 5;
+              _context2.next = 27;
               break;
             }
             req.flash("error", "Please Choose a Date ");
             return _context2.abrupt("return", res.redirect("/branch_admin/subscription/get_new_users"));
-          case 5:
-            _context2.next = 7;
+          case 27:
+            _context2.next = 29;
+            return (0, _db["default"])("subscribed_user_details").select("user_address_id").where({
+              id: sub_id
+            });
+          case 29:
+            get_address_id = _context2.sent;
+            console.log("address id", get_address_id);
+            address_id = get_address_id[0].user_address_id; // check if is not exist user(this api call in both new user and exist user)
+            if (is_exist) {
+              _context2.next = 50;
+              break;
+            }
+            _context2.next = 35;
+            return (0, _db["default"])("routes").select("user_mapping").where({
+              id: router_id
+            });
+          case 35:
+            _users = _context2.sent;
+            if (!(_users.length === 0 || _users[0].user_mapping === null)) {
+              _context2.next = 42;
+              break;
+            }
+            _arr_users = [Number(address_id)];
+            _context2.next = 40;
+            return (0, _db["default"])("routes").update({
+              user_mapping: JSON.stringify(_arr_users)
+            }).where({
+              id: router_id
+            });
+          case 40:
+            _context2.next = 48;
+            break;
+          case 42:
+            _context2.next = 44;
+            return (0, _db["default"])("routes").select("user_mapping").where({
+              id: router_id
+            });
+          case 44:
+            _get_users = _context2.sent;
+            _get_users[0].user_mapping.push(Number(address_id));
+            _context2.next = 48;
+            return (0, _db["default"])("routes").update({
+              user_mapping: JSON.stringify(_get_users[0].user_mapping)
+            }).where({
+              id: router_id
+            });
+          case 48:
+            _context2.next = 50;
+            return (0, _db["default"])("user_address").update({
+              router_id: router_id
+            }).where({
+              id: address_id
+            });
+          case 50:
+            _context2.next = 52;
             return (0, _db["default"])("subscribed_user_details").update({
               subscription_status: "subscribed",
               router_id: router_id,
@@ -74,22 +181,28 @@ var updateSubscribed = /*#__PURE__*/function () {
             }).where({
               id: sub_id
             });
-          case 7:
+          case 52:
             req.flash("success", "subscribed successfully");
+            if (!is_exist) {
+              _context2.next = 55;
+              break;
+            }
+            return _context2.abrupt("return", res.redirect("/branch_admin/subscription/get_exist_users"));
+          case 55:
             res.redirect("/branch_admin/subscription/get_new_users");
-            _context2.next = 15;
+            _context2.next = 62;
             break;
-          case 11:
-            _context2.prev = 11;
+          case 58:
+            _context2.prev = 58;
             _context2.t0 = _context2["catch"](0);
             console.log(_context2.t0);
             res.redirect("/home");
-          case 15:
+          case 62:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[0, 11]]);
+    }, _callee2, null, [[0, 58]]);
   }));
   return function updateSubscribed(_x3, _x4) {
     return _ref2.apply(this, arguments);
@@ -171,7 +284,7 @@ var getNewUsers = /*#__PURE__*/function () {
               break;
             }
             _context3.next = 39;
-            return _db["default"].raw("SELECT sub.id , sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n          user_address.address,user_address.landmark,products.name as product_name,products.price,products.unit_value,\n          unit_types.value,categories.name as category_name\n          FROM subscribed_user_details AS sub \n          JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id \n          JOIN users ON users.id = sub.user_id \n          JOIN user_address ON user_address.id = sub.user_address_id\n          JOIN products ON products.id = sub.product_id\n          JOIN unit_types ON unit_types.id = products.unit_type_id\n          JOIN categories ON categories.id = products.category_id\n          WHERE sub.subscription_status = \"assigned\" AND sub.branch_id = ".concat(admin_id, "\n          AND users.user_unique_id LIKE '%").concat(searchKeyword, "%' LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
+            return _db["default"].raw("SELECT sub.id , sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,users.id as user_id,\n          user_address.address,user_address.landmark,products.name as product_name,products.price,products.unit_value,\n          unit_types.value,categories.name as category_name,products.image\n          FROM subscribed_user_details AS sub \n          JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id \n          JOIN users ON users.id = sub.user_id \n          JOIN user_address ON user_address.id = sub.user_address_id\n          JOIN products ON products.id = sub.product_id\n          JOIN unit_types ON unit_types.id = products.unit_type_id\n          JOIN categories ON categories.id = products.category_id\n          WHERE sub.subscription_status = \"assigned\" AND sub.branch_id = ".concat(admin_id, "\n          AND users.user_unique_id LIKE '%").concat(searchKeyword, "%' LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
           case 39:
             results = _context3.sent;
             is_search = true;
@@ -179,14 +292,14 @@ var getNewUsers = /*#__PURE__*/function () {
             break;
           case 43:
             _context3.next = 45;
-            return _db["default"].raw("SELECT sub.id ,sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n          user_address.address,user_address.landmark,products.name as product_name,products.price,products.unit_value,\n          unit_types.value,categories.name as category_name\n          FROM subscribed_user_details AS sub \n          JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id \n          JOIN users ON users.id = sub.user_id \n          JOIN user_address ON user_address.id = sub.user_address_id\n          JOIN products ON products.id = sub.product_id\n          JOIN unit_types ON unit_types.id = products.unit_type_id\n          JOIN categories ON categories.id = products.category_id\n          WHERE sub.subscription_status = \"assigned\" AND sub.branch_id = ".concat(admin_id, " LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
+            return _db["default"].raw("SELECT sub.id ,sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,users.id as user_id,\n          user_address.address,user_address.landmark,products.name as product_name,products.price,products.unit_value,\n          unit_types.value,categories.name as category_name,products.image\n          FROM subscribed_user_details AS sub \n          JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id \n          JOIN users ON users.id = sub.user_id \n          JOIN user_address ON user_address.id = sub.user_address_id\n          JOIN products ON products.id = sub.product_id\n          JOIN unit_types ON unit_types.id = products.unit_type_id\n          JOIN categories ON categories.id = products.category_id\n          WHERE sub.subscription_status = \"assigned\" AND sub.branch_id = ".concat(admin_id, " LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
           case 45:
             results = _context3.sent;
           case 46:
             data = results[0];
             for (i = 0; i < data.length; i++) {
-              console.log(data[i].start_date);
-              data[i].start_date = (0, _moment["default"])(data[i].start_date).format('YYYY-MM-DD');
+              data[i].start_date = (0, _moment["default"])(data[i].start_date).format("YYYY-MM-DD");
+              data[i].image = process.env.BASE_URL + data[i].image;
             }
             loading = false;
             res.render("branch_admin/subscription/pending", {
@@ -294,7 +407,7 @@ var getExistUsers = /*#__PURE__*/function () {
               break;
             }
             _context4.next = 39;
-            return _db["default"].raw("SELECT sub.id , sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n          user_address.address,user_address.landmark,products.name as product_name,products.price,products.unit_value,\n          unit_types.value,categories.name as category_name\n          FROM subscribed_user_details AS sub \n          JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id \n          JOIN users ON users.id = sub.user_id \n          JOIN user_address ON user_address.id = sub.user_address_id\n          JOIN products ON products.id = sub.product_id\n          JOIN unit_types ON unit_types.id = products.unit_type_id\n          JOIN categories ON categories.id = products.category_id\n          WHERE sub.subscription_status = \"branch_pending\" AND sub.branch_id = ".concat(admin_id, "\n          AND users.user_unique_id LIKE '%").concat(searchKeyword, "%' LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
+            return _db["default"].raw("SELECT sub.id , sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n          user_address.address,user_address.landmark,routes.name as route_name, routes.id as route_id,products.name as product_name,products.price,products.unit_value,\n          unit_types.value,categories.name as category_name\n          FROM subscribed_user_details AS sub \n          JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id \n          JOIN users ON users.id = sub.user_id \n          JOIN user_address ON user_address.id = sub.user_address_id\n          JOIN products ON products.id = sub.product_id\n          JOIN unit_types ON unit_types.id = products.unit_type_id\n          JOIN categories ON categories.id = products.category_id\n          JOIN routes ON routes.id = user_address.router_id\n          WHERE sub.subscription_status = \"branch_pending\" AND sub.branch_id = ".concat(admin_id, "\n          AND users.user_unique_id LIKE '%").concat(searchKeyword, "%' LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
           case 39:
             results = _context4.sent;
             is_search = true;
@@ -302,13 +415,13 @@ var getExistUsers = /*#__PURE__*/function () {
             break;
           case 43:
             _context4.next = 45;
-            return _db["default"].raw("SELECT sub.id ,sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n          user_address.address,user_address.landmark,products.name as product_name,products.price,products.unit_value,\n          unit_types.value,categories.name as category_name\n          FROM subscribed_user_details AS sub \n          JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id \n          JOIN users ON users.id = sub.user_id \n          JOIN user_address ON user_address.id = sub.user_address_id\n          JOIN products ON products.id = sub.product_id\n          JOIN unit_types ON unit_types.id = products.unit_type_id\n          JOIN categories ON categories.id = products.category_id\n          WHERE sub.subscription_status = \"branch_pending\" AND sub.branch_id = ".concat(admin_id, " LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
+            return _db["default"].raw("SELECT sub.id ,sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n          user_address.address,user_address.landmark,routes.name as route_name, routes.id as route_id,products.name as product_name,products.price,products.unit_value,\n          unit_types.value,categories.name as category_name\n          FROM subscribed_user_details AS sub \n          JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id \n          JOIN users ON users.id = sub.user_id \n          JOIN user_address ON user_address.id = sub.user_address_id\n          JOIN products ON products.id = sub.product_id\n          JOIN unit_types ON unit_types.id = products.unit_type_id\n          JOIN categories ON categories.id = products.category_id\n          JOIN routes ON routes.id = user_address.router_id\n          WHERE sub.subscription_status = \"branch_pending\" AND sub.branch_id = ".concat(admin_id, " LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
           case 45:
             results = _context4.sent;
           case 46:
             data = results[0];
             for (i = 0; i < data.length; i++) {
-              data[i].start_date = data[i].start_date.toString().slice(4, 16);
+              data[i].start_date = (0, _moment["default"])(data[i].start_date).format("YYYY-MM-DD");
             }
             loading = false;
             res.render("branch_admin/subscription/exist_user", {

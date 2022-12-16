@@ -28,7 +28,8 @@ var checkUser = /*#__PURE__*/function () {
             _context.prev = 0;
             _context.next = 3;
             return (0, _db["default"])("admin_users").select("email", "password", "id", "user_group_id").where({
-              email: email
+              email: email,
+              status: "1"
             });
           case 3:
             get_user = _context.sent;

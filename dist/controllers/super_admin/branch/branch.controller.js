@@ -4,8 +4,9 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updateBranchStatus = exports.updateBranch = exports.getBranchAdmin = exports.createBranchAdmin = void 0;
+exports.updateChangePassword = exports.updateBranchStatus = exports.updateBranch = exports.getBranchAdmin = exports.createBranchAdmin = void 0;
 var _db = _interopRequireDefault(require("../../../services/db.service"));
+var _jwt = require("../../../services/jwt.service");
 var _helper = require("../../../utils/helper.util");
 var _bcrypt = _interopRequireDefault(require("bcrypt"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -148,57 +149,50 @@ var createBranchAdmin = /*#__PURE__*/function () {
             req.flash("error", "password is missing");
             return _context3.abrupt("return", res.redirect("/super_admin/branch/get_branch_admin"));
           case 11:
-            if (location) {
-              _context3.next = 14;
-              break;
-            }
-            req.flash("error", "location is missing");
-            return _context3.abrupt("return", res.redirect("/super_admin/branch/get_branch_admin"));
-          case 14:
             if (mobile_number) {
-              _context3.next = 17;
+              _context3.next = 14;
               break;
             }
             req.flash("error", "mobile number is missing");
             return _context3.abrupt("return", res.redirect("/super_admin/branch/get_branch_admin"));
-          case 17:
+          case 14:
             if (!(password.length < 8)) {
-              _context3.next = 20;
+              _context3.next = 17;
               break;
             }
             req.flash("error", "password Should be atleast 8 characters");
             return _context3.abrupt("return", res.redirect("/super_admin/branch/get_branch_admin"));
-          case 20:
-            _context3.next = 22;
+          case 17:
+            _context3.next = 19;
             return _bcrypt["default"].hash(password, 10);
-          case 22:
+          case 19:
             hash_password = _context3.sent;
-            _context3.next = 25;
+            _context3.next = 22;
             return (0, _db["default"])("admin_users").insert({
               user_group_id: "2",
               first_name: name,
               password: hash_password,
-              location: location,
+              // location,
               mobile_number: mobile_number,
               email: email,
               zone_id: zone_id
             });
-          case 25:
+          case 22:
             req.flash("success", "Successfully Created");
             res.redirect("/super_admin/branch/get_branch_admin");
-            _context3.next = 33;
+            _context3.next = 30;
             break;
-          case 29:
-            _context3.prev = 29;
+          case 26:
+            _context3.prev = 26;
             _context3.t0 = _context3["catch"](0);
             console.log(_context3.t0);
             res.redirect("/home");
-          case 33:
+          case 30:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3, null, [[0, 29]]);
+    }, _callee3, null, [[0, 26]]);
   }));
   return function createBranchAdmin(_x5, _x6) {
     return _ref3.apply(this, arguments);
@@ -323,3 +317,133 @@ var getBranchAdmin = /*#__PURE__*/function () {
   };
 }();
 exports.getBranchAdmin = getBranchAdmin;
+var updateChangePassword = /*#__PURE__*/function () {
+  var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(req, res) {
+    var token, currentTokenPayload, admin_id, user, _req$body4, new_password, confirm_new_password, query, password;
+    return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+      while (1) {
+        switch (_context5.prev = _context5.next) {
+          case 0:
+            _context5.prev = 0;
+            token = req.session.token;
+            if (token) {
+              _context5.next = 5;
+              break;
+            }
+            req.flash("error", "Need To Login First");
+            return _context5.abrupt("return", res.redirect("/auth/login"));
+          case 5:
+            currentTokenPayload = (0, _jwt.parseJwtPayload)(token.token);
+            admin_id = currentTokenPayload.user_id;
+            _context5.next = 9;
+            return (0, _db["default"])("admin_users").select("user_group_id", "password", "is_password_change").where({
+              id: admin_id
+            });
+          case 9:
+            user = _context5.sent;
+            _req$body4 = req.body, new_password = _req$body4.new_password, confirm_new_password = _req$body4.confirm_new_password; // const isPassword = await bcrypt.compare(confirm_new_password, user[0].password);
+            // if (!isPassword) {
+            //   req.flash("error", "invalid password");
+            //   return res.redirect("/super_admin/branch/get_branch_admin");
+            // }
+            if (!(new_password.length < 8)) {
+              _context5.next = 14;
+              break;
+            }
+            req.flash("error", "New password should be atleast 8 characters");
+            return _context5.abrupt("return", res.redirect("/super_admin/branch/get_branch_admin"));
+          case 14:
+            if (!(confirm_new_password.length < 8)) {
+              _context5.next = 17;
+              break;
+            }
+            req.flash("error", "Confirm password should be atleast 8 characters");
+            return _context5.abrupt("return", res.redirect("/super_admin/branch/get_branch_admin"));
+          case 17:
+            if (!(new_password !== confirm_new_password)) {
+              _context5.next = 20;
+              break;
+            }
+            req.flash("error", "Password Should Be Same");
+            return _context5.abrupt("return", res.redirect("/super_admin/branch/get_branch_admin"));
+          case 20:
+            query = {};
+            if (user[0].user_group_id == 2) {
+              if (user[0].is_password_change == 0) {
+                query.is_password_change = "1";
+              }
+            }
+            _context5.next = 24;
+            return _bcrypt["default"].hash(confirm_new_password, 10);
+          case 24:
+            password = _context5.sent;
+            console.log(password);
+            query.password = password;
+            _context5.next = 29;
+            return (0, _db["default"])("admin_users").update(query).where({
+              user_group_id: '2'
+            });
+          case 29:
+            req.flash("success", "successfully password changed");
+            res.redirect("/home");
+            _context5.next = 37;
+            break;
+          case 33:
+            _context5.prev = 33;
+            _context5.t0 = _context5["catch"](0);
+            console.log(_context5.t0);
+            res.redirect("/home");
+          case 37:
+          case "end":
+            return _context5.stop();
+        }
+      }
+    }, _callee5, null, [[0, 33]]);
+  }));
+  return function updateChangePassword(_x9, _x10) {
+    return _ref5.apply(this, arguments);
+  };
+}();
+
+// export const getChangePassword = async (req, res) => {
+//   try {
+//     res.render("super_admin/branch/change_password");
+//   } catch (error) {
+//     console.log(error);
+//     res.redirect("/home");
+//   }
+// };
+
+// export const updateChangePassword = async (req, res) => {
+//   // console.log(req)
+//   try {
+//     const { new_password, confirm_new_password } = req.body;
+//     console.log(new_password, confirm_new_password)
+
+//     if (new_password !== confirm_new_password) {
+//       req.flash("error", "Password Should Be Same");
+//       return res.redirect("/super_admin/branch/get_branch_admin");
+//     }
+
+//     let hash_password = await bcrypt.hash(new_password, 10);
+//     console.log(hash_password)
+
+//     let query = {};
+//     if (user[0].user_group_id == 2) {
+//       if (user[0].is_password_change == 0) {
+//         query.is_password_change = "1";
+//       }
+//     }
+
+//     await knex("admin_users").update({
+//       query
+//     }).where({id: admin_id})
+
+//     req.flash("success", "Successfully Created");
+//     res.redirect("/home");
+//   } catch (error) {
+//     console.log(error);
+//     res.redirect("/home");
+//   }
+// };
+exports.updateChangePassword = updateChangePassword;

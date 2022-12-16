@@ -395,10 +395,10 @@ var sendPasswordResetEmail = /*#__PURE__*/function () {
             _context8.prev = 0;
             email = req.body;
             if (!email) {
-              _context8.next = 12;
+              _context8.next = 13;
               break;
             }
-            // console.log(email)
+            console.log(email);
             transporter = _nodemailer["default"].createTransport({
               service: 'gmail',
               host: "smtp.gmail.com",
@@ -409,11 +409,11 @@ var sendPasswordResetEmail = /*#__PURE__*/function () {
             });
             console.log(transporter);
             password = Math.floor(100000000 + Math.random() * 900000000);
-            _context8.next = 8;
+            _context8.next = 9;
             return (0, _db["default"])('admin_users').update({
               password: password
             });
-          case 8:
+          case 9:
             new_password = _context8.sent;
             console.log(new_password);
             mailOptions = {
@@ -429,26 +429,28 @@ var sendPasswordResetEmail = /*#__PURE__*/function () {
                 console.log('Email sent: ' + info.response);
               }
             });
-          case 12:
+          case 13:
+            res.render("auth/change_password");
             res.status(200).json({
               status: true,
               message: "message send successfully"
             });
-            _context8.next = 18;
+            _context8.next = 21;
             break;
-          case 15:
-            _context8.prev = 15;
+          case 17:
+            _context8.prev = 17;
             _context8.t0 = _context8["catch"](0);
+            res.render("auth/change_password");
             res.status(500).json({
               status: false,
               error: _context8.t0
             });
-          case 18:
+          case 21:
           case "end":
             return _context8.stop();
         }
       }
-    }, _callee8, null, [[0, 15]]);
+    }, _callee8, null, [[0, 17]]);
   }));
   return function sendPasswordResetEmail(_x16, _x17) {
     return _ref8.apply(this, arguments);
@@ -573,7 +575,7 @@ var getPasswordRecovery = /*#__PURE__*/function () {
         switch (_context10.prev = _context10.next) {
           case 0:
             try {
-              console.log("hiiiii");
+              // console.log("hiiiii")
               res.render("auth/auth_pass_recovery");
             } catch (error) {
               console.log(error);
