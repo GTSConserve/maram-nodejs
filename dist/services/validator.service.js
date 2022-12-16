@@ -145,18 +145,24 @@ var latLongValidator = function latLongValidator(payload) {
 };
 exports.latLongValidator = latLongValidator;
 var userAddressValidator = function userAddressValidator(payload) {
-  var _payload$address, _payload$title, _payload$landmark, _payload$type;
+  var _payload$address, _payload$title, _payload$landmark, _payload$type, _payload$alternate_mo, _payload$latitude2, _payload$longitude2;
   var address = (_payload$address = payload.address) !== null && _payload$address !== void 0 ? _payload$address : null;
   var title = (_payload$title = payload.title) !== null && _payload$title !== void 0 ? _payload$title : null;
   var landmark = (_payload$landmark = payload.landmark) !== null && _payload$landmark !== void 0 ? _payload$landmark : null;
   var type = (_payload$type = payload.type) !== null && _payload$type !== void 0 ? _payload$type : null;
-  if (address && landmark && title && type) {
+  var alternate_mobile = (_payload$alternate_mo = payload.alternate_mobile) !== null && _payload$alternate_mo !== void 0 ? _payload$alternate_mo : null;
+  var latitude = (_payload$latitude2 = payload.latitude) !== null && _payload$latitude2 !== void 0 ? _payload$latitude2 : null;
+  var longitude = (_payload$longitude2 = payload.longitude) !== null && _payload$longitude2 !== void 0 ? _payload$longitude2 : null;
+  if (address && landmark && title && type && alternate_mobile && latitude && longitude) {
     return {
       status: true,
       address: address,
       landmark: landmark,
       type: type,
-      title: title
+      title: title,
+      alternate_mobile: alternate_mobile,
+      latitude: latitude,
+      longitude: longitude
     };
   } else {
     return {
