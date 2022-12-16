@@ -95,7 +95,7 @@ export const getUser = async (req, res) => {
         .status(responseCode.FAILURE.DATA_NOT_FOUND)
         .json({ status: false, message: "User Not Found" });
     }
-
+    
     let get_user_detail = {};
     user.body.map((data) => {
       get_user_detail.user_id = data.id;

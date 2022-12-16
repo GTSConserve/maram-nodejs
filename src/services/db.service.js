@@ -7,7 +7,7 @@ try {
         port : 3306,
         user : 'maramdbadmin',
         password : 'q&HJIJ^EWF7N4sBs',
-        database :  'maram_live'
+        database : 'maram_live'
     },
   });
 } catch (error) {
