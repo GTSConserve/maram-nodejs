@@ -28,6 +28,9 @@ export const get_address = async (userId) => {
       "address",
       "landmark",
       "type",
+      "alternate_mobile",
+      "latitude",
+      "longitude"
 
     )
     .from("user_address")

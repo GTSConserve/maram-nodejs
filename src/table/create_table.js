@@ -144,7 +144,9 @@ export const createTable = async (req, res) => {
           t.string("title", 255).nullable();
           t.string("address", 255).nullable();
           t.string("landmark", 255).nullable();
-          // t.string("name", 255).nullable();
+          t.string("alternate_mobile", 255).nullable();
+          t.string("latitude", 255).nullable();
+          t.string("longitude", 255).nullable();
           t.string("type", 255).nullable();
           t.enu("status", ["0", "1"]).defaultTo("1");
           t.timestamps(true, true);

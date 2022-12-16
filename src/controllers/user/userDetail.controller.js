@@ -93,8 +93,8 @@ export const getUser = async (req, res) => {
       get_user_detail.user_id = data.id;
       get_user_detail.name = data.name;
       get_user_detail.image = data.image
-        ? process.env.BASE_URL + data.image
-        : null;
+        // ? process.env.BASE_URL + data.image
+        // : null;
       get_user_detail.mobile_number = data.mobile_number;
       get_user_detail.email = data.email;
       get_user_detail.total_bill_due_Amount = '0'

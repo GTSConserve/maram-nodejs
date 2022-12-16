@@ -34,9 +34,6 @@ export const accountDelete = async (req,res) => {
   }
 }
 
-
-
-
 export const login = async (req, res) => {
   try {
     const payload = loginValidator(req.body);
@@ -49,7 +46,7 @@ export const login = async (req, res) => {
       const checkPhoneNumber = await knex
         .select("id")
         .from("users")
-        .where({ mobile_number });
+        .where({ mobile_number : mobile_number });
       let query;
       let userId = 0;
       // const otp = process.env.USER_OTP || Math.floor(1000 + Math.random() * 9000)
@@ -67,7 +64,7 @@ export const login = async (req, res) => {
       } else {
         query = await updateUserOtp(payload, otp);
 
-        userId = checkPhoneNumber[0].user_id;
+        userId = checkPhoneNumber.user_id;
       }
 
       if (query.status === responseCode.SUCCESS) {

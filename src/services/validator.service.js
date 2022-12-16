@@ -94,9 +94,12 @@ export const userAddressValidator = (payload) => {
   const title = payload.title ?? null;
   const landmark = payload.landmark ?? null;
   const type = payload.type ?? null;
+  const alternate_mobile = payload.alternate_mobile ?? null;
+  const latitude = payload.latitude ?? null;
+  const longitude = payload.longitude ?? null;
 
-  if (address && landmark && title && type) {
-    return { status: true, address, landmark, type, title };
+  if (address && landmark && title && type && alternate_mobile && latitude && longitude) {
+    return { status: true, address, landmark, type, title,alternate_mobile,latitude,longitude };
   } else {
     return { status: false, message: "error" };
   }
