@@ -34,7 +34,9 @@ export const addUserAddress = async (req, res) => {
 
           latitude: payload.latitude,
           
-          longitude: payload.longitude
+          longitude: payload.longitude,
+
+          status: '1'
 
 
         })
@@ -105,12 +107,13 @@ export const getUser = async (req, res) => {
         // : null;
       get_user_detail.mobile_number = data.mobile_number;
       get_user_detail.email = data.email;
-      get_user_detail.total_bill_due_Amount = '0'
-      get_user_detail.total_bill_count = '0'
-      get_user_detail.total_address_count = '0'
-      get_user_detail.total_subcription_count = '0'
-      get_user_detail.total_delivered_product_count = 'No Address'
+      get_user_detail.total_bill_due_Amount = 'Bill due amount ₹0'
+      get_user_detail.total_bill_count = '0 bills'
+      get_user_detail.total_address_count = '0 Saved Address'
+      get_user_detail.total_subcription_count = '0 subscriptions'
+      get_user_detail.total_delivered_product_count = '0 Product Delivery'
       get_user_detail.rider_status = 'No rider Assign'
+      get_user_detail.rider_status = '0 empty bottles in hand'
     });
 
     res
