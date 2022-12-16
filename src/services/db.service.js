@@ -77,5 +77,3 @@ export default knex;
 // });
 
 // connection.end();
-=======
->>>>>>> all_users
