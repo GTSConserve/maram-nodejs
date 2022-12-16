@@ -36,8 +36,6 @@ export const addUserAddress = async (req, res) => {
           
           longitude: payload.longitude,
 
-          status: '1'
-
 
         })
         .where({ user_id: payload.user_id });
