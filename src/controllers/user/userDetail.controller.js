@@ -29,6 +29,14 @@ export const addUserAddress = async (req, res) => {
           title: payload.title,
 
           type: payload.type,
+
+          alternate_mobile: payload.alternate_mobile,
+
+          latitude: payload.latitude,
+          
+          longitude: payload.longitude
+
+
         })
         .where({ user_id: payload.user_id });
 
