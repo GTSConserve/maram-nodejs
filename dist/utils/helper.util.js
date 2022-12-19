@@ -221,11 +221,12 @@ var phoneNumberValidator = function phoneNumberValidator(phoneNumber) {
 exports.phoneNumberValidator = phoneNumberValidator;
 var integerValidator = function integerValidator(value) {
   if (!value) return false;
-  return isNumberValidator(value);
+  return true;
+  // return isNumberValidator(value);
 };
 exports.integerValidator = integerValidator;
 var isNumberValidator = function isNumberValidator(value) {
-  if (typeof value == "number") return false;
+  if (typeof value !== "number") return false;
   return true;
 };
 exports.isNumberValidator = isNumberValidator;

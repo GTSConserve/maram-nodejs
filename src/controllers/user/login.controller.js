@@ -46,7 +46,8 @@ console.log(payload)
       const checkPhoneNumber = await knex
         .select("id")
         .from("users")
-        .where({ mobile_number : mobile_number });
+        .where({ mobile_number });
+        console.log(checkPhoneNumber)
       let query;
       let userId = 0;
       // const otp = process.env.USER_OTP || Math.floor(1000 + Math.random() * 9000)
@@ -64,7 +65,7 @@ console.log(payload)
       } else {
         query = await updateUserOtp(payload, otp);
 
-        userId = checkPhoneNumber.user_id;
+        userId = checkPhoneNumber[0].id;
       }
 
       if (query.status === responseCode.SUCCESS) {
@@ -93,10 +94,12 @@ console.log(payload)
 
 export const verifyUserOtp = async (req, res) => {
   try {
+    
     const today = format(new Date(), "yyyy-MM-dd H:i:s");
-
+   
     const payload = verifyOtpValidator(req.body);
-console.log(payload);
+    console.log(payload);
+
     const { otp, userId } = payload;
 
     const is_user = await knex("users").select("id","otp").where({ id: userId });
