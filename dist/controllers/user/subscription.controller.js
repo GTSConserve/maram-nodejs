@@ -424,7 +424,7 @@ var singleSubscription = /*#__PURE__*/function () {
             }
             return _context9.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               status: true,
-              data: sub.data
+              data: sub.data[0]
             }));
           case 13:
             _context9.prev = 13;
