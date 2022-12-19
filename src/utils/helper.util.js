@@ -167,7 +167,8 @@ export const phoneNumberValidator = (phoneNumber) => {
 export const integerValidator = (value) => {
   if (!value) return false;
 
-  return isNumberValidator(value);
+  return true;
+  // return isNumberValidator(value);
 };
 
 export const isNumberValidator = (value) => {

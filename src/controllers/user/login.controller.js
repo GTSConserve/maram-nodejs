@@ -96,7 +96,7 @@ export const verifyUserOtp = async (req, res) => {
     const today = format(new Date(), "yyyy-MM-dd H:i:s");
 
     const payload = verifyOtpValidator(req.body);
-
+console.log(payload);
     const { otp, userId } = payload;
 
     const is_user = await knex("users").select("id","otp").where({ id: userId });
