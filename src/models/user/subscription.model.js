@@ -38,10 +38,9 @@ export const new_subscription = async (
       .whereNotNull("branch_id")
       .where({ user_id: userId, id: user_address_id });
 
-    console.log(is_exist_address)
+    console.log(is_exist_address);
 
-
-    if(is_exist_address.length !== 0){
+    if (is_exist_address.length !== 0) {
       query.branch_id = is_exist_address[0].branch_id;
       query.subscription_status = "branch_pending";
     }
@@ -227,7 +226,7 @@ export const change_quantity = async (userId,subscription_id,quantity) => {
           }
           query.customized_days = JSON.stringify(store_weekdays);
 
-          const subscriptionplan = await knex("subscribed_user_details").update({start_date:start_date,subscribe_type_id: subscription_plan_id,customized_days:store_weekdays}).where({user_id:userId,id:subscription_id}) 
+          const subscriptionplan = await knex("subscribed_user_details").update({start_date:start_date,subscribe_type_id: subscription_plan_id,customized_days:query.customized_days}).where({user_id:userId,id:subscription_id}) 
 
           return{status:true,message:"plan change to customized"}
           }  
@@ -240,5 +239,20 @@ export const change_quantity = async (userId,subscription_id,quantity) => {
     catch(error){
       console.log(error)
       return {status:false,message:"cannot change plan"}
+    }
+  }
+
+  // pause subscription dates
+  export const pause_subscriptiondate = async (userId,subscription_id,pausedates) => {
+    try {
+      
+        const subscriptiondate = await knex('pause_dates').select('user_id')
+        if(subscriptiondate.user_id == userId){
+          const pausedate = await knex('pause_dates').update({date:pausedates}).where({user_id:userId,subscription_id:subscription_id})
+        } 
+        return 
+      
+    } catch (error) {
+      
     }
   }

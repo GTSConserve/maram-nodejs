@@ -4,8 +4,8 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getusers = void 0;
-var _dateFns = require("date-fns");
+exports.getusers = exports.getSingleUser = void 0;
+var _moment = _interopRequireDefault(require("moment"));
 var _db = _interopRequireDefault(require("../../../services/db.service"));
 var _helper = require("../../../utils/helper.util");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -14,7 +14,7 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 var getusers = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(req, res) {
-    var admin_id, loading, searchKeyword, data_length, search_data_length, routes, _yield$getPageNumber, startingLimit, page, resultsPerPage, numberOfPages, iterator, endingLink, results, results1, is_search, data, data2, product, product2, j, k;
+    var admin_id, loading, searchKeyword, data_length, search_data_length, routes, _yield$getPageNumber, startingLimit, page, resultsPerPage, numberOfPages, iterator, endingLink, results, is_search, data;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
@@ -29,10 +29,9 @@ var getusers = /*#__PURE__*/function () {
               break;
             }
             _context.next = 8;
-            return _db["default"].raw("SELECT  users.name,users.user_unique_id  FROM  user_address\n        JOIN users ON users.id = user_address.user_id\n        WHERE user_address.branch_id= ".concat(admin_id, " AND users.name LIKE '%").concat(searchKeyword, "%'"));
+            return _db["default"].raw("SELECT  users.name,users.user_unique_id  FROM  user_address\n        JOIN users ON users.id = user_address.user_id\n        WHERE user_address.branch_id= ".concat(admin_id, " AND users.name LIKE '%").concat(searchKeyword, "%' \n        OR users.mobile_number LIKE '%").concat(searchKeyword, "%'"));
           case 8:
             search_data_length = _context.sent;
-            // JOIN add_on_orders ON add_on_orders.branch_id = subscribed_user_details.branch_id 
             data_length = search_data_length[0];
             if (!(data_length.length === 0)) {
               _context.next = 15;
@@ -41,7 +40,7 @@ var getusers = /*#__PURE__*/function () {
             loading = false;
             req.query.searchKeyword = "";
             req.flash("error", "No User  Found");
-            return _context.abrupt("return", res.redirect("/branch_admin/users/users"));
+            return _context.abrupt("return", res.redirect("/branch_admin/user/branch_user"));
           case 15:
             _context.next = 20;
             break;
@@ -64,14 +63,14 @@ var getusers = /*#__PURE__*/function () {
               break;
             }
             loading = false;
-            return _context.abrupt("return", res.render("branch_admin/users/users", {
+            return _context.abrupt("return", res.render("branch_admin/user/branch_user", {
               data: data_length,
               searchKeyword: searchKeyword,
               routes: routes
             }));
           case 26:
             _context.next = 28;
-            return (0, _helper.getPageNumber)(req, res, data_length, "users/users");
+            return (0, _helper.getPageNumber)(req, res, data_length, "user/branch_user");
           case 28:
             _yield$getPageNumber = _context.sent;
             startingLimit = _yield$getPageNumber.startingLimit;
@@ -80,91 +79,29 @@ var getusers = /*#__PURE__*/function () {
             numberOfPages = _yield$getPageNumber.numberOfPages;
             iterator = _yield$getPageNumber.iterator;
             endingLink = _yield$getPageNumber.endingLink;
+            console.log(data_length);
             is_search = false;
             if (!searchKeyword) {
               _context.next = 44;
               break;
             }
-            _context.next = 39;
-            return _db["default"].raw("SELECT sub.id ,users.name as user_name,sub.router_id,\n        sub.address,sub.landmark,users.user_unique_id as customer_id,\n        subscribed_user_details.date as subscription_start_date,\n        product_type.name as product_type,unit_types.value as unit_type,\n        products.name as product_name,\n        routes.name as route_name,\n        subscription_type.name as Subscription_type,\n        products.price,products.unit_value,\n        categories.name as category_name,\n\n         users.mobile_number AS mobile_number\n         FROM user_address AS sub             \n         JOIN users ON users.id = sub.user_id\n         JOIN routes ON  routes.id = sub.router_id\n         JOIN user_address_subscribe_branch ON  user_address_subscribe_branch.address_id = sub.id\n         JOIN products ON  products.id = user_address_subscribe_branch.product_id\n         JOIN product_type ON  product_type.id = products.product_type_id\n         JOIN categories ON  categories.id = products.category_id\n         JOIN unit_types ON  unit_types.id = products.unit_type_id\n\n         JOIN subscribed_user_details ON subscribed_user_details.user_id = users.id \n         JOIN subscription_type ON subscription_type.id = subscribed_user_details.subscribe_type_id\n\t\t     WHERE sub.branch_id = ".concat(admin_id, " AND sub.id = address_id\n            AND users.name LIKE '%").concat(searchKeyword, "%' "));
-          case 39:
+            _context.next = 40;
+            return _db["default"].raw("SELECT user_address.id as user_address_id ,user_address.address,user_address.user_id as user_id, \n      users.name as user_name,users.user_unique_id,users.mobile_number,\n      routes.name as route_name\n      FROM user_address \n      JOIN users ON users.id = user_address.user_id \n      JOIN routes ON routes.id = user_address.router_id\n      WHERE user_address.branch_id = ".concat(admin_id, " AND users.name LIKE '%").concat(searchKeyword, "%' \n      OR users.mobile_number LIKE '%").concat(searchKeyword, "%' \n      LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
+          case 40:
             results = _context.sent;
-            // JOIN add_on_orders ON add_on_orders.user_id  = sub.user_id
-
-            console.log(searchKeyword);
             is_search = true;
-            _context.next = 50;
+            _context.next = 47;
             break;
           case 44:
             _context.next = 46;
-            return _db["default"].raw("SELECT sub.id ,users.name as user_name,     \n        sub.address,sub.landmark,users.user_unique_id as customer_id,\n        routes.name as router_name,\n        subscribed_user_details.date as subscription_start_date, \n        users.mobile_number AS mobile_number\n         FROM user_address AS sub\n         \n         left JOIN users ON users.id = sub.user_id\t\t\n         left JOIN routes ON  routes.id = sub.router_id \n         JOIN subscribed_user_details ON subscribed_user_details.user_id = sub.user_id\t\t\n   \n         WHERE sub.branch_id = ".concat(admin_id, " AND  subscribed_user_details.user_address_id = sub.id \n         GROUP BY users.name,subscribed_user_details.user_address_id;"));
+            return _db["default"].raw("SELECT user_address.id as user_address_id ,user_address.address,user_address.user_id as user_id, \n      users.name as user_name,users.user_unique_id,users.mobile_number,\n      routes.name as route_name\n      FROM user_address \n      JOIN users ON users.id = user_address.user_id \n      JOIN routes ON routes.id = user_address.router_id\n      WHERE user_address.branch_id = ".concat(admin_id, " \n      LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
           case 46:
             results = _context.sent;
-            _context.next = 49;
-            return _db["default"].raw("SELECT sub.id ,users.name as user_name,sub.router_id,     \n        sub.address,sub.landmark,users.user_unique_id as customer_id,     \n        subscribed_user_details.date as subscription_start_date,    \n        subscription_type.name as Subscription_type,    \n        products.price,products.unit_value,     \n        categories.name as category_name,    \n        routes.name as router_name,     \n        product_type.name as product_type,     \n        unit_types.value as unit_type,    \n        products.name as product_name,     \n        users.mobile_number AS mobile_number \n     \n      FROM user_address AS sub             \n            \n      left JOIN users ON users.id = sub.user_id\t\t\n      left JOIN routes ON  routes.id = sub.router_id \n     \n      left JOIN user_address_subscribe_branch  as c ON c.user_id=sub.user_id\n      \n      left JOIN products ON  products.id = c.product_id      \n      left JOIN product_type ON  product_type.id = products.product_type_id     \n      left JOIN categories ON  categories.id = products.category_id     \n      left JOIN unit_types ON  unit_types.id = products.unit_type_id\t\t \n      left JOIN subscribed_user_details ON subscribed_user_details.user_id = users.id \t\t\n      left JOIN subscription_type ON subscription_type.id = subscribed_user_details.subscribe_type_id   \n      WHERE sub.branch_id = 2 AND  subscribed_user_details.user_address_id = sub.id  ");
-          case 49:
-            results1 = _context.sent;
-          case 50:
-            // console.log(results1)
+          case 47:
             data = results[0];
-            data2 = results1[0];
-            product = [];
-            product2 = []; // for (let i = 0; i < data.length; i++) {
-            //   data[i].start_date = data[i].start_date.toString().slice(4, 16);
-            //   if (data[i].subscription_start_date) {
-            //     data[i].subscription_start_date = data[i].subscription_start_date
-            //       .toString()
-            //       .slice(4, 16);
-            //   }
-            // const product = [];
-            for (j = 0; j < data.length; j++) {
-              product.push({
-                customer_id: data[j].customer_id,
-                user_name: data[j].user_name,
-                address: data[j].address,
-                router_name: data[j].router_name,
-                mobile_number: data[j].mobile_number,
-                landmark: data[j].landmark,
-                subscription_start_date: data[j].subscription_start_date,
-                Subscription_type: data[j].subscription_name
-                // product_type : data[j].product_type,
-                // price: data[j].price,
-                // unit_value : data[j].unit_value,
-                // category_name : data[j].category_name,
-                // unit_type : data[j].unit_type
-              });
-            }
-
-            ; // run
-            // Once(); 
-            // }
-            // products.price,products.unit_value,
-            if (data2.address == data.address && data2.user_name == data.user_name) {
-              for (k = 0; k < data2.length; k++) {
-                product2.push({
-                  customer_id: data2[k].customer_id,
-                  user_name: data2[k].user_name,
-                  address: data2[k].address,
-                  router_name: data2[k].router_name,
-                  mobile_number: data2[k].mobile_number,
-                  landmark: data2[k].landmark,
-                  product_name: data2[k].product_name,
-                  Subscription_type: data2[k].subscription_name,
-                  product_type: data2[k].product_type,
-                  price: data2[k].price,
-                  unit_value: data2[k].unit_value,
-                  category_name: data2[k].category_name,
-                  unit_type: data2[k].value,
-                  quantity: data2[k].quantity
-                });
-              }
-            }
-            ;
-            console.log(product2);
             loading = false;
             res.render("branch_admin/users/users", {
-              data: product,
-              data2: product2,
+              data: data,
               page: page,
               iterator: iterator,
               endingLink: endingLink,
@@ -174,22 +111,144 @@ var getusers = /*#__PURE__*/function () {
               loading: loading,
               routes: routes
             });
-            _context.next = 67;
+            _context.next = 56;
             break;
-          case 63:
-            _context.prev = 63;
+          case 52:
+            _context.prev = 52;
             _context.t0 = _context["catch"](0);
             console.log(_context.t0);
             res.redirect("/home");
-          case 67:
+          case 56:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 63]]);
+    }, _callee, null, [[0, 52]]);
   }));
   return function getusers(_x, _x2) {
     return _ref.apply(this, arguments);
   };
 }();
 exports.getusers = getusers;
+var getSingleUser = /*#__PURE__*/function () {
+  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(req, res) {
+    var user_address_id, admin_id, get_user_query, user, get_subscription_products, i, add_on_order_query, add_on, get_user_products_query, _i, j;
+    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            _context2.prev = 0;
+            user_address_id = req.query.user_address_id;
+            admin_id = req.body.admin_id;
+            _context2.next = 5;
+            return _db["default"].raw("SELECT user_address.id as user_address_id,\n      user_address.address,user_address.user_id as user_id, \n      users.name as user_name,users.user_unique_id,users.mobile_number,\n      routes.name as route_name\n      FROM user_address \n      JOIN users ON users.id = user_address.user_id \n      JOIN routes ON routes.id = user_address.router_id\n      WHERE user_address.id = ".concat(user_address_id, " AND user_address.branch_id = ").concat(admin_id));
+          case 5:
+            get_user_query = _context2.sent;
+            if (!(get_user_query[0].length === 0)) {
+              _context2.next = 9;
+              break;
+            }
+            req.flash("error", "User Not Found");
+            return _context2.abrupt("return", res.redirect("/home"));
+          case 9:
+            user = get_user_query[0][0]; // console.log(user);
+            _context2.next = 12;
+            return (0, _db["default"])("subscribed_user_details as sub").select("sub.user_id", "sub.start_date", "sub.customized_days", "sub.quantity", "sub.subscription_status", "products.name as product_name", "products.unit_value", "products.price", "unit_types.value", "subscription_type.name as sub_name").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("subscription_type", "subscription_type.id", "=", "sub.subscribe_type_id").where({
+              "sub.user_id": user.user_id,
+              "sub.user_address_id": user_address_id
+            });
+          case 12:
+            get_subscription_products = _context2.sent;
+            // console.log(get_subscription_products);
+
+            if (get_subscription_products.length !== 0) {
+              for (i = 0; i < get_subscription_products.length; i++) {
+                get_subscription_products[i].start_date = (0, _moment["default"])(get_subscription_products[i].start_date).format("YYYY-MM-DD");
+              }
+            }
+
+            // const add_on_details = await knex("add_on_orders as adds")
+            //   .select(
+            //     "adds.delivery_date",
+            //     "adds.sub_total",
+            //     "adds.status as order_status",
+            //     "adds.id as add_on_id",
+            //     "products.name",
+            //     "products.unit_value",
+            //     "products.price",
+            //     "unit_types.value",
+            //     "add_on_order_items.quantity",
+            //     "add_on_order_items.price",
+            //     "add_on_order_items.total_price",
+            //     "add_on_order_items.status as product_status"
+            //   )
+            //   .join(
+            //     "add_on_order_items",
+            //     "add_on_order_items.add_on_order_id",
+            //     "=",
+            //     "adds.id"
+            //   )
+            //   .join("products", "products.id", "=", "add_on_order_items.product_id")
+            //   .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
+            //   .where({
+            //     "adds.user_id": user.user_id,
+            //     "adds.address_id": user_address_id,
+            //   });
+
+            // console.log(add_on_details);
+            _context2.next = 16;
+            return _db["default"].raw("SELECT adds.id,adds.user_id ,adds.delivery_date,adds.sub_total,adds.status\n      FROM add_on_orders as adds \n      WHERE adds.user_id = ".concat(user.user_id, " AND adds.address_id = ").concat(user_address_id));
+          case 16:
+            add_on_order_query = _context2.sent;
+            // console.log(add_on_order_query[0]);
+            add_on = add_on_order_query[0];
+            if (!(add_on.length !== 0)) {
+              _context2.next = 30;
+              break;
+            }
+            _i = 0;
+          case 20:
+            if (!(_i < add_on.length)) {
+              _context2.next = 30;
+              break;
+            }
+            _context2.next = 23;
+            return (0, _db["default"])("add_on_order_items as adds").select("adds.add_on_order_id", "adds.quantity", "adds.price", "adds.total_price", "adds.status", "products.name as product_name", "products.image", "products.unit_value", "unit_types.value").join("products", "products.id", "=", "adds.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").where({
+              "adds.add_on_order_id": add_on[_i].id
+            });
+          case 23:
+            get_user_products_query = _context2.sent;
+            for (j = 0; j < get_user_products_query.length; j++) {
+              get_user_products_query[j].image = process.env.BASE_URL + get_user_products_query[j].image;
+            }
+            add_on[_i].add_on_products = get_user_products_query;
+            add_on[_i].delivery_date = (0, _moment["default"])(add_on[_i].delivery_date).format("YYYY-MM-DD");
+          case 27:
+            _i++;
+            _context2.next = 20;
+            break;
+          case 30:
+            res.render("branch_admin/users/user_detail", {
+              user: user,
+              sub_products: get_subscription_products,
+              add_on: add_on
+            });
+            _context2.next = 37;
+            break;
+          case 33:
+            _context2.prev = 33;
+            _context2.t0 = _context2["catch"](0);
+            console.log(_context2.t0);
+            return _context2.abrupt("return", res.redirect("/home"));
+          case 37:
+          case "end":
+            return _context2.stop();
+        }
+      }
+    }, _callee2, null, [[0, 33]]);
+  }));
+  return function getSingleUser(_x3, _x4) {
+    return _ref2.apply(this, arguments);
+  };
+}();
+exports.getSingleUser = getSingleUser;

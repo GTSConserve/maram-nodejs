@@ -2,6 +2,10 @@ import knex from "../../services/db.service";
 import responseCode from "../../constants/responseCode";
 
 
+
+
+
+
 export const userLogin = async (password) => {
 
     const checkPassword = await knex.select('*').from('rider_details').where({'password': password})
@@ -40,6 +44,21 @@ export const userLogin = async (password) => {
       return { status: responseCode.FAILURE.INTERNAL_SERVER_ERROR, message: error.message }
     }
   }
+
+  // get rider app controls 
+  export const get_Appcontrol = async () => {
+    const appSetting= await knex.select('key','value').from('app_settings')
+    // .where({name:'terms'}) .where({ name:'contact us'})
+    
+    try {
+    return { status: responseCode.SUCCESS, body: appSetting }
+    } catch (error) {
+      return { status: responseCode.FAILURE.INTERNAL_SERVER_ERROR, error}
+    }
+  }
+
+
+
 
   // get single rider details 
   export const get_riderdetails = async (delivery_partner_id) => {

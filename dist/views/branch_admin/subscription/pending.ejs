@@ -99,15 +99,11 @@
                     <tr role="row" >
     
                         <% for(user of data){ %>
-                                <td class="sorting_1"><%=user.id %></td>
+                                <td class="sorting_1"><%=user.user_address_id %></td>
                                 <td class="sorting_1"><%=user.customer_id %></td>
                                 <td class="sorting_1"><%=user.user_name %></td>
-                                <td ><%=user.subscription_name %></td>
-                                <td><%=user.start_date %></td>
-                             
-                                <!-- <td><%=user.product_name %></td>
-                                <td><%=user.unit_value %></td>
-                                <td><%=user.value %></td> -->
+                                <td ><%=user.subscription_name ? user.subscription_name : "N/A"  %></td>
+                                <td><%=user.start_date ? user.start_date : "N/A" %></td>
 
                               
     
@@ -115,13 +111,13 @@
                                     
                                     <td style="width: 200px;" class="text-center" > 
                                         <button style="font-weight: bold;" class="btn  btn-md  btn-info" data-toggle="modal"
-                                        data-target="#view<%=user.id %>">view</button>
+                                        data-target="#view<%=user.user_address_id %>">view</button>
                                          
                                         <button style="font-weight: bold;" class="btn btn-md btn-primary" data-toggle="modal"
-                                        data-target="#transfer<%=user.id %>">Approve</button>
+                                        data-target="#transfer<%=user.user_address_id %>">Approve</button>
                                         
                                         <button style="font-weight: bold;" class="btn btn-md btn-warning" data-toggle="modal"
-                                        data-target="#cancel<%=user.id %>">Cancel</button>
+                                        data-target="#cancel<%=user.user_address_id %>">Cancel</button>
                                     </td>
                                     </td>
                                     
@@ -130,12 +126,12 @@
                             </tr>
     
     <!-- view -->
-                <div wire:ignore.self="" class="modal fade" id="view<%=user.id %>" tabindex="-1"
+                <div wire:ignore.self="" class="modal fade" id="view<%=user.user_address_id %>" tabindex="-1"
                     aria-labelledby="addCategoryTitle"  style="display: none;" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-lg" role="document" > 
                         <div class="modal-content" >
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalCenterTitle"></h5>
+                                <h5 class="modal-title" id="exampleModalCenterTitle">User Details</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
                                         height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -150,7 +146,7 @@
                             <div class="modal-body" >
                                
                                 <div class="form-row mb-4" >
-                                    <div class="col-12 pb-4" style="font-weight: 900;font-size: 20px; color: black;">User Details</div>
+                                      
                                     <div class="col-sm-4 pb-4" >
                                         <label>User Id</label>
                                         <p style="font-weight: 900;"><%=user.customer_id %></p>
@@ -179,91 +175,64 @@
                                   
                                     
                                 </div>
-                                <div class="col-12 " style="font-weight: 900;font-size: 20px; color: black;">Product Details</div>
-                                <div class="card component-card_4 col-6 text-center">
-                                    <div class="card-body ">
-                                        <div class="user-profile ">
+                                <% if(user.is_add_on === true){ %>
+                                <div class="col-4 " style="font-weight: 900;font-size: 20px; color: rgb(0, 0, 0);">Product Details</div>
+                                <div class="col-4" ></div>
+                                <div class="col-4" style="font-weight: 600;font-size: 16px; ">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            Delivery Date :<span style="color: rgb(77, 76, 76);"> <%= user.delivery_date %> </span>
+                                        </div>
+                                        <div class="col-12">
+                                            Sub Total : <span style="color: rgb(77, 76, 76);"><%= user.sub_total %></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                    <% for(add_on of user.add_on_products){ %>
+
+                                        <div style="border-width:0 ;" class="card component-card_4 col-6 text-center">
+                                            <div class="card-body ">
+                                                <div class="user-profile ">
+                                                    <img style="width: 117px;height: 117px;" src="<%= add_on.image %> " class="" alt="...">
+                                                </div>
+                                                <div class="user-info ">
+                                                    <h5 class="card-user_name pt-2"> <%= add_on.product_name %> </h5>
+                                                    <p class="card-user_occupation"> <%=add_on.unit_value %> <%=add_on.value %> / Qty : <%=add_on.quantity %></p>
+                                                    <p class="card-user_occupation">Price : ₹<%=add_on.price %></p>
+                                                    <p class="card-user_occupation">Total Price : ₹<%=add_on.total_price %></p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                <% } %>  
+                                <% }else{ %>  
+                                    <div class="col-12 " style="font-weight: 900;font-size: 20px; color: black;">Product Details</div>
+                                <div style="border-width:0 ;" class="card component-card_4  text-left">
+                                    <div class="card-body row ">
+                                        <div class="user-profile col-4">
                                             <img style="width: 117px;height: 117px;" src="<%= user.image %> " class="" alt="...">
                                         </div>
-                                        <div class="user-info ">
-                                            <h5 class="card-user_name pt-2"> <%= user.product_name %> </h5>
+                                        <div class="user-info col-8">
+                                            <h5 class="card-user_name"> <%= user.product_name %> </h5>
                                             <p class="card-user_occupation"> <%=user.unit_value %> <%=user.value %> / Qty : <%=user.quantity %></p>
-                                            <p class="card-user_occupation">Subscription Start From  <%=user.start_date%></p>
+                                            <p class="card-user_occupation">Subscription Start From - <%=user.start_date%></p>
                                             <p class="card-user_occupation">User Plan : <%= user.subscription_name %>  </p>
                                             <p class="card-user_occupation">Price : ₹<%=user.price %></p>
                                             <% if(user.customized_days){ %> 
-                                                <p class="card-user_occupation"> customized days :
-                                                                    <% for(day of user.customized_days){ %> 
-                                                                        <%= day%> ,
-                                                                    <% } %> 
-                                                    </p>
-                                                        <% } %> 
+                                            <p class="card-user_occupation"> customized days :
+                                                                <% for(day of user.customized_days){ %> 
+                                                                    <%= day%> ,
+                                                                <% } %> 
+                                                </p>
+                                                    <% } %> 
                                             
                                             <!-- <p class="card-text"> Maecenas nec mi vel lacus condimentum rhoncus dignissim egestas orci. Integer blandit porta placerat. Vestibulum in ultricies. </p> -->
                                         </div>
                                     </div>
                                 </div>
-                                    <!-- <div class="col-sm-4 pb-4">
-                                        <label>Price</label>
-                                        <p style="font-weight: 900;"><%=user.price %></p>
-                                        
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <label>Unit Value</label>
-                                        <p style="font-weight: 900;"><%=user.unit_value %></p>
-                                        
-                                    </div>
-                                    <div class="col-sm-4 ">
-                                        <label>Unit Type</label>
-                                        <p style="font-weight: 900;"><%=user.value %></p>
-                                        
-                                    </div>
-                                    <div class="col-sm-4 pb-4">
-                                        <label>Product name</label>
-                                        <p style="font-weight: 900;"><%=user.product_name %></p>
-
-                                        
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <label> Category Name</label>
-                                        <p style="font-weight: 900;"><%=user.category_name %></p>
-                                        
-                                    </div>
-                                    <div class="col-sm-4 ">
-                                        <label>Quantity</label>
-                                        <p style="font-weight: 900;"><%=user.quantity %></p>
-                                        
-                                    </div>
                                     
-                                    <div class="col-sm-6">
-                                        <label> Start date</label>
-                                        <p style="font-weight: 900;"><%=user.start_date %></p>
-                                        
-                                        
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <label>Subscription Type</label>
-                                        <p style="font-weight: 900;"><%=user.subscription_name %></p>
-                                       
-                                        
-                                    </div> -->
-                                    <!-- <% if(user.customized_days){ %> 
-                                    <div class="col-sm-4 mt-4">
-                                        <label>Customized Days</label>
-                                        <div class="element-background">
-                                            <ul class="list-icon">
-                                                <% for(day of user.customized_days){ %> 
-                                                <li>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                                                    <span style="font-weight: 900;" class="list-text"><%= day%></span>
-                                                </li>
-                                                <% } %> 
-                                                
-                                            </ul>
-                                        </div>
-                                        
-                                    </div>
-                                    <% } %>  -->
+                                    <% } %> 
                             </div>
                                     
                                     <div class="modal-footer">
@@ -279,7 +248,7 @@
                 </div>
     
                 <!-- Assign -->
-                <div wire:ignore.self="" class="modal fade" id="transfer<%=user.id %>" tabindex="-1"
+                <div wire:ignore.self="" class="modal fade" id="transfer<%=user.user_address_id %>" tabindex="-1"
                     aria-labelledby="addCategoryTitle"  style="display: none;" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered " role="document" > 
                         <div class="modal-content" >
@@ -313,18 +282,22 @@
                                             </div>
                                             <input type="hidden" name="user_id" value="<%= user.user_id %>">
                                             
-
-                                            <div class="widget-content widget-content-area">
-                                                <p>Choose A Date To Start Subscription</p>
-                                                <div class="form-group mb-0">
-                                                    <input required id="basicFlatpickr" name="date" class="form-control flatpickr flatpickr-input active" type="date" placeholder="<%=user.start_date  %>" value="<%=user.start_date  %>" >
+                                            <% if(!user.is_add_on ){ %>
+                                                <div class="widget-content widget-content-area">
+                                                    <p>Choose A Date To Start Subscription</p>
+                                                    <div class="form-group mb-0">
+                                                        <input required id="basicFlatpickr" name="date" class="form-control flatpickr flatpickr-input active" type="date" placeholder="<%=user.start_date  %>" value="<%=user.start_date  %>" >
+                                                    </div>
                                                 </div>
-            
-                                                
-            
-                                            </div>
-                                            <div class=" col-12">
+                                                <% } %> 
+                                                <div class=" col-12">
+                                                    <% if(user.is_add_on === true){ %> 
+                                                        <input type="hidden" name="add_on_id" value="<%= user.id %>">
+
+                                                <p class="mt-2 ">User Delivery Date -<span style="font-weight: bold;"> <%=user.delivery_date  %></span> </p>
+                                                    <% } else{ %> 
                                                 <p>User Start Date -<span style="font-weight: bold;"> <%=user.start_date  %></span> </p>
+                                                <% } %> 
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -340,7 +313,7 @@
 
 
     <!-- cancel -->
-    <div wire:ignore.self="" class="modal fade" id="cancel<%=user.id %>" tabindex="-1"
+    <div wire:ignore.self="" class="modal fade" id="cancel<%=user.user_address_id %>" tabindex="-1"
         aria-labelledby="addCategoryTitle"  style="display: none;" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered " role="document" > 
             <div class="modal-content" >
@@ -366,7 +339,7 @@
                             </div>
                             <script >
                                 async function onCancel(event) {
-                                await fetch('/branch_admin/subscription/cancel', {
+                                await fetch('/branch_admin/subscription/cancel?add_on_id=<%=user.id %>', {
                                 method: 'POST',
                                 headers: {
                                     'Accept': 'application/json',

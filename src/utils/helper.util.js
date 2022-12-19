@@ -171,7 +171,7 @@ export const integerValidator = (value) => {
 };
 
 export const isNumberValidator = (value) => {
-  if (typeof value !== "number") return false;
+  if (typeof value == "number") return false;
 
   return true;
 };

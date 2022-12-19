@@ -1,5 +1,5 @@
 import express  from 'express';
-import { getusers } from '../../controllers/branch_admin/users/users.controller';
+import { getusers,getSingleUser } from '../../controllers/branch_admin/users/users.controller';
 
 
 
@@ -9,6 +9,8 @@ const userRouter = express.Router({
 })
 // userRouter.get('/get_route',getRoute)
 userRouter.get('/branch_user',getusers)
+
+userRouter.get('/single_user',getSingleUser)
 
 
 

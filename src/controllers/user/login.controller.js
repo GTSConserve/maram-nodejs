@@ -40,7 +40,7 @@ export const login = async (req, res) => {
 
     const { mobile_number, fcmToken, device, appOsFormat, appVersion } =
       payload;
-
+console.log(payload)
     if (payload.status) {
       // const checkPhoneNumber = await loginUser(mobile_number)
       const checkPhoneNumber = await knex

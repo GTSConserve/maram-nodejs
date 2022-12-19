@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.singleSubscription = exports.removeAdditionalOrder = exports.newSubscription = exports.getSubscriptionPlan = exports.getSubcription_order = exports.getAllSubscription = exports.editAdditionalOrder = exports.createAdditionalOrder = exports.changeSubscriptionplan = exports.changeQuantity = exports.Remove_Subscription = void 0;
+exports.singleSubscription = exports.removeAdditionalOrder = exports.pauseSubscription = exports.newSubscription = exports.getSubscriptionPlan = exports.getSubcription_order = exports.getAllSubscription = exports.editAdditionalOrder = exports.createAdditionalOrder = exports.changeSubscriptionplan = exports.changeQuantity = exports.Remove_Subscription = void 0;
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 var _messages = _interopRequireDefault(require("../../constants/messages"));
 var _moment = _interopRequireDefault(require("moment"));
@@ -618,28 +618,83 @@ var changeSubscriptionplan = /*#__PURE__*/function () {
           case 0:
             _context13.prev = 0;
             _req$body9 = req.body, userId = _req$body9.userId, subscription_id = _req$body9.subscription_id, subscription_plan_id = _req$body9.subscription_plan_id, start_date = _req$body9.start_date, customized_days = _req$body9.customized_days;
-            _context13.next = 4;
-            return (0, _subscription.change_subscriptionplan)(userId, subscription_id, subscription_plan_id, start_date, customized_days);
+            if (!(!userId || !subscription_id || !subscription_plan_id || start_date)) {
+              _context13.next = 4;
+              break;
+            }
+            return _context13.abrupt("return", res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
+              status: false,
+              message: _messages["default"].MANDATORY_ERROR
+            }));
           case 4:
+            _context13.next = 6;
+            return (0, _subscription.change_subscriptionplan)(userId, subscription_id, subscription_plan_id, start_date, customized_days);
+          case 6:
             changeplan = _context13.sent;
             return _context13.abrupt("return", res.status(_responseCode["default"].SUCCESS).json(changeplan));
-          case 8:
-            _context13.prev = 8;
+          case 10:
+            _context13.prev = 10;
             _context13.t0 = _context13["catch"](0);
             console.log(_context13.t0);
             return _context13.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
-          case 12:
+          case 14:
           case "end":
             return _context13.stop();
         }
       }
-    }, _callee13, null, [[0, 8]]);
+    }, _callee13, null, [[0, 10]]);
   }));
   return function changeSubscriptionplan(_x23, _x24) {
     return _ref13.apply(this, arguments);
   };
 }();
+
+// pause subscription dates
 exports.changeSubscriptionplan = changeSubscriptionplan;
+var pauseSubscription = /*#__PURE__*/function () {
+  var _ref14 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee14(req, res) {
+    var _req$body10, userId, subscription_id, pausedates, dates;
+    return _regeneratorRuntime().wrap(function _callee14$(_context14) {
+      while (1) {
+        switch (_context14.prev = _context14.next) {
+          case 0:
+            _context14.prev = 0;
+            _req$body10 = req.body, userId = _req$body10.userId, subscription_id = _req$body10.subscription_id, pausedates = _req$body10.pausedates;
+            if (!(!userId || !subscription_id || !pausedates)) {
+              _context14.next = 4;
+              break;
+            }
+            return _context14.abrupt("return", res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
+              status: false,
+              message: _messages["default"].MANDATORY_ERROR
+            }));
+          case 4:
+            _context14.next = 6;
+            return (0, _subscription.pause_subscriptiondate)(userId, subscription_id, pausedates);
+          case 6:
+            dates = _context14.sent;
+            _context14.next = 13;
+            break;
+          case 9:
+            _context14.prev = 9;
+            _context14.t0 = _context14["catch"](0);
+            console.log(_context14.t0);
+            return _context14.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
+              status: false,
+              message: _messages["default"].SERVER_ERROR
+            }));
+          case 13:
+          case "end":
+            return _context14.stop();
+        }
+      }
+    }, _callee14, null, [[0, 9]]);
+  }));
+  return function pauseSubscription(_x25, _x26) {
+    return _ref14.apply(this, arguments);
+  };
+}();
+exports.pauseSubscription = pauseSubscription;

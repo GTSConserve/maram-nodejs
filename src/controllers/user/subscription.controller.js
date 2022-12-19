@@ -10,6 +10,7 @@ import {
   remove_subscription,
   change_quantity,
   change_subscriptionplan,
+  pause_subscriptiondate,
 } from "../../models/user/subscription.model";
 import knex from "../../services/db.service";
 
@@ -385,6 +386,12 @@ export const changeSubscriptionplan = async (req,res) => {
       customized_days
     } = req.body;
     
+    if(!userId || !subscription_id || !subscription_plan_id || start_date){
+      return res
+      .status(responseCode.FAILURE.BAD_REQUEST)
+      .json({ status: false, message: messages.MANDATORY_ERROR });
+     }
+
     const changeplan = await change_subscriptionplan(userId,
       subscription_id,
       subscription_plan_id,
@@ -400,4 +407,26 @@ export const changeSubscriptionplan = async (req,res) => {
     .status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
     .json({status:false,message: messages.SERVER_ERROR})
   }
+}
+
+// pause subscription dates
+export const pauseSubscription = async (req,res) => {
+try {
+  const{userId,subscription_id,pausedates} = req.body;
+
+  if(!userId || !subscription_id || !pausedates){
+    return res
+    .status(responseCode.FAILURE.BAD_REQUEST)
+    .json({ status: false, message: messages.MANDATORY_ERROR });
+   }
+
+   const dates = await pause_subscriptiondate (userId,subscription_id,pausedates);
+
+   
+}
+catch(error){
+  console.log(error);
+  return res.status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
+  .json({status:false,message:messages.SERVER_ERROR})
+}
 }

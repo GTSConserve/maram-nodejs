@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updateUser = exports.getUser = exports.getAddress = exports.editAddress = exports.deleteUseraddress = exports.changePlan = exports.addUserAddress = exports.RemoveOrder = exports.Edit = void 0;
+exports.updateUser = exports.getUser = exports.getAddress = exports.editAddress = exports.deleteUseraddress = exports.checkDeliveryAddress = exports.changePlan = exports.addUserAddress = exports.RemoveOrder = exports.Edit = void 0;
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 var _jwt = require("../../services/jwt.service");
 var _validator = require("../../services/validator.service");
@@ -443,3 +443,48 @@ var changePlan = /*#__PURE__*/function () {
   };
 }();
 exports.changePlan = changePlan;
+var checkDeliveryAddress = /*#__PURE__*/function () {
+  var _ref10 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10(req, res) {
+    var address_id, check_address;
+    return _regeneratorRuntime().wrap(function _callee10$(_context10) {
+      while (1) {
+        switch (_context10.prev = _context10.next) {
+          case 0:
+            _context10.prev = 0;
+            address_id = req.body.address_id; // let maram_latitude = '10.369384601477861'
+            // let maram_longitude = '78.81283443421125'
+            _context10.next = 4;
+            return (0, _user_details.checkAddress)(address_id);
+          case 4:
+            check_address = _context10.sent;
+            if (!(check_address.body[0].latitude <= 10.9956 && check_address.body[0].longitude <= 77.2852)) {
+              _context10.next = 7;
+              break;
+            }
+            return _context10.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
+              status: true,
+              message: "successfully delivery"
+            }));
+          case 7:
+            _context10.next = 13;
+            break;
+          case 9:
+            _context10.prev = 9;
+            _context10.t0 = _context10["catch"](0);
+            console.log(_context10.t0);
+            res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
+              status: false,
+              error: _context10.t0
+            });
+          case 13:
+          case "end":
+            return _context10.stop();
+        }
+      }
+    }, _callee10, null, [[0, 9]]);
+  }));
+  return function checkDeliveryAddress(_x19, _x20) {
+    return _ref10.apply(this, arguments);
+  };
+}();
+exports.checkDeliveryAddress = checkDeliveryAddress;

@@ -68,44 +68,45 @@ var login = /*#__PURE__*/function () {
             _context2.prev = 0;
             payload = (0, _validator.loginValidator)(req.body);
             mobile_number = payload.mobile_number, fcmToken = payload.fcmToken, device = payload.device, appOsFormat = payload.appOsFormat, appVersion = payload.appVersion;
+            console.log(payload);
             if (!payload.status) {
-              _context2.next = 32;
+              _context2.next = 33;
               break;
             }
-            _context2.next = 6;
+            _context2.next = 7;
             return _db["default"].select("id").from("users").where({
               mobile_number: mobile_number
             });
-          case 6:
+          case 7:
             checkPhoneNumber = _context2.sent;
             userId = 0; // const otp = process.env.USER_OTP || Math.floor(1000 + Math.random() * 9000)
             otp = "1234";
-            _context2.next = 11;
+            _context2.next = 12;
             return _db["default"].select("id").from("users");
-          case 11:
+          case 12:
             users = _context2.sent;
             users_length = users.length + 1;
             console.log(checkPhoneNumber);
             if (!(checkPhoneNumber.length === 0)) {
-              _context2.next = 21;
+              _context2.next = 22;
               break;
             }
-            _context2.next = 17;
+            _context2.next = 18;
             return (0, _user.insertUser)(payload, otp, users_length);
-          case 17:
+          case 18:
             query = _context2.sent;
             userId = users_length;
-            _context2.next = 25;
+            _context2.next = 26;
             break;
-          case 21:
-            _context2.next = 23;
+          case 22:
+            _context2.next = 24;
             return (0, _user.updateUserOtp)(payload, otp);
-          case 23:
+          case 24:
             query = _context2.sent;
             userId = checkPhoneNumber.user_id;
-          case 25:
+          case 26:
             if (!(query.status === _responseCode["default"].SUCCESS)) {
-              _context2.next = 29;
+              _context2.next = 30;
               break;
             }
             return _context2.abrupt("return", res.status(query.status).json({
@@ -113,33 +114,33 @@ var login = /*#__PURE__*/function () {
               user_id: userId,
               message: _messages["default"].LOGINMESSAGE.OTP_SENT
             }));
-          case 29:
+          case 30:
             res.status(query.status).json({
               status: false,
               message: query.message
             });
-          case 30:
-            _context2.next = 33;
+          case 31:
+            _context2.next = 34;
             break;
-          case 32:
+          case 33:
             res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
               status: false,
               message: payload.message
             });
-          case 33:
-            _context2.next = 39;
+          case 34:
+            _context2.next = 40;
             break;
-          case 35:
-            _context2.prev = 35;
+          case 36:
+            _context2.prev = 36;
             _context2.t0 = _context2["catch"](0);
             _logger["default"].error("Whooops! This broke with error: ", _context2.t0);
             res.status(500).send("Error!");
-          case 39:
+          case 40:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[0, 35]]);
+    }, _callee2, null, [[0, 36]]);
   }));
   return function login(_x3, _x4) {
     return _ref2.apply(this, arguments);

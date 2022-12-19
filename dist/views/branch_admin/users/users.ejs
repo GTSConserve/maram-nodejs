@@ -31,8 +31,6 @@
 
                                             return window.location.href = `/branch_admin/user/branch_user`
                                         }
-                                        // window.location.href = `/branch_admin/user/branch_user?searchKeyword=${text}`
-                                        // window.history.pushState("","",`/branch_admin/user/branch_user?searchKeyword=${text}`)
 
                                     }
 
@@ -49,7 +47,11 @@
                         </div>
                     </div>
 
-                    
+                </div>
+            </div>
+        </div>
+    
+
         <% if(data.length === 0){ %> 
             <h2>No User Found</h2>
             <% }else if(loading) { %>
@@ -71,21 +73,18 @@
                     <tr role="row"  >
                         <th  class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
                             colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
-                            style="width: 20px;">cusomer id</th>
+                            style="width: 20px;">User Id</th>
                         <th  class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
                             colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
-                            style="width: 20px;">Name</th>
+                            style="width: 20px;">User Name</th>
                        
                         <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
-                            aria-label="NAME: activate to sort column ascending" style="width: 20px;">route Name</th>
+                            aria-label="NAME: activate to sort column ascending" style="width: 20px;">Route Name</th>
                         
                         <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
                             aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">address</th>
                             <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
                             aria-label="IMAGE: activate to sort column ascending" style="width: 10px;">mobile number</th>
-                            <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
-                            colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
-                            style="width: 50px;">product type</th>
                         
                             
                         <th class="text-center dt-no-sorting sorting" tabindex="0"
@@ -97,171 +96,55 @@
     
                     <tr role="row" >
 
-                        <% for(user1 of data){ %>
-                                <td class="sorting_1"><%=user1.customer_id %></td>
-                                <td class="sorting_1"><%=user1.user_name %></td>
-                                <td ><%=user1.router_name%></td>
+                        <% for(user of data){ %>
+                                <td class="sorting_1"><%=user.user_unique_id %></td>
+                                <td class="sorting_1"><%=user.user_name %></td>
+                                <td ><%=user.route_name ? user.route_name : "N/A" %></td>
                                 
-                                <td><%=user1.address %></td>
-                                <td><%=user1.mobile_number %> </td>
-                                <td><%=user1.product_type %></td>
+                                <td><%=user.address %></td>
+                                <td><%=user.mobile_number %> </td>
+                                
                                 
                           
     
                                 <div>
                                     
                                     <td  class="text-center" > 
-                                        <button style="font-weight: bold;" class="btn  btn-md  btn-primary" data-toggle="modal"
-                                        data-target="#view<%=user.id %>">view</button>
+                                        <button style="font-weight: bold;" class="btn  btn-md  btn-primary" 
+                                        onclick="viewhandler(this)" id="<%= user.user_address_id%>"
+                                        >view</button>
                                     </td>
                                     </td>
                                     
                                 </div>
                                 
                             </tr>
+                            <script>
+                                function viewhandler(event){
+                                     window.location.href = `/branch_admin/user/single_user?user_address_id=${event.id}`
+                                }
+                            </script>
     
-    <!-- view -->
-                <div wire:ignore.self="" class="modal fade" id="view<%=user.id %>" tabindex="-1"
-                    aria-labelledby="addCategoryTitle"  style="display: none;" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document" > 
-                        <div class="modal-content" >
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalCenterTitle"></h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-                                        height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                        class="feather feather-x">
-                                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                                    </svg>
-                                </button>
-                            </div>
-                            <% if(data.address === data2.address){ %> 
-
-                            <% for(user of data2){ %>
-                            <div class="modal-body" >
-                               
-                                    <div class="form-row mb-4" >
-                                      
-
-                                            <div class="col-sm-4 pb-4" >
-                                                <label>Customer Id</label>
-                                                <p style="font-weight: 900;"><%=user.customer_id%></p>
-                                                
-                                            </div>
-                                            <div class="col-sm-4">
-                                                <label>User Name</label>
-                                                <p style="font-weight: 900;"><%=user.user_name %></p>
-                                                
-                                            </div>
-                                            <div class="col-sm-4 ">
-                                                <label>Mobile Number</label>
-                                                <p style="font-weight: 900;"><%=user.mobile_number %></p>
-                                               
-                                                
-                                            </div>
-
-                                            <div class="col-sm-4 pb-4">
-                                                <label>Address</label>
-                                                <p style="font-weight: 900;"><%=user.address %></p>
-                                                
-                                            </div>
-                                  
-                                            <div class="col-sm-4">
-                                                <label>Landmark</label>
-                                                <p style="font-weight: 900;"><%=user.landmark ? user.landmark : "N/A" %></p>
-                                              
-                                                
-                                            </div>
-
-                                            <div class="col-sm-4 mt-4">
-                                                <label>Subscription Type</label>
-                                                <p style="font-weight: 900;"><%=user. Subscription_type  %></p>
-                                               
-                                                
-                                            </div>                                                                          
-
-                                           
-                                            <div class="col-sm-4 pb-4">
-                                                <label>Product name</label>
-                                                <p style="font-weight: 900;"><%=user.product_name %></p>
-
-                                                
-                                            </div>
-                                            <div class="col-sm-4">
-                                                <label> Category Name</label>
-                                                <p style="font-weight: 900;"><%=user.category_name %></p>
-                                                
-                                            </div>
-
-                                            <div class="col-sm-4">
-                                                <label> Address</label>
-                                                <p style="font-weight: 900;"><%=user.address %></p>
-                                                
-                                            </div>
-                                            <div class="col-sm-4 ">
-                                                <label>Quantity</label>
-                                                <p style="font-weight: 900;"><%=user.quantity %></p>
-                                                
-                                            </div>
-                                            
-
-                                            <div class="col-sm-4">
-                                                <label>Unit Value</label>
-                                                <p style="font-weight: 900;"><%=user.unit_value %></p>
-                                                
-                                            </div>
-                                            
-                                            <div class="col-sm-4 ">
-                                                <label>Unit Type</label>
-                                                <p style="font-weight: 900;"><%=user.unit_type %></p>
-                                                
-                                            </div>
-                                            <div class="col-sm-4 pb-4">
-                                                <label>Price</label>
-                                                <p style="font-weight: 900;"><%=user.price %></p>
-                                                
-                                            </div>
-                                            <% } %>                           
-                                            <% } %>
-                                        </div>
-                                        
-                                    <div class="modal-footer">
-                                        
-                                        <button type="button" name="id" value="<%=user.id %>" class="btn btn-danger" id="addmodalClose" data-dismiss="modal"><i
-                                            class="flaticon-cancel-12"></i>Discard</button>
-                                            
-                                    </div>
-                        </div> 
-                        
-                    </div>
-                </div>
-                </div>
-    
-                <!-- Assign -->
+ 
                 
     </div>
     
     
     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
+        
                     <% } %>
               
                 </tbody>
     
             </table>
         </div>
-                        <li class="prev">
-        <div class="dt--bottom-section d-sm-flex justify-content-sm-between text-center pt-4 page-item">
+                      
+        <% if(numberOfPages != 1){ %> 
+        <div class="dt--bottom-section d-sm-flex justify-content-sm-between text-center pt-4 ">
             <div class="dt--pages-count  mb-sm-0 mb-3">
               <% let search_query =  is_search ? `&searchKeyword=${searchKeyword}` : "" %>
             </div>
-            <div style="margin-left: 750px;" class="widget-content widget-content-area text-center">
+            <div class="widget-content widget-content-area text-center">
             <nav class="paginating-container " aria-label="...">
                 <ul class="pagination-default pagination">
                     <% if(page > 1) { %> 
@@ -290,6 +173,7 @@
             </nav>
         </div>
         </div>
+        <% } %>
     </div>
     <% } %>
     <div id="DataTables_Table_1_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">

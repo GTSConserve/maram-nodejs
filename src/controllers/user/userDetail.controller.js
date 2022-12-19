@@ -10,6 +10,7 @@ import {
   get_address,
   get_user,
   remove_order,
+  checkAddress
 } from "../../models/user/user_details.model";
 import messages from "../../constants/messages";
 
@@ -249,3 +250,26 @@ export const changePlan = async (req, res) => {
     res.status(responseCode.FAILURE.BAD_REQUEST).json({ status: false, error });
   }
 };
+
+export const checkDeliveryAddress = async (req, res) => {
+  try {
+    const { address_id } = req.body;    
+
+    // let maram_latitude = '10.369384601477861'
+    // let maram_longitude = '78.81283443421125'
+
+    const check_address = await checkAddress(address_id);
+    
+    if (check_address.body[0].latitude <= 10.9956 && check_address.body[0].longitude <= 77.2852) {
+      return res
+      .status(responseCode.SUCCESS) 
+      .json({ status: true, message: "successfully delivery" });  
+    }
+      
+  } catch (error) {
+    console.log(error);
+
+    res.status(responseCode.FAILURE.BAD_REQUEST).json({ status: false, error });
+  }
+};
+

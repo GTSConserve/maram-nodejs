@@ -25,6 +25,7 @@ userRouter.post("/add_user_address", _authToken.authenticateJWT, _userDetail.add
 userRouter.get("/get_address", _authToken.authenticateJWT, _userDetail.getAddress);
 userRouter.post("/edit_address", _authToken.authenticateJWT, _userDetail.editAddress);
 userRouter.post("/delete_user_address", _authToken.authenticateJWT, _userDetail.deleteUseraddress);
+userRouter.post("/check_delivery_address", _authToken.authenticateJWT, _userDetail.checkDeliveryAddress);
 userRouter.post("/remove_orders", _userDetail.RemoveOrder);
 userRouter.post("/edit_orders", _userDetail.Edit);
 userRouter.post("/change_plan", _userDetail.changePlan);

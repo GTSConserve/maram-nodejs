@@ -9,6 +9,7 @@ import {
   changePlan,
   RemoveOrder,
   Edit,
+  checkDeliveryAddress
 } from "../../controllers/user/userDetail.controller";
 import multer from "multer";
 
@@ -35,6 +36,7 @@ userRouter.post("/add_user_address",authenticateJWT, addUserAddress);
 userRouter.get("/get_address",authenticateJWT, getAddress);
 userRouter.post("/edit_address",authenticateJWT, editAddress);
 userRouter.post("/delete_user_address",authenticateJWT, deleteUseraddress);
+userRouter.post("/check_delivery_address",authenticateJWT, checkDeliveryAddress);
 
 userRouter.post("/remove_orders", RemoveOrder);
 userRouter.post("/edit_orders", Edit);

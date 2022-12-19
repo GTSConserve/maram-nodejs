@@ -1,12 +1,14 @@
 import express from 'express';
-import { getRiderdetails, login, updateEndtour, updateRiderstatus,updateStartTour,updeteRiderLocation } from "../../controllers/rider/rider.controller"
+import { getAppControls, getRiderdetails, login, updateEndtour, updateRiderstatus,updateStartTour,updeteRiderLocation } from "../../controllers/rider/rider.controller"
+import { nonMandatoryToken } from '../../middlewares/authToken.middleware';
 
 const loginRouter = express.Router({
     caseSensitive: true,
     strict: true,
 });
+loginRouter.get("/app_controls", getAppControls);
 
-loginRouter.post("/login",login)
+loginRouter.post("/login",nonMandatoryToken,login)
 loginRouter.get("/rider_details",getRiderdetails)
 loginRouter.post("/update_rider_status",updateRiderstatus);
 loginRouter.post("/update_rider_location",updeteRiderLocation);

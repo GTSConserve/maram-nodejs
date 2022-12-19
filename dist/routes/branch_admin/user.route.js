@@ -13,5 +13,6 @@ var userRouter = _express["default"].Router({
 });
 // userRouter.get('/get_route',getRoute)
 userRouter.get('/branch_user', _users.getusers);
+userRouter.get('/single_user', _users.getSingleUser);
 var _default = userRouter;
 exports["default"] = _default;

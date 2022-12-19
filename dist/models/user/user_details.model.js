@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.remove_order = exports.get_user = exports.get_address = exports.edit_address = exports.edit = exports.delete_user_address = exports.change_plan = void 0;
+exports.remove_order = exports.get_user = exports.get_address = exports.edit_address = exports.edit = exports.delete_user_address = exports.checkAddress = exports.change_plan = void 0;
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 var _db = _interopRequireDefault(require("../../services/db.service"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -392,3 +392,41 @@ var change_plan = /*#__PURE__*/function () {
   };
 }();
 exports.change_plan = change_plan;
+var checkAddress = /*#__PURE__*/function () {
+  var _ref8 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8(id) {
+    var editorder;
+    return _regeneratorRuntime().wrap(function _callee8$(_context8) {
+      while (1) {
+        switch (_context8.prev = _context8.next) {
+          case 0:
+            _context8.next = 2;
+            return (0, _db["default"])("user_address").select('latitude', 'longitude').where({
+              id: id
+            });
+          case 2:
+            editorder = _context8.sent;
+            _context8.prev = 3;
+            return _context8.abrupt("return", {
+              status: _responseCode["default"].SUCCESS,
+              body: editorder
+            });
+          case 7:
+            _context8.prev = 7;
+            _context8.t0 = _context8["catch"](3);
+            console.log(_context8.t0);
+            return _context8.abrupt("return", {
+              status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
+              error: _context8.t0
+            });
+          case 11:
+          case "end":
+            return _context8.stop();
+        }
+      }
+    }, _callee8, null, [[3, 7]]);
+  }));
+  return function checkAddress(_x18) {
+    return _ref8.apply(this, arguments);
+  };
+}();
+exports.checkAddress = checkAddress;

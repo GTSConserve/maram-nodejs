@@ -1,9 +1,34 @@
 import express from 'express';
 import messages from '../../constants/messages';
-import { get_riderdetails, update_endtour, update_location, update_riderstatus, update_starttour, userLogin } from '../../models/rider/rider.model';
+import { get_Appcontrol, get_riderdetails, update_endtour, update_location, update_riderstatus, update_starttour, userLogin } from '../../models/rider/rider.model';
 import responseCode from '../../constants/responseCode';
 import knex from '../../services/db.service'
 import { userValidator } from '../../services/validator.service';
+
+
+
+
+//  rider app controls
+export const getAppControls = async (req, res) => {
+  try{
+
+    const settings = await get_Appcontrol()
+
+    let appSettingData = {}
+    for (const settingData of settings.body){
+        appSettingData[settingData.key] = settingData.value;
+        
+    }
+    res.status(200).json({ status: true,data:appSettingData,message:"ok"  }) 
+   
+    // res.status(200).json({ status: true,data: settings.body }) 
+  }
+  catch (error) {
+    console.log(error);
+    res.status(500).json({ status: false,error }) 
+  }
+  }
+
 
 
 // rider login 
@@ -12,10 +37,10 @@ export const login = async (req, res) => {
     console.log("hi");
     const payload = userValidator(req.body);
     const { user_name, password} = payload;
-
+console.log(payload)
     if (payload.status) {
       console.log("hi");
-        const checkPhoneNumber = await userLogin(password)
+        // const checkPhoneNumber = await userLogin(password)
        
         // const checkPhoneNumber = await loginUser(mobile_number)
         const checkPassword = await knex
@@ -34,33 +59,34 @@ export const login = async (req, res) => {
   
         console.log(checkPassword);
   
-      //   if (checkPhoneNumber.length === 0) {
-      //     query = await insertUser(payload, otp, users_length);
+        if (checkPassword.length === 0) {
+          query = await insertUser(payload,users_length);
   
-      //     userId = users_length;
-      //   } else {
-      //     query = await updateUserOtp(payload, otp);
+          userId = users_length;
+        } 
+        // else {
+        //   query = await updateUserOtp(payload);
   
-      //     userId = checkPhoneNumber[0].user_id;
-      //   }
+        //   userId = checkPassword[0].user_id;
+        // }
   
-      //   if (query.status === responseCode.SUCCESS) {
-      //     return res
-      //       .status(query.status)
-      //       .json({
-      //         status: true,
-      //         user_id: userId,
-      //         message: messageCode.LOGINMESSAGE.OTP_SENT,
-      //       });
-      //   } else {
-      //     res
-      //       .status(query.status)
-      //       .json({ status: false, message: query.message });
-      //   }
-      // } else {
-      //   res
-      //     .status(responseCode.FAILURE.BAD_REQUEST)
-      //     .json({ status: false, message: payload.message });
+        if (query.status === responseCode.SUCCESS) {
+          return res
+            .status(query.status)
+            .json({
+              status: true,
+              user_id: userId,
+              message: messageCode.LOGINMESSAGE.OTP_SENT,
+            });
+        } else {
+          res
+            .status(query.status)
+            .json({ status: false, message: query.message });
+        }
+      } else {
+        res
+          .status(responseCode.FAILURE.BAD_REQUEST)
+          .json({ status: false, message: payload.message });
       }
   }
 

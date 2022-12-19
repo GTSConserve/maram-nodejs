@@ -196,3 +196,18 @@ export const change_plan = async (
     };
   }
 };
+
+
+export const checkAddress = async (id) => {
+  const editorder = await knex("user_address").select('latitude','longitude')
+    .where({id})
+  try {
+    return { status: responseCode.SUCCESS, body: editorder };
+  } catch (error) {
+    console.log(error);
+    return {
+      status: responseCode.FAILURE.INTERNAL_SERVER_ERROR,
+      error,
+    };
+  }
+};
