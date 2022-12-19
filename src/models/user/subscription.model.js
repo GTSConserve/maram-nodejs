@@ -76,7 +76,7 @@ export const get_subscription_product = async (userId) => {
         "products.image",
         "products.unit_value",
         "unit_types.value as unit_type",
-        "subscription_type.name as subscription_name"
+        "subscription_type.name as subscription_name",
       )
       .join("products", "products.id", "=", "sub.product_id")
       .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
@@ -110,7 +110,8 @@ export const single_subscription = async (userId, sub_id) => {
         "products.unit_value",
         "unit_types.value as unit_type",
         "subscription_type.name as subscription_name",
-        "user_address.address"
+        "user_address.address",
+        "products.price"
       )
       .join("products", "products.id", "=", "sub.product_id")
       .join("unit_types", "unit_types.id", "=", "products.unit_type_id")

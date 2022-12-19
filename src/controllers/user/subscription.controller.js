@@ -274,7 +274,7 @@ export const singleSubscription = async (req, res) => {
 
     return res
       .status(responseCode.SUCCESS)
-      .json({ status: true, data: sub.data });
+      .json({ status: true, data: sub.data[0] });
   } catch (error) {
     console.log(error);
     return res
