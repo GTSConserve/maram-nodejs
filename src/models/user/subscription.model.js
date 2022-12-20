@@ -78,6 +78,7 @@ export const get_subscription_product = async (userId) => {
         "products.unit_value",
         "unit_types.value as unit_type",
         "subscription_type.name as subscription_name",
+        "sub.subscription_status"
       )
       .join("products", "products.id", "=", "sub.product_id")
       .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
@@ -146,7 +147,7 @@ export const single_subscription = async (userId, sub_id) => {
       return { status: false, message: "No Subscription Found" };
     }
 
-    return { status: true, data: products, additional_orders:query};
+    return { status: true, data: products, query};
   } catch (error) {
     console.log(error);
     return { status: false, message: error };
