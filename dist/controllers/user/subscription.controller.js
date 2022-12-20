@@ -402,15 +402,16 @@ var singleSubscription = /*#__PURE__*/function () {
             return (0, _subscription.single_subscription)(userId, subscription_id);
           case 6:
             sub = _context9.sent;
+            console.log(sub);
             if (sub.status) {
-              _context9.next = 9;
+              _context9.next = 10;
               break;
             }
             return _context9.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
               message: sub.message
             }));
-          case 9:
+          case 10:
             for (i = 0; i < sub.data.length; i++) {
               sub.data[i].image = process.env.BASE_URL + sub.data[i].image;
               sub.data[i].subscription_start_date = (0, _moment["default"])(sub.data[i].subscription_start_date).format("MMM Do YYYY");
@@ -428,27 +429,27 @@ var singleSubscription = /*#__PURE__*/function () {
               "remaining_orders": 5,
               "additional_delivered_orders": 5,
               "additional_remaining_orders": 25
-            };
+            }; // data: sub.data[0],additional_orders: [sub.data[0]],this_month_item_detail:bottle_tracker
             return _context9.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               status: true,
               data: sub.data[0],
-              additional_orders: [sub.additional_orders[0]],
+              additional_orders: [sub.query[0]],
               this_month_item_detail: bottle_tracker
             }));
-          case 14:
-            _context9.prev = 14;
+          case 15:
+            _context9.prev = 15;
             _context9.t0 = _context9["catch"](0);
             console.log(_context9.t0);
             return _context9.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
-          case 18:
+          case 19:
           case "end":
             return _context9.stop();
         }
       }
-    }, _callee9, null, [[0, 14]]);
+    }, _callee9, null, [[0, 15]]);
   }));
   return function singleSubscription(_x15, _x16) {
     return _ref9.apply(this, arguments);
