@@ -9,7 +9,8 @@ import {
   changePlan,
   RemoveOrder,
   Edit,
-  checkDeliveryAddress
+  checkDeliveryAddress,
+  getEmptyBottle
 } from "../../controllers/user/userDetail.controller";
 import multer from "multer";
 
@@ -41,5 +42,10 @@ userRouter.post("/check_delivery_address",authenticateJWT, checkDeliveryAddress)
 userRouter.post("/remove_orders", RemoveOrder);
 userRouter.post("/edit_orders", Edit);
 userRouter.post("/change_plan", changePlan);
+
+// empty bottle tracking api
+
+userRouter.get("/get_empty_bottle", authenticateJWT, getEmptyBottle);
+
 
 export default userRouter;

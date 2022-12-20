@@ -163,3 +163,27 @@ export const addon_order = async (
     return { status: false, message: "Something Went Wrong", error };
   }
 };
+
+
+export const remove_addonorders = async (product_id , delivery_date,addon_id) => {
+  try{
+
+    await knex("add_on_order_items").update({status : "removed"}).where({product_id:product_id,add_on_order_id:addon_id})
+
+    const select = await knex('add_on_order_items').select("price").where({product_id:product_id,add_on_order_id:addon_id, status :"removed"});
+
+    const select1 = await knex('add_on_orders').select("sub_total").where({id:addon_id,delivery_date:delivery_date});   
+
+
+    const total = select1[0].sub_total-select[0].price;
+
+  const update = await knex('add_on_orders').update({sub_total:total}).where({id:addon_id,delivery_date:delivery_date});
+
+  const status = await knex('add_on_orders').update({status:"cancelled"}).where({sub_total:0})
+return{status:true};
+  }
+  catch(error){
+    console.log(error);
+    return { status: false, message: "Something Went Wrong", error };
+  }
+}

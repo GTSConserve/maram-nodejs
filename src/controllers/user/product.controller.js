@@ -6,6 +6,7 @@ import {
   get_subscription_or_add_on_products,
   search_products,
   addon_order,
+  remove_addonorders,
 } from "../../models/user/product.model";
 
 import { parseJwtPayload } from "../../services/jwt.service";
@@ -14,14 +15,17 @@ import knex from "../../services/db.service";
 export const removeAddOnOrder = async (req, res) => {
   try {
 
-    const {product_id , delivery_date} = req.body
+    const {product_id , delivery_date,addon_id} = req.body
 
-    if(!product_id || !delivery_date){
+    if(!product_id || !delivery_date ||!addon_id){
       return res.status(responseCode.FAILURE.BAD_REQUEST).json({status : false , message : messages.MANDATORY_ERROR})
     } 
 
-    await knex("add_on_order_items").update({status : "removed"}).where({product_id,delivery_date})
+const remove = await remove_addonorders(product_id , delivery_date,addon_id);
 
+    return res
+    .status(responseCode.SUCCESS)
+    .json({ status: true, message:"successfully updated"});
 
   } catch (error) {
     console.log(error);
