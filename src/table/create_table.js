@@ -138,12 +138,16 @@ export const createTable = async (req, res) => {
           t.string("name", 255).notNullable();
           t.string("user_name", 255).notNullable();
           t.string("mobile_number", 255).nullable();
+          t.string("latitude", 255).nullable();
+          t.string("longitude", 255).nullable();
 
           t.integer("branch_id").unsigned().nullable();
           t.foreign("branch_id").references("id").inTable("admin_users");
 
           t.string("password", 255).notNullable();
           t.string("address", 255).nullable();
+          t.enu("online_status", ["0", "1"]).defaultTo("1");
+          t.enu("tour_status", ["0", "1", "2"]).defaultTo("0");
           t.enu("status", ["0", "1"]).defaultTo("1");
           t.timestamps(true, true);
         });
@@ -471,6 +475,7 @@ export const createTable = async (req, res) => {
                 "change_date",
                 "change_qty",
                 "change_address",
+                "change_plan",
               ]).defaultTo("pending");
               t.enu("status", ["0", "1"]).defaultTo("1");
               t.timestamps(true, true);
@@ -504,7 +509,7 @@ export const createTable = async (req, res) => {
             "cancelled",
             "branch_pending",
             "branch_cancelled",
-            "new_order"
+            "new_order",
           ]).defaultTo("pending");
           t.integer("tip_amount").nullable();
           t.integer("grand_total").nullable();
@@ -891,14 +896,16 @@ export const createTable = async (req, res) => {
               t.foreign("product_id").references("id").inTable("products");
 
               t.integer("product_type_id").unsigned().notNullable();
-              t.foreign("product_type_id").references("id").inTable("product_type");
+              t.foreign("product_type_id")
+                .references("id")
+                .inTable("product_type");
 
               t.enu("status", ["pending", "approved", "cancelled"]).defaultTo(
                 "pending"
               );
 
               t.integer("price").nullable();
-              
+
               t.string("qty", 255).nullable();
               t.string("excess_qty", 255).nullable();
               t.string("given_excess_qty", 255).nullable();
@@ -912,6 +919,32 @@ export const createTable = async (req, res) => {
           );
         }
       });
+
+      // subscription_users_change_plan
+      await knex.schema.hasTable("subscription_users_change_plan").then(function (exists) {
+        if (!exists) {
+          return knex.schema.createTable("subscription_users_change_plan", function (t) {
+            t.increments("id").primary();
+
+            t.integer("user_id").unsigned().notNullable();
+            t.foreign("user_id").references("id").inTable("users");
+
+            t.integer("subscription_id").unsigned().nullable();
+              t.foreign("subscription_id")
+                .references("id")
+                .inTable("subscribed_user_details");
+
+                t.integer("previous_subscription_type_id").nullable();
+                t.integer("change_subscription_type_id").nullable();
+  
+            t.date("start_date").nullable();
+            t.json("customized_days").nullable();
+    
+            t.timestamps(true, true);
+          });
+        }
+      });
+
 
     return res
       .status(200)

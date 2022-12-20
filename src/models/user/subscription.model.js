@@ -176,7 +176,7 @@ export const remove_subscription = async (user_id, subscription_id) => {
 
 
 // change quantity 
-export const change_quantity = async (userId,subscription_id,quantity) => {
+export const change_quantity = async (userId,subscription_id,quantity,) => {
   try {
        const change = await knex('subscribed_user_details').update({quantity:quantity}).where({id:subscription_id,user_id:userId});
        return { status: true, message: "SuccessFully Updated" };
@@ -202,21 +202,13 @@ export const change_quantity = async (userId,subscription_id,quantity) => {
         user_id: userId,
         subscribe_type_id: subscription_plan_id,
       };
-      if( subscription_plan_id==1){
-        
-      const subscriptionplan = await knex("subscribed_user_details").update({start_date:start_date,subscribe_type_id: subscription_plan_id}).where({user_id:userId,id:subscription_id})
 
-      return{status:true,message:"plan change to daily"}
-      }
-      else if (subscription_plan_id==2){
-           
-      const subscriptionplan = await knex("subscribed_user_details").update({start_date:start_date,subscribe_type_id: subscription_plan_id}).where({user_id:userId,id:subscription_id})
+      const subscription_status = await knex('subscribed_user_details').update({subscription_status:"change_plan"}).where({id:subscription_id});
+      
+      const previous = await knex('subscribed_user_details').select("subscribe_type_id").where({id:subscription_id});
+      // console.log(previous)
 
-      return{status:true,message:"plan change to alternate"}
-
-      }
-      else if (subscription_plan_id==3){      
-          let weekdays = await knex("weekdays").select("id", "name");
+      let weekdays = await knex("weekdays").select("id", "name");
           let store_weekdays = [];
           for (let i = 0; i < customized_days.length; i++) {
             for (let j = 0; j < weekdays.length; j++) {
@@ -227,15 +219,11 @@ export const change_quantity = async (userId,subscription_id,quantity) => {
           }
           query.customized_days = JSON.stringify(store_weekdays);
 
-          const subscriptionplan = await knex("subscribed_user_details").update({start_date:start_date,subscribe_type_id: subscription_plan_id,customized_days:query.customized_days}).where({user_id:userId,id:subscription_id}) 
 
-          return{status:true,message:"plan change to customized"}
-          }  
+      const changeplan = await knex("subscription_users_change_plan").insert({user_id:userId,subscription_id:subscription_id,previous_subscription_type_id:previous[0].subscribe_type_id,change_subscription_type_id: subscription_plan_id,start_date:start_date,customized_days:query.customized_days})
 
-  else{
-        return {status:false,message:"cannot change plan"}
-    }
-
+      // console.log(changeplan)
+  return {status:true, message: "Successfully change subscription plan"}
     }
     catch(error){
       console.log(error)
@@ -244,16 +232,24 @@ export const change_quantity = async (userId,subscription_id,quantity) => {
   }
 
   // pause subscription dates
-  export const pause_subscriptiondate = async (userId,subscription_id,pausedates) => {
+  export const pause_subscriptiondate = async (userId,subscription_id,dates) => {
     try {
       
-        const subscriptiondate = await knex('pause_dates').select('user_id')
-        if(subscriptiondate.user_id == userId){
-          const pausedate = await knex('pause_dates').update({date:pausedates}).where({user_id:userId,subscription_id:subscription_id})
-        } 
-        return 
+        
+        for(let i = 0; i < dates.length; i++){
+          const subscriptiondate = await knex('pause_dates') .insert({date:dates[i].date,user_id:userId,subscription_id:subscription_id});
+        }
+       
+        
+        // = await knex('pause_dates').select('user_id')
+        // if(subscriptiondate.user_id == userId){
+        //   const pausedate = await knex('pause_dates').update({date:pausedates}).where({user_id:userId,subscription_id:subscription_id})
+        // } 
+       return{status:true,message:"your pause dates comformed"}
+
       
     } catch (error) {
-      
+      console.log(error)
+      return {status:false,message:"cannot pause date"}
     }
   }

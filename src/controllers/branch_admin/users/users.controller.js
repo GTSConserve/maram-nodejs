@@ -64,7 +64,7 @@ export const getusers = async (req, res) => {
       routes.name as route_name
       FROM user_address 
       JOIN users ON users.id = user_address.user_id 
-      JOIN routes ON routes.id = user_address.router_id
+      LEFT JOIN routes ON routes.id = user_address.router_id
       WHERE user_address.branch_id = ${admin_id} AND users.name LIKE '%${searchKeyword}%' 
       OR users.mobile_number LIKE '%${searchKeyword}%' 
       LIMIT ${startingLimit},${resultsPerPage}`);
@@ -76,7 +76,7 @@ export const getusers = async (req, res) => {
       routes.name as route_name
       FROM user_address 
       JOIN users ON users.id = user_address.user_id 
-      JOIN routes ON routes.id = user_address.router_id
+      LEFT JOIN routes ON routes.id = user_address.router_id
       WHERE user_address.branch_id = ${admin_id} 
       LIMIT ${startingLimit},${resultsPerPage}`);
     }
@@ -105,6 +105,7 @@ export const getSingleUser = async (req, res) => {
   try {
     const { user_address_id } = req.query;
     const { admin_id } = req.body;
+    console.log(user_address_id,admin_id)
 
     const get_user_query =
       await knex.raw(`SELECT user_address.id as user_address_id,
@@ -113,7 +114,7 @@ export const getSingleUser = async (req, res) => {
       routes.name as route_name
       FROM user_address 
       JOIN users ON users.id = user_address.user_id 
-      JOIN routes ON routes.id = user_address.router_id
+      LEFT JOIN routes ON routes.id = user_address.router_id
       WHERE user_address.id = ${user_address_id} AND user_address.branch_id = ${admin_id}`);
 
     if (get_user_query[0].length === 0) {
@@ -129,6 +130,7 @@ export const getSingleUser = async (req, res) => {
       "subscribed_user_details as sub"
     )
       .select(
+        "sub.id as sub_id",
         "sub.user_id",
         "sub.start_date",
         "sub.customized_days",
@@ -156,8 +158,13 @@ export const getSingleUser = async (req, res) => {
 
     // console.log(get_subscription_products);
 
+    let is_subscription_active = 0;
     if (get_subscription_products.length !== 0) {
       for (let i = 0; i < get_subscription_products.length; i++) {
+        if (get_subscription_products[i].subscription_status == "subscribed") {
+          is_subscription_active = 1;
+        }
+
         get_subscription_products[i].start_date = moment(
           get_subscription_products[i].start_date
         ).format("YYYY-MM-DD");
@@ -200,11 +207,16 @@ export const getSingleUser = async (req, res) => {
       WHERE adds.user_id = ${user.user_id} AND adds.address_id = ${user_address_id}`);
 
     // console.log(add_on_order_query[0]);
-    let add_on = add_on_order_query[0]
-  
+    let add_on = add_on_order_query[0];
+
+    let is_add_on_active = 0;
     let get_user_products_query;
     if (add_on.length !== 0) {
       for (let i = 0; i < add_on.length; i++) {
+        if (add_on_order_query[i].status == "pending") {
+          is_add_on_active = 1;
+        }
+
         get_user_products_query = await knex("add_on_order_items as adds")
           .select(
             "adds.add_on_order_id",
@@ -226,19 +238,44 @@ export const getSingleUser = async (req, res) => {
             process.env.BASE_URL + get_user_products_query[j].image;
         }
         add_on[i].add_on_products = get_user_products_query;
-        add_on[i].delivery_date = moment(
-          add_on[i].delivery_date
-        ).format("YYYY-MM-DD");
+        add_on[i].delivery_date = moment(add_on[i].delivery_date).format(
+          "YYYY-MM-DD"
+        );
       }
-
     }
-  
 
-
-    res.render("branch_admin/users/user_detail",{user,sub_products :  get_subscription_products ,add_on})
-
+    res.render("branch_admin/users/user_detail", {
+      user,
+      sub_products: get_subscription_products,
+      add_on,
+      is_add_on_active,
+      is_subscription_active,
+    });
   } catch (error) {
     console.log(error);
     return res.redirect("/home");
   }
 };
+
+
+
+export const getAddUser = async(req,res) => {
+  try {
+    res.render("branch_admin/users/add_user")
+  } catch (error) {
+    console.log(error)
+    res.redirect("/home")
+  }
+}
+
+
+export const createUser = async (req,res) => {
+  try {
+    
+    console.log(req.body)
+
+  } catch (error) {
+    console.log(error)
+    res.redirect("/home")
+  }
+}
