@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.search_products = exports.get_subscription_or_add_on_products = exports.get_products = exports.get_categories = exports.addon_order = void 0;
+exports.search_products = exports.remove_addonorders = exports.get_subscription_or_add_on_products = exports.get_products = exports.get_categories = exports.addon_order = void 0;
 var _db = _interopRequireDefault(require("../../services/db.service"));
 var _helper = require("../../utils/helper.util");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -308,3 +308,76 @@ var addon_order = /*#__PURE__*/function () {
   };
 }();
 exports.addon_order = addon_order;
+var remove_addonorders = /*#__PURE__*/function () {
+  var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(product_id, delivery_date, addon_id) {
+    var select, select1, total, update, status;
+    return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+      while (1) {
+        switch (_context6.prev = _context6.next) {
+          case 0:
+            _context6.prev = 0;
+            _context6.next = 3;
+            return (0, _db["default"])("add_on_order_items").update({
+              status: "removed"
+            }).where({
+              product_id: product_id,
+              add_on_order_id: addon_id
+            });
+          case 3:
+            _context6.next = 5;
+            return (0, _db["default"])('add_on_order_items').select("price").where({
+              product_id: product_id,
+              add_on_order_id: addon_id,
+              status: "removed"
+            });
+          case 5:
+            select = _context6.sent;
+            _context6.next = 8;
+            return (0, _db["default"])('add_on_orders').select("sub_total").where({
+              id: addon_id,
+              delivery_date: delivery_date
+            });
+          case 8:
+            select1 = _context6.sent;
+            total = select1[0].sub_total - select[0].price;
+            _context6.next = 12;
+            return (0, _db["default"])('add_on_orders').update({
+              sub_total: total
+            }).where({
+              id: addon_id,
+              delivery_date: delivery_date
+            });
+          case 12:
+            update = _context6.sent;
+            _context6.next = 15;
+            return (0, _db["default"])('add_on_orders').update({
+              status: "cancelled"
+            }).where({
+              sub_total: 0
+            });
+          case 15:
+            status = _context6.sent;
+            return _context6.abrupt("return", {
+              status: true
+            });
+          case 19:
+            _context6.prev = 19;
+            _context6.t0 = _context6["catch"](0);
+            console.log(_context6.t0);
+            return _context6.abrupt("return", {
+              status: false,
+              message: "Something Went Wrong",
+              error: _context6.t0
+            });
+          case 23:
+          case "end":
+            return _context6.stop();
+        }
+      }
+    }, _callee6, null, [[0, 19]]);
+  }));
+  return function remove_addonorders(_x14, _x15, _x16) {
+    return _ref6.apply(this, arguments);
+  };
+}();
+exports.remove_addonorders = remove_addonorders;

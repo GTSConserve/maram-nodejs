@@ -29,5 +29,9 @@ userRouter.post("/check_delivery_address", _authToken.authenticateJWT, _userDeta
 userRouter.post("/remove_orders", _userDetail.RemoveOrder);
 userRouter.post("/edit_orders", _userDetail.Edit);
 userRouter.post("/change_plan", _userDetail.changePlan);
+
+// empty bottle tracking api
+
+userRouter.get("/get_empty_bottle", _authToken.authenticateJWT, _userDetail.getEmptyBottle);
 var _default = userRouter;
 exports["default"] = _default;

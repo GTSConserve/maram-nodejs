@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updateUser = exports.getUser = exports.getAddress = exports.editAddress = exports.deleteUseraddress = exports.checkDeliveryAddress = exports.changePlan = exports.addUserAddress = exports.RemoveOrder = exports.Edit = void 0;
+exports.updateUser = exports.getUser = exports.getEmptyBottle = exports.getAddress = exports.editAddress = exports.deleteUseraddress = exports.checkDeliveryAddress = exports.changePlan = exports.addUserAddress = exports.RemoveOrder = exports.Edit = void 0;
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 var _jwt = require("../../services/jwt.service");
 var _validator = require("../../services/validator.service");
@@ -488,3 +488,56 @@ var checkDeliveryAddress = /*#__PURE__*/function () {
   };
 }();
 exports.checkDeliveryAddress = checkDeliveryAddress;
+var getEmptyBottle = /*#__PURE__*/function () {
+  var _ref11 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11(req, res) {
+    var userId, get_user_bottle_detail;
+    return _regeneratorRuntime().wrap(function _callee11$(_context11) {
+      while (1) {
+        switch (_context11.prev = _context11.next) {
+          case 0:
+            _context11.prev = 0;
+            userId = req.body.userId;
+            if (!userId) {
+              _context11.next = 7;
+              break;
+            }
+            get_user_bottle_detail = {
+              "delivered_orders": "0",
+              "remaining_orders": "30",
+              "additional_delivered_orders": "0",
+              "additional_remaining_orders": "30"
+            };
+            res.status(_responseCode["default"].SUCCESS).json({
+              status: true,
+              this_month_item_detail: get_user_bottle_detail
+            });
+            _context11.next = 8;
+            break;
+          case 7:
+            return _context11.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
+              status: false,
+              message: "Bottle Not Found"
+            }));
+          case 8:
+            _context11.next = 14;
+            break;
+          case 10:
+            _context11.prev = 10;
+            _context11.t0 = _context11["catch"](0);
+            console.log(_context11.t0);
+            res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
+              status: false,
+              message: "no user"
+            });
+          case 14:
+          case "end":
+            return _context11.stop();
+        }
+      }
+    }, _callee11, null, [[0, 10]]);
+  }));
+  return function getEmptyBottle(_x21, _x22) {
+    return _ref11.apply(this, arguments);
+  };
+}();
+exports.getEmptyBottle = getEmptyBottle;

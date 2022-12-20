@@ -428,7 +428,7 @@ var createTable = /*#__PURE__*/function () {
                   t.integer("address_id").unsigned().notNullable();
                   t.foreign("address_id").references("id").inTable("user_address");
                   t.date("delivery_date").nullable();
-                  t.enu("status", ["pending", "delivered", "undelivered", "assigned", "cancelled", "branch_pending", "branch_cancelled", "new_order"]).defaultTo("pending");
+                  t.enu("status", ["pending", "delivered", "undelivered", "assigned", "cancelled", "branch_pending", "branch_cancelled", "new_order", "removed"]).defaultTo("pending");
                   t.integer("tip_amount").nullable();
                   t.integer("grand_total").nullable();
                   t.integer("sub_total").nullable();
@@ -451,7 +451,7 @@ var createTable = /*#__PURE__*/function () {
                   t.foreign("user_id").references("id").inTable("users");
                   t.integer("product_id").unsigned().notNullable();
                   t.foreign("product_id").references("id").inTable("products");
-                  t.enu("status", ["pending", "delivered", "undelivered", "removed"]).defaultTo("pending");
+                  t.enu("status", ["pending", "delivered", "undelivered", "removed", "cancelled"]).defaultTo("pending");
                   t.string("quantity", 255).nullable();
                   t.integer("tax_price").nullable();
                   t.integer("price").nullable();
