@@ -132,10 +132,14 @@ var createTable = /*#__PURE__*/function () {
                   t.string("name", 255).notNullable();
                   t.string("user_name", 255).notNullable();
                   t.string("mobile_number", 255).nullable();
+                  t.string("latitude", 255).nullable();
+                  t.string("longitude", 255).nullable();
                   t.integer("branch_id").unsigned().nullable();
                   t.foreign("branch_id").references("id").inTable("admin_users");
                   t.string("password", 255).notNullable();
                   t.string("address", 255).nullable();
+                  t.enu("online_status", ["0", "1"]).defaultTo("1");
+                  t.enu("tour_status", ["0", "1", "2"]).defaultTo("0");
                   t.enu("status", ["0", "1"]).defaultTo("1");
                   t.timestamps(true, true);
                 });
@@ -405,7 +409,7 @@ var createTable = /*#__PURE__*/function () {
                   t.integer("product_id").unsigned().notNullable();
                   t.foreign("product_id").references("id").inTable("products");
                   t.integer("quantity").notNullable();
-                  t.enu("subscription_status", ["pending", "assigned", "cancelled", "subscribed", "unsubscribed", "branch_cancelled", "branch_pending", "change_date", "change_qty", "change_address"]).defaultTo("pending");
+                  t.enu("subscription_status", ["pending", "assigned", "cancelled", "subscribed", "unsubscribed", "branch_cancelled", "branch_pending", "change_date", "change_qty", "change_address", "change_plan"]).defaultTo("pending");
                   t.enu("status", ["0", "1"]).defaultTo("1");
                   t.timestamps(true, true);
                 });
@@ -672,12 +676,30 @@ var createTable = /*#__PURE__*/function () {
               }
             });
           case 69:
+            _context.next = 71;
+            return _db["default"].schema.hasTable("subscription_users_change_plan").then(function (exists) {
+              if (!exists) {
+                return _db["default"].schema.createTable("subscription_users_change_plan", function (t) {
+                  t.increments("id").primary();
+                  t.integer("user_id").unsigned().notNullable();
+                  t.foreign("user_id").references("id").inTable("users");
+                  t.integer("subscription_id").unsigned().nullable();
+                  t.foreign("subscription_id").references("id").inTable("subscribed_user_details");
+                  t.integer("previous_subscription_type_id").nullable();
+                  t.integer("change_subscription_type_id").nullable();
+                  t.date("start_date").nullable();
+                  t.json("customized_days").nullable();
+                  t.timestamps(true, true);
+                });
+              }
+            });
+          case 71:
             return _context.abrupt("return", res.status(200).json({
               status: true,
               message: "table successfully created"
             }));
-          case 72:
-            _context.prev = 72;
+          case 74:
+            _context.prev = 74;
             _context.t0 = _context["catch"](0);
             console.log(_context.t0);
             return _context.abrupt("return", res.status(500).json({
@@ -685,12 +707,12 @@ var createTable = /*#__PURE__*/function () {
               message: "Error at creating tables",
               error: _context.t0
             }));
-          case 76:
+          case 78:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 72]]);
+    }, _callee, null, [[0, 74]]);
   }));
   return function createTable(_x, _x2) {
     return _ref.apply(this, arguments);

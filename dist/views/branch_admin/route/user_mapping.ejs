@@ -115,8 +115,8 @@
                                     </td>
                          
                                     <td class="text-center">
-                                       <button class="btn mb-2 btn-md  btn-secondary" data-toggle="modal"
-                                        data-target="#editCategory<%=user.id %>">View</button>
+                                       <button class="btn mb-2 btn-md  btn-secondary" value="<%=user.address_id %>" onclick="viewHandler(this)"
+                                       >View</button>
                                        <button class="btn mb-2 btn-md  btn-info" data-toggle="modal"
                                         data-target="#transfer<%=user.id %>">Assign</button>
                                           
@@ -124,8 +124,8 @@
                                     
                                 </div>
                                 <script>
-                                    // async function userMapping(event){
-                                    //     window.location.href = `/branch_admin/order/daily_orders?route_id=${event.id}`
+                                    async function viewHandler(event){
+                                        window.location.href = `/branch_admin/user/single_user?user_address_id=${Number(event.value)}`
                                     //     // await fetch('/branch_admin/order/daily_orders', {
                                     //     //     method: 'get',
                                     //     //     headers: {
@@ -136,7 +136,7 @@
                                     //     //         })
                                                 
                                                     
-                                    // }
+                                    }
                                     async function userMapping(event){
                                         window.location.href = `/branch_admin/route/user_mapping?route_id=${event.id}`
                                      
@@ -146,114 +146,6 @@
                                 
                             </tr>
     
-    <!-- edit -->
-                <div wire:ignore.self="" class="modal fade bd-example-modal-xl" id="editCategory<%=user.id %>" tabindex="-1"
-                    aria-labelledby="addCategoryTitle" style="display: none;" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalCenterTitle"> View user Mapping</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-                                        height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                        class="feather feather-x">
-                                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                                    </svg>
-                                </button>
-                            </div>
-    
-                            <div class="modal-body">
-                                <div class="form-row mb-4" >
-                                      
-
-                                    <div class="col-sm-4 pb-4" >
-                                        <label>Customer Id</label>
-                                        <p style="font-weight: 900;"><%=user.user_unique_id %></p>
-                                        
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <label>User Name</label>
-                                        <p style="font-weight: 900;"><%=user.user_name %></p>
-                                        
-                                    </div>
-                                    <div class="col-sm-4 ">
-                                        <label>Mobile Number</label>
-                                        <p style="font-weight: 900;"><%=user.mobile_number %></p>
-                                       
-                                        
-                                    </div>
-                                    <div class="col-sm-4 pb-4">
-                                        <label>Product name</label>
-                                        <p style="font-weight: 900;"><%=user.product_name %></p>
-
-                                        
-                                    </div>
-                                    
-                                    <div class="col-sm-4 pb-4">
-                                        <label>Price</label>
-                                        <p style="font-weight: 900;"><%=user.price %></p>
-                                        
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <label>Value</label>
-                                        <p style="font-weight: 900;"><%=user.unit_value %> <%=user.value %></p>
-                                        
-                                    </div>
-                                  
-                                    <div class="col-sm-4 ">
-                                        <label>Quantity</label>
-                                        <p style="font-weight: 900;"><%=user.quantity %></p>
-                                        
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <label> Start date</label>
-                                        <p style="font-weight: 900;"><%=user.subscription_start_date %></p>
-                                        
-                                        
-                                    </div>
-                                
-                                    <div class="col-sm-4 ">
-                                        <label>Subscription Type</label>
-                                        <p style="font-weight: 900;"><%=user.sub_name  %></p>
-                                       
-                                        
-                                    </div>
-                                    <div class="col-sm-6 mt-3">
-                                        <label>Address</label>
-                                        <p style="font-weight: 900;"><%=user.address %></p>
-                                        
-                                    </div>
-                                    <div class="col-sm-6 mt-3">
-                                        <label>Landmark</label>
-                                        <p style="font-weight: 900;"><%=user.landmark %></p>
-                                      
-                                        
-                                    </div>
-                                  
-                                    <% if(user.customized_days){ %> 
-                                    <div class="col-sm-4 mt-4">
-                                        <label>Customized Days</label>
-                                        <div class="element-background">
-                                            <ul class="list-icon">
-                                                <% for(day of user.customized_days){ %> 
-                                                <li>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                                                    <span style="font-weight: 900;" class="list-text"><%= day%></span>
-                                                </li>
-                                                <% } %> 
-                                                
-                                            </ul>
-                                        </div>
-                                        
-                                    </div>
-                                    <% } %> 
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                </div>
     
   <!-- Assign -->
                 <div wire:ignore.self="" class="modal fade" id="transfer<%=user.id %>" tabindex="-1"

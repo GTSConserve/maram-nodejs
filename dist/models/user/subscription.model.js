@@ -323,7 +323,7 @@ var change_quantity = /*#__PURE__*/function () {
 exports.change_quantity = change_quantity;
 var change_subscriptionplan = /*#__PURE__*/function () {
   var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7(userId, subscription_id, subscription_plan_id, start_date, customized_days) {
-    var query, subscriptionplan, _subscriptionplan, weekdays, store_weekdays, i, j, _subscriptionplan2;
+    var query, subscription_status, previous, weekdays, store_weekdays, i, j, changeplan;
     return _regeneratorRuntime().wrap(function _callee7$(_context7) {
       while (1) {
         switch (_context7.prev = _context7.next) {
@@ -334,51 +334,23 @@ var change_subscriptionplan = /*#__PURE__*/function () {
               user_id: userId,
               subscribe_type_id: subscription_plan_id
             };
-            if (!(subscription_plan_id == 1)) {
-              _context7.next = 9;
-              break;
-            }
-            _context7.next = 5;
-            return (0, _db["default"])("subscribed_user_details").update({
-              start_date: start_date,
-              subscribe_type_id: subscription_plan_id
+            _context7.next = 4;
+            return (0, _db["default"])('subscribed_user_details').update({
+              subscription_status: "change_plan"
             }).where({
-              user_id: userId,
               id: subscription_id
             });
-          case 5:
-            subscriptionplan = _context7.sent;
-            return _context7.abrupt("return", {
-              status: true,
-              message: "plan change to daily"
-            });
-          case 9:
-            if (!(subscription_plan_id == 2)) {
-              _context7.next = 16;
-              break;
-            }
-            _context7.next = 12;
-            return (0, _db["default"])("subscribed_user_details").update({
-              start_date: start_date,
-              subscribe_type_id: subscription_plan_id
-            }).where({
-              user_id: userId,
+          case 4:
+            subscription_status = _context7.sent;
+            _context7.next = 7;
+            return (0, _db["default"])('subscribed_user_details').select("subscribe_type_id").where({
               id: subscription_id
             });
-          case 12:
-            _subscriptionplan = _context7.sent;
-            return _context7.abrupt("return", {
-              status: true,
-              message: "plan change to alternate"
-            });
-          case 16:
-            if (!(subscription_plan_id == 3)) {
-              _context7.next = 29;
-              break;
-            }
-            _context7.next = 19;
+          case 7:
+            previous = _context7.sent;
+            _context7.next = 10;
             return (0, _db["default"])("weekdays").select("id", "name");
-          case 19:
+          case 10:
             weekdays = _context7.sent;
             store_weekdays = [];
             for (i = 0; i < customized_days.length; i++) {
@@ -389,43 +361,35 @@ var change_subscriptionplan = /*#__PURE__*/function () {
               }
             }
             query.customized_days = JSON.stringify(store_weekdays);
-            _context7.next = 25;
-            return (0, _db["default"])("subscribed_user_details").update({
-              start_date: start_date,
-              subscribe_type_id: subscription_plan_id,
-              customized_days: query.customized_days
-            }).where({
+            _context7.next = 16;
+            return (0, _db["default"])("subscription_users_change_plan").insert({
               user_id: userId,
-              id: subscription_id
+              subscription_id: subscription_id,
+              previous_subscription_type_id: previous[0].subscribe_type_id,
+              change_subscription_type_id: subscription_plan_id,
+              start_date: start_date,
+              customized_days: query.customized_days
             });
-          case 25:
-            _subscriptionplan2 = _context7.sent;
+          case 16:
+            changeplan = _context7.sent;
             return _context7.abrupt("return", {
               status: true,
-              message: "plan change to customized"
+              message: "Successfully change subscription plan"
             });
-          case 29:
-            return _context7.abrupt("return", {
-              status: false,
-              message: "cannot change plan"
-            });
-          case 30:
-            _context7.next = 36;
-            break;
-          case 32:
-            _context7.prev = 32;
+          case 20:
+            _context7.prev = 20;
             _context7.t0 = _context7["catch"](0);
             console.log(_context7.t0);
             return _context7.abrupt("return", {
               status: false,
               message: "cannot change plan"
             });
-          case 36:
+          case 24:
           case "end":
             return _context7.stop();
         }
       }
-    }, _callee7, null, [[0, 32]]);
+    }, _callee7, null, [[0, 20]]);
   }));
   return function change_subscriptionplan(_x21, _x22, _x23, _x24, _x25) {
     return _ref7.apply(this, arguments);
@@ -435,41 +399,50 @@ var change_subscriptionplan = /*#__PURE__*/function () {
 // pause subscription dates
 exports.change_subscriptionplan = change_subscriptionplan;
 var pause_subscriptiondate = /*#__PURE__*/function () {
-  var _ref8 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8(userId, subscription_id, pausedates) {
-    var subscriptiondate, pausedate;
+  var _ref8 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8(userId, subscription_id, dates) {
+    var i, subscriptiondate;
     return _regeneratorRuntime().wrap(function _callee8$(_context8) {
       while (1) {
         switch (_context8.prev = _context8.next) {
           case 0:
             _context8.prev = 0;
-            _context8.next = 3;
-            return (0, _db["default"])('pause_dates').select('user_id');
-          case 3:
-            subscriptiondate = _context8.sent;
-            if (!(subscriptiondate.user_id == userId)) {
-              _context8.next = 8;
+            i = 0;
+          case 2:
+            if (!(i < dates.length)) {
+              _context8.next = 9;
               break;
             }
-            _context8.next = 7;
-            return (0, _db["default"])('pause_dates').update({
-              date: pausedates
-            }).where({
+            _context8.next = 5;
+            return (0, _db["default"])('pause_dates').insert({
+              date: dates[i].date,
               user_id: userId,
               subscription_id: subscription_id
             });
-          case 7:
-            pausedate = _context8.sent;
-          case 8:
-            return _context8.abrupt("return");
-          case 11:
-            _context8.prev = 11;
+          case 5:
+            subscriptiondate = _context8.sent;
+          case 6:
+            i++;
+            _context8.next = 2;
+            break;
+          case 9:
+            return _context8.abrupt("return", {
+              status: true,
+              message: "your pause dates comformed"
+            });
+          case 12:
+            _context8.prev = 12;
             _context8.t0 = _context8["catch"](0);
-          case 13:
+            console.log(_context8.t0);
+            return _context8.abrupt("return", {
+              status: false,
+              message: "cannot pause date"
+            });
+          case 16:
           case "end":
             return _context8.stop();
         }
       }
-    }, _callee8, null, [[0, 11]]);
+    }, _callee8, null, [[0, 12]]);
   }));
   return function pause_subscriptiondate(_x26, _x27, _x28) {
     return _ref8.apply(this, arguments);

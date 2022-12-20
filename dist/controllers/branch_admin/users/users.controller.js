@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getusers = exports.getSingleUser = void 0;
+exports.getusers = exports.getSingleUser = exports.getAddUser = exports.createUser = void 0;
 var _moment = _interopRequireDefault(require("moment"));
 var _db = _interopRequireDefault(require("../../../services/db.service"));
 var _helper = require("../../../utils/helper.util");
@@ -86,7 +86,7 @@ var getusers = /*#__PURE__*/function () {
               break;
             }
             _context.next = 40;
-            return _db["default"].raw("SELECT user_address.id as user_address_id ,user_address.address,user_address.user_id as user_id, \n      users.name as user_name,users.user_unique_id,users.mobile_number,\n      routes.name as route_name\n      FROM user_address \n      JOIN users ON users.id = user_address.user_id \n      JOIN routes ON routes.id = user_address.router_id\n      WHERE user_address.branch_id = ".concat(admin_id, " AND users.name LIKE '%").concat(searchKeyword, "%' \n      OR users.mobile_number LIKE '%").concat(searchKeyword, "%' \n      LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
+            return _db["default"].raw("SELECT user_address.id as user_address_id ,user_address.address,user_address.user_id as user_id, \n      users.name as user_name,users.user_unique_id,users.mobile_number,\n      routes.name as route_name\n      FROM user_address \n      JOIN users ON users.id = user_address.user_id \n      LEFT JOIN routes ON routes.id = user_address.router_id\n      WHERE user_address.branch_id = ".concat(admin_id, " AND users.name LIKE '%").concat(searchKeyword, "%' \n      OR users.mobile_number LIKE '%").concat(searchKeyword, "%' \n      LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
           case 40:
             results = _context.sent;
             is_search = true;
@@ -94,7 +94,7 @@ var getusers = /*#__PURE__*/function () {
             break;
           case 44:
             _context.next = 46;
-            return _db["default"].raw("SELECT user_address.id as user_address_id ,user_address.address,user_address.user_id as user_id, \n      users.name as user_name,users.user_unique_id,users.mobile_number,\n      routes.name as route_name\n      FROM user_address \n      JOIN users ON users.id = user_address.user_id \n      JOIN routes ON routes.id = user_address.router_id\n      WHERE user_address.branch_id = ".concat(admin_id, " \n      LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
+            return _db["default"].raw("SELECT user_address.id as user_address_id ,user_address.address,user_address.user_id as user_id, \n      users.name as user_name,users.user_unique_id,users.mobile_number,\n      routes.name as route_name\n      FROM user_address \n      JOIN users ON users.id = user_address.user_id \n      LEFT JOIN routes ON routes.id = user_address.router_id\n      WHERE user_address.branch_id = ".concat(admin_id, " \n      LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
           case 46:
             results = _context.sent;
           case 47:
@@ -132,7 +132,7 @@ var getusers = /*#__PURE__*/function () {
 exports.getusers = getusers;
 var getSingleUser = /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(req, res) {
-    var user_address_id, admin_id, get_user_query, user, get_subscription_products, i, add_on_order_query, add_on, get_user_products_query, _i, j;
+    var user_address_id, admin_id, get_user_query, user, get_subscription_products, is_subscription_active, i, add_on_order_query, add_on, is_add_on_active, get_user_products_query, _i, j;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
@@ -140,29 +140,33 @@ var getSingleUser = /*#__PURE__*/function () {
             _context2.prev = 0;
             user_address_id = req.query.user_address_id;
             admin_id = req.body.admin_id;
-            _context2.next = 5;
-            return _db["default"].raw("SELECT user_address.id as user_address_id,\n      user_address.address,user_address.user_id as user_id, \n      users.name as user_name,users.user_unique_id,users.mobile_number,\n      routes.name as route_name\n      FROM user_address \n      JOIN users ON users.id = user_address.user_id \n      JOIN routes ON routes.id = user_address.router_id\n      WHERE user_address.id = ".concat(user_address_id, " AND user_address.branch_id = ").concat(admin_id));
-          case 5:
+            console.log(user_address_id, admin_id);
+            _context2.next = 6;
+            return _db["default"].raw("SELECT user_address.id as user_address_id,\n      user_address.address,user_address.user_id as user_id, \n      users.name as user_name,users.user_unique_id,users.mobile_number,\n      routes.name as route_name\n      FROM user_address \n      JOIN users ON users.id = user_address.user_id \n      LEFT JOIN routes ON routes.id = user_address.router_id\n      WHERE user_address.id = ".concat(user_address_id, " AND user_address.branch_id = ").concat(admin_id));
+          case 6:
             get_user_query = _context2.sent;
             if (!(get_user_query[0].length === 0)) {
-              _context2.next = 9;
+              _context2.next = 10;
               break;
             }
             req.flash("error", "User Not Found");
             return _context2.abrupt("return", res.redirect("/home"));
-          case 9:
+          case 10:
             user = get_user_query[0][0]; // console.log(user);
-            _context2.next = 12;
-            return (0, _db["default"])("subscribed_user_details as sub").select("sub.user_id", "sub.start_date", "sub.customized_days", "sub.quantity", "sub.subscription_status", "products.name as product_name", "products.unit_value", "products.price", "unit_types.value", "subscription_type.name as sub_name").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("subscription_type", "subscription_type.id", "=", "sub.subscribe_type_id").where({
+            _context2.next = 13;
+            return (0, _db["default"])("subscribed_user_details as sub").select("sub.id as sub_id", "sub.user_id", "sub.start_date", "sub.customized_days", "sub.quantity", "sub.subscription_status", "products.name as product_name", "products.unit_value", "products.price", "unit_types.value", "subscription_type.name as sub_name").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("subscription_type", "subscription_type.id", "=", "sub.subscribe_type_id").where({
               "sub.user_id": user.user_id,
               "sub.user_address_id": user_address_id
             });
-          case 12:
+          case 13:
             get_subscription_products = _context2.sent;
             // console.log(get_subscription_products);
-
+            is_subscription_active = 0;
             if (get_subscription_products.length !== 0) {
               for (i = 0; i < get_subscription_products.length; i++) {
+                if (get_subscription_products[i].subscription_status == "subscribed") {
+                  is_subscription_active = 1;
+                }
                 get_subscription_products[i].start_date = (0, _moment["default"])(get_subscription_products[i].start_date).format("YYYY-MM-DD");
               }
             }
@@ -196,59 +200,113 @@ var getSingleUser = /*#__PURE__*/function () {
             //   });
 
             // console.log(add_on_details);
-            _context2.next = 16;
+            _context2.next = 18;
             return _db["default"].raw("SELECT adds.id,adds.user_id ,adds.delivery_date,adds.sub_total,adds.status\n      FROM add_on_orders as adds \n      WHERE adds.user_id = ".concat(user.user_id, " AND adds.address_id = ").concat(user_address_id));
-          case 16:
+          case 18:
             add_on_order_query = _context2.sent;
             // console.log(add_on_order_query[0]);
             add_on = add_on_order_query[0];
+            is_add_on_active = 0;
             if (!(add_on.length !== 0)) {
-              _context2.next = 30;
+              _context2.next = 34;
               break;
             }
             _i = 0;
-          case 20:
+          case 23:
             if (!(_i < add_on.length)) {
-              _context2.next = 30;
+              _context2.next = 34;
               break;
             }
-            _context2.next = 23;
+            if (add_on_order_query[_i].status == "pending") {
+              is_add_on_active = 1;
+            }
+            _context2.next = 27;
             return (0, _db["default"])("add_on_order_items as adds").select("adds.add_on_order_id", "adds.quantity", "adds.price", "adds.total_price", "adds.status", "products.name as product_name", "products.image", "products.unit_value", "unit_types.value").join("products", "products.id", "=", "adds.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").where({
               "adds.add_on_order_id": add_on[_i].id
             });
-          case 23:
+          case 27:
             get_user_products_query = _context2.sent;
             for (j = 0; j < get_user_products_query.length; j++) {
               get_user_products_query[j].image = process.env.BASE_URL + get_user_products_query[j].image;
             }
             add_on[_i].add_on_products = get_user_products_query;
             add_on[_i].delivery_date = (0, _moment["default"])(add_on[_i].delivery_date).format("YYYY-MM-DD");
-          case 27:
+          case 31:
             _i++;
-            _context2.next = 20;
+            _context2.next = 23;
             break;
-          case 30:
+          case 34:
             res.render("branch_admin/users/user_detail", {
               user: user,
               sub_products: get_subscription_products,
-              add_on: add_on
+              add_on: add_on,
+              is_add_on_active: is_add_on_active,
+              is_subscription_active: is_subscription_active
             });
-            _context2.next = 37;
+            _context2.next = 41;
             break;
-          case 33:
-            _context2.prev = 33;
+          case 37:
+            _context2.prev = 37;
             _context2.t0 = _context2["catch"](0);
             console.log(_context2.t0);
             return _context2.abrupt("return", res.redirect("/home"));
-          case 37:
+          case 41:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[0, 33]]);
+    }, _callee2, null, [[0, 37]]);
   }));
   return function getSingleUser(_x3, _x4) {
     return _ref2.apply(this, arguments);
   };
 }();
 exports.getSingleUser = getSingleUser;
+var getAddUser = /*#__PURE__*/function () {
+  var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(req, res) {
+    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            try {
+              res.render("branch_admin/users/add_user");
+            } catch (error) {
+              console.log(error);
+              res.redirect("/home");
+            }
+          case 1:
+          case "end":
+            return _context3.stop();
+        }
+      }
+    }, _callee3);
+  }));
+  return function getAddUser(_x5, _x6) {
+    return _ref3.apply(this, arguments);
+  };
+}();
+exports.getAddUser = getAddUser;
+var createUser = /*#__PURE__*/function () {
+  var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(req, res) {
+    return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+      while (1) {
+        switch (_context4.prev = _context4.next) {
+          case 0:
+            try {
+              console.log(req.body);
+            } catch (error) {
+              console.log(error);
+              res.redirect("/home");
+            }
+          case 1:
+          case "end":
+            return _context4.stop();
+        }
+      }
+    }, _callee4);
+  }));
+  return function createUser(_x7, _x8) {
+    return _ref4.apply(this, arguments);
+  };
+}();
+exports.createUser = createUser;

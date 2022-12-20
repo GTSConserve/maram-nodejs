@@ -1,0 +1,205 @@
+<% layout('layouts/boilerPlate') %>
+<div class="widget-content widget-content-area br-6">
+    <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+        <div class="dt--top-section">
+            <div class="row ">
+                <div class="col-12  d-flex justify-content-sm-start justify-content-center">
+                    <div class="dataTables_length" id="DataTables_Table_0_length">
+                        <h4>Add Users</h4>
+                    </div>
+                </div>
+
+                <div class="col-1"></div>
+                <div class="col-10" style="margin-bottom:24px;">
+                    <div class="statbox widget box box-shadow">
+                        <div class="widget-header">                                
+                            <div class="row">
+                                <div class="col-xl-12 col-md-12 col-sm-12 col-12">
+                                    <h4>User Details</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="widget-content widget-content-area" >
+                            <form action="/branch_admin/user/create_user" method="post">
+                                    <div class="form-row mb-4">
+                                        <div class="form-group col-md-4">
+                                            <label for="inputPassword4">Name</label>
+                                            <input type="text" class="form-control" required minlength="3" id="inputPassword4" name="user_name" placeholder="Name">
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label for="inputEmail4">Email</label>
+                                            <input type="email" class="form-control" name="email" id="inputEmail4" placeholder="Email">
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label for="inputEmail4">Mobile Number</label>
+                                            <input type="text"  class="form-control" name="mobile_number" id="inputEmail4" placeholder="10 Digit Mobile Number">
+                                        </div>
+                                    </div>
+                                                                  
+                                        <div class="row">
+                                            <div class="col-xl-12 col-md-12 col-sm-12 col-12 pb-3">
+                                                <h5>Address Details</h5>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-row mb-4">
+                                            <div class="form-group col-md-3">
+                                                <label for="inputPassword4">Type</label>
+                                                <input type="text" class="form-control"  id="inputPassword4" name="address_type" placeholder="Eg. Home,Office,Others">
+                                            </div>
+                                            <div class="col-3"></div>
+                                            <div class="form-group col-md-3">
+                                                <label for="inputEmail4">Title</label>
+                                                <input type="text" class="form-control" name="address_title" id="inputEmail4" placeholder="Eg. My Friend Home">
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label for="inputPassword4">Address</label>
+                                                <textarea class="form-control" name="address"></textarea>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label for="inputEmail4">Landmark</label>
+                                                <textarea class="form-control" name="address_landmark"></textarea>
+                                                
+                                            </div>
+                                            
+                                        </div>
+
+
+                                        <div class="row">
+                                            <div class="col-xl-12 col-md-12 col-sm-12 col-12 pb-3">
+                                                <h5>Add Product</h5>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-12 col-12 layout-spacing">
+                                            <div class="statbox widget box box-shadow">
+                                                <!-- <div class="widget-header">
+                                                    <div class="row">
+                                                        <div class="col-xl-12 col-md-12 col-sm-12 col-12">
+                                                            <h4>Justify Right Pills</h4>
+                                                        </div>
+                                                    </div>
+                                                </div> -->
+                                                <div class="widget-content widget-content-area pill-justify-right">
+                                                    
+                                                    <ul class="nav nav-tabs mb-3 mt-3 justify-content-start" id="justify-right-pills-tab" role="tablist" style="font-weight: 900;">
+                                                        <li class="nav-item">
+                                                            <a class="nav-link active" id="justify-right-pills-home-tab" data-toggle="pill" href="#justify-right-pills-home" role="tab" aria-controls="justify-right-pills-home" aria-selected="true">Subscription Product</a>
+                                                        </li>
+                                                        <li class="nav-item">
+                                                            <a class="nav-link" id="justify-right-pills-contact-tab" data-toggle="pill" href="#justify-right-pills-contact" role="tab" aria-controls="justify-right-pills-contact" aria-selected="false">Add On Product</a>
+                                                        </li>
+                                                    </ul>
+                
+                                                    <div class="tab-content" id="justify-right-pills-tabContent">
+                                                        <div class="tab-pane fade show active" id="justify-right-pills-home" role="tabpanel" aria-labelledby="justify-right-pills-home-tab">
+                                                            <div class="form-row mb-4">
+                                                                <div class="form-group col-md-4">
+                                                                    <label for="inputPassword4">Products</label>
+                                                                    <input type="text" class="form-control" required minlength="3" id="inputPassword4" name="sub_product" placeholder="Name">
+                                                                </div>
+                                                                <div class="form-group col-md-4">
+                                                                    <label for="inputEmail4">Qty</label>
+                                                                    <input type="number" class="form-control" name="sub_qty" id="inputEmail4" placeholder="qty">
+                                                                </div>
+                                                                <div class="form-group col-md-4">
+                                                                    <label for="inputPassword4">Start Date</label>
+                                                                    <input type="date"  class="form-control" required  id="inputPassword4" name="sub_start_date">
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-row mb-4">
+                                                                <div class="form-group col-md-4">
+                                                                    <label for="inputEmail4">Choose Your Plan</label>
+                                                                    <input type="text"  class="form-control" name="plan" id="inputEmail4" >
+                                                                </div>
+                                                              
+                                                               
+                                                                <div class="form-group col-md-4">
+                                                                    <label for="inputEmail4">Choose Your Custome Delivery Days</label>
+                                                                    <input type="text"  class="form-control" name="custom_days" id="inputEmail4" placeholder="10 Digit Mobile Number">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="tab-pane fade" id="justify-right-pills-contact" role="tabpanel" aria-labelledby="justify-right-pills-contact-tab">
+                                                            <div class="form-row mb-4" >
+                                                                <div class="form-group col-md-4">
+                                                                    <label for="inputPassword4">Delivery Date</label>
+                                                                    <input type="date" class="form-control" required minlength="3" id="inputPassword4" name="add_on_delivery_date" placeholder="Name">
+                                                                </div>
+                                                                <div class="col-8"></div>
+                                                                <div class="form-group col-md-6">
+                                                                    <label for="inputEmail4">Product</label>
+                                                                    <input type="text" class="form-control" name="add_on_product" id="inputEmail4" placeholder="qty">
+                                                                </div>
+                                                                <div class="form-group col-md-3">
+                                                                    <label for="inputPassword4">Qty</label>
+                                                                    <input type="number" class="form-control" id="inputPassword4" name="add_on_qty" placeholder="Name">
+                                                                </div>
+                                                                <div class="form-group col-md-2">
+                                                                    
+                                                                   <button type="button" onclick="addProducts()" class="btn btn-info" style="margin-top: 32px;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
+                                                                </div>
+                                                                <span class="col-12 " id="add_on">
+
+                                                                </span>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                
+                                                    <script>
+                                                        function addProducts() {
+                                                            const get_length = document.getElementById("add_on")
+                                                            const count = document.getElementsByTagName('span').length;
+                                                            console.log(count)
+
+                                                            console.log(get_length.length)
+                                                            document.getElementById("add_on").innerHTML +=
+                                                            `
+                                                            <span class="form-row" id="remove${count}">
+                                                                <div class="form-group col-6">
+                                                                    <label for="inputEmail4">Product</label>
+                                                                    <input type="text" class="form-control" name="add_on_product" id="inputEmail4" placeholder="qty">
+                                                                </div>
+                                                                <div class="form-group col-3">
+                                                                    <label for="inputPassword4">Qty</label>
+                                                                    <input type="number" class="form-control" id="inputPassword4" name="add_on_qty" placeholder="Name">
+                                                                </div>
+                                                                <div class="form-group col-2">
+                                                                    
+                                                                    <button type="button" onclick="removeProduct(this)" name="${count}" class="btn btn-danger" style="margin-top: 32px;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg></button>
+                                                                 </div>
+                                                                 </span>
+                                                        
+                                                                `;
+                                                        }
+
+
+                                                        function removeProduct(event){
+                                                            document.getElementById(`remove${event.name}`).remove();
+                                                        }
+
+                                                    </script>
+                                                </div>
+                                            </div>
+                                        </div>
+                
+                                        <button type="submit" class="btn btn-primary mt-3">Sign in</button>
+                                  </form>
+                                    </div>
+                                    
+                                   
+                        </div>
+                    </div>
+                </div>
+                <div class="col-1"></div>
+              
+        </div>
+    </div>
+ 
+    
+
+
+
+</div>
+            </div>

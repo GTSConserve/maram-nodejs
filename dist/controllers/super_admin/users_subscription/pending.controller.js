@@ -4,11 +4,11 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updatePendingList = exports.updateAllUsersStatus = exports.getNewUsers = exports.getAllUsers = exports.cancelPendingList = void 0;
+exports.updatePendingList = exports.updateAllUsersStatus = exports.getSingleUser = exports.getNewUsers = exports.getAllUsers = exports.cancelPendingList = void 0;
 var _db = _interopRequireDefault(require("../../../services/db.service"));
 var _helper = require("../../../utils/helper.util");
+var _moment = _interopRequireDefault(require("moment"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-function _readOnlyError(name) { throw new TypeError("\"" + name + "\" is read-only"); }
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
@@ -235,62 +235,62 @@ var getNewUsers = /*#__PURE__*/function () {
 exports.getNewUsers = getNewUsers;
 var getAllUsers = /*#__PURE__*/function () {
   var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(req, res) {
-    var loading, searchKeyword, data_length, search_data_length, _yield$getPageNumber2, startingLimit, page, resultsPerPage, numberOfPages, iterator, endingLink, results, is_search, data, i, data1, _i2;
+    var admin_id, loading, searchKeyword, data_length, search_data_length, routes, _yield$getPageNumber2, startingLimit, page, resultsPerPage, numberOfPages, iterator, endingLink, results, is_search, data;
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.prev = 0;
+            admin_id = req.body.admin_id;
             loading = true;
             searchKeyword = req.query.searchKeyword;
             data_length = [];
             if (!searchKeyword) {
-              _context3.next = 16;
+              _context3.next = 17;
               break;
             }
-            _context3.next = 7;
-            return _db["default"].raw("SELECT admin_users.first_name FROM admin_users WHERE admin_users.first_name LIKE '%".concat(searchKeyword, "%'"));
-          case 7:
+            _context3.next = 8;
+            return _db["default"].raw("SELECT  users.name,users.user_unique_id  FROM  user_address\n        JOIN users ON users.id = user_address.user_id\n        JOIN admin_users ON admin_users.id = user_address.branch_id\n        WHERE users.name LIKE '%".concat(searchKeyword, "%' \n        OR users.mobile_number LIKE '%").concat(searchKeyword, "%' \n        OR admin_users.first_name LIKE '%").concat(searchKeyword, "%'"));
+          case 8:
             search_data_length = _context3.sent;
-            // `SELECT  .id,admin_users.first_name as admin_users.first_name,subscription_type.name,products.name,user_address.address,users.mobile_number,product_type.name
-            //   FROM subscription_type
-            //   JOIN product_type ON products.product_type_id = product_type.id
-            //   JOIN admin_users ON admin_users.id = subscription_type.id
-            //   JOIN user_address ON user_address.user_id = users.user_group_id
-            //    WHERE admin_users.first_name LIKE '%${searchKeyword}%' LIMIT ${startingLimit},${resultsPerPage}`
-
             data_length = search_data_length[0];
             if (!(data_length.length === 0)) {
-              _context3.next = 14;
+              _context3.next = 15;
               break;
             }
             loading = false;
             req.query.searchKeyword = "";
-            req.flash("error", "No Product Type Found");
+            req.flash("error", "No User Found");
             return _context3.abrupt("return", res.redirect("/super_admin/users_subscription/get_all_users"));
-          case 14:
-            _context3.next = 19;
+          case 15:
+            _context3.next = 20;
             break;
-          case 16:
-            _context3.next = 18;
-            return (0, _db["default"])("subscription_type").select("id");
-          case 18:
-            data_length = _context3.sent;
+          case 17:
+            _context3.next = 19;
+            return (0, _db["default"])("user_address").select("id");
           case 19:
+            data_length = _context3.sent;
+          case 20:
+            _context3.next = 22;
+            return (0, _db["default"])("users").select("name", "id").where({
+              status: "1"
+            });
+          case 22:
+            routes = _context3.sent;
             if (!(data_length.length === 0)) {
-              _context3.next = 22;
+              _context3.next = 26;
               break;
             }
             loading = false;
-            return _context3.abrupt("return", res.render("super_admin/users_subscription/approve", {
+            return _context3.abrupt("return", res.render("super_admin/user/users", {
               data: data_length,
-              searchKeyword: searchKeyword
-              // branches,
+              searchKeyword: searchKeyword,
+              routes: routes
             }));
-          case 22:
-            _context3.next = 24;
+          case 26:
+            _context3.next = 28;
             return (0, _helper.getPageNumber)(req, res, data_length, "users_subscription/get_all_users");
-          case 24:
+          case 28:
             _yield$getPageNumber2 = _context3.sent;
             startingLimit = _yield$getPageNumber2.startingLimit;
             page = _yield$getPageNumber2.page;
@@ -298,93 +298,312 @@ var getAllUsers = /*#__PURE__*/function () {
             numberOfPages = _yield$getPageNumber2.numberOfPages;
             iterator = _yield$getPageNumber2.iterator;
             endingLink = _yield$getPageNumber2.endingLink;
+            console.log(data_length);
             is_search = false;
             if (!searchKeyword) {
-              _context3.next = 40;
+              _context3.next = 44;
               break;
             }
-            _context3.next = 35;
-            return _db["default"].raw("SELECT sub.id , sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n        user_address.address,user_address.landmark,products.name as product_name,products.price,products.unit_value,\n        unit_types.value,categories.name as category_name,admin_users.first_name as first_name\n        FROM subscribed_user_details AS sub \n        JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id \n        JOIN users ON users.id = sub.user_id \n        JOIN user_address ON user_address.id = sub.user_address_id\n        JOIN products ON products.id = sub.product_id\n        JOIN unit_types ON unit_types.id = products.unit_type_id\n        JOIN categories ON categories.id = products.category_id\n        JOIN admin_users ON admin_users.user_group_id = subscription_type.id\n        WHERE sub.subscription_status = \"subscribed\" \n        AND admin_users.first_name LIKE '%".concat(searchKeyword, "%' LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
-          case 35:
+            _context3.next = 40;
+            return _db["default"].raw("SELECT user_address.id as user_address_id ,user_address.address,user_address.user_id as user_id, \n      users.name as user_name,users.user_unique_id,users.mobile_number,\n      admin_users.first_name as branch_name\n      FROM user_address \n      JOIN users ON users.id = user_address.user_id \n      LEFT JOIN admin_users ON admin_users.id = user_address.branch_id\n      WHERE users.name LIKE '%".concat(searchKeyword, "%' \n      OR users.mobile_number LIKE '%").concat(searchKeyword, "%' \n      OR admin_users.first_name LIKE '%").concat(searchKeyword, "%'\n      LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
+          case 40:
             results = _context3.sent;
             is_search = true;
-            console.log(results);
-            _context3.next = 49;
+            _context3.next = 47;
             break;
-          case 40:
-            if (searchKeyword) {
-              _context3.next = 46;
-              break;
-            }
-            _context3.next = 43;
-            return _db["default"].raw("SELECT sub.id ,sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n        user_address.address,user_address.landmark,products.name as product_name,products.price,products.unit_value,\n        unit_types.value,categories.name as category_name,admin_users.first_name as first_name,user_address_subscribe_branch.user_id,products.unit_value as product_unit,products.price as product_price\n        FROM subscribed_user_details AS sub \n        JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id \n        JOIN users ON users.id = sub.user_id \n        JOIN user_address ON user_address.id = sub.user_address_id\n        JOIN products ON products.id = sub.product_id\n        JOIN unit_types ON unit_types.id = products.unit_type_id\n        JOIN categories ON categories.id = products.category_id\n        JOIN admin_users ON admin_users.user_group_id = users.id\n        JOIN user_address_subscribe_branch ON user_address_subscribe_branch.product_id = products.product_type_id\n        WHERE sub.subscription_status = \"subscribed\" AND users.user_unique_id  LIMIT ".concat(startingLimit, ",").concat(resultsPerPage));
-          case 43:
-            results = _context3.sent;
-            _context3.next = 49;
-            break;
+          case 44:
+            _context3.next = 46;
+            return _db["default"].raw("SELECT user_address.id as user_address_id ,user_address.address,user_address.user_id as user_id, \n      users.name as user_name,users.user_unique_id,users.mobile_number,\n      admin_users.first_name as branch_name\n      FROM user_address \n      JOIN users ON users.id = user_address.user_id \n      LEFT JOIN admin_users ON admin_users.id = user_address.branch_id\n      LIMIT ".concat(startingLimit, ",").concat(resultsPerPage));
           case 46:
-            _context3.next = 48;
-            return _db["default"].raw("SELECT sub.id ,sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n        user_address.address,user_address.landmark,products.name as product_name,products.price,products.unit_value,\n        unit_types.value,categories.name as category_name,admin_users.first_name as first_name,user_address_subscribe_branch.user_id,products.unit_value as product_unit,products.price as product_price\n        FROM subscribed_user_details AS sub \n        JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id \n        JOIN users ON users.id = sub.user_id\n        JOIN user_address ON user_address.user_id = sub.user_address_id\n        JOIN products ON products.product_type_id = sub.user_id\n        JOIN unit_types ON unit_types.id = products.unit_type_id\n        JOIN categories ON categories.id = products.product_type_id\n        JOIN admin_users ON admin_users.user_group_id = users.id\n        JOIN user_address_subscribe_branch ON user_address_subscribe_branch.product_id = products.product_type_id\n        JOIN add_on_order_items ON add_on_order_items.add_on_order_id = products.product_type_id\n        WHERE sub.subscription_status = \"subscribed\" AND users.user_unique_id  LIMIT ".concat(startingLimit, ",").concat(resultsPerPage));
-          case 48:
-            _readOnlyError("data1");
-          case 49:
-            console.log(data1);
+            results = _context3.sent;
+          case 47:
             data = results[0];
-            for (i = 0; i < data.length; i++) {
-              data[i].start_date = data[i].start_date.toString().slice(4, 16);
-            }
-            data1 = results[0];
-            for (_i2 = 0; _i2 < data1.length; _i2++) {
-              data1[_i2].start_date = data1[_i2].start_date.toString().slice(4, 16);
-            }
             loading = false;
-            res.render("super_admin/users_subscription/approve", {
+            res.render("super_admin/users/users", {
               data: data,
-              data1: data1,
               page: page,
               iterator: iterator,
               endingLink: endingLink,
               numberOfPages: numberOfPages,
               is_search: is_search,
               searchKeyword: searchKeyword,
-              loading: loading
-              // branches,
+              loading: loading,
+              routes: routes
             });
-            _context3.next = 62;
+
+            // let loading = true;
+            // const { searchKeyword } = req.query;
+
+            // let data_length = [];
+
+            // if (searchKeyword) {
+            //   const search_data_length = await knex.raw(
+            //     `SELECT admin_users.first_name FROM admin_users WHERE admin_users.first_name LIKE '%${searchKeyword}%'`
+            //   );
+            //   // `SELECT  .id,admin_users.first_name as admin_users.first_name,subscription_type.name,products.name,user_address.address,users.mobile_number,product_type.name
+            //   //   FROM subscription_type
+            //   //   JOIN product_type ON products.product_type_id = product_type.id
+            //   //   JOIN admin_users ON admin_users.id = subscription_type.id
+            //   //   JOIN user_address ON user_address.user_id = users.user_group_id
+            //   //    WHERE admin_users.first_name LIKE '%${searchKeyword}%' LIMIT ${startingLimit},${resultsPerPage}`
+
+            //   data_length = search_data_length[0];
+
+            //   if (data_length.length === 0) {
+            //     loading = false;
+            //     req.query.searchKeyword = "";
+            //     req.flash("error", "No Product Type Found");
+            //     return res.redirect("/super_admin/users_subscription/get_all_users");
+            //   }
+            // } else {
+            //   data_length = await knex("subscription_type").select("id");
+            // }
+
+            // // const branches = await knex("admin_users")
+            // //   .select("first_name", "id", "location")
+            // //   .where({ user_group_id: "2" });
+
+            // if (data_length.length === 0) {
+            //   loading = false;
+            //   return res.render("super_admin/users_subscription/approve", {
+            //     data: data_length,
+            //     searchKeyword,
+            //     // branches,
+            //   });
+            // }
+
+            // let {
+            //   startingLimit,
+            //   page,
+            //   resultsPerPage,
+            //   numberOfPages,
+            //   iterator,
+            //   endingLink,
+            // } = await getPageNumber(
+            //   req,
+            //   res,
+            //   data_length,
+            //   "users_subscription/get_all_users"
+            // );
+
+            // let results;
+            // let is_search = false;
+            // if (searchKeyword) {
+            //   results = await knex.raw(
+            //     `SELECT sub.id , sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,
+            //     user_address.address,user_address.landmark,products.name as product_name,products.price,products.unit_value,
+            //     unit_types.value,categories.name as category_name,admin_users.first_name as first_name
+            //     FROM subscribed_user_details AS sub 
+            //     JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id 
+            //     JOIN users ON users.id = sub.user_id 
+            //     JOIN user_address ON user_address.id = sub.user_address_id
+            //     JOIN products ON products.id = sub.product_id
+            //     JOIN unit_types ON unit_types.id = products.unit_type_id
+            //     JOIN categories ON categories.id = products.category_id
+            //     JOIN admin_users ON admin_users.user_group_id = subscription_type.id
+            //     WHERE sub.subscription_status = "subscribed" 
+            //     AND admin_users.first_name LIKE '%${searchKeyword}%' LIMIT ${startingLimit},${resultsPerPage}`
+            //   );
+            //   is_search = true;
+            //   console.log(results);
+            // } else if (!searchKeyword) {
+            //   results = await knex.raw(
+            //     `SELECT sub.id ,sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,
+            //     user_address.address,user_address.landmark,products.name as product_name,products.price,products.unit_value,
+            //     unit_types.value,categories.name as category_name,admin_users.first_name as first_name,user_address_subscribe_branch.user_id,products.unit_value as product_unit,products.price as product_price
+            //     FROM subscribed_user_details AS sub 
+            //     JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id 
+            //     JOIN users ON users.id = sub.user_id 
+            //     JOIN user_address ON user_address.id = sub.user_address_id
+            //     JOIN products ON products.id = sub.product_id
+            //     JOIN unit_types ON unit_types.id = products.unit_type_id
+            //     JOIN categories ON categories.id = products.category_id
+            //     JOIN admin_users ON admin_users.user_group_id = users.id
+            //     JOIN user_address_subscribe_branch ON user_address_subscribe_branch.product_id = products.product_type_id
+            //     WHERE sub.subscription_status = "subscribed" AND users.user_unique_id  LIMIT ${startingLimit},${resultsPerPage}`
+            //   );
+            // } else {
+            //   data1 = await knex.raw(
+            //     `SELECT sub.id ,sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,
+            //     user_address.address,user_address.landmark,products.name as product_name,products.price,products.unit_value,
+            //     unit_types.value,categories.name as category_name,admin_users.first_name as first_name,user_address_subscribe_branch.user_id,products.unit_value as product_unit,products.price as product_price
+            //     FROM subscribed_user_details AS sub 
+            //     JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id 
+            //     JOIN users ON users.id = sub.user_id
+            //     JOIN user_address ON user_address.user_id = sub.user_address_id
+            //     JOIN products ON products.product_type_id = sub.user_id
+            //     JOIN unit_types ON unit_types.id = products.unit_type_id
+            //     JOIN categories ON categories.id = products.product_type_id
+            //     JOIN admin_users ON admin_users.user_group_id = users.id
+            //     JOIN user_address_subscribe_branch ON user_address_subscribe_branch.product_id = products.product_type_id
+            //     JOIN add_on_order_items ON add_on_order_items.add_on_order_id = products.product_type_id
+            //     WHERE sub.subscription_status = "subscribed" AND users.user_unique_id  LIMIT ${startingLimit},${resultsPerPage}`
+            //   );
+            // }
+
+            // console.log(data1);
+
+            // const data = results[0];
+
+            // for (let i = 0; i < data.length; i++) {
+            //   data[i].start_date = data[i].start_date.toString().slice(4, 16);
+            // }
+
+            // const data1 = results[0];
+
+            // for (let i = 0; i < data1.length; i++) {
+            //   data1[i].start_date = data1[i].start_date.toString().slice(4, 16);
+            // }
+
+            // loading = false;
+            // res.render("super_admin/users_subscription/approve", {
+            //   data: data,
+            //   data1: data1,
+            //   page,
+            //   iterator,
+            //   endingLink,
+            //   numberOfPages,
+            //   is_search,
+            //   searchKeyword,
+            //   loading,
+            //   // branches,
+            // });
+            _context3.next = 56;
             break;
-          case 58:
-            _context3.prev = 58;
+          case 52:
+            _context3.prev = 52;
             _context3.t0 = _context3["catch"](0);
             console.log(_context3.t0);
             res.redirect("/home");
-          case 62:
+          case 56:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3, null, [[0, 58]]);
+    }, _callee3, null, [[0, 52]]);
   }));
   return function getAllUsers(_x5, _x6) {
     return _ref3.apply(this, arguments);
   };
 }();
 exports.getAllUsers = getAllUsers;
-var updatePendingList = /*#__PURE__*/function () {
+var getSingleUser = /*#__PURE__*/function () {
   var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(req, res) {
-    var _req$body, sub_id, branch_id, address_id, add_on_id;
+    var user_address_id, admin_id, get_user_query, user, get_subscription_products, is_subscription_active, i, add_on_order_query, add_on, is_add_on_active, get_user_products_query, _i2, j;
     return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
             _context4.prev = 0;
+            user_address_id = req.query.user_address_id;
+            admin_id = req.body.admin_id;
+            _context4.next = 5;
+            return _db["default"].raw("SELECT user_address.id as user_address_id,\n      user_address.address,user_address.user_id as user_id, \n      users.name as user_name,users.user_unique_id,users.mobile_number,\n      routes.name as route_name,admin_users.first_name as branch_name\n      FROM user_address \n      JOIN users ON users.id = user_address.user_id \n      LEFT JOIN admin_users ON admin_users.id = user_address.branch_id\n      LEFT JOIN routes ON routes.id = user_address.router_id\n      WHERE user_address.id = ".concat(user_address_id));
+          case 5:
+            get_user_query = _context4.sent;
+            if (!(get_user_query[0].length === 0)) {
+              _context4.next = 9;
+              break;
+            }
+            req.flash("error", "User Not Found");
+            return _context4.abrupt("return", res.redirect("/home"));
+          case 9:
+            user = get_user_query[0][0]; // console.log(user);
+            _context4.next = 12;
+            return (0, _db["default"])("subscribed_user_details as sub").select("sub.id as sub_id", "sub.user_id", "sub.start_date", "sub.customized_days", "sub.quantity", "sub.subscription_status", "products.name as product_name", "products.unit_value", "products.price", "unit_types.value", "subscription_type.name as sub_name").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("subscription_type", "subscription_type.id", "=", "sub.subscribe_type_id").where({
+              "sub.user_id": user.user_id,
+              "sub.user_address_id": user_address_id
+            });
+          case 12:
+            get_subscription_products = _context4.sent;
+            // console.log(get_subscription_products);
+            is_subscription_active = 0;
+            if (get_subscription_products.length !== 0) {
+              for (i = 0; i < get_subscription_products.length; i++) {
+                if (get_subscription_products[i].subscription_status == "subscribed") {
+                  is_subscription_active = 1;
+                }
+                get_subscription_products[i].start_date = (0, _moment["default"])(get_subscription_products[i].start_date).format("YYYY-MM-DD");
+              }
+            }
+            _context4.next = 17;
+            return _db["default"].raw("SELECT adds.id,adds.user_id ,adds.delivery_date,adds.sub_total,adds.status\n      FROM add_on_orders as adds \n      WHERE adds.user_id = ".concat(user.user_id, " AND adds.address_id = ").concat(user_address_id));
+          case 17:
+            add_on_order_query = _context4.sent;
+            // console.log(add_on_order_query[0]);
+            add_on = add_on_order_query[0];
+            is_add_on_active = 0;
+            if (!(add_on.length !== 0)) {
+              _context4.next = 33;
+              break;
+            }
+            _i2 = 0;
+          case 22:
+            if (!(_i2 < add_on.length)) {
+              _context4.next = 33;
+              break;
+            }
+            if (add_on_order_query[_i2].status == "pending") {
+              is_add_on_active = 1;
+            }
+            _context4.next = 26;
+            return (0, _db["default"])("add_on_order_items as adds").select("adds.add_on_order_id", "adds.quantity", "adds.price", "adds.total_price", "adds.status", "products.name as product_name", "products.image", "products.unit_value", "unit_types.value").join("products", "products.id", "=", "adds.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").where({
+              "adds.add_on_order_id": add_on[_i2].id
+            });
+          case 26:
+            get_user_products_query = _context4.sent;
+            for (j = 0; j < get_user_products_query.length; j++) {
+              get_user_products_query[j].image = process.env.BASE_URL + get_user_products_query[j].image;
+            }
+            add_on[_i2].add_on_products = get_user_products_query;
+            add_on[_i2].delivery_date = (0, _moment["default"])(add_on[_i2].delivery_date).format("YYYY-MM-DD");
+          case 30:
+            _i2++;
+            _context4.next = 22;
+            break;
+          case 33:
+            res.render("super_admin/users/user_detail", {
+              user: user,
+              sub_products: get_subscription_products,
+              add_on: add_on,
+              is_add_on_active: is_add_on_active,
+              is_subscription_active: is_subscription_active
+            });
+            _context4.next = 40;
+            break;
+          case 36:
+            _context4.prev = 36;
+            _context4.t0 = _context4["catch"](0);
+            console.log(_context4.t0);
+            return _context4.abrupt("return", res.redirect("/home"));
+          case 40:
+          case "end":
+            return _context4.stop();
+        }
+      }
+    }, _callee4, null, [[0, 36]]);
+  }));
+  return function getSingleUser(_x7, _x8) {
+    return _ref4.apply(this, arguments);
+  };
+}();
+exports.getSingleUser = getSingleUser;
+var updatePendingList = /*#__PURE__*/function () {
+  var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(req, res) {
+    var _req$body, sub_id, branch_id, address_id, add_on_id;
+    return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+      while (1) {
+        switch (_context5.prev = _context5.next) {
+          case 0:
+            _context5.prev = 0;
             _req$body = req.body, sub_id = _req$body.sub_id, branch_id = _req$body.branch_id, address_id = _req$body.address_id, add_on_id = _req$body.add_on_id;
             console.log(address_id);
             console.log(add_on_id);
             if (!add_on_id) {
-              _context4.next = 9;
+              _context5.next = 9;
               break;
             }
-            _context4.next = 7;
+            _context5.next = 7;
             return (0, _db["default"])("add_on_orders").update({
               branch_id: branch_id,
               status: "assigned"
@@ -392,10 +611,10 @@ var updatePendingList = /*#__PURE__*/function () {
               id: add_on_id
             });
           case 7:
-            _context4.next = 11;
+            _context5.next = 11;
             break;
           case 9:
-            _context4.next = 11;
+            _context5.next = 11;
             return (0, _db["default"])("subscribed_user_details").update({
               branch_id: branch_id,
               subscription_status: "assigned",
@@ -404,7 +623,7 @@ var updatePendingList = /*#__PURE__*/function () {
               id: sub_id
             });
           case 11:
-            _context4.next = 13;
+            _context5.next = 13;
             return (0, _db["default"])("user_address").update({
               branch_id: branch_id
             }).where({
@@ -413,49 +632,49 @@ var updatePendingList = /*#__PURE__*/function () {
           case 13:
             req.flash("success", "Subscription Moved To Branch");
             res.redirect("/super_admin/users_subscription/get_new_users");
-            _context4.next = 21;
+            _context5.next = 21;
             break;
           case 17:
-            _context4.prev = 17;
-            _context4.t0 = _context4["catch"](0);
-            console.log(_context4.t0);
+            _context5.prev = 17;
+            _context5.t0 = _context5["catch"](0);
+            console.log(_context5.t0);
             res.redirect("/home");
           case 21:
           case "end":
-            return _context4.stop();
+            return _context5.stop();
         }
       }
-    }, _callee4, null, [[0, 17]]);
+    }, _callee5, null, [[0, 17]]);
   }));
-  return function updatePendingList(_x7, _x8) {
-    return _ref4.apply(this, arguments);
+  return function updatePendingList(_x9, _x10) {
+    return _ref5.apply(this, arguments);
   };
 }();
 exports.updatePendingList = updatePendingList;
 var updateAllUsersStatus = /*#__PURE__*/function () {
-  var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(req, res) {
+  var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(req, res) {
     var _req$body2, status, id;
-    return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+    return _regeneratorRuntime().wrap(function _callee6$(_context6) {
       while (1) {
-        switch (_context5.prev = _context5.next) {
+        switch (_context6.prev = _context6.next) {
           case 0:
-            _context5.prev = 0;
+            _context6.prev = 0;
             _req$body2 = req.body, status = _req$body2.status, id = _req$body2.id;
             if (!(status == "1")) {
-              _context5.next = 7;
+              _context6.next = 7;
               break;
             }
-            _context5.next = 5;
+            _context6.next = 5;
             return (0, _db["default"])("admin_users").update({
               status: "1"
             }).where({
               id: id
             });
           case 5:
-            _context5.next = 9;
+            _context6.next = 9;
             break;
           case 7:
-            _context5.next = 9;
+            _context6.next = 9;
             return (0, _db["default"])("admin_users").update({
               status: "0"
             }).where({
@@ -464,21 +683,21 @@ var updateAllUsersStatus = /*#__PURE__*/function () {
           case 9:
             console.log("hell");
             req.flash("success", "Updated SuccessFully");
-            return _context5.abrupt("return", res.redirect("/super_admin/users_subscription/update_all_users_status"));
+            return _context6.abrupt("return", res.redirect("/super_admin/users_subscription/update_all_users_status"));
           case 14:
-            _context5.prev = 14;
-            _context5.t0 = _context5["catch"](0);
-            console.log(_context5.t0);
+            _context6.prev = 14;
+            _context6.t0 = _context6["catch"](0);
+            console.log(_context6.t0);
             res.redirect("/home");
           case 18:
           case "end":
-            return _context5.stop();
+            return _context6.stop();
         }
       }
-    }, _callee5, null, [[0, 14]]);
+    }, _callee6, null, [[0, 14]]);
   }));
-  return function updateAllUsersStatus(_x9, _x10) {
-    return _ref5.apply(this, arguments);
+  return function updateAllUsersStatus(_x11, _x12) {
+    return _ref6.apply(this, arguments);
   };
 }();
 exports.updateAllUsersStatus = updateAllUsersStatus;
