@@ -171,47 +171,40 @@ var updateUserLocation = /*#__PURE__*/function () {
 }();
 exports.updateUserLocation = updateUserLocation;
 var insertUser = /*#__PURE__*/function () {
-  var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(payload, otp, users_length) {
-    var generate_id, mobile_number, fcmToken, device, appOsFormat, appVersion, query;
+  var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(payload, otp) {
+    var mobile_number, query;
     return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
-            generate_id = "CUSTOMER" + users_length;
-            mobile_number = payload.mobile_number, fcmToken = payload.fcmToken, device = payload.device, appOsFormat = payload.appOsFormat, appVersion = payload.appVersion;
-            _context4.next = 4;
+            mobile_number = payload.mobile_number;
+            _context4.next = 3;
             return _db["default"].insert([{
-              user_unique_id: generate_id,
               mobile_number: mobile_number,
-              fcm_token: fcmToken,
-              otp: otp,
-              device: device,
-              app_os_format: appOsFormat,
-              app_version: appVersion,
-              user_group_id: "3"
+              otp: otp
             }]).into("users");
-          case 4:
+          case 3:
             query = _context4.sent;
-            _context4.prev = 5;
+            _context4.prev = 4;
             return _context4.abrupt("return", {
               status: _responseCode["default"].SUCCESS,
               body: query
             });
-          case 9:
-            _context4.prev = 9;
-            _context4.t0 = _context4["catch"](5);
+          case 8:
+            _context4.prev = 8;
+            _context4.t0 = _context4["catch"](4);
             return _context4.abrupt("return", {
               status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
               message: _context4.t0.message
             });
-          case 12:
+          case 11:
           case "end":
             return _context4.stop();
         }
       }
-    }, _callee4, null, [[5, 9]]);
+    }, _callee4, null, [[4, 8]]);
   }));
-  return function insertUser(_x6, _x7, _x8) {
+  return function insertUser(_x6, _x7) {
     return _ref4.apply(this, arguments);
   };
 }();
@@ -268,7 +261,7 @@ var insertRider = /*#__PURE__*/function () {
       }
     }, _callee5, null, [[10, 14]]);
   }));
-  return function insertRider(_x9, _x10, _x11) {
+  return function insertRider(_x8, _x9, _x10) {
     return _ref5.apply(this, arguments);
   };
 }();
@@ -309,7 +302,7 @@ var updateUserOtp = /*#__PURE__*/function () {
       }
     }, _callee6, null, [[4, 8]]);
   }));
-  return function updateUserOtp(_x12, _x13) {
+  return function updateUserOtp(_x11, _x12) {
     return _ref6.apply(this, arguments);
   };
 }();
@@ -392,7 +385,7 @@ var verifyUserOtp = /*#__PURE__*/function () {
       }
     }, _callee7, null, [[0, 26]]);
   }));
-  return function verifyUserOtp(_x14, _x15) {
+  return function verifyUserOtp(_x13, _x14) {
     return _ref7.apply(this, arguments);
   };
 }();
@@ -436,7 +429,7 @@ var updateUser = /*#__PURE__*/function () {
       }
     }, _callee8, null, [[1, 8]]);
   }));
-  return function updateUser(_x16, _x17) {
+  return function updateUser(_x15, _x16) {
     return _ref8.apply(this, arguments);
   };
 }();
@@ -476,7 +469,7 @@ var updateUserLanguage = /*#__PURE__*/function () {
       }
     }, _callee9, null, [[1, 8]]);
   }));
-  return function updateUserLanguage(_x18, _x19) {
+  return function updateUserLanguage(_x17, _x18) {
     return _ref9.apply(this, arguments);
   };
 }();
@@ -515,7 +508,7 @@ var updateUserToken = /*#__PURE__*/function () {
       }
     }, _callee10, null, [[3, 7]]);
   }));
-  return function updateUserToken(_x20, _x21) {
+  return function updateUserToken(_x19, _x20) {
     return _ref10.apply(this, arguments);
   };
 }();
@@ -557,7 +550,7 @@ var getUserToken = /*#__PURE__*/function () {
       }
     }, _callee11, null, [[3, 10]]);
   }));
-  return function getUserToken(_x22) {
+  return function getUserToken(_x21) {
     return _ref11.apply(this, arguments);
   };
 }();
@@ -589,7 +582,7 @@ var getUser = /*#__PURE__*/function () {
       }
     }, _callee12, null, [[3, 7]]);
   }));
-  return function getUser(_x23) {
+  return function getUser(_x22) {
     return _ref12.apply(this, arguments);
   };
 }();
@@ -623,7 +616,7 @@ var userDetail = /*#__PURE__*/function () {
       }
     }, _callee13, null, [[3, 7]]);
   }));
-  return function userDetail(_x24) {
+  return function userDetail(_x23) {
     return _ref13.apply(this, arguments);
   };
 }();
@@ -672,7 +665,7 @@ var getAccountModal = /*#__PURE__*/function () {
       }
     }, _callee14, null, [[4, 12]]);
   }));
-  return function getAccountModal(_x25) {
+  return function getAccountModal(_x24) {
     return _ref14.apply(this, arguments);
   };
 }();
@@ -707,7 +700,7 @@ var getAddress = /*#__PURE__*/function () {
       }
     }, _callee15, null, [[3, 7]]);
   }));
-  return function getAddress(_x26) {
+  return function getAddress(_x25) {
     return _ref15.apply(this, arguments);
   };
 }();
@@ -749,7 +742,7 @@ var addUser = /*#__PURE__*/function () {
       }
     }, _callee16, null, [[3, 7]]);
   }));
-  return function addUser(_x27) {
+  return function addUser(_x26) {
     return _ref16.apply(this, arguments);
   };
 }();
@@ -909,7 +902,7 @@ var logoutUser = /*#__PURE__*/function () {
       }
     }, _callee20, null, [[0, 7]]);
   }));
-  return function logoutUser(_x28) {
+  return function logoutUser(_x27) {
     return _ref20.apply(this, arguments);
   };
 }();

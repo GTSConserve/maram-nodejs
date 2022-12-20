@@ -54,7 +54,8 @@ var new_subscription = /*#__PURE__*/function () {
             console.log(is_exist_address);
             if (is_exist_address.length !== 0) {
               query.branch_id = is_exist_address[0].branch_id;
-              query.subscription_status = "branch_pending";
+              // query.subscription_status = "branch_pending";
+              query.subscription_status = "subscribed";
             }
 
             // const branch_id = await knex("subscribed_user_details")
@@ -145,46 +146,53 @@ var get_subscription_product = /*#__PURE__*/function () {
 exports.get_subscription_product = get_subscription_product;
 var single_subscription = /*#__PURE__*/function () {
   var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(userId, sub_id) {
-    var products;
+    var products, query;
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.prev = 0;
             _context3.next = 3;
-            return (0, _db["default"])("subscribed_user_details AS sub").select("sub.id as subscription_id", "sub.subscription_start_date", "products.name as product_name", "products.image", "products.unit_value", "unit_types.value as unit_type", "subscription_type.name as subscription_name", "user_address.address", "products.price").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("subscription_type", "subscription_type.id", "=", "sub.subscribe_type_id").join("user_address", "user_address.id", "=", "sub.user_address_id").where({
+            return (0, _db["default"])("subscribed_user_details AS sub").select("sub.id as subscription_id", "sub.subscription_start_date",
+            // "product.id",
+            "products.name as product_name", "products.image", "products.unit_value", "unit_types.value as unit_type", "subscription_type.name as subscription_name", "user_address.address", "sub.date").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("subscription_type", "subscription_type.id", "=", "sub.subscribe_type_id").join("user_address", "user_address.id", "=", "sub.user_address_id").where({
               "sub.user_id": userId,
               "sub.id": sub_id
             });
           case 3:
             products = _context3.sent;
+            _context3.next = 6;
+            return (0, _db["default"])("add_on_orders").select("add_on_orders.id", "products.name as product_name", "products.image", "products.unit_value", "unit_types.value as unit_type", "user_address.address").join("products", "products.id", "=", "add_on_orders.id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("user_address", "user_address.id", "=", "add_on_orders.address_id");
+          case 6:
+            query = _context3.sent;
             if (!(products.length === 0)) {
-              _context3.next = 6;
+              _context3.next = 9;
               break;
             }
             return _context3.abrupt("return", {
               status: false,
               message: "No Subscription Found"
             });
-          case 6:
+          case 9:
             return _context3.abrupt("return", {
               status: true,
-              data: products
+              data: products,
+              additional_orders: query
             });
-          case 9:
-            _context3.prev = 9;
+          case 12:
+            _context3.prev = 12;
             _context3.t0 = _context3["catch"](0);
             console.log(_context3.t0);
             return _context3.abrupt("return", {
               status: false,
               message: _context3.t0
             });
-          case 13:
+          case 16:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3, null, [[0, 9]]);
+    }, _callee3, null, [[0, 12]]);
   }));
   return function single_subscription(_x9, _x10) {
     return _ref3.apply(this, arguments);

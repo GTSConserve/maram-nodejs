@@ -382,7 +382,7 @@ var getAllSubscription = /*#__PURE__*/function () {
 exports.getAllSubscription = getAllSubscription;
 var singleSubscription = /*#__PURE__*/function () {
   var _ref9 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9(req, res) {
-    var _req$body5, userId, subscription_id, sub, i;
+    var _req$body5, userId, subscription_id, sub, i, bottle_tracker;
     return _regeneratorRuntime().wrap(function _callee9$(_context9) {
       while (1) {
         switch (_context9.prev = _context9.next) {
@@ -422,24 +422,33 @@ var singleSubscription = /*#__PURE__*/function () {
               delete sub.data[i].unit_value;
               delete sub.data[i].unit_type;
             }
+            // const query = [{data: sub.data[0],additional_orders: sub.additional_orders[0]}]
+            bottle_tracker = {
+              "delivered_orders": 25,
+              "remaining_orders": 5,
+              "additional_delivered_orders": 5,
+              "additional_remaining_orders": 25
+            };
             return _context9.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               status: true,
-              data: sub.data[0]
+              data: sub.data[0],
+              additional_orders: [sub.additional_orders[0]],
+              this_month_item_detail: bottle_tracker
             }));
-          case 13:
-            _context9.prev = 13;
+          case 14:
+            _context9.prev = 14;
             _context9.t0 = _context9["catch"](0);
             console.log(_context9.t0);
             return _context9.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
-          case 17:
+          case 18:
           case "end":
             return _context9.stop();
         }
       }
-    }, _callee9, null, [[0, 13]]);
+    }, _callee9, null, [[0, 14]]);
   }));
   return function singleSubscription(_x15, _x16) {
     return _ref9.apply(this, arguments);
