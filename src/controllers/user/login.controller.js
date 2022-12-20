@@ -19,6 +19,7 @@ import logger from "../../logger/logger";
 import { updateUserToken } from "../../models/user/user.model";
 import knex from "../../services/db.service";
 import messages from "../../constants/messages";
+import { phoneNumberValidator } from "../../utils/helper.util";
 
 export const accountDelete = async (req,res) => {
   try {
@@ -182,3 +183,116 @@ export const logout = async (req, res) => {
 //     return res.status(responseCode.FAILURE.BAD_REQUEST).json({ status: false, message: "Server Error" })
 //   }
 // }
+
+export const userMobileNumberChange = async (req, res) => {
+  try {
+    const payload = phoneNumberValidator(req.body);
+
+    const {user_id,mobile_number} = payload;
+
+    if (payload.status) {
+      // const checkPhoneNumber = await loginUser(mobile_number)
+      const checkPhoneNumber = await knex
+        .select("id")
+        .from("users")
+        .where({ mobile_number });
+        console.log(checkPhoneNumber)
+      let query;
+      let userId = 0;
+      // const otp = process.env.USER_OTP || Math.floor(1000 + Math.random() * 9000)
+      const otp = "1234";
+
+      let users = await knex.select("id").from("users").update({mobile_number});
+  
+
+      console.log(checkPhoneNumber);
+
+      if (checkPhoneNumber.length === 0) {
+        query = await insertUser(payload, otp);
+
+      } else {
+        query = await updateUserOtp(payload, otp);
+
+      }
+
+      if (query.status === responseCode.SUCCESS) {
+        return res
+          .status(query.status)
+          .json({
+            status: true,
+            user_id: userId,
+            message: messageCode.LOGINMESSAGE.OTP_SENT,
+          });
+      } else {
+        res
+          .status(query.status)
+          .json({ status: false, message: query.message });
+      }
+    } else {
+      res
+        .status(responseCode.FAILURE.BAD_REQUEST)
+        .json({ status: false, message: payload.message });
+    }
+  } catch (error) {
+    logger.error("Whooops! This broke with error: ", error);
+    res.status(500).send("Error!");
+  }
+};
+
+export const UserverifyOtp = async (req, res) => {
+  try {
+    
+    const today = format(new Date(), "yyyy-MM-dd H:i:s");
+   
+    const payload = verifyOtpValidator(req.body);
+    console.log(payload);
+
+    const { otp, userId } = payload;
+
+    const is_user = await knex("users").select("id","otp").where({ id: userId });
+
+    if (is_user.length === 0) {
+      return res
+        .status(responseCode.FAILURE.BAD_REQUEST)
+        .json({ status: false, message: "User Not Found" });
+    }
+
+    if (payload.status === true) {
+      const response = await verifyOtp(otp, userId, today);
+
+      if (is_user[0].otp == otp) {
+        const tokens = createToken({
+           user_id : userId,
+        });
+
+        if (tokens.status) {
+          await updateUserToken(tokens.refreshToken, userId);
+
+          res
+            .status(responseCode.SUCCESS)
+            .json({
+              status: true,
+              token: tokens.token,
+              message: messageCode.LOGINMESSAGE.OTP_VERIFY,
+            });
+        } else {
+          res
+            .status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
+            .json({ status: false, message: "Token generation failed" });
+        }
+      } else {
+        res
+          .status(responseCode.FAILURE.BAD_REQUEST)
+          .json({ status: false, message: "otp mismatch" });
+      }
+    } else {
+      res
+        .status(responseCode.FAILURE.BAD_REQUEST)
+        .json({ status: false, message: payload.message });
+    }
+  } catch (error) {
+    logger.error("Whooops! This broke with error: ", error);
+
+    res.status(500).send("Error!");
+  }
+};

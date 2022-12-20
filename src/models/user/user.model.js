@@ -85,21 +85,16 @@ export const updateUserLocation = async (payload) => {
   }
 };
 
-export const insertUser = async (payload, otp, users_length) => {
-  const generate_id = "CUSTOMER" + users_length;
+export const insertUser = async (payload, otp) => {
 
-  const { mobile_number, fcmToken, device, appOsFormat, appVersion } = payload;
+  const { mobile_number } = payload;
   const query = await knex
     .insert([
       {
-        user_unique_id: generate_id,
+      
         mobile_number,
-        fcm_token: fcmToken,
         otp,
-        device,
-        app_os_format: appOsFormat,
-        app_version: appVersion,
-        user_group_id: "3",
+  
       },
     ])
     .into("users");

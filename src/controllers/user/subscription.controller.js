@@ -271,10 +271,18 @@ export const singleSubscription = async (req, res) => {
       delete sub.data[i].unit_value;
       delete sub.data[i].unit_type;
     }
+    // const query = [{data: sub.data[0],additional_orders: sub.additional_orders[0]}]
+
+    const bottle_tracker = {
+      "delivered_orders": 25,
+      "remaining_orders": 5,
+      "additional_delivered_orders": 5,
+      "additional_remaining_orders": 25
+    }
 
     return res
       .status(responseCode.SUCCESS)
-      .json({ status: true, data: sub.data[0] });
+      .json({ status: true, data: sub.data[0],additional_orders: [sub.additional_orders[0]],this_month_item_detail:bottle_tracker });
   } catch (error) {
     console.log(error);
     return res

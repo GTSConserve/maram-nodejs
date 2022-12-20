@@ -42,7 +42,8 @@ export const new_subscription = async (
 
     if (is_exist_address.length !== 0) {
       query.branch_id = is_exist_address[0].branch_id;
-      query.subscription_status = "branch_pending";
+      // query.subscription_status = "branch_pending";
+      query.subscription_status = "subscribed";
     }
 
     // const branch_id = await knex("subscribed_user_details")
@@ -105,13 +106,15 @@ export const single_subscription = async (userId, sub_id) => {
       .select(
         "sub.id as subscription_id",
         "sub.subscription_start_date",
+        // "product.id",
         "products.name as product_name",
         "products.image",
         "products.unit_value",
         "unit_types.value as unit_type",
         "subscription_type.name as subscription_name",
         "user_address.address",
-        "products.price"
+        "sub.date"
+      
       )
       .join("products", "products.id", "=", "sub.product_id")
       .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
@@ -124,11 +127,26 @@ export const single_subscription = async (userId, sub_id) => {
       .join("user_address", "user_address.id", "=", "sub.user_address_id")
       .where({ "sub.user_id": userId, "sub.id": sub_id });
 
+      const query = await knex("add_on_orders")
+      .select(
+        "add_on_orders.id",
+        "products.name as product_name",
+        "products.image",
+        "products.unit_value",
+        "unit_types.value as unit_type",
+        "user_address.address",
+    
+      )
+      .join("products", "products.id", "=", "add_on_orders.id")
+      .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
+      .join("user_address", "user_address.id", "=", "add_on_orders.address_id")
+      // .where({ "add_on_orders.user_id": userId, "add_on_orders.id": add_on_orders.user_id });
+
     if (products.length === 0) {
       return { status: false, message: "No Subscription Found" };
     }
 
-    return { status: true, data: products };
+    return { status: true, data: products, additional_orders:query};
   } catch (error) {
     console.log(error);
     return { status: false, message: error };
