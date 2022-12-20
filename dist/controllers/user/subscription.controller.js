@@ -564,7 +564,7 @@ var changeQuantity = /*#__PURE__*/function () {
           case 0:
             _context12.prev = 0;
             _req$body8 = req.body, userId = _req$body8.userId, subscription_id = _req$body8.subscription_id, quantity = _req$body8.quantity;
-            if (!(!subscription_id || !quantity)) {
+            if (!(!userId || !subscription_id || !quantity)) {
               _context12.next = 4;
               break;
             }
@@ -618,7 +618,7 @@ var changeSubscriptionplan = /*#__PURE__*/function () {
           case 0:
             _context13.prev = 0;
             _req$body9 = req.body, userId = _req$body9.userId, subscription_id = _req$body9.subscription_id, subscription_plan_id = _req$body9.subscription_plan_id, start_date = _req$body9.start_date, customized_days = _req$body9.customized_days;
-            if (!(!subscription_id || !subscription_plan_id || !start_date)) {
+            if (!(!userId || !subscription_id || !subscription_plan_id || start_date)) {
               _context13.next = 4;
               break;
             }
@@ -656,14 +656,14 @@ var changeSubscriptionplan = /*#__PURE__*/function () {
 exports.changeSubscriptionplan = changeSubscriptionplan;
 var pauseSubscription = /*#__PURE__*/function () {
   var _ref14 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee14(req, res) {
-    var _req$body10, userId, subscription_id, dates, date;
+    var _req$body10, userId, subscription_id, pausedates, dates;
     return _regeneratorRuntime().wrap(function _callee14$(_context14) {
       while (1) {
         switch (_context14.prev = _context14.next) {
           case 0:
             _context14.prev = 0;
-            _req$body10 = req.body, userId = _req$body10.userId, subscription_id = _req$body10.subscription_id, dates = _req$body10.dates;
-            if (!(!userId || !subscription_id || !dates)) {
+            _req$body10 = req.body, userId = _req$body10.userId, subscription_id = _req$body10.subscription_id, pausedates = _req$body10.pausedates;
+            if (!(!userId || !subscription_id || !pausedates)) {
               _context14.next = 4;
               break;
             }
@@ -673,24 +673,25 @@ var pauseSubscription = /*#__PURE__*/function () {
             }));
           case 4:
             _context14.next = 6;
-            return (0, _subscription.pause_subscriptiondate)(userId, subscription_id, dates);
+            return (0, _subscription.pause_subscriptiondate)(userId, subscription_id, pausedates);
           case 6:
-            date = _context14.sent;
-            return _context14.abrupt("return", res.status(_responseCode["default"].SUCCESS).json(date));
-          case 10:
-            _context14.prev = 10;
+            dates = _context14.sent;
+            _context14.next = 13;
+            break;
+          case 9:
+            _context14.prev = 9;
             _context14.t0 = _context14["catch"](0);
             console.log(_context14.t0);
             return _context14.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
-          case 14:
+          case 13:
           case "end":
             return _context14.stop();
         }
       }
-    }, _callee14, null, [[0, 10]]);
+    }, _callee14, null, [[0, 9]]);
   }));
   return function pauseSubscription(_x25, _x26) {
     return _ref14.apply(this, arguments);
