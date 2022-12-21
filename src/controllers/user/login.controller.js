@@ -186,11 +186,15 @@ export const logout = async (req, res) => {
 
 export const userMobileNumberChange = async (req, res) => {
   try {
-    const payload = phoneNumberValidator(req.body);
 
+    const payload = req.body;
+    const payload1 = phoneNumberValidator(payload.mobile_number);
+ 
     const {user_id,mobile_number} = payload;
 
-    if (payload.status) {
+    console.log(payload)
+    if (payload1.status) {
+      console.log("checkPhoneNumber")
       // const checkPhoneNumber = await loginUser(mobile_number)
       const checkPhoneNumber = await knex
         .select("id")
@@ -203,7 +207,6 @@ export const userMobileNumberChange = async (req, res) => {
       const otp = "1234";
 
       let users = await knex.select("id").from("users").update({mobile_number});
-  
 
       console.log(checkPhoneNumber);
 

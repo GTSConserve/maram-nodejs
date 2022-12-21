@@ -148,6 +148,7 @@ export const multerStorage = (path) => {
 // export const uploadImg = multer({ storage: storage }).single("image");
 
 export const phoneNumberValidator = (phoneNumber) => {
+  console.log("hi")
   //  console.log(phoneNumber)
   if (!phoneNumber) {
     return false;

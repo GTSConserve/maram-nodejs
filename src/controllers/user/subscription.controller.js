@@ -247,7 +247,7 @@ export const singleSubscription = async (req, res) => {
 
     const sub = await single_subscription(userId, subscription_id);
 
-    console.log(sub)
+    // console.log(sub)
     if (!sub.status) {
       return res
         .status(responseCode.FAILURE.DATA_NOT_FOUND)
@@ -271,7 +271,10 @@ export const singleSubscription = async (req, res) => {
       }
       delete sub.data[i].unit_value;
       delete sub.data[i].unit_type;
+      
     }
+
+    
     // const query = [{data: sub.data[0],additional_orders: sub.additional_orders[0]}]
 
     const bottle_tracker = {
@@ -280,10 +283,15 @@ export const singleSubscription = async (req, res) => {
       "additional_delivered_orders": 5,
       "additional_remaining_orders": 25
     }
-// data: sub.data[0],additional_orders: [sub.data[0]],this_month_item_detail:bottle_tracker
+
+    const response = {
+      additional_orders: [sub.query[0]],
+      this_month_item_detail:bottle_tracker
+    }
+
     return res
       .status(responseCode.SUCCESS)
-      .json({ status: true, data: sub.data[0],additional_orders: [sub.query[0]],this_month_item_detail:bottle_tracker });
+      .json({ status: true, data: {...sub.data[0],...response }});
   } catch (error) {
     console.log(error); 
     return res

@@ -20,19 +20,20 @@
                             </div>
                         </div>
                         <div class="widget-content widget-content-area" >
-                            <form action="/branch_admin/user/create_user" method="post">
+                            <!-- <form action="/branch_admin/user/create_user" method="post"> -->
+                            <form >
                                     <div class="form-row mb-4">
                                         <div class="form-group col-md-4">
-                                            <label for="inputPassword4">Name</label>
-                                            <input type="text" class="form-control" required minlength="3" id="inputPassword4" name="user_name" placeholder="Name">
+                                            <label for="name">Name</label>
+                                            <input type="text" class="form-control"  minlength="3" id="name" name="user_name" placeholder="Name">
                                         </div>
                                         <div class="form-group col-md-4">
-                                            <label for="inputEmail4">Email</label>
-                                            <input type="email" class="form-control" name="email" id="inputEmail4" placeholder="Email">
+                                            <label for="email">Email</label>
+                                            <input type="email" class="form-control" name="email" id="email" placeholder="Email">
                                         </div>
                                         <div class="form-group col-md-4">
-                                            <label for="inputEmail4">Mobile Number</label>
-                                            <input type="text"  class="form-control" name="mobile_number" id="inputEmail4" placeholder="10 Digit Mobile Number">
+                                            <label for="mobile-number">Mobile Number</label>
+                                            <input type="text"   minlength="10" maxlength="10"  class="form-control" name="mobile_number" id="mobile-number" placeholder="10 Digit Mobile Number">
                                         </div>
                                     </div>
                                                                   
@@ -44,21 +45,21 @@
 
                                         <div class="form-row mb-4">
                                             <div class="form-group col-md-3">
-                                                <label for="inputPassword4">Type</label>
-                                                <input type="text" class="form-control"  id="inputPassword4" name="address_type" placeholder="Eg. Home,Office,Others">
+                                                <label for="type">Type</label>
+                                                <input type="text" class="form-control"  id="type" name="address_type" placeholder="Eg. Home,Office,Others">
                                             </div>
                                             <div class="col-3"></div>
                                             <div class="form-group col-md-3">
-                                                <label for="inputEmail4">Title</label>
-                                                <input type="text" class="form-control" name="address_title" id="inputEmail4" placeholder="Eg. My Friend Home">
+                                                <label for="title">Title</label>
+                                                <input type="text" class="form-control" name="address_title" id="title" placeholder="Eg. My Friend Home">
                                             </div>
                                             <div class="form-group col-md-6">
-                                                <label for="inputPassword4">Address</label>
-                                                <textarea class="form-control" name="address"></textarea>
+                                                <label for="address">Address</label>
+                                                <textarea id="address" class="form-control" name="address"></textarea>
                                             </div>
                                             <div class="form-group col-md-6">
-                                                <label for="inputEmail4">Landmark</label>
-                                                <textarea class="form-control" name="address_landmark"></textarea>
+                                                <label for="landmark">Landmark</label>
+                                                <textarea id="landmark" class="form-control" name="address_landmark"></textarea>
                                                 
                                             </div>
                                             
@@ -73,13 +74,6 @@
 
                                         <div class="col-lg-12 col-12 layout-spacing">
                                             <div class="statbox widget box box-shadow">
-                                                <!-- <div class="widget-header">
-                                                    <div class="row">
-                                                        <div class="col-xl-12 col-md-12 col-sm-12 col-12">
-                                                            <h4>Justify Right Pills</h4>
-                                                        </div>
-                                                    </div>
-                                                </div> -->
                                                 <div class="widget-content widget-content-area pill-justify-right">
                                                     
                                                     <ul class="nav nav-tabs mb-3 mt-3 justify-content-start" id="justify-right-pills-tab" role="tablist" style="font-weight: 900;">
@@ -95,45 +89,103 @@
                                                         <div class="tab-pane fade show active" id="justify-right-pills-home" role="tabpanel" aria-labelledby="justify-right-pills-home-tab">
                                                             <div class="form-row mb-4">
                                                                 <div class="form-group col-md-4">
-                                                                    <label for="inputPassword4">Products</label>
-                                                                    <input type="text" class="form-control" required minlength="3" id="inputPassword4" name="sub_product" placeholder="Name">
+                                                                    <label>Product</label>
+                                                <select wire:model="countryid" class="form-control" name="sub_product" >
+                                                    <option value="" selected >Select Product </option>
+                                                    <% for(product of get_subscription_products){ %>
+
+                                                        <option value="<%=product.id %>"><%=product.name %>  / <%= product.unit_value %>-<%= product.unit_type %>    </option>
+                                                    <% } %>
+
+                                                </select>
                                                                 </div>
                                                                 <div class="form-group col-md-4">
-                                                                    <label for="inputEmail4">Qty</label>
-                                                                    <input type="number" class="form-control" name="sub_qty" id="inputEmail4" placeholder="qty">
+                                                                    <label for="sub_qty">Qty</label>
+                                                                    <input type="number" class="form-control" name="sub_qty" id="sub_qty" placeholder="qty">
                                                                 </div>
                                                                 <div class="form-group col-md-4">
-                                                                    <label for="inputPassword4">Start Date</label>
-                                                                    <input type="date"  class="form-control" required  id="inputPassword4" name="sub_start_date">
+                                                                    <label for="start_date">Start Date</label>
+                                                                    <input type="date"  class="form-control"   id="start_date" name="sub_start_date">
                                                                 </div>
                                                             </div>
                                                             <div class="form-row mb-4">
                                                                 <div class="form-group col-md-4">
-                                                                    <label for="inputEmail4">Choose Your Plan</label>
-                                                                    <input type="text"  class="form-control" name="plan" id="inputEmail4" >
+                                                                    <label>Choose Your Plan</label>
+                                                                    <select onchange="checkHandler(this)" wire:model="countryid" class="form-control" name="your_plan" >
+                                                                        <option value="" selected >Choose Your plan </option>
+                                                                        <% for(plan of get_plan){ %>
+                    
+                                                                            <option  value="<%=plan.id %>"><%=plan.name %>  </option>
+                                                                        <% } %>
+                                                                    </select>
                                                                 </div>
+
+                                                                <script>
+                                                                    function checkHandler(event){
+                                                                        console.log(event)
+                                                                        if(event.value == 3){
+                                                                            document.getElementById("custom_days").innerHTML = ` <label for="delivery_days">Choose Your Custome Days</label>
+                                                                    <div class="custom-control custom-checkbox checkbox-info">
+                                                                        <input type="checkbox" name="custom_days" value="1" class="custom-control-input" id="hChkbox">
+                                                                        <label class="custom-control-label" for="hChkbox">Sun</label>
+                                                                    </div>
+                                                                    <div class="custom-control custom-checkbox checkbox-info">
+                                                                        <input type="checkbox" name="custom_days" value="2" class="custom-control-input" id="hChkbox2">
+                                                                        <label class="custom-control-label" for="hChkbox2">Mon</label>
+                                                                    </div>
+                                                                    <div class="custom-control custom-checkbox checkbox-info">
+                                                                        <input type="checkbox" name="custom_days" value="3" class="custom-control-input" id="hChkbox3">
+                                                                        <label class="custom-control-label" for="hChkbox3">Tue</label>
+                                                                    </div>
+                                                                    <div class="custom-control custom-checkbox checkbox-info">
+                                                                        <input type="checkbox" name="custom_days" value="4" class="custom-control-input" id="hChkbox4">
+                                                                        <label class="custom-control-label" for="hChkbox4">Thu</label>
+                                                                    </div>
+                                                                    <div class="custom-control custom-checkbox checkbox-info">
+                                                                        <input type="checkbox" name="custom_days" value="5" class="custom-control-input" id="hChkbox5">
+                                                                        <label class="custom-control-label" for="hChkbox5">Fri</label>
+                                                                    </div>
+                                                                    <div class="custom-control custom-checkbox checkbox-info">
+                                                                        <input type="checkbox" name="custom_days" value="6" class="custom-control-input" id="hChkbox6">
+                                                                        <label class="custom-control-label" for="hChkbox6">Sat</label>
+                                                                    </div>
+                                                                    <div class="custom-control custom-checkbox checkbox-info">
+                                                                        <input type="checkbox" name="custom_days" value="7" class="custom-control-input" id="hChkbox7">
+                                                                        <label class="custom-control-label" for="hChkbox7">Sun</label>
+                                                                    </div>`
+                                                                        }else{
+                                                                            document.getElementById("custom_days").innerHTML = ``
+                                                                        }
+                                                                    }
+                                                                </script>
                                                               
                                                                
-                                                                <div class="form-group col-md-4">
-                                                                    <label for="inputEmail4">Choose Your Custome Delivery Days</label>
-                                                                    <input type="text"  class="form-control" name="custom_days" id="inputEmail4" placeholder="10 Digit Mobile Number">
+                                                                <div class="form-group col-md-4 pl-3 " id="custom_days">
+                                                                   
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div class="tab-pane fade" id="justify-right-pills-contact" role="tabpanel" aria-labelledby="justify-right-pills-contact-tab">
                                                             <div class="form-row mb-4" >
                                                                 <div class="form-group col-md-4">
-                                                                    <label for="inputPassword4">Delivery Date</label>
-                                                                    <input type="date" class="form-control" required minlength="3" id="inputPassword4" name="add_on_delivery_date" placeholder="Name">
+                                                                    <label for="delivery_date">Delivery Date</label>
+                                                                    <input type="date" class="form-control"  minlength="3" id="delivery_date" name="add_on_delivery_date" placeholder="Name">
                                                                 </div>
                                                                 <div class="col-8"></div>
                                                                 <div class="form-group col-md-6">
-                                                                    <label for="inputEmail4">Product</label>
-                                                                    <input type="text" class="form-control" name="add_on_product" id="inputEmail4" placeholder="qty">
+                                                                    <label>Product</label>
+                                                                    <select wire:model="countryid" class="form-control" name="add_on_products" >
+                                                                        <option value="" selected >Select Product </option>
+                                                                        <% for(product of add_on_products){ %>
+                    
+                                                                            <option value="<%=product.id %>"><%=product.name %>  / <%= product.unit_value %>-<%= product.unit_type %>    </option>
+                                                                        <% } %>
+                    
+                                                                    </select>
                                                                 </div>
                                                                 <div class="form-group col-md-3">
-                                                                    <label for="inputPassword4">Qty</label>
-                                                                    <input type="number" class="form-control" id="inputPassword4" name="add_on_qty" placeholder="Name">
+                                                                    <label for="add_on_qty">Qty</label>
+                                                                    <input type="number" class="form-control" id="add_on_qty" name="add_on_qty" placeholder="qty">
                                                                 </div>
                                                                 <div class="form-group col-md-2">
                                                                     
@@ -151,27 +203,39 @@
                                                         function addProducts() {
                                                             const get_length = document.getElementById("add_on")
                                                             const count = document.getElementsByTagName('span').length;
-                                                            console.log(count)
-
-                                                            console.log(get_length.length)
-                                                            document.getElementById("add_on").innerHTML +=
-                                                            `
-                                                            <span class="form-row" id="remove${count}">
+                                                         
+                                                            const node = document.createElement("span");
+                                                            node.className="form-row"
+                                                            node.id = `remove${count}`
+                                                            node.innerHTML=   `
+                                                           
                                                                 <div class="form-group col-6">
-                                                                    <label for="inputEmail4">Product</label>
-                                                                    <input type="text" class="form-control" name="add_on_product" id="inputEmail4" placeholder="qty">
+                                                                    <label>Product</label>
+                                                                    <select wire:model="countryid" class="form-control" name="add_on_products" >
+                                                                        <option value="" selected >Select Product </option>
+                                                                        <% for(product of add_on_products){ %>
+                    
+                                                                            <option value="<%=product.id %>"><%=product.name %>  / <%= product.unit_value %>-<%= product.unit_type %>    </option>
+                                                                        <% } %>
+                    
+                                                                    </select>
                                                                 </div>
                                                                 <div class="form-group col-3">
-                                                                    <label for="inputPassword4">Qty</label>
-                                                                    <input type="number" class="form-control" id="inputPassword4" name="add_on_qty" placeholder="Name">
+                                                                    <label for="add_on_qty${count}">Qty</label>
+                                                                    <input type="number" class="form-control" id="add_on_qty" name="add_on_qty" placeholder="qty">
                                                                 </div>
                                                                 <div class="form-group col-2">
                                                                     
                                                                     <button type="button" onclick="removeProduct(this)" name="${count}" class="btn btn-danger" style="margin-top: 32px;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg></button>
                                                                  </div>
-                                                                 </span>
+                                                                 
                                                         
-                                                                `;
+                                                                `
+                                                            // const textnode = document.createTextNode("Water");
+
+                                                            console.log(get_length.length)
+                                                            document.getElementById("add_on").appendChild(node)
+                                                        //  ;
                                                         }
 
 
@@ -187,6 +251,202 @@
                                         <button type="submit" class="btn btn-primary mt-3">Sign in</button>
                                   </form>
                                     </div>
+
+                                    <script>
+
+                                                let ErroHandler = document.createElement("div")
+                                                ErroHandler.innerHTML =`<div class="modal show fade" id="exampleModal" tabindex="-1" style="display: block; padding-right: 17px;" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog  animated fadeInDown" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"></h5>
+            </div>
+            <div class="modal-body">
+                <p class="modal-text" id="dynamic_content_error">Please Fill The Form! </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-warning" onclick="removeModal()" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Discard</button>
+            </div>
+        </div>
+    </div>
+</div> ` 
+
+
+
+                                         const form=document.querySelector("form")
+                                            form.addEventListener("submit",(e)=>{
+
+                                                let query 
+
+                                                e.preventDefault()
+                                                // user details
+                                                const user_name = e.target.user_name.value
+                                                const mobile_number = e.target.mobile_number.value
+                                                const email = e.target.email.value
+
+                                                
+                                                //address
+                                                const address_type = e.target.address_type.value
+                                                const address_title = e.target.address_title.value
+                                                const address_landmark = e.target.address_landmark.value
+                                                const address = e.target.address.value
+                                                 
+                                                query.address_type = address_type
+                                                query.address_title = address_title
+                                                query.address_landmark = address_landmark
+                                                query.address = address
+                                                
+                                                // sub products
+                                                const sub_product = e.target.sub_product.value
+                                                const sub_qty = e.target.sub_qty.value
+                                                const sub_start_date = e.target.sub_start_date.value
+                                                const your_plan = e.target.your_plan.value
+                                                
+                                                let custom_days 
+                                                if(your_plan){
+
+                                                         custom_days = e.target.custom_days
+
+                                                    
+                                                }
+                                            
+                                                // addon product
+                                                const add_on_delivery_date = e.target.add_on_delivery_date.value
+
+                                                
+                                                let add_on_products 
+                                                let add_on_qty
+                                             
+              
+
+                                                    if(e.target.add_on_qty.length == undefined){
+                                                         add_on_products = e.target.add_on_products.value
+                                                         add_on_qty = e.target.add_on_qty.value
+                                                        }else{
+                                                            add_on_products = e.target.add_on_products
+                                                            add_on_qty = e.target.add_on_qty
+                                                    }
+
+                                               
+                                                    let add_on = []
+                                                    if(e.target.add_on_qty.length == undefined){
+                                                        if(add_on_delivery_date.length != 0 ||add_on_products.length != 0 ||add_on_qty.length != 0   ){
+                                                    
+                                                             if(add_on_delivery_date.length === 0 ||add_on_products.length === 0 ||add_on_qty.length === 0   ){
+                                                                     document.body.insertAdjacentElement("afterbegin",ErroHandler) 
+                                                                     return document.getElementById("dynamic_content_error").innerText = "Please Fill the Subscription Product Details"
+    
+                                                                 }
+
+                                                                let add_on_object = {}
+                                                                 add_on_object.product_id = add_on_products
+                                                                 add_on_object.qty = add_on_qty
+                                                                 add_on.push(add_on_object)
+                                                                 query.is_add_on = true
+                                                                 query.delivery_date = add_on_delivery_date
+                                                        }
+                                                    }else{
+                                                        let add_on_object = {}
+                                                        for( product of add_on_products){
+                                                            
+                                                                 add_on_object.product_id = add_on_products
+                                                                 add_on.push(add_on_object)
+
+                                                            if(product.value.length === 0 ){
+                                                            document.body.insertAdjacentElement("afterbegin",ErroHandler) 
+                                                            return document.getElementById("dynamic_content_error").innerText = "Please Fill the Subscription Product Details"
+
+                                                        
+                                                            }
+                                                        }
+                                                        for( qty of add_on_qty){
+                                                            
+                                                    
+                                                            if(qty.value.length === 0 ){
+                                                            document.body.insertAdjacentElement("afterbegin",ErroHandler) 
+                                                            return document.getElementById("dynamic_content_error").innerText = "Please Fill the Subscription Product Details"
+
+                                                            for(insert_qty of add_on){
+                                                                insert_qty.qty = qty
+                                                            }
+                                                        
+                                                            }
+                                                        }
+                                                          add_on_object = {}
+                                                    }
+
+                                                    console.log(add_on , "add on ")
+
+                                                    // user details
+                                                if(user_name.length ==0 || mobile_number.length == 0){
+                                                        
+                                                        document.body.insertAdjacentElement("afterbegin",ErroHandler) 
+                                                   return  document.getElementById("dynamic_content_error").innerText = "Please Fill the User Details"
+                                                }
+
+                                                // address
+                                                if(address_type.length ==0 || address_title.length == 0 || address_landmark.length == 0 || address.length == 0){
+                                                        
+                                                        document.body.insertAdjacentElement("afterbegin",ErroHandler) 
+                                                    return document.getElementById("dynamic_content_error").innerText = "Please Fill the Address Details"
+                                                }
+                                                
+                                                // sub product
+                                                if(sub_product.length != 0 ||sub_qty.length != 0 ||your_plan.length != 0 ||sub_start_date.length != 0  ){
+                                                    
+                                                    if(sub_product.length === 0 ||sub_qty.length === 0 ||your_plan.length === 0 ||sub_start_date.length === 0  ){
+                                                        document.body.insertAdjacentElement("afterbegin",ErroHandler) 
+                                                    return document.getElementById("dynamic_content_error").innerText = "Please Fill the Subscription Product Details"
+    
+                                                    }
+
+                                                    if(your_plan == 3){
+                                                        let count = 0
+                                                        let cutsom = []
+                                                        for(days of custom_days){
+                                                            if(!days.checked){
+                                                                count += 1
+                                                                
+                                                            }
+                                                            if (count == 7){
+                                                                document.body.insertAdjacentElement("afterbegin",ErroHandler) 
+                                                    return document.getElementById("dynamic_content_error").innerText = "Please Choose A Day "
+                                                            }
+
+                                                            if(days.checked){
+                                                                cutsom.push(days.value)
+                                                            }
+
+                                                        }
+                                                        query.custom_days = cutsom
+                                                    }
+
+                                                    query.sub_product = sub_product
+                                                    query.sub_qty = sub_qty
+                                                    query.your_plan = your_plan
+                                                    query.sub_start_date = sub_start_date
+
+                                                }
+
+                                               
+                                                query.user_name= user_name
+                                                query.mobile_number= mobile_number
+                                                if(email.length !==0){
+
+                                                    query.email= email
+                                                }
+
+
+                                                console.log(query)
+
+                                            })
+                               
+
+                                            function removeModal(){
+                                                ErroHandler.remove()
+                                            }
+
+                                    </script>
                                     
                                    
                         </div>

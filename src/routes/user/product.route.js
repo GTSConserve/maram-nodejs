@@ -26,6 +26,6 @@ productRouter.get("/get_add_on_product", getAddOnProducts);
 productRouter.post("/get_single_product", getSingleProduct);
 
 productRouter.post("/create_add_on_products", authenticateJWT, addon_Order);
-productRouter.post("/remove_add_on_products", removeAddOnOrder);
+productRouter.post("/remove_add_on_products", authenticateJWT,removeAddOnOrder);
 
 export default productRouter;

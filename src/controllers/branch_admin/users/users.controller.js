@@ -261,7 +261,38 @@ export const getSingleUser = async (req, res) => {
 
 export const getAddUser = async(req,res) => {
   try {
-    res.render("branch_admin/users/add_user")
+
+    const get_subscription_products =  await knex("products")
+    .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
+    .select(
+      "products.id",
+      "products.name",
+      "products.unit_value",
+      "unit_types.value as unit_type",
+      "products.price"
+    )
+    .where({
+      "products.product_type_id": 1,
+    });
+    const add_on_products =  await knex("products")
+    .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
+    .select(
+      "products.id",
+      "products.name",
+      "products.unit_value",
+      "unit_types.value as unit_type",
+      "products.price"
+    )
+    .where({
+      "products.product_type_id": 2,
+    });
+
+    const get_plan = await knex("subscription_type").select("name","id")
+
+    console.log(get_subscription_products)
+    console.log(add_on_products)
+
+    res.render("branch_admin/users/add_user" ,{get_subscription_products , add_on_products, get_plan})
   } catch (error) {
     console.log(error)
     res.redirect("/home")

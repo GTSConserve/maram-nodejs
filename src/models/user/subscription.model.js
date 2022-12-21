@@ -107,6 +107,8 @@ export const single_subscription = async (userId, sub_id) => {
       .select(
         "sub.id as subscription_id",
         "sub.subscription_start_date",
+        "sub.customized_days",
+        "sub.subscription_status",
         // "product.id",
         "products.name as product_name",
         "products.image",
@@ -128,9 +130,11 @@ export const single_subscription = async (userId, sub_id) => {
       .join("user_address", "user_address.id", "=", "sub.user_address_id")
       .where({ "sub.user_id": userId, "sub.id": sub_id });
 
-      const query = await knex("add_on_orders")
+      const query = await knex("additional_orders")
       .select(
-        "add_on_orders.id",
+        "additional_orders.id",
+        "additional_orders.date",
+        "additional_orders.quantity",
         "products.name as product_name",
         "products.image",
         "products.unit_value",
@@ -138,9 +142,9 @@ export const single_subscription = async (userId, sub_id) => {
         "user_address.address",
     
       )
-      .join("products", "products.id", "=", "add_on_orders.id")
+      .join("products", "products.id", "=", "additional_orders.id")
       .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
-      .join("user_address", "user_address.id", "=", "add_on_orders.address_id")
+      .join("user_address", "user_address.id", "=", "additional_orders.subscription_id")
       // .where({ "add_on_orders.user_id": userId, "add_on_orders.id": add_on_orders.user_id });
 
     if (products.length === 0) {

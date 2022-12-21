@@ -49,7 +49,7 @@ console.log(payload)
           .where({ password });
 
          let query;
-         let userId = 0
+        //  let userId = 0
        
         // const otp = process.env.USER_OTP || Math.floor(1000 + Math.random() * 9000)
         // const otp = "1234";
@@ -59,37 +59,45 @@ console.log(payload)
   
         console.log(checkPassword);
   
-        if (checkPassword.length === 0) {
-          query = await insertUser(payload,users_length);
+        // if (checkPassword.length === 0) {
+        //   query = await insertUser(payload,users_length);
   
-          userId = users_length;
-        } 
+        //   userId = users_length;
+        // } 
         // else {
         //   query = await updateUserOtp(payload);
   
         //   userId = checkPassword[0].user_id;
         // }
-  
-        if (query.status === responseCode.SUCCESS) {
-          return res
-            .status(query.status)
-            .json({
-              status: true,
-              user_id: userId,
-              message: messageCode.LOGINMESSAGE.OTP_SENT,
-            });
-        } else {
-          res
-            .status(query.status)
-            .json({ status: false, message: query.message });
-        }
-      } else {
-        res
-          .status(responseCode.FAILURE.BAD_REQUEST)
-          .json({ status: false, message: payload.message });
-      }
-  }
 
+        return res
+        .status(200)
+        .json({
+          status: true,
+          user_id:checkPassword[0].id,
+          message: "messageCode.LOGINMESSAGE.OTP_SENT",
+        });
+  
+      //   if (query.status === responseCode.SUCCESS) {
+      //     return res
+      //       .status(query.status)
+      //       .json({
+      //         status: true,
+      //         user_id: userId,
+      //         message: messageCode.LOGINMESSAGE.OTP_SENT,
+      //       });
+      //   } else {
+      //     res
+      //       .status(query.status)
+      //       .json({ status: false, message: query.message });
+      //   }
+      // } else {
+      //   res
+      //     .status(responseCode.FAILURE.BAD_REQUEST)
+      //     .json({ status: false, message: payload.message });
+      // }
+  }
+  }
   catch (error) {
     console.error('Whooops! This broke with error: ', error)
     res.status(500).send('Error!')
