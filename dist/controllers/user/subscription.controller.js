@@ -443,7 +443,7 @@ var singleSubscription = /*#__PURE__*/function () {
               "additional_remaining_orders": 25
             };
             response = {
-              additional_orders: [sub.query[0], query1[0]],
+              additional_orders: [sub.query[0]],
               this_month_item_detail: bottle_tracker
             };
             return _context9.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
@@ -588,7 +588,7 @@ var changeQuantity = /*#__PURE__*/function () {
           case 0:
             _context12.prev = 0;
             _req$body8 = req.body, userId = _req$body8.userId, subscription_id = _req$body8.subscription_id, quantity = _req$body8.quantity;
-            if (!(!userId || !subscription_id || !quantity)) {
+            if (!(!subscription_id || !quantity)) {
               _context12.next = 4;
               break;
             }
@@ -690,7 +690,7 @@ var pauseSubscription = /*#__PURE__*/function () {
           case 0:
             _context14.prev = 0;
             _req$body10 = req.body, userId = _req$body10.userId, subscription_id = _req$body10.subscription_id, pausedates = _req$body10.pausedates;
-            if (!(!userId || !subscription_id || !pausedates)) {
+            if (!(!subscription_id || !pausedates)) {
               _context14.next = 4;
               break;
             }

@@ -76,7 +76,7 @@ var customizedDay = /*#__PURE__*/function () {
 exports.customizedDay = customizedDay;
 var GetProduct = /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(product, userId) {
-    var sub_product, i, j, _i;
+    var sub_product, subscription_id, i, j, _i;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
@@ -87,7 +87,7 @@ var GetProduct = /*#__PURE__*/function () {
               break;
             }
             _context2.next = 4;
-            return (0, _db["default"])("subscribed_user_details").select("product_id").where({
+            return (0, _db["default"])("subscribed_user_details").select("product_id", "id").where({
               user_id: userId,
               subscription_status: "pending"
             }).orWhere({
@@ -97,16 +97,19 @@ var GetProduct = /*#__PURE__*/function () {
           case 4:
             sub_product = _context2.sent;
           case 5:
+            console.log(sub_product[0].id);
+            subscription_id = sub_product[0].id;
             if (!(product.length === 0)) {
-              _context2.next = 7;
+              _context2.next = 9;
               break;
             }
             return _context2.abrupt("return", {
               status: false,
               message: "No Product Found"
             });
-          case 7:
+          case 9:
             if (sub_product.length !== 0) {
+              console.log("hi");
               for (i = 0; i < product.length; i++) {
                 for (j = 0; j < sub_product.length; j++) {
                   if (product[i].id == sub_product[j].product_id) {
@@ -126,9 +129,9 @@ var GetProduct = /*#__PURE__*/function () {
             return _context2.abrupt("return", {
               status: true,
               data: product,
-              userId: userId
+              subscription_id: subscription_id
             });
-          case 10:
+          case 12:
           case "end":
             return _context2.stop();
         }

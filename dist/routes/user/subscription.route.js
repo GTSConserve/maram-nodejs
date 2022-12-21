@@ -23,6 +23,6 @@ subscriptionRouter.post("/subcription_order", _authToken.authenticateJWT, _subsc
 subscriptionRouter.post("/un_subscription", _authToken.authenticateJWT, _subscription.Remove_Subscription);
 subscriptionRouter.post("/change_quantity", _authToken.authenticateJWT, _subscription.changeQuantity);
 subscriptionRouter.post("/change_subscriptionplan", _authToken.authenticateJWT, _subscription.changeSubscriptionplan);
-subscriptionRouter.post("/pause_subscriptionplan", _subscription.pauseSubscription);
+subscriptionRouter.post("/pause_subscriptionplan", _authToken.authenticateJWT, _subscription.pauseSubscription);
 var _default = subscriptionRouter;
 exports["default"] = _default;
