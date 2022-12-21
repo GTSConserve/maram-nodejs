@@ -67,21 +67,21 @@
 
                                         <div class="row">
                                             <div class="col-xl-12 col-md-12 col-sm-12 col-12 pb-3">
-                                                <h5>Route</h5>
+                                                <h5>Branch</h5>
                                             </div>
                                         </div>
                                         <div class="form-row mb-4">
                                             <div class="form-group col-md-3">
-                                                <label>Choose A Route <span style="font-size : 12px;">(optional)</span></label>
-                                                <select wire:model="countryid" class="form-control" name="router_id" >
-                                                    <% if(get_routes.length !==0){ %>
-                                                    <option value="" selected >Select A Route </option>
-                                                    <% for(route of get_routes){ %>
+                                                <label>Choose A Branch </label>
+                                                <select wire:model="countryid" class="form-control" required name="branch_id" >
+                                                    <% if(branch_admin.length !==0){ %>
+                                                    <option value="" selected >Select A Branch </option>
+                                                    <% for(branch of branch_admin){ %>
 
-                                                        <option value="<%=route.id %>"><%=route.name %>   </option>
+                                                        <option value="<%=branch.id %>"><%=branch.first_name %>   </option>
                                                     <% } %>
                                                     <% }else{ %>
-                                                        <option value="" selected >No Route Found </option>
+                                                        <option value="" selected >No Branch Found </option>
                                                         <% } %>
 
                                                 </select>
@@ -314,10 +314,10 @@
                                                 const address = e.target.address.value
                                                 
                                                 // route
-                                                const router_id = e.target.router_id.value
-                                                 if(router_id){
-                                                    query.router_id = router_id
-                                                 }
+                                                const branch_id = e.target.branch_id.value
+                                             
+                                                    query.branch_id = branch_id
+                                                 
                                               
                                                 // sub products
                                                 const sub_product = e.target.sub_product.value
@@ -467,7 +467,7 @@
                                                 console.log(query)
 
 
-                                                await fetch('/branch_admin/user/create_user', {
+                                                await fetch('/super_admin/users_subscription/create_user', {
                                                     method: 'POST',
                                                     headers: {
                                                         'Accept': 'application/json',

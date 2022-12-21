@@ -47,7 +47,7 @@ var new_subscription = /*#__PURE__*/function () {
             query.customized_days = JSON.stringify(store_weekdays);
           case 9:
             _context.next = 11;
-            return (0, _db["default"])("user_address").select("branch_id").whereNotNull("branch_id").where({
+            return (0, _db["default"])("user_address").select("branch_id", "router_id").whereNotNull("branch_id").where({
               user_id: userId,
               id: user_address_id
             });
@@ -56,8 +56,10 @@ var new_subscription = /*#__PURE__*/function () {
             console.log(is_exist_address);
             if (is_exist_address.length !== 0) {
               query.branch_id = is_exist_address[0].branch_id;
-              // query.subscription_status = "branch_pending";
-              query.subscription_status = "subscribed";
+              query.subscription_status = "branch_pending";
+              if (is_exist_address[0].router_id) {
+                query.router_id = is_exist_address[0].router_id;
+              }
             }
 
             // const branch_id = await knex("subscribed_user_details")
@@ -69,7 +71,6 @@ var new_subscription = /*#__PURE__*/function () {
             //   });
             // if (branch_id.length !== 0) {
             //   query.branch_id = branch_id[0].branch_id;
-            //   query.router_id = branch_id[0].router_id;
             //   query.subscription_status = "branch_pending";
             // }
             _context.next = 16;
@@ -171,7 +172,9 @@ var single_subscription = /*#__PURE__*/function () {
             _context3.next = 10;
             return (0, _db["default"])("additional_orders").select("additional_orders.id",
             // "additional_orders.date",
-            "additional_orders.quantity", "products.name as product_name", "products.image", "products.unit_value", "unit_types.value as unit_type", "user_address.address").join("products", "products.id", "=", "additional_orders.id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("user_address", "user_address.id", "=", "additional_orders.subscription_id");
+            "additional_orders.quantity", "products.name as product_name", "products.image", "products.unit_value", "unit_types.value as unit_type"
+            // "user_address.address",
+            ).join("products", "products.id", "=", "additional_orders.id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("user_address", "user_address.id", "=", "additional_orders.subscription_id");
           case 10:
             query = _context3.sent;
             if (!(products.length === 0)) {

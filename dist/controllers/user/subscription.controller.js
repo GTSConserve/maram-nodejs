@@ -21,14 +21,14 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 var removeAdditionalOrder = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(req, res) {
-    var _req$body, userId, subscription_id;
+    var _req$body, userId, subscription_id, additional_order_id;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             _context.prev = 0;
-            _req$body = req.body, userId = _req$body.userId, subscription_id = _req$body.subscription_id;
-            if (subscription_id) {
+            _req$body = req.body, userId = _req$body.userId, subscription_id = _req$body.subscription_id, additional_order_id = _req$body.additional_order_id;
+            if (!(!subscription_id || !additional_order_id)) {
               _context.next = 4;
               break;
             }
@@ -41,7 +41,8 @@ var removeAdditionalOrder = /*#__PURE__*/function () {
             return (0, _db["default"])("additional_orders").where({
               subscription_id: subscription_id,
               status: "pending",
-              user_id: userId
+              user_id: userId,
+              id: additional_order_id
             }).del();
           case 6:
             res.status(_responseCode["default"].SUCCESS).json({
@@ -428,7 +429,7 @@ var singleSubscription = /*#__PURE__*/function () {
               sub.data[i].address_id = sub.data[i].address_id;
               sub.query[i].date = (0, _moment["default"])().format("YYYY-MM-DD");
               sub.data[i].subscription_start_date = (0, _moment["default"])().format("YYYY-MM-DD");
-              sub.data[i].date = (0, _moment["default"])().format("YYYY-MM-DD");
+              sub.data[i].date = sub.data[i].date;
               if (sub.data[i].unit_value >= 500) {
                 sub.data[i].unit = sub.data[i].unit_value / 1000 + " " + (sub.data[i].unit_type === "ml" ? "litre" : sub.data[i].unit_type);
               } else {

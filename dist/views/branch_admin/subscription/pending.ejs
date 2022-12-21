@@ -293,16 +293,18 @@
                                                 <div class=" col-12">
                                                     <% if(user.is_add_on === true){ %> 
                                                         <input type="hidden" name="add_on_id" value="<%= user.id %>">
-
-                                                <p class="mt-2 ">User Delivery Date -<span style="font-weight: bold;"> <%=user.delivery_date  %></span> </p>
-                                                    <% } else{ %> 
-                                                <p>User Start Date -<span style="font-weight: bold;"> <%=user.start_date  %></span> </p>
+                                                        
+                                                        <p class="mt-2 ">User Delivery Date -<span style="font-weight: bold;"> <%=user.delivery_date  %></span> </p>
+                                                        <% } else{ %> 
+                                                            <p>User Start Date -<span style="font-weight: bold;"> <%=user.start_date  %></span> </p>
+                                                            <input type="hidden" name="sub_id" value="<%= user.id %>">
                                                 <% } %> 
                                             </div>
                                         </div>
                                         <div class="modal-footer">
                                             <button class="btn" type="button" style="border-color: #006E33;" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancel</button>
-                                            <button type="submit" name="sub_id"  value="<%=user.id %>" class="btn btn-primary">Proceed</button>
+                                            <!-- <button type="submit" name="sub_id"  value="<%=user.id %>" class="btn btn-primary">Proceed</button> -->
+                                            <button type="submit"  class="btn btn-primary">Proceed</button>
                                         </div>
                                     </form>
                         </div>

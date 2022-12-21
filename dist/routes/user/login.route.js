@@ -19,7 +19,7 @@ loginRouter.post('/account_delete', _authToken.authenticateJWT, _login.accountDe
 
 // user profile mobile number change api
 
-loginRouter.post('/user_mobile_number_change', _login.userMobileNumberChange);
+loginRouter.post('/user_mobile_number_change', _authToken.authenticateJWT, _login.userMobileNumberChange);
 loginRouter.post('/user_verifyotp', _login.UserverifyOtp);
 var _default = loginRouter;
 exports["default"] = _default;

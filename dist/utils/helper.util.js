@@ -46,20 +46,38 @@ var customizedDay = /*#__PURE__*/function () {
             _context.next = 2;
             break;
           case 13:
-            if (day == "Sunday") {
-              customized_date = (0, _moment["default"])().day(7);
-            } else if (day == "Monday") {
-              customized_date = (0, _moment["default"])().day(8);
-            } else if (day == "Tuesday") {
-              customized_date = (0, _moment["default"])().day(9);
-            } else if (day == "Wednesday") {
-              customized_date = (0, _moment["default"])().day(10);
-            } else if (day == "Thursday") {
-              customized_date = (0, _moment["default"])().day(11);
-            } else if (day == "Friday") {
-              customized_date = (0, _moment["default"])().day(12);
-            } else if (day == "Saturday") {
-              customized_date = (0, _moment["default"])().day(13);
+            if (current_day == user_days[user_days.length - 1]) {
+              if (day == "Sunday") {
+                customized_date = (0, _moment["default"])().day(7);
+              } else if (day == "Monday") {
+                customized_date = (0, _moment["default"])().day(8);
+              } else if (day == "Tuesday") {
+                customized_date = (0, _moment["default"])().day(9);
+              } else if (day == "Wednesday") {
+                customized_date = (0, _moment["default"])().day(10);
+              } else if (day == "Thursday") {
+                customized_date = (0, _moment["default"])().day(11);
+              } else if (day == "Friday") {
+                customized_date = (0, _moment["default"])().day(12);
+              } else if (day == "Saturday") {
+                customized_date = (0, _moment["default"])().day(13);
+              }
+            } else {
+              if (day == "Sunday") {
+                customized_date = (0, _moment["default"])().day(0);
+              } else if (day == "Monday") {
+                customized_date = (0, _moment["default"])().day(1);
+              } else if (day == "Tuesday") {
+                customized_date = (0, _moment["default"])().day(2);
+              } else if (day == "Wednesday") {
+                customized_date = (0, _moment["default"])().day(3);
+              } else if (day == "Thursday") {
+                customized_date = (0, _moment["default"])().day(4);
+              } else if (day == "Friday") {
+                customized_date = (0, _moment["default"])().day(5);
+              } else if (day == "Saturday") {
+                customized_date = (0, _moment["default"])().day(6);
+              }
             }
             return _context.abrupt("return", customized_date);
           case 15:
@@ -81,7 +99,7 @@ var GetProduct = /*#__PURE__*/function () {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
-            sub_product = [];
+            sub_product = []; // console.log(userId)
             if (!userId) {
               _context2.next = 5;
               break;
@@ -108,23 +126,23 @@ var GetProduct = /*#__PURE__*/function () {
           case 7:
             sub = [];
             if (!(sub_product.length !== 0)) {
-              _context2.next = 30;
+              _context2.next = 29;
               break;
             }
             i = 0;
           case 10:
             if (!(i < product.length)) {
-              _context2.next = 30;
+              _context2.next = 29;
               break;
             }
             j = 0;
           case 12:
             if (!(j < sub_product.length)) {
-              _context2.next = 27;
+              _context2.next = 26;
               break;
             }
             if (!(product[i].id == sub_product[j].product_id)) {
-              _context2.next = 22;
+              _context2.next = 21;
               break;
             }
             product[i].is_subscribed = "1";
@@ -139,21 +157,21 @@ var GetProduct = /*#__PURE__*/function () {
           case 17:
             sub = _context2.sent;
             product[i].subscription_id = sub[0].id;
-            console.log(product[i].subscription_id);
-            _context2.next = 24;
+            // console.log(product[i].subscription_id)
+            _context2.next = 23;
             break;
-          case 22:
+          case 21:
             product[i].is_subscribed = "0";
             product[i].subscription_id = "0";
-          case 24:
+          case 23:
             j++;
             _context2.next = 12;
             break;
-          case 27:
+          case 26:
             i++;
             _context2.next = 10;
             break;
-          case 30:
+          case 29:
             for (_i = 0; _i < product.length; _i++) {
               product[_i].image = product[_i].image ? process.env.BASE_URL + product[_i].image : null;
               if (!userId || sub_product.length == 0) {
@@ -165,7 +183,7 @@ var GetProduct = /*#__PURE__*/function () {
               status: true,
               data: product
             });
-          case 32:
+          case 31:
           case "end":
             return _context2.stop();
         }

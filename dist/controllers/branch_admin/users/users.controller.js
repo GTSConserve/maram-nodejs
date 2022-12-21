@@ -264,48 +264,59 @@ var getSingleUser = /*#__PURE__*/function () {
 exports.getSingleUser = getSingleUser;
 var getAddUser = /*#__PURE__*/function () {
   var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(req, res) {
-    var get_subscription_products, add_on_products, get_plan;
+    var admin_id, get_routes, get_subscription_products, add_on_products, get_plan;
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.prev = 0;
-            _context3.next = 3;
-            return (0, _db["default"])("products").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id", "products.name", "products.unit_value", "unit_types.value as unit_type", "products.price").where({
-              "products.product_type_id": 1
+            admin_id = req.body.admin_id;
+            _context3.next = 4;
+            return (0, _db["default"])("routes").select("id", "name").where({
+              status: "1",
+              branch_id: admin_id
             });
-          case 3:
+          case 4:
+            get_routes = _context3.sent;
+            _context3.next = 7;
+            return (0, _db["default"])("products").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id", "products.name", "products.unit_value", "unit_types.value as unit_type", "products.price").where({
+              "products.product_type_id": 1,
+              "products.status": "1"
+            });
+          case 7:
             get_subscription_products = _context3.sent;
-            _context3.next = 6;
+            _context3.next = 10;
             return (0, _db["default"])("products").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id", "products.name", "products.unit_value", "unit_types.value as unit_type", "products.price").where({
-              "products.product_type_id": 2
+              "products.product_type_id": 2,
+              "products.status": "1"
             });
-          case 6:
+          case 10:
             add_on_products = _context3.sent;
-            _context3.next = 9;
-            return (0, _db["default"])("subscription_type").select("name", "id");
-          case 9:
+            _context3.next = 13;
+            return (0, _db["default"])("subscription_type").select("name", "id").where({
+              status: "1"
+            });
+          case 13:
             get_plan = _context3.sent;
-            console.log(get_subscription_products);
-            console.log(add_on_products);
             res.render("branch_admin/users/add_user", {
               get_subscription_products: get_subscription_products,
               add_on_products: add_on_products,
-              get_plan: get_plan
+              get_plan: get_plan,
+              get_routes: get_routes
             });
-            _context3.next = 19;
+            _context3.next = 21;
             break;
-          case 15:
-            _context3.prev = 15;
+          case 17:
+            _context3.prev = 17;
             _context3.t0 = _context3["catch"](0);
             console.log(_context3.t0);
             res.redirect("/home");
-          case 19:
+          case 21:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3, null, [[0, 15]]);
+    }, _callee3, null, [[0, 17]]);
   }));
   return function getAddUser(_x5, _x6) {
     return _ref3.apply(this, arguments);
@@ -314,22 +325,188 @@ var getAddUser = /*#__PURE__*/function () {
 exports.getAddUser = getAddUser;
 var createUser = /*#__PURE__*/function () {
   var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(req, res) {
+    var _req$body, data, admin_id, user_query, get_all_users, users_length, user, address, sub_product_query, weekdays, store_weekdays, i, j, order, order_id, sub_total, _i2, product_price, users, arr_users, get_users;
     return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
-            try {
-              console.log(req.body);
-            } catch (error) {
-              console.log(error);
-              res.redirect("/home");
+            _context4.prev = 0;
+            _req$body = req.body, data = _req$body.data, admin_id = _req$body.admin_id;
+            console.log(req.body);
+            user_query = {};
+            user_query.mobile_number = data.mobile_number;
+            user_query.name = data.user_name;
+            _context4.next = 8;
+            return _db["default"].select("id").from("users");
+          case 8:
+            get_all_users = _context4.sent;
+            users_length = get_all_users.length + 1;
+            user_query.user_unique_id = "CUSTOMER" + users_length;
+            if (data.email) {
+              user_query.email = data.email;
             }
-          case 1:
+            _context4.next = 14;
+            return (0, _db["default"])("users").insert(user_query);
+          case 14:
+            user = _context4.sent;
+            _context4.next = 17;
+            return (0, _db["default"])("user_address").insert({
+              user_id: user[0],
+              branch_id: admin_id,
+              title: data.address_title,
+              address: data.address,
+              landmark: data.address_landmark,
+              type: data.address_type,
+              router_id: data.router_id ? data.router_id : null
+            });
+          case 17:
+            address = _context4.sent;
+            if (!data.sub_product) {
+              _context4.next = 30;
+              break;
+            }
+            sub_product_query = {
+              start_date: data.sub_start_date,
+              user_id: user[0],
+              product_id: data.sub_product,
+              user_address_id: address[0],
+              quantity: data.sub_qty,
+              subscribe_type_id: data.your_plan,
+              branch_id: admin_id,
+              date: data.sub_start_date,
+              subscription_start_date: data.sub_start_date,
+              subscription_status: "subscribed"
+            };
+            if (data.router_id) {
+              sub_product_query.router_id = data.router_id;
+            }
+            if (!(data.your_plan == 3)) {
+              _context4.next = 28;
+              break;
+            }
+            _context4.next = 24;
+            return (0, _db["default"])("weekdays").select("id", "name");
+          case 24:
+            weekdays = _context4.sent;
+            store_weekdays = [];
+            for (i = 0; i < data.custom_days.length; i++) {
+              for (j = 0; j < weekdays.length; j++) {
+                if (weekdays[j].id == data.custom_days[i]) {
+                  store_weekdays.push(weekdays[j].name);
+                }
+              }
+            }
+            sub_product_query.customized_days = JSON.stringify(store_weekdays);
+          case 28:
+            _context4.next = 30;
+            return (0, _db["default"])("subscribed_user_details").insert(sub_product_query);
+          case 30:
+            if (!(data.add_on.length !== 0)) {
+              _context4.next = 49;
+              break;
+            }
+            _context4.next = 33;
+            return (0, _db["default"])("add_on_orders").insert({
+              user_id: user[0],
+              delivery_date: data.delivery_date,
+              address_id: address[0],
+              branch_id: admin_id,
+              status: "new_order"
+            });
+          case 33:
+            order = _context4.sent;
+            order_id = order[0];
+            sub_total = 0;
+            _i2 = 0;
+          case 37:
+            if (!(_i2 < data.add_on.length)) {
+              _context4.next = 47;
+              break;
+            }
+            _context4.next = 40;
+            return (0, _db["default"])("products").select("price").where({
+              id: data.add_on[_i2].product_id
+            });
+          case 40:
+            product_price = _context4.sent;
+            _context4.next = 43;
+            return (0, _db["default"])("add_on_order_items").insert({
+              add_on_order_id: order_id,
+              user_id: user[0],
+              product_id: data.add_on[_i2].product_id,
+              quantity: data.add_on[_i2].qty,
+              price: product_price[0].price,
+              total_price: product_price[0].price * data.add_on[_i2].qty
+            });
+          case 43:
+            sub_total = sub_total + product_price[0].price * data.add_on[_i2].qty;
+          case 44:
+            _i2++;
+            _context4.next = 37;
+            break;
+          case 47:
+            _context4.next = 49;
+            return (0, _db["default"])("add_on_orders").update({
+              sub_total: sub_total
+            }).where({
+              id: order_id
+            });
+          case 49:
+            if (!data.router_id) {
+              _context4.next = 65;
+              break;
+            }
+            _context4.next = 52;
+            return (0, _db["default"])("routes").select("user_mapping").where({
+              id: data.router_id
+            });
+          case 52:
+            users = _context4.sent;
+            if (!(users.length === 0 || users[0].user_mapping === null)) {
+              _context4.next = 59;
+              break;
+            }
+            arr_users = [Number(address[0])];
+            _context4.next = 57;
+            return (0, _db["default"])("routes").update({
+              user_mapping: JSON.stringify(arr_users)
+            }).where({
+              id: data.router_id
+            });
+          case 57:
+            _context4.next = 65;
+            break;
+          case 59:
+            _context4.next = 61;
+            return (0, _db["default"])("routes").select("user_mapping").where({
+              id: data.router_id
+            });
+          case 61:
+            get_users = _context4.sent;
+            get_users[0].user_mapping.push(Number(address[0]));
+            _context4.next = 65;
+            return (0, _db["default"])("routes").update({
+              user_mapping: JSON.stringify(get_users[0].user_mapping)
+            }).where({
+              id: data.router_id
+            });
+          case 65:
+            req.flash("success", "Success Fully Added");
+            res.redirect("/home?is_user_added=2");
+            // return { status: true };
+            _context4.next = 73;
+            break;
+          case 69:
+            _context4.prev = 69;
+            _context4.t0 = _context4["catch"](0);
+            console.log(_context4.t0);
+            res.redirect("/home?is_user_added=1");
+          case 73:
           case "end":
             return _context4.stop();
         }
       }
-    }, _callee4);
+    }, _callee4, null, [[0, 69]]);
   }));
   return function createUser(_x7, _x8) {
     return _ref4.apply(this, arguments);

@@ -25,6 +25,10 @@ users_subscriptionRouter.post("/update_all_users_status", _pending.updateAllUser
 users_subscriptionRouter.post('/approve_pending_list', _pending.updatePendingList);
 users_subscriptionRouter.post('/cancel_pending_list', _pending.cancelPendingList);
 
+//create users
+users_subscriptionRouter.get("/get_create_user", _pending.getCreateUsers);
+users_subscriptionRouter.post("/create_user", _pending.createUsers);
+
 //assign
 users_subscriptionRouter.get('/get_assign_list', _approve.getApproveList);
 

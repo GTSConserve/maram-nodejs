@@ -172,12 +172,12 @@ var updateUserLocation = /*#__PURE__*/function () {
 exports.updateUserLocation = updateUserLocation;
 var insertUser = /*#__PURE__*/function () {
   var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(payload, otp) {
-    var mobile_number, query;
+    var mobile_number, fcmToken, device, appOsFormat, appVersion, query;
     return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
-            mobile_number = payload.mobile_number;
+            mobile_number = payload.mobile_number, fcmToken = payload.fcmToken, device = payload.device, appOsFormat = payload.appOsFormat, appVersion = payload.appVersion;
             _context4.next = 3;
             return _db["default"].insert([{
               user_unique_id: generate_id,

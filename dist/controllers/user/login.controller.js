@@ -308,84 +308,93 @@ var logout = /*#__PURE__*/function () {
 //     return res.status(responseCode.FAILURE.BAD_REQUEST).json({ status: false, message: "Server Error" })
 //   }
 // }
+
+// export const userMobileNumberChange = async (req, res) => {
+//   try {
+
+//     const payload = NumberValidator(req.body);
+
+//     const {userId,mobile_number} = payload;
+
+//     if (payload.status) {
+
+//       const checkPhoneNumber = await knex("users").update({mobile_number:mobile_number}).where({id : userId})
+//       // await knex("users").select('id')
+//       console.log(checkPhoneNumber)
+//       // await knex('users').select('id')
+//       //   .update({mobile_number:mobile_number}).where({id:user_id})
+
+//       let query;
+//       // const otp = process.env.USER_OTP || Math.floor(1000 + Math.random() * 9000)
+//       const otp = "1234";
+
+//       if (checkPhoneNumber.length === 0) {
+//         query = await insertusernumber(payload, otp);
+
+//       } else {
+//         query = await updateUserOtp(payload, otp);
+
+//       }
+
+//       if (query.status === responseCode.SUCCESS) {
+//         return res
+//           .status(query.status)
+//           .json({
+//             status: true,
+//             user_id: payload.user_id,
+//             message: messageCode.LOGINMESSAGE.OTP_SENT,
+//           });
+//       } else {
+//         res
+//           .status(query.status)
+//           .json({ status: false, message: query.message });
+//       }
+//     } else {
+//       res
+//         .status(responseCode.FAILURE.BAD_REQUEST)
+//         .json({ status: false, message: payload.message });
+//     }
+//   } catch (error) {
+//     logger.error("Whooops! This broke with error: ", error);
+//     res.status(500).send("Error!");
+//   }
+// };
 exports.logout = logout;
 var userMobileNumberChange = /*#__PURE__*/function () {
   var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(req, res) {
-    var payload, payload1, user_id, mobile_number, checkPhoneNumber, query, otp;
+    var _req$body, userId, mobile_number;
     return _regeneratorRuntime().wrap(function _callee5$(_context5) {
       while (1) {
         switch (_context5.prev = _context5.next) {
           case 0:
             _context5.prev = 0;
-            payload = req.body;
-            payload1 = (0, _validator.NumberValidator)(req.body);
-            user_id = payload.user_id, mobile_number = payload.mobile_number;
-            if (!payload1.status) {
-              _context5.next = 25;
-              break;
-            }
-            _context5.next = 7;
-            return _db["default"].update({
+            _req$body = req.body, userId = _req$body.userId, mobile_number = _req$body.mobile_number;
+            _context5.next = 4;
+            return (0, _db["default"])("users").update({
               mobile_number: mobile_number
-            }).from("users").where({
-              id: user_id
+            }).where({
+              id: userId
             });
-          case 7:
-            checkPhoneNumber = _context5.sent;
-            // const otp = process.env.USER_OTP || Math.floor(1000 + Math.random() * 9000)
-            otp = "1234";
-            if (!(checkPhoneNumber.length === 0)) {
-              _context5.next = 15;
-              break;
-            }
-            _context5.next = 12;
-            return (0, _user.insertusernumber)(payload, otp);
-          case 12:
-            query = _context5.sent;
-            _context5.next = 18;
-            break;
-          case 15:
-            _context5.next = 17;
-            return (0, _user.updateUserOtp)(payload, otp);
-          case 17:
-            query = _context5.sent;
-          case 18:
-            if (!(query.status === _responseCode["default"].SUCCESS)) {
-              _context5.next = 22;
-              break;
-            }
-            return _context5.abrupt("return", res.status(query.status).json({
+          case 4:
+            return _context5.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               status: true,
-              user_id: payload.user_id,
-              message: _messages["default"].LOGINMESSAGE.OTP_SENT
+              user_id: userId,
+              message: "mobile number change Successfully"
             }));
-          case 22:
-            res.status(query.status).json({
-              status: false,
-              message: query.message
-            });
-          case 23:
-            _context5.next = 26;
-            break;
-          case 25:
-            res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
-              status: false,
-              message: payload.message
-            });
-          case 26:
-            _context5.next = 32;
-            break;
-          case 28:
-            _context5.prev = 28;
+          case 7:
+            _context5.prev = 7;
             _context5.t0 = _context5["catch"](0);
-            _logger["default"].error("Whooops! This broke with error: ", _context5.t0);
-            res.status(500).send("Error!");
-          case 32:
+            console.log(_context5.t0);
+            return _context5.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
+              status: false,
+              message: _messages["default"].SERVER_ERROR
+            }));
+          case 11:
           case "end":
             return _context5.stop();
         }
       }
-    }, _callee5, null, [[0, 28]]);
+    }, _callee5, null, [[0, 7]]);
   }));
   return function userMobileNumberChange(_x9, _x10) {
     return _ref5.apply(this, arguments);

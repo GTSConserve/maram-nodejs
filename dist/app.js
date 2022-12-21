@@ -211,6 +211,23 @@ app.get("/", function (req, res) {
 });
 app.get("/home", _authToken.authenticateJWTSession, function (req, res) {
   var is_super_admin = req.body.is_super_admin;
+  var is_user_added = req.query.is_user_added;
+  if (!is_super_admin && is_user_added == 1) {
+    req.flash("error", "User Already Found");
+    return res.render("super_admin/home/home");
+  }
+  if (!is_super_admin && is_user_added == 2) {
+    req.flash("success", "User Created SuccessFully");
+    return res.render("super_admin/home/home");
+  }
+  if (is_super_admin && is_user_added == 1) {
+    req.flash("error", "User Already Found");
+    return res.render("super_admin/home/home");
+  }
+  if (is_super_admin && is_user_added == 2) {
+    req.flash("success", "User Created SuccessFully");
+    return res.render("super_admin/home/home");
+  }
   if (is_super_admin) {
     res.render("super_admin/home/home");
   } else {
