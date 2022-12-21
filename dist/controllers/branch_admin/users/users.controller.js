@@ -264,22 +264,48 @@ var getSingleUser = /*#__PURE__*/function () {
 exports.getSingleUser = getSingleUser;
 var getAddUser = /*#__PURE__*/function () {
   var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(req, res) {
+    var get_subscription_products, add_on_products, get_plan;
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
-            try {
-              res.render("branch_admin/users/add_user");
-            } catch (error) {
-              console.log(error);
-              res.redirect("/home");
-            }
-          case 1:
+            _context3.prev = 0;
+            _context3.next = 3;
+            return (0, _db["default"])("products").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id", "products.name", "products.unit_value", "unit_types.value as unit_type", "products.price").where({
+              "products.product_type_id": 1
+            });
+          case 3:
+            get_subscription_products = _context3.sent;
+            _context3.next = 6;
+            return (0, _db["default"])("products").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id", "products.name", "products.unit_value", "unit_types.value as unit_type", "products.price").where({
+              "products.product_type_id": 2
+            });
+          case 6:
+            add_on_products = _context3.sent;
+            _context3.next = 9;
+            return (0, _db["default"])("subscription_type").select("name", "id");
+          case 9:
+            get_plan = _context3.sent;
+            console.log(get_subscription_products);
+            console.log(add_on_products);
+            res.render("branch_admin/users/add_user", {
+              get_subscription_products: get_subscription_products,
+              add_on_products: add_on_products,
+              get_plan: get_plan
+            });
+            _context3.next = 19;
+            break;
+          case 15:
+            _context3.prev = 15;
+            _context3.t0 = _context3["catch"](0);
+            console.log(_context3.t0);
+            res.redirect("/home");
+          case 19:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3);
+    }, _callee3, null, [[0, 15]]);
   }));
   return function getAddUser(_x5, _x6) {
     return _ref3.apply(this, arguments);

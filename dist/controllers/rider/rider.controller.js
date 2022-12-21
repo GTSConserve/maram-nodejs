@@ -76,7 +76,7 @@ var getAppControls = /*#__PURE__*/function () {
 exports.getAppControls = getAppControls;
 var login = /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(req, res) {
-    var payload, user_name, password, checkPassword, query, userId, users, users_length;
+    var payload, user_name, password, checkPassword, query, users, users_length;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
@@ -87,7 +87,7 @@ var login = /*#__PURE__*/function () {
             user_name = payload.user_name, password = payload.password;
             console.log(payload);
             if (!payload.status) {
-              _context2.next = 28;
+              _context2.next = 16;
               break;
             }
             console.log("hi");
@@ -100,60 +100,42 @@ var login = /*#__PURE__*/function () {
             });
           case 9:
             checkPassword = _context2.sent;
-            userId = 0; // const otp = process.env.USER_OTP || Math.floor(1000 + Math.random() * 9000)
-            // const otp = "1234";
-            _context2.next = 13;
+            _context2.next = 12;
             return _db["default"].select("id").from("rider_details");
-          case 13:
+          case 12:
             users = _context2.sent;
             users_length = users.length + 1;
             console.log(checkPassword);
-            if (!(checkPassword.length === 0)) {
-              _context2.next = 21;
-              break;
-            }
-            _context2.next = 19;
-            return insertUser(payload, users_length);
-          case 19:
-            query = _context2.sent;
-            userId = users_length;
-          case 21:
-            if (!(query.status === _responseCode["default"].SUCCESS)) {
-              _context2.next = 25;
-              break;
-            }
-            return _context2.abrupt("return", res.status(query.status).json({
+
+            // if (checkPassword.length === 0) {
+            //   query = await insertUser(payload,users_length);
+
+            //   userId = users_length;
+            // } 
+            // else {
+            //   query = await updateUserOtp(payload);
+
+            //   userId = checkPassword[0].user_id;
+            // }
+            return _context2.abrupt("return", res.status(200).json({
               status: true,
-              user_id: userId,
-              message: messageCode.LOGINMESSAGE.OTP_SENT
+              user_id: checkPassword[0].id,
+              message: "messageCode.LOGINMESSAGE.OTP_SENT"
             }));
-          case 25:
-            res.status(query.status).json({
-              status: false,
-              message: query.message
-            });
-          case 26:
-            _context2.next = 29;
+          case 16:
+            _context2.next = 22;
             break;
-          case 28:
-            res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
-              status: false,
-              message: payload.message
-            });
-          case 29:
-            _context2.next = 35;
-            break;
-          case 31:
-            _context2.prev = 31;
+          case 18:
+            _context2.prev = 18;
             _context2.t0 = _context2["catch"](0);
             console.error('Whooops! This broke with error: ', _context2.t0);
             res.status(500).send('Error!');
-          case 35:
+          case 22:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[0, 31]]);
+    }, _callee2, null, [[0, 18]]);
   }));
   return function login(_x3, _x4) {
     return _ref2.apply(this, arguments);

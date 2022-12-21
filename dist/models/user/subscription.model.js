@@ -153,7 +153,7 @@ var single_subscription = /*#__PURE__*/function () {
           case 0:
             _context3.prev = 0;
             _context3.next = 3;
-            return (0, _db["default"])("subscribed_user_details AS sub").select("sub.id as subscription_id", "sub.subscription_start_date",
+            return (0, _db["default"])("subscribed_user_details AS sub").select("sub.id as subscription_id", "sub.subscription_start_date", "sub.customized_days", "sub.subscription_status",
             // "product.id",
             "products.name as product_name", "products.image", "products.unit_value", "unit_types.value as unit_type", "subscription_type.name as subscription_name", "user_address.address", "sub.date").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("subscription_type", "subscription_type.id", "=", "sub.subscribe_type_id").join("user_address", "user_address.id", "=", "sub.user_address_id").where({
               "sub.user_id": userId,
@@ -162,7 +162,7 @@ var single_subscription = /*#__PURE__*/function () {
           case 3:
             products = _context3.sent;
             _context3.next = 6;
-            return (0, _db["default"])("add_on_orders").select("add_on_orders.id", "products.name as product_name", "products.image", "products.unit_value", "unit_types.value as unit_type", "user_address.address").join("products", "products.id", "=", "add_on_orders.id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("user_address", "user_address.id", "=", "add_on_orders.address_id");
+            return (0, _db["default"])("additional_orders").select("additional_orders.id", "additional_orders.date", "additional_orders.quantity", "products.name as product_name", "products.image", "products.unit_value", "unit_types.value as unit_type", "user_address.address").join("products", "products.id", "=", "additional_orders.id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("user_address", "user_address.id", "=", "additional_orders.subscription_id");
           case 6:
             query = _context3.sent;
             if (!(products.length === 0)) {

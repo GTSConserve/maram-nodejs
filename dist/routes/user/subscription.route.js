@@ -13,11 +13,11 @@ var subscriptionRouter = _express["default"].Router({
   strict: true
 });
 subscriptionRouter.post("/new_subscription", _authToken.authenticateJWT, _subscription.newSubscription);
-subscriptionRouter.post("/get_all_subscription", _authToken.authenticateJWT, _subscription.getAllSubscription);
+subscriptionRouter.post("/get_all_subscription", _subscription.getAllSubscription);
 subscriptionRouter.post("/single_subscription", _authToken.authenticateJWT, _subscription.singleSubscription);
 subscriptionRouter.get("/get_subscription_plan", _subscription.getSubscriptionPlan);
 subscriptionRouter.post("/create_additional_order", _authToken.authenticateJWT, _subscription.createAdditionalOrder);
-subscriptionRouter.post("/edit_additional_order", _authToken.authenticateJWT, _subscription.editAdditionalOrder);
+subscriptionRouter.post("/edit_additional_order", _subscription.editAdditionalOrder);
 subscriptionRouter.post("/remove_additional_order", _authToken.authenticateJWT, _subscription.removeAdditionalOrder);
 subscriptionRouter.post("/subcription_order", _authToken.authenticateJWT, _subscription.getSubcription_order);
 subscriptionRouter.post("/un_subscription", _authToken.authenticateJWT, _subscription.Remove_Subscription);

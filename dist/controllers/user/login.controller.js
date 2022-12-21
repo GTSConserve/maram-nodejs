@@ -311,52 +311,56 @@ var logout = /*#__PURE__*/function () {
 exports.logout = logout;
 var userMobileNumberChange = /*#__PURE__*/function () {
   var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(req, res) {
-    var payload, user_id, mobile_number, checkPhoneNumber, query, userId, otp, users;
+    var payload, payload1, user_id, mobile_number, checkPhoneNumber, query, userId, otp, users;
     return _regeneratorRuntime().wrap(function _callee5$(_context5) {
       while (1) {
         switch (_context5.prev = _context5.next) {
           case 0:
             _context5.prev = 0;
-            payload = (0, _helper.phoneNumberValidator)(req.body);
+            payload = req.body;
+            payload1 = (0, _helper.phoneNumberValidator)(payload.mobile_number);
             user_id = payload.user_id, mobile_number = payload.mobile_number;
-            if (!payload.status) {
-              _context5.next = 30;
+            console.log(payload);
+            if (!payload1.status) {
+              _context5.next = 33;
               break;
             }
-            _context5.next = 6;
+            console.log("checkPhoneNumber");
+            // const checkPhoneNumber = await loginUser(mobile_number)
+            _context5.next = 9;
             return _db["default"].select("id").from("users").where({
               mobile_number: mobile_number
             });
-          case 6:
+          case 9:
             checkPhoneNumber = _context5.sent;
             console.log(checkPhoneNumber);
             userId = 0; // const otp = process.env.USER_OTP || Math.floor(1000 + Math.random() * 9000)
             otp = "1234";
-            _context5.next = 12;
+            _context5.next = 15;
             return _db["default"].select("id").from("users").update({
               mobile_number: mobile_number
             });
-          case 12:
+          case 15:
             users = _context5.sent;
             console.log(checkPhoneNumber);
             if (!(checkPhoneNumber.length === 0)) {
-              _context5.next = 20;
+              _context5.next = 23;
               break;
             }
-            _context5.next = 17;
+            _context5.next = 20;
             return (0, _user.insertUser)(payload, otp);
-          case 17:
-            query = _context5.sent;
-            _context5.next = 23;
-            break;
           case 20:
-            _context5.next = 22;
-            return (0, _user.updateUserOtp)(payload, otp);
-          case 22:
             query = _context5.sent;
+            _context5.next = 26;
+            break;
           case 23:
+            _context5.next = 25;
+            return (0, _user.updateUserOtp)(payload, otp);
+          case 25:
+            query = _context5.sent;
+          case 26:
             if (!(query.status === _responseCode["default"].SUCCESS)) {
-              _context5.next = 27;
+              _context5.next = 30;
               break;
             }
             return _context5.abrupt("return", res.status(query.status).json({
@@ -364,33 +368,33 @@ var userMobileNumberChange = /*#__PURE__*/function () {
               user_id: userId,
               message: _messages["default"].LOGINMESSAGE.OTP_SENT
             }));
-          case 27:
+          case 30:
             res.status(query.status).json({
               status: false,
               message: query.message
             });
-          case 28:
-            _context5.next = 31;
+          case 31:
+            _context5.next = 34;
             break;
-          case 30:
+          case 33:
             res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
               status: false,
               message: payload.message
             });
-          case 31:
-            _context5.next = 37;
+          case 34:
+            _context5.next = 40;
             break;
-          case 33:
-            _context5.prev = 33;
+          case 36:
+            _context5.prev = 36;
             _context5.t0 = _context5["catch"](0);
             _logger["default"].error("Whooops! This broke with error: ", _context5.t0);
             res.status(500).send("Error!");
-          case 37:
+          case 40:
           case "end":
             return _context5.stop();
         }
       }
-    }, _callee5, null, [[0, 33]]);
+    }, _callee5, null, [[0, 36]]);
   }));
   return function userMobileNumberChange(_x9, _x10) {
     return _ref5.apply(this, arguments);

@@ -203,6 +203,7 @@ var multerStorage = function multerStorage(path) {
 // export const uploadImg = multer({ storage: storage }).single("image");
 exports.multerStorage = multerStorage;
 var phoneNumberValidator = function phoneNumberValidator(phoneNumber) {
+  console.log("hi");
   //  console.log(phoneNumber)
   if (!phoneNumber) {
     return false;

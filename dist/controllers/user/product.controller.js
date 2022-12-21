@@ -38,7 +38,7 @@ var removeAddOnOrder = /*#__PURE__*/function () {
             remove = _context.sent;
             return _context.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               status: true,
-              message: "successfully updated"
+              body: remove
             }));
           case 10:
             _context.prev = 10;
