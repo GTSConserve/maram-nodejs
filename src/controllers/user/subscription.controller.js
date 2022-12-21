@@ -207,6 +207,7 @@ export const getAllSubscription = async (req, res) => {
       subscription_product.data[i].image =
       process.env.BASE_URL + subscription_product.data[i].image;
       subscription_product.data[i].quantity = subscription_product.data[i].quantity,
+      subscription_product.data[i].price = subscription_product.data[i].price,
 // below next delivery date in static
         subscription_product.data[i].next_delivery_date = "22-Jan"
         subscription_product.data[i].next_delviery = "Next delivery 22-Jan-2022";
@@ -261,6 +262,9 @@ export const singleSubscription = async (req, res) => {
     for (let i = 0; i < sub.data.length; i++) {
       sub.data[i].image = process.env.BASE_URL + sub.data[i].image;
       sub.data[i].customized_days = sub.data[i].customized_days; 
+      sub.data[i].quantity = sub.data[i].quantity; 
+      sub.data[i].price = sub.data[i].price; 
+      sub.data[i].address_id = sub.data[i].address_id; 
       sub.query[i].date = moment().format("YYYY-MM-DD");
       sub.data[i].subscription_start_date = moment().format("YYYY-MM-DD");
       sub.data[i].date = moment().format("YYYY-MM-DD");
@@ -412,7 +416,11 @@ export const changeSubscriptionplan = async (req, res) => {
       customized_days
     } = req.body;
 
-    if ( !subscription_id || !subscription_plan_id || !start_date) {
+
+
+
+    if (!subscription_id || !subscription_plan_id || !start_date) {
+
       return res
         .status(responseCode.FAILURE.BAD_REQUEST)
         .json({ status: false, message: messages.MANDATORY_ERROR });

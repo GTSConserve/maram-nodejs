@@ -48,19 +48,24 @@ export const GetProduct = async (product, userId) => {
       .where({ user_id: userId, subscription_status: "pending" })
       .orWhere({ user_id: userId, subscription_status: "approved" });
   }
-  console.log(sub_product[0].id)
-const subscription_id = sub_product[0].id;
+//   console.log(sub_product[0].id)
+// const subscription_id = sub_product[0].id;
 
   if (product.length === 0) {
     return { status: false, message: "No Product Found" };
   }
-
+let sub =[];
   if (sub_product.length !== 0) {
-    console.log("hi")
     for (let i = 0; i < product.length; i++) {
       for (let j = 0; j < sub_product.length; j++) {
         if (product[i].id == sub_product[j].product_id) {
           product[i].is_subscribed = "1";
+          sub = await knex("subscribed_user_details")
+      .select("id")
+      .where({ user_id: userId, subscription_status: "pending" })
+      .orWhere({ user_id: userId, subscription_status: "approved" });
+      product[i].subscription_id = sub[0].id
+      console.log(product[i].subscription_id)
         } else {
           product[i].is_subscribed = "0";
         }
@@ -75,7 +80,7 @@ const subscription_id = sub_product[0].id;
     }
   }
 
-  return { status: true, data: product,subscription_id };
+  return { status: true, data: product };
 };
 
 export const getPageNumber = (req, res, data, url, is_super_admin = true) => {

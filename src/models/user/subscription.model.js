@@ -78,6 +78,7 @@ export const get_subscription_product = async (userId) => {
         "sub.id as subscription_id",
         "products.name as product_name",
         "products.image",
+        "products.price",
         "products.unit_value",
         "unit_types.value as unit_type",
         "subscription_type.name as subscription_name",
@@ -92,7 +93,7 @@ export const get_subscription_product = async (userId) => {
         "=",
         "sub.subscribe_type_id"
       )
-      .where({ "sub.subscription_status": "subscribed", "sub.subscription_status": "pending", user_id: userId });
+      .where({ user_id: userId });
 
     if (products.length === 0) {
       return { status: false, message: "No Subscription Found" };
@@ -113,13 +114,16 @@ export const single_subscription = async (userId, sub_id) => {
         "sub.subscription_start_date",
         "sub.customized_days",
         "sub.subscription_status",
+        "sub.quantity",
         // "product.id",
         "products.name as product_name",
         "products.image",
+        "products.price",
         "products.unit_value",
         "unit_types.value as unit_type",
         "subscription_type.name as subscription_name",
         "user_address.address",
+        "user_address.id as address_id",
         "sub.date as date"
       
       )
