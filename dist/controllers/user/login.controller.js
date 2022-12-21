@@ -339,7 +339,7 @@ var userMobileNumberChange = /*#__PURE__*/function () {
               break;
             }
             _context5.next = 12;
-            return (0, _user.insertUser)(payload, otp);
+            return (0, _user.insertusernumber)(payload, otp);
           case 12:
             query = _context5.sent;
             _context5.next = 18;

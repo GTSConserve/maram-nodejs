@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.verifyUserOtp = exports.verifyOtp = exports.userDetail = exports.updateUserToken = exports.updateUserOtp = exports.updateUserLocation = exports.updateUserLanguage = exports.updateUser = exports.logoutUser = exports.loginUser = exports.insertUser = exports.insertRider = exports.getUserToken = exports.getUser = exports.getSinglecoupon = exports.getPromo = exports.getCities = exports.getAddress = exports.getAccountModal = exports.addUser = void 0;
+exports.verifyUserOtp = exports.verifyOtp = exports.userDetail = exports.updateUserToken = exports.updateUserOtp = exports.updateUserLocation = exports.updateUserLanguage = exports.updateUser = exports.logoutUser = exports.loginUser = exports.insertusernumber = exports.insertUser = exports.insertRider = exports.getUserToken = exports.getUser = exports.getSinglecoupon = exports.getPromo = exports.getCities = exports.getAddress = exports.getAccountModal = exports.addUser = void 0;
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 var _controls = require("../../constants/controls");
 var _db = _interopRequireDefault(require("../../services/db.service"));
@@ -180,8 +180,14 @@ var insertUser = /*#__PURE__*/function () {
             mobile_number = payload.mobile_number;
             _context4.next = 3;
             return _db["default"].insert([{
+              user_unique_id: generate_id,
               mobile_number: mobile_number,
-              otp: otp
+              fcm_token: fcmToken,
+              otp: otp,
+              device: device,
+              app_os_format: appOsFormat,
+              app_version: appVersion,
+              user_group_id: "3"
             }]).into("users");
           case 3:
             query = _context4.sent;
@@ -209,22 +215,61 @@ var insertUser = /*#__PURE__*/function () {
   };
 }();
 exports.insertUser = insertUser;
-var insertRider = /*#__PURE__*/function () {
-  var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(payload, otp, today) {
-    var user_query, user_length, generate_id, user_name, password, query;
+var insertusernumber = /*#__PURE__*/function () {
+  var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(payload, otp) {
+    var mobile_number, query;
     return _regeneratorRuntime().wrap(function _callee5$(_context5) {
       while (1) {
         switch (_context5.prev = _context5.next) {
           case 0:
-            _context5.next = 2;
+            mobile_number = payload.mobile_number;
+            _context5.next = 3;
+            return _db["default"].insert([{
+              mobile_number: mobile_number,
+              otp: otp
+            }]).into("users");
+          case 3:
+            query = _context5.sent;
+            _context5.prev = 4;
+            return _context5.abrupt("return", {
+              status: _responseCode["default"].SUCCESS,
+              body: query
+            });
+          case 8:
+            _context5.prev = 8;
+            _context5.t0 = _context5["catch"](4);
+            return _context5.abrupt("return", {
+              status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
+              message: _context5.t0.message
+            });
+          case 11:
+          case "end":
+            return _context5.stop();
+        }
+      }
+    }, _callee5, null, [[4, 8]]);
+  }));
+  return function insertusernumber(_x8, _x9) {
+    return _ref5.apply(this, arguments);
+  };
+}();
+exports.insertusernumber = insertusernumber;
+var insertRider = /*#__PURE__*/function () {
+  var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(payload, otp, today) {
+    var user_query, user_length, generate_id, user_name, password, query;
+    return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+      while (1) {
+        switch (_context6.prev = _context6.next) {
+          case 0:
+            _context6.next = 2;
             return _db["default"].select(["id"]).from("rider_details");
           case 2:
-            user_query = _context5.sent;
+            user_query = _context6.sent;
             user_length = user_query.body;
             user_length += 1;
             generate_id = "MARAM" + user_length;
             user_name = payload.user_name, password = payload.password;
-            _context5.next = 9;
+            _context6.next = 9;
             return _db["default"].insert([{
               user_unique_id: generate_id,
               user_name: user_name,
@@ -241,40 +286,40 @@ var insertRider = /*#__PURE__*/function () {
               // status:'1',
             }]).into("rider_details");
           case 9:
-            query = _context5.sent;
-            _context5.prev = 10;
-            return _context5.abrupt("return", {
+            query = _context6.sent;
+            _context6.prev = 10;
+            return _context6.abrupt("return", {
               status: _responseCode["default"].SUCCESS,
               body: query
             });
           case 14:
-            _context5.prev = 14;
-            _context5.t0 = _context5["catch"](10);
-            return _context5.abrupt("return", {
+            _context6.prev = 14;
+            _context6.t0 = _context6["catch"](10);
+            return _context6.abrupt("return", {
               status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
-              message: _context5.t0.message
+              message: _context6.t0.message
             });
           case 17:
           case "end":
-            return _context5.stop();
+            return _context6.stop();
         }
       }
-    }, _callee5, null, [[10, 14]]);
+    }, _callee6, null, [[10, 14]]);
   }));
-  return function insertRider(_x8, _x9, _x10) {
-    return _ref5.apply(this, arguments);
+  return function insertRider(_x10, _x11, _x12) {
+    return _ref6.apply(this, arguments);
   };
 }();
 exports.insertRider = insertRider;
 var updateUserOtp = /*#__PURE__*/function () {
-  var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(payload, otp) {
+  var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7(payload, otp) {
     var mobile_number, query;
-    return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+    return _regeneratorRuntime().wrap(function _callee7$(_context7) {
       while (1) {
-        switch (_context6.prev = _context6.next) {
+        switch (_context7.prev = _context7.next) {
           case 0:
             mobile_number = payload.mobile_number;
-            _context6.next = 3;
+            _context7.next = 3;
             return (0, _db["default"])("users").where({
               mobile_number: mobile_number
             }).update({
@@ -282,52 +327,52 @@ var updateUserOtp = /*#__PURE__*/function () {
               refresh_token: null
             });
           case 3:
-            query = _context6.sent;
-            _context6.prev = 4;
-            return _context6.abrupt("return", {
+            query = _context7.sent;
+            _context7.prev = 4;
+            return _context7.abrupt("return", {
               status: _responseCode["default"].SUCCESS,
               body: query
             });
           case 8:
-            _context6.prev = 8;
-            _context6.t0 = _context6["catch"](4);
-            return _context6.abrupt("return", {
+            _context7.prev = 8;
+            _context7.t0 = _context7["catch"](4);
+            return _context7.abrupt("return", {
               status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
-              message: _context6.t0.message
+              message: _context7.t0.message
             });
           case 11:
           case "end":
-            return _context6.stop();
+            return _context7.stop();
         }
       }
-    }, _callee6, null, [[4, 8]]);
+    }, _callee7, null, [[4, 8]]);
   }));
-  return function updateUserOtp(_x11, _x12) {
-    return _ref6.apply(this, arguments);
+  return function updateUserOtp(_x13, _x14) {
+    return _ref7.apply(this, arguments);
   };
 }();
 exports.updateUserOtp = updateUserOtp;
 var verifyUserOtp = /*#__PURE__*/function () {
-  var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7(req, res) {
+  var _ref8 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8(req, res) {
     var today, payload, otp, userId, response, tokens;
-    return _regeneratorRuntime().wrap(function _callee7$(_context7) {
+    return _regeneratorRuntime().wrap(function _callee8$(_context8) {
       while (1) {
-        switch (_context7.prev = _context7.next) {
+        switch (_context8.prev = _context8.next) {
           case 0:
-            _context7.prev = 0;
+            _context8.prev = 0;
             today = format(new Date(), "yyyy-MM-dd H:i:s");
             payload = verifyOtpValidator(req.body);
             otp = payload.otp, userId = payload.userId;
             if (!(payload.status === true)) {
-              _context7.next = 23;
+              _context8.next = 23;
               break;
             }
-            _context7.next = 7;
+            _context8.next = 7;
             return verifyOtp(otp, userId, today);
           case 7:
-            response = _context7.sent;
+            response = _context8.sent;
             if (!response.data.body.length) {
-              _context7.next = 20;
+              _context8.next = 20;
               break;
             }
             // const languageId=response.data.body[0].language_id
@@ -337,17 +382,17 @@ var verifyUserOtp = /*#__PURE__*/function () {
             });
             console.log(languageId);
             if (!tokens.status) {
-              _context7.next = 17;
+              _context8.next = 17;
               break;
             }
-            _context7.next = 14;
+            _context8.next = 14;
             return updateUserToken(tokens.refreshToken, userId);
           case 14:
             res.status(_responseCode["default"].SUCCESS).json({
               status: true,
               token: tokens.token
             });
-            _context7.next = 18;
+            _context8.next = 18;
             break;
           case 17:
             res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
@@ -355,7 +400,7 @@ var verifyUserOtp = /*#__PURE__*/function () {
               message: "Token generation failed"
             });
           case 18:
-            _context7.next = 21;
+            _context8.next = 21;
             break;
           case 20:
             res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
@@ -363,7 +408,7 @@ var verifyUserOtp = /*#__PURE__*/function () {
               message: "otp mismatch"
             });
           case 21:
-            _context7.next = 24;
+            _context8.next = 24;
             break;
           case 23:
             res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
@@ -371,31 +416,31 @@ var verifyUserOtp = /*#__PURE__*/function () {
               message: payload.message
             });
           case 24:
-            _context7.next = 30;
+            _context8.next = 30;
             break;
           case 26:
-            _context7.prev = 26;
-            _context7.t0 = _context7["catch"](0);
-            logger.error("Whooops! This broke with error: ", _context7.t0);
+            _context8.prev = 26;
+            _context8.t0 = _context8["catch"](0);
+            logger.error("Whooops! This broke with error: ", _context8.t0);
             res.status(500).send("Error!");
           case 30:
           case "end":
-            return _context7.stop();
+            return _context8.stop();
         }
       }
-    }, _callee7, null, [[0, 26]]);
+    }, _callee8, null, [[0, 26]]);
   }));
-  return function verifyUserOtp(_x13, _x14) {
-    return _ref7.apply(this, arguments);
+  return function verifyUserOtp(_x15, _x16) {
+    return _ref8.apply(this, arguments);
   };
 }();
 exports.verifyUserOtp = verifyUserOtp;
 var updateUser = /*#__PURE__*/function () {
-  var _ref8 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8(payload, userId) {
+  var _ref9 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9(payload, userId) {
     var query, updatedUserResponce;
-    return _regeneratorRuntime().wrap(function _callee8$(_context8) {
+    return _regeneratorRuntime().wrap(function _callee9$(_context9) {
       while (1) {
-        switch (_context8.prev = _context8.next) {
+        switch (_context9.prev = _context9.next) {
           case 0:
             query = queryBuilder.update({
               name: payload.name,
@@ -403,46 +448,6 @@ var updateUser = /*#__PURE__*/function () {
               profile_photo_path: payload.profilePhoto
               // online_status:payload.onlineStatus,
               // language_id:payload.languageId,
-            }).into("users").where({
-              id: userId
-            }).toString();
-            _context8.prev = 1;
-            _context8.next = 4;
-            return mysqlRequest(query);
-          case 4:
-            updatedUserResponce = _context8.sent;
-            return _context8.abrupt("return", {
-              status: _responseCode["default"].SUCCESS,
-              body: updatedUserResponce
-            });
-          case 8:
-            _context8.prev = 8;
-            _context8.t0 = _context8["catch"](1);
-            return _context8.abrupt("return", {
-              status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
-              message: _context8.t0.message
-            });
-          case 11:
-          case "end":
-            return _context8.stop();
-        }
-      }
-    }, _callee8, null, [[1, 8]]);
-  }));
-  return function updateUser(_x15, _x16) {
-    return _ref8.apply(this, arguments);
-  };
-}();
-exports.updateUser = updateUser;
-var updateUserLanguage = /*#__PURE__*/function () {
-  var _ref9 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9(languageId, userId) {
-    var query, updatedUserResponce;
-    return _regeneratorRuntime().wrap(function _callee9$(_context9) {
-      while (1) {
-        switch (_context9.prev = _context9.next) {
-          case 0:
-            query = queryBuilder.update({
-              language_id: languageId
             }).into("users").where({
               id: userId
             }).toString();
@@ -469,125 +474,133 @@ var updateUserLanguage = /*#__PURE__*/function () {
       }
     }, _callee9, null, [[1, 8]]);
   }));
-  return function updateUserLanguage(_x17, _x18) {
+  return function updateUser(_x17, _x18) {
     return _ref9.apply(this, arguments);
   };
 }();
-exports.updateUserLanguage = updateUserLanguage;
-var updateUserToken = /*#__PURE__*/function () {
-  var _ref10 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10(refresh_token, userId) {
-    var query;
+exports.updateUser = updateUser;
+var updateUserLanguage = /*#__PURE__*/function () {
+  var _ref10 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10(languageId, userId) {
+    var query, updatedUserResponce;
     return _regeneratorRuntime().wrap(function _callee10$(_context10) {
       while (1) {
         switch (_context10.prev = _context10.next) {
           case 0:
-            _context10.next = 2;
+            query = queryBuilder.update({
+              language_id: languageId
+            }).into("users").where({
+              id: userId
+            }).toString();
+            _context10.prev = 1;
+            _context10.next = 4;
+            return mysqlRequest(query);
+          case 4:
+            updatedUserResponce = _context10.sent;
+            return _context10.abrupt("return", {
+              status: _responseCode["default"].SUCCESS,
+              body: updatedUserResponce
+            });
+          case 8:
+            _context10.prev = 8;
+            _context10.t0 = _context10["catch"](1);
+            return _context10.abrupt("return", {
+              status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
+              message: _context10.t0.message
+            });
+          case 11:
+          case "end":
+            return _context10.stop();
+        }
+      }
+    }, _callee10, null, [[1, 8]]);
+  }));
+  return function updateUserLanguage(_x19, _x20) {
+    return _ref10.apply(this, arguments);
+  };
+}();
+exports.updateUserLanguage = updateUserLanguage;
+var updateUserToken = /*#__PURE__*/function () {
+  var _ref11 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11(refresh_token, userId) {
+    var query;
+    return _regeneratorRuntime().wrap(function _callee11$(_context11) {
+      while (1) {
+        switch (_context11.prev = _context11.next) {
+          case 0:
+            _context11.next = 2;
             return (0, _db["default"])("users").update({
               refresh_token: refresh_token
             }).where({
               id: userId
             });
           case 2:
-            query = _context10.sent;
-            _context10.prev = 3;
-            return _context10.abrupt("return", {
+            query = _context11.sent;
+            _context11.prev = 3;
+            return _context11.abrupt("return", {
               status: _responseCode["default"].SUCCESS,
               body: query
             });
           case 7:
-            _context10.prev = 7;
-            _context10.t0 = _context10["catch"](3);
-            return _context10.abrupt("return", {
-              status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
-              message: _context10.t0.message
-            });
-          case 10:
-          case "end":
-            return _context10.stop();
-        }
-      }
-    }, _callee10, null, [[3, 7]]);
-  }));
-  return function updateUserToken(_x19, _x20) {
-    return _ref10.apply(this, arguments);
-  };
-}();
-exports.updateUserToken = updateUserToken;
-var getUserToken = /*#__PURE__*/function () {
-  var _ref11 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11(userId) {
-    var query, updatedUserResponce;
-    return _regeneratorRuntime().wrap(function _callee11$(_context11) {
-      while (1) {
-        switch (_context11.prev = _context11.next) {
-          case 0:
-            _context11.next = 2;
-            return _db["default"].select("refresh_token").from("users").where({
-              id: userId
-            });
-          case 2:
-            query = _context11.sent;
-            _context11.prev = 3;
-            _context11.next = 6;
-            return mysqlRequest(query);
-          case 6:
-            updatedUserResponce = _context11.sent;
-            return _context11.abrupt("return", {
-              status: _responseCode["default"].SUCCESS,
-              refreshToken: updatedUserResponce.body[0].refresh_token,
-              languageId: updatedUserResponce.body[0].language_id
-            });
-          case 10:
-            _context11.prev = 10;
+            _context11.prev = 7;
             _context11.t0 = _context11["catch"](3);
             return _context11.abrupt("return", {
               status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
               message: _context11.t0.message
             });
-          case 13:
+          case 10:
           case "end":
             return _context11.stop();
         }
       }
-    }, _callee11, null, [[3, 10]]);
+    }, _callee11, null, [[3, 7]]);
   }));
-  return function getUserToken(_x21) {
+  return function updateUserToken(_x21, _x22) {
     return _ref11.apply(this, arguments);
   };
 }();
-exports.getUserToken = getUserToken;
-var getUser = /*#__PURE__*/function () {
+exports.updateUserToken = updateUserToken;
+var getUserToken = /*#__PURE__*/function () {
   var _ref12 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee12(userId) {
-    var query;
+    var query, updatedUserResponce;
     return _regeneratorRuntime().wrap(function _callee12$(_context12) {
       while (1) {
         switch (_context12.prev = _context12.next) {
           case 0:
             _context12.next = 2;
-            return _db["default"].select("user_id", "address_name", "address_details", "address_landmark", "address_longitude", "alternate_mobile").from("user_addresses");
+            return _db["default"].select("refresh_token").from("users").where({
+              id: userId
+            });
           case 2:
             query = _context12.sent;
             _context12.prev = 3;
-            return _context12.abrupt("return", query);
-          case 7:
-            _context12.prev = 7;
+            _context12.next = 6;
+            return mysqlRequest(query);
+          case 6:
+            updatedUserResponce = _context12.sent;
+            return _context12.abrupt("return", {
+              status: _responseCode["default"].SUCCESS,
+              refreshToken: updatedUserResponce.body[0].refresh_token,
+              languageId: updatedUserResponce.body[0].language_id
+            });
+          case 10:
+            _context12.prev = 10;
             _context12.t0 = _context12["catch"](3);
             return _context12.abrupt("return", {
               status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
               message: _context12.t0.message
             });
-          case 10:
+          case 13:
           case "end":
             return _context12.stop();
         }
       }
-    }, _callee12, null, [[3, 7]]);
+    }, _callee12, null, [[3, 10]]);
   }));
-  return function getUser(_x22) {
+  return function getUserToken(_x23) {
     return _ref12.apply(this, arguments);
   };
 }();
-exports.getUser = getUser;
-var userDetail = /*#__PURE__*/function () {
+exports.getUserToken = getUserToken;
+var getUser = /*#__PURE__*/function () {
   var _ref13 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee13(userId) {
     var query;
     return _regeneratorRuntime().wrap(function _callee13$(_context13) {
@@ -595,9 +608,7 @@ var userDetail = /*#__PURE__*/function () {
         switch (_context13.prev = _context13.next) {
           case 0:
             _context13.next = 2;
-            return _db["default"].select("*").from("users").where({
-              id: userId
-            });
+            return _db["default"].select("user_id", "address_name", "address_details", "address_landmark", "address_longitude", "alternate_mobile").from("user_addresses");
           case 2:
             query = _context13.sent;
             _context13.prev = 3;
@@ -616,103 +627,137 @@ var userDetail = /*#__PURE__*/function () {
       }
     }, _callee13, null, [[3, 7]]);
   }));
-  return function userDetail(_x23) {
+  return function getUser(_x24) {
     return _ref13.apply(this, arguments);
   };
 }();
-exports.userDetail = userDetail;
-var getAccountModal = /*#__PURE__*/function () {
-  var _ref14 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee14(payload) {
-    var userId, responce;
+exports.getUser = getUser;
+var userDetail = /*#__PURE__*/function () {
+  var _ref14 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee14(userId) {
+    var query;
     return _regeneratorRuntime().wrap(function _callee14$(_context14) {
       while (1) {
         switch (_context14.prev = _context14.next) {
           case 0:
-            userId = payload.userId;
-            _context14.next = 3;
-            return _db["default"].select("mobile_number").from("users").where({
+            _context14.next = 2;
+            return _db["default"].select("*").from("users").where({
               id: userId
             });
-          case 3:
-            responce = _context14.sent;
-            _context14.prev = 4;
-            if (!(responce.length !== 0)) {
-              _context14.next = 9;
-              break;
-            }
-            return _context14.abrupt("return", {
-              status: _responseCode["default"].SUCCESS
-            });
-          case 9:
-            return _context14.abrupt("return", {
-              status: _responseCode["default"].FAILURE.DATA_NOT_FOUND,
-              message: "User not found"
-            });
-          case 10:
-            _context14.next = 15;
-            break;
-          case 12:
-            _context14.prev = 12;
-            _context14.t0 = _context14["catch"](4);
+          case 2:
+            query = _context14.sent;
+            _context14.prev = 3;
+            return _context14.abrupt("return", query);
+          case 7:
+            _context14.prev = 7;
+            _context14.t0 = _context14["catch"](3);
             return _context14.abrupt("return", {
               status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
               message: _context14.t0.message
             });
-          case 15:
+          case 10:
           case "end":
             return _context14.stop();
         }
       }
-    }, _callee14, null, [[4, 12]]);
+    }, _callee14, null, [[3, 7]]);
   }));
-  return function getAccountModal(_x24) {
+  return function userDetail(_x25) {
     return _ref14.apply(this, arguments);
   };
 }();
-exports.getAccountModal = getAccountModal;
-var getAddress = /*#__PURE__*/function () {
-  var _ref15 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee15(user_id) {
-    var query;
+exports.userDetail = userDetail;
+var getAccountModal = /*#__PURE__*/function () {
+  var _ref15 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee15(payload) {
+    var userId, responce;
     return _regeneratorRuntime().wrap(function _callee15$(_context15) {
       while (1) {
         switch (_context15.prev = _context15.next) {
           case 0:
-            _context15.next = 2;
-            return _db["default"].select("user_id", "name", "details", "landmark", "landmark", "longitude").from("user_addresses");
-          case 2:
-            query = _context15.sent;
-            _context15.prev = 3;
-            return _context15.abrupt("return", {
-              status: _responseCode["default"].SUCCESS,
-              response: query
+            userId = payload.userId;
+            _context15.next = 3;
+            return _db["default"].select("mobile_number").from("users").where({
+              id: userId
             });
-          case 7:
-            _context15.prev = 7;
-            _context15.t0 = _context15["catch"](3);
+          case 3:
+            responce = _context15.sent;
+            _context15.prev = 4;
+            if (!(responce.length !== 0)) {
+              _context15.next = 9;
+              break;
+            }
+            return _context15.abrupt("return", {
+              status: _responseCode["default"].SUCCESS
+            });
+          case 9:
+            return _context15.abrupt("return", {
+              status: _responseCode["default"].FAILURE.DATA_NOT_FOUND,
+              message: "User not found"
+            });
+          case 10:
+            _context15.next = 15;
+            break;
+          case 12:
+            _context15.prev = 12;
+            _context15.t0 = _context15["catch"](4);
             return _context15.abrupt("return", {
               status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
               message: _context15.t0.message
             });
-          case 10:
+          case 15:
           case "end":
             return _context15.stop();
         }
       }
-    }, _callee15, null, [[3, 7]]);
+    }, _callee15, null, [[4, 12]]);
   }));
-  return function getAddress(_x25) {
+  return function getAccountModal(_x26) {
     return _ref15.apply(this, arguments);
   };
 }();
-exports.getAddress = getAddress;
-var addUser = /*#__PURE__*/function () {
-  var _ref16 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee16(payload) {
-    var userAddress;
+exports.getAccountModal = getAccountModal;
+var getAddress = /*#__PURE__*/function () {
+  var _ref16 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee16(user_id) {
+    var query;
     return _regeneratorRuntime().wrap(function _callee16$(_context16) {
       while (1) {
         switch (_context16.prev = _context16.next) {
           case 0:
             _context16.next = 2;
+            return _db["default"].select("user_id", "name", "details", "landmark", "landmark", "longitude").from("user_addresses");
+          case 2:
+            query = _context16.sent;
+            _context16.prev = 3;
+            return _context16.abrupt("return", {
+              status: _responseCode["default"].SUCCESS,
+              response: query
+            });
+          case 7:
+            _context16.prev = 7;
+            _context16.t0 = _context16["catch"](3);
+            return _context16.abrupt("return", {
+              status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
+              message: _context16.t0.message
+            });
+          case 10:
+          case "end":
+            return _context16.stop();
+        }
+      }
+    }, _callee16, null, [[3, 7]]);
+  }));
+  return function getAddress(_x27) {
+    return _ref16.apply(this, arguments);
+  };
+}();
+exports.getAddress = getAddress;
+var addUser = /*#__PURE__*/function () {
+  var _ref17 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee17(payload) {
+    var userAddress;
+    return _regeneratorRuntime().wrap(function _callee17$(_context17) {
+      while (1) {
+        switch (_context17.prev = _context17.next) {
+          case 0:
+            _context17.next = 2;
             return (0, _db["default"])("user_address").insert({
               user_id: payload.user_id,
               address_details: payload.address_details,
@@ -721,139 +766,139 @@ var addUser = /*#__PURE__*/function () {
               created_at: new Date().toISOString().slice(0, 19).replace("T", " ")
             });
           case 2:
-            userAddress = _context16.sent;
-            _context16.prev = 3;
-            return _context16.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
+            userAddress = _context17.sent;
+            _context17.prev = 3;
+            return _context17.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               status: true,
               data: userAddress
             }));
           case 7:
-            _context16.prev = 7;
-            _context16.t0 = _context16["catch"](3);
-            console.log(_context16.t0);
-            return _context16.abrupt("return", {
-              status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
-              message: _context16.t0.message
-            });
-          case 11:
-          case "end":
-            return _context16.stop();
-        }
-      }
-    }, _callee16, null, [[3, 7]]);
-  }));
-  return function addUser(_x26) {
-    return _ref16.apply(this, arguments);
-  };
-}();
-exports.addUser = addUser;
-var getCities = /*#__PURE__*/function () {
-  var _ref17 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee17() {
-    var query;
-    return _regeneratorRuntime().wrap(function _callee17$(_context17) {
-      while (1) {
-        switch (_context17.prev = _context17.next) {
-          case 0:
-            _context17.next = 2;
-            return _db["default"].select("*").from("cities");
-          case 2:
-            query = _context17.sent;
-            _context17.prev = 3;
-            return _context17.abrupt("return", {
-              status: _responseCode["default"].SUCCESS,
-              response: query
-            });
-          case 7:
             _context17.prev = 7;
             _context17.t0 = _context17["catch"](3);
+            console.log(_context17.t0);
             return _context17.abrupt("return", {
               status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
               message: _context17.t0.message
             });
-          case 10:
+          case 11:
           case "end":
             return _context17.stop();
         }
       }
     }, _callee17, null, [[3, 7]]);
   }));
-  return function getCities() {
+  return function addUser(_x28) {
     return _ref17.apply(this, arguments);
   };
 }();
-exports.getCities = getCities;
-var getPromo = /*#__PURE__*/function () {
+exports.addUser = addUser;
+var getCities = /*#__PURE__*/function () {
   var _ref18 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee18() {
-    var query, response;
+    var query;
     return _regeneratorRuntime().wrap(function _callee18$(_context18) {
       while (1) {
         switch (_context18.prev = _context18.next) {
           case 0:
-            query = queryBuilder.select("*").from("offers").toString();
-            _context18.prev = 1;
-            _context18.next = 4;
-            return mysqlRequest(query);
-          case 4:
-            response = _context18.sent;
+            _context18.next = 2;
+            return _db["default"].select("*").from("cities");
+          case 2:
+            query = _context18.sent;
+            _context18.prev = 3;
             return _context18.abrupt("return", {
               status: _responseCode["default"].SUCCESS,
-              response: response.body
+              response: query
             });
-          case 8:
-            _context18.prev = 8;
-            _context18.t0 = _context18["catch"](1);
+          case 7:
+            _context18.prev = 7;
+            _context18.t0 = _context18["catch"](3);
             return _context18.abrupt("return", {
               status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
               message: _context18.t0.message
             });
-          case 11:
+          case 10:
           case "end":
             return _context18.stop();
         }
       }
-    }, _callee18, null, [[1, 8]]);
+    }, _callee18, null, [[3, 7]]);
   }));
-  return function getPromo() {
+  return function getCities() {
     return _ref18.apply(this, arguments);
   };
 }();
-exports.getPromo = getPromo;
-var getSinglecoupon = /*#__PURE__*/function () {
+exports.getCities = getCities;
+var getPromo = /*#__PURE__*/function () {
   var _ref19 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee19() {
     var query, response;
     return _regeneratorRuntime().wrap(function _callee19$(_context19) {
       while (1) {
         switch (_context19.prev = _context19.next) {
           case 0:
-            _context19.next = 2;
-            return _db["default"].select("*").from("offers");
-          case 2:
-            query = _context19.sent;
-            _context19.prev = 3;
-            _context19.next = 6;
+            query = queryBuilder.select("*").from("offers").toString();
+            _context19.prev = 1;
+            _context19.next = 4;
             return mysqlRequest(query);
-          case 6:
+          case 4:
             response = _context19.sent;
             return _context19.abrupt("return", {
               status: _responseCode["default"].SUCCESS,
-              response: response
+              response: response.body
             });
-          case 10:
-            _context19.prev = 10;
-            _context19.t0 = _context19["catch"](3);
+          case 8:
+            _context19.prev = 8;
+            _context19.t0 = _context19["catch"](1);
             return _context19.abrupt("return", {
               status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
               message: _context19.t0.message
             });
-          case 13:
+          case 11:
           case "end":
             return _context19.stop();
         }
       }
-    }, _callee19, null, [[3, 10]]);
+    }, _callee19, null, [[1, 8]]);
+  }));
+  return function getPromo() {
+    return _ref19.apply(this, arguments);
+  };
+}();
+exports.getPromo = getPromo;
+var getSinglecoupon = /*#__PURE__*/function () {
+  var _ref20 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee20() {
+    var query, response;
+    return _regeneratorRuntime().wrap(function _callee20$(_context20) {
+      while (1) {
+        switch (_context20.prev = _context20.next) {
+          case 0:
+            _context20.next = 2;
+            return _db["default"].select("*").from("offers");
+          case 2:
+            query = _context20.sent;
+            _context20.prev = 3;
+            _context20.next = 6;
+            return mysqlRequest(query);
+          case 6:
+            response = _context20.sent;
+            return _context20.abrupt("return", {
+              status: _responseCode["default"].SUCCESS,
+              response: response
+            });
+          case 10:
+            _context20.prev = 10;
+            _context20.t0 = _context20["catch"](3);
+            return _context20.abrupt("return", {
+              status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
+              message: _context20.t0.message
+            });
+          case 13:
+          case "end":
+            return _context20.stop();
+        }
+      }
+    }, _callee20, null, [[3, 10]]);
   }));
   return function getSinglecoupon() {
-    return _ref19.apply(this, arguments);
+    return _ref20.apply(this, arguments);
   };
 }();
 
@@ -869,41 +914,41 @@ var getSinglecoupon = /*#__PURE__*/function () {
 // }
 exports.getSinglecoupon = getSinglecoupon;
 var logoutUser = /*#__PURE__*/function () {
-  var _ref20 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee20(userId) {
+  var _ref21 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee21(userId) {
     var query;
-    return _regeneratorRuntime().wrap(function _callee20$(_context20) {
+    return _regeneratorRuntime().wrap(function _callee21$(_context21) {
       while (1) {
-        switch (_context20.prev = _context20.next) {
+        switch (_context21.prev = _context21.next) {
           case 0:
-            _context20.prev = 0;
-            _context20.next = 3;
+            _context21.prev = 0;
+            _context21.next = 3;
             return (0, _db["default"])("users").where({
               id: userId
             }).update({
               refresh_token: null
             });
           case 3:
-            query = _context20.sent;
-            return _context20.abrupt("return", {
+            query = _context21.sent;
+            return _context21.abrupt("return", {
               status: _responseCode["default"].SUCCESS,
               body: query
             });
           case 7:
-            _context20.prev = 7;
-            _context20.t0 = _context20["catch"](0);
-            return _context20.abrupt("return", {
+            _context21.prev = 7;
+            _context21.t0 = _context21["catch"](0);
+            return _context21.abrupt("return", {
               status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
-              message: _context20.t0.message
+              message: _context21.t0.message
             });
           case 10:
           case "end":
-            return _context20.stop();
+            return _context21.stop();
         }
       }
-    }, _callee20, null, [[0, 7]]);
+    }, _callee21, null, [[0, 7]]);
   }));
-  return function logoutUser(_x27) {
-    return _ref20.apply(this, arguments);
+  return function logoutUser(_x29) {
+    return _ref21.apply(this, arguments);
   };
 }();
 exports.logoutUser = logoutUser;

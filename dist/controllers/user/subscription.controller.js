@@ -353,6 +353,7 @@ var getAllSubscription = /*#__PURE__*/function () {
           case 7:
             for (i = 0; i < subscription_product.data.length; i++) {
               subscription_product.data[i].image = process.env.BASE_URL + subscription_product.data[i].image;
+              subscription_product.data[i].quantity = subscription_product.data[i].quantity,
               // below next delivery date in static
               subscription_product.data[i].next_delivery_date = "22-Jan";
               subscription_product.data[i].next_delviery = "Next delivery 22-Jan-2022";
@@ -421,8 +422,10 @@ var singleSubscription = /*#__PURE__*/function () {
           case 9:
             for (i = 0; i < sub.data.length; i++) {
               sub.data[i].image = process.env.BASE_URL + sub.data[i].image;
-              sub.data[i].subscription_start_date = (0, _moment["default"])(sub.data[i].subscription_start_date).format("MMM Do YYYY");
-              sub.data[i].date = (0, _moment["default"])(sub.data[i].date).format("YYYY-MM-DD");
+              sub.data[i].customized_days = sub.data[i].customized_days;
+              sub.query[i].date = (0, _moment["default"])().format("YYYY-MM-DD");
+              sub.data[i].subscription_start_date = (0, _moment["default"])().format("YYYY-MM-DD");
+              sub.data[i].date = (0, _moment["default"])().format("YYYY-MM-DD");
               if (sub.data[i].unit_value >= 500) {
                 sub.data[i].unit = sub.data[i].unit_value / 1000 + " " + (sub.data[i].unit_type === "ml" ? "litre" : sub.data[i].unit_type);
               } else {
@@ -440,7 +443,7 @@ var singleSubscription = /*#__PURE__*/function () {
               "additional_remaining_orders": 25
             };
             response = {
-              additional_orders: [sub.query[0]],
+              additional_orders: [sub.query[0], query1[0]],
               this_month_item_detail: bottle_tracker
             };
             return _context9.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
@@ -598,13 +601,16 @@ var changeQuantity = /*#__PURE__*/function () {
             return (0, _subscription.change_quantity)(userId, subscription_id, quantity);
           case 6:
             quantity1 = _context12.sent;
-            if (!quantity.status) {
+            if (!quantity1.status) {
               _context12.next = 11;
               break;
             }
             return _context12.abrupt("return", res.status(_responseCode["default"].SUCCESS).json(quantity1));
           case 11:
-            return _context12.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json(quantity1));
+            return _context12.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
+              status: false,
+              message: _messages["default"].SERVER_ERROR
+            }));
           case 12:
             _context12.next = 18;
             break;
@@ -639,7 +645,7 @@ var changeSubscriptionplan = /*#__PURE__*/function () {
           case 0:
             _context13.prev = 0;
             _req$body9 = req.body, userId = _req$body9.userId, subscription_id = _req$body9.subscription_id, subscription_plan_id = _req$body9.subscription_plan_id, start_date = _req$body9.start_date, customized_days = _req$body9.customized_days;
-            if (!(!userId || !subscription_id || !subscription_plan_id || start_date)) {
+            if (!(!subscription_id || !subscription_plan_id || !start_date)) {
               _context13.next = 4;
               break;
             }
@@ -697,22 +703,21 @@ var pauseSubscription = /*#__PURE__*/function () {
             return (0, _subscription.pause_subscriptiondate)(userId, subscription_id, pausedates);
           case 6:
             dates = _context14.sent;
-            _context14.next = 13;
-            break;
-          case 9:
-            _context14.prev = 9;
+            return _context14.abrupt("return", res.status(_responseCode["default"].SUCCESS).json(dates));
+          case 10:
+            _context14.prev = 10;
             _context14.t0 = _context14["catch"](0);
             console.log(_context14.t0);
             return _context14.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
-          case 13:
+          case 14:
           case "end":
             return _context14.stop();
         }
       }
-    }, _callee14, null, [[0, 9]]);
+    }, _callee14, null, [[0, 10]]);
   }));
   return function pauseSubscription(_x25, _x26) {
     return _ref14.apply(this, arguments);

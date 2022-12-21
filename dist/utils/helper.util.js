@@ -125,7 +125,8 @@ var GetProduct = /*#__PURE__*/function () {
             }
             return _context2.abrupt("return", {
               status: true,
-              data: product
+              data: product,
+              userId: userId
             });
           case 10:
           case "end":
