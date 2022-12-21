@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.verifyOtpValidator = exports.userValidator = exports.userAddressValidator = exports.profileUpdateValidator = exports.loginValidator = exports.latLongValidator = void 0;
+exports.verifyOtpValidator = exports.userValidator = exports.userAddressValidator = exports.profileUpdateValidator = exports.loginValidator = exports.latLongValidator = exports.NumberValidator = void 0;
 var _helper = require("../utils/helper.util");
 var _messages = _interopRequireDefault(require("../constants/messages"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -38,6 +38,30 @@ var loginValidator = function loginValidator(payload) {
   }
 };
 exports.loginValidator = loginValidator;
+var NumberValidator = function NumberValidator(payload) {
+  var _payload$mobile_numbe2;
+  var mobile_number = (_payload$mobile_numbe2 = payload.mobile_number) !== null && _payload$mobile_numbe2 !== void 0 ? _payload$mobile_numbe2 : null;
+  // const email = payload.email ?? null
+  if (mobile_number) {
+    if ((0, _helper.phoneNumberValidator)(mobile_number)) {
+      return {
+        status: true,
+        mobile_number: mobile_number
+      };
+    } else {
+      return {
+        status: false,
+        message: "Invalid phone number"
+      };
+    }
+  } else {
+    return {
+      status: false,
+      message: "Mandatory fields missing"
+    };
+  }
+};
+exports.NumberValidator = NumberValidator;
 var userValidator = function userValidator(payload) {
   var _payload$user_name, _payload$password;
   var user_name = (_payload$user_name = payload.user_name) !== null && _payload$user_name !== void 0 ? _payload$user_name : null;

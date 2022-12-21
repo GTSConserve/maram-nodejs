@@ -105,7 +105,7 @@ var get_subscription_product = /*#__PURE__*/function () {
           case 0:
             _context2.prev = 0;
             _context2.next = 3;
-            return (0, _db["default"])("subscribed_user_details AS sub").select("sub.id as subscription_id", "products.name as product_name", "products.image", "products.unit_value", "unit_types.value as unit_type", "subscription_type.name as subscription_name", "sub.subscription_status").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("subscription_type", "subscription_type.id", "=", "sub.subscribe_type_id").where({
+            return (0, _db["default"])("subscribed_user_details AS sub").select("sub.id as subscription_id", "products.name as product_name", "products.image", "products.price", "products.status", "products.unit_value", "unit_types.value as unit_type", "subscription_type.name as subscription_name", "sub.subscription_status").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("subscription_type", "subscription_type.id", "=", "sub.subscribe_type_id").where({
               "sub.subscription_status": "subscribed",
               user_id: userId
             });
@@ -155,7 +155,7 @@ var single_subscription = /*#__PURE__*/function () {
             _context3.next = 3;
             return (0, _db["default"])("subscribed_user_details AS sub").select("sub.id as subscription_id", "sub.subscription_start_date", "sub.customized_days", "sub.subscription_status",
             // "product.id",
-            "products.name as product_name", "products.image", "products.unit_value", "unit_types.value as unit_type", "subscription_type.name as subscription_name", "user_address.address", "sub.date").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("subscription_type", "subscription_type.id", "=", "sub.subscribe_type_id").join("user_address", "user_address.id", "=", "sub.user_address_id").where({
+            "products.name as product_name", "products.image", "products.unit_value", "unit_types.value as unit_type", "subscription_type.name as subscription_name", "user_address.address", "sub.date as date").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("subscription_type", "subscription_type.id", "=", "sub.subscribe_type_id").join("user_address", "user_address.id", "=", "sub.user_address_id").where({
               "sub.user_id": userId,
               "sub.id": sub_id
             });

@@ -457,31 +457,32 @@ var checkDeliveryAddress = /*#__PURE__*/function () {
             return (0, _user_details.checkAddress)(address_id);
           case 4:
             check_address = _context10.sent;
-            if (!(check_address.body[0].latitude <= 10.9956 && check_address.body[0].longitude <= 77.2852)) {
-              _context10.next = 7;
+            console.log(check_address.body[0].latitude);
+            if (!(check_address.body[0].latitude <= 10.9956 || check_address.body[0].longitude <= 77.2852)) {
+              _context10.next = 8;
               break;
             }
-            return _context10.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
+            return _context10.abrupt("return", res.status(200).json({
               status: true,
               message: "successfully delivery"
             }));
-          case 7:
-            _context10.next = 13;
+          case 8:
+            _context10.next = 14;
             break;
-          case 9:
-            _context10.prev = 9;
+          case 10:
+            _context10.prev = 10;
             _context10.t0 = _context10["catch"](0);
             console.log(_context10.t0);
             res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
               status: false,
               error: _context10.t0
             });
-          case 13:
+          case 14:
           case "end":
             return _context10.stop();
         }
       }
-    }, _callee10, null, [[0, 9]]);
+    }, _callee10, null, [[0, 10]]);
   }));
   return function checkDeliveryAddress(_x19, _x20) {
     return _ref10.apply(this, arguments);
@@ -502,10 +503,10 @@ var getEmptyBottle = /*#__PURE__*/function () {
               break;
             }
             get_user_bottle_detail = {
-              "delivered_orders": "0",
-              "remaining_orders": "30",
-              "additional_delivered_orders": "0",
-              "additional_remaining_orders": "30"
+              "empty_bottle_in_hand_1_litre": "0",
+              "empty_bottle_in_hand_0.5_litre": "30",
+              "empty_bottle_return_1_litre": "0",
+              "empty_bottle_return_0.5_litre": "30"
             };
             res.status(_responseCode["default"].SUCCESS).json({
               status: true,

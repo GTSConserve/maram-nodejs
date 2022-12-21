@@ -353,6 +353,9 @@ var getAllSubscription = /*#__PURE__*/function () {
           case 7:
             for (i = 0; i < subscription_product.data.length; i++) {
               subscription_product.data[i].image = process.env.BASE_URL + subscription_product.data[i].image;
+              // below next delivery date in static
+              subscription_product.data[i].next_delivery_date = "22-Jan";
+              subscription_product.data[i].next_delviery = "Next delivery 22-Jan-2022";
               if (subscription_product.data[i].unit_value >= 500) {
                 subscription_product.data[i].unit = subscription_product.data[i].unit_value / 1000 + " " + (subscription_product.data[i].unit_type === "ml" ? "litre" : subscription_product.data[i].unit_type);
               } else {
@@ -419,6 +422,7 @@ var singleSubscription = /*#__PURE__*/function () {
             for (i = 0; i < sub.data.length; i++) {
               sub.data[i].image = process.env.BASE_URL + sub.data[i].image;
               sub.data[i].subscription_start_date = (0, _moment["default"])(sub.data[i].subscription_start_date).format("MMM Do YYYY");
+              sub.data[i].date = (0, _moment["default"])(sub.data[i].date).format("YYYY-MM-DD");
               if (sub.data[i].unit_value >= 500) {
                 sub.data[i].unit = sub.data[i].unit_value / 1000 + " " + (sub.data[i].unit_type === "ml" ? "litre" : sub.data[i].unit_type);
               } else {
