@@ -1,6 +1,6 @@
 import express  from 'express';
 import { getApproveList } from '../../controllers/super_admin/users_subscription/approve.controller';
-import { getNewUsers,getAllUsers ,updatePendingList,cancelPendingList,updateAllUsersStatus ,getSingleUser} from '../../controllers/super_admin/users_subscription/pending.controller';
+import { getNewUsers,getAllUsers ,updatePendingList,cancelPendingList,updateAllUsersStatus ,getSingleUser,getCreateUsers,createUsers} from '../../controllers/super_admin/users_subscription/pending.controller';
 import { getCancelList } from '../../controllers/super_admin/users_subscription/cancel.controller';
 
 const users_subscriptionRouter = express.Router({
@@ -22,6 +22,11 @@ users_subscriptionRouter.post("/update_all_users_status",updateAllUsersStatus)
 users_subscriptionRouter.post('/approve_pending_list',updatePendingList)
 users_subscriptionRouter.post('/cancel_pending_list',cancelPendingList)
 
+
+
+//create users
+users_subscriptionRouter.get("/get_create_user",getCreateUsers)
+users_subscriptionRouter.post("/create_user",createUsers)
 
 
 //assign

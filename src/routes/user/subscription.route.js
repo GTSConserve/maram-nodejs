@@ -25,7 +25,7 @@ subscriptionRouter.post("/subcription_order",authenticateJWT, getSubcription_ord
 subscriptionRouter.post("/un_subscription",authenticateJWT,Remove_Subscription);
 
 subscriptionRouter.post("/change_quantity",authenticateJWT,changeQuantity);
-subscriptionRouter.post("/change_subscriptionplan",authenticateJWT,changeSubscriptionplan);
+subscriptionRouter.post("/change_subscriptionplan",changeSubscriptionplan);
 subscriptionRouter.post("/pause_subscriptionplan",authenticateJWT,pauseSubscription);
 
 

@@ -99,7 +99,7 @@ export const createTable = async (req, res) => {
           // t.foreign("user_group_id").references("id").inTable("user_groups");
           t.string("name", 255);
           t.string("user_unique_id", 255);
-          t.string("mobile_number", 255);
+          t.string("mobile_number", 255).unique();
           t.string("user_name", 255);
           t.string("password", 255);
           t.integer("otp", 10);

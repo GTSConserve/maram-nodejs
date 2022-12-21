@@ -37,7 +37,7 @@ export const new_subscription = async (
     }
 
     const is_exist_address = await knex("user_address")
-      .select("branch_id")
+      .select("branch_id","router_id")
       .whereNotNull("branch_id")
       .where({ user_id: userId, id: user_address_id });
 
@@ -45,8 +45,11 @@ export const new_subscription = async (
 
     if (is_exist_address.length !== 0) {
       query.branch_id = is_exist_address[0].branch_id;
-      // query.subscription_status = "branch_pending";
-      query.subscription_status = "subscribed";
+      query.subscription_status = "branch_pending";
+      if(is_exist_address[0].router_id){
+
+        query.router_id = is_exist_address[0].router_id;
+      }
     }
 
     // const branch_id = await knex("subscribed_user_details")
@@ -58,7 +61,6 @@ export const new_subscription = async (
     //   });
     // if (branch_id.length !== 0) {
     //   query.branch_id = branch_id[0].branch_id;
-    //   query.router_id = branch_id[0].router_id;
     //   query.subscription_status = "branch_pending";
     // }
 
@@ -151,7 +153,7 @@ export const single_subscription = async (userId, sub_id) => {
         "products.image",
         "products.unit_value",
         "unit_types.value as unit_type",
-        "user_address.address",
+        // "user_address.address",
     
       )
       .join("products", "products.id", "=", "additional_orders.id")

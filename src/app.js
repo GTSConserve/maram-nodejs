@@ -206,6 +206,30 @@ app.get("/", (req, res) => {
 
 app.get("/home", authenticateJWTSession, (req, res) => {
 const {is_super_admin} = req.body
+const {is_user_added} = req.query
+
+
+
+  if(!is_super_admin && is_user_added == 1){
+    req.flash("error","User Already Found")
+    return res.render("super_admin/home/home");
+  }
+  if(!is_super_admin && is_user_added == 2){
+    req.flash("success","User Created SuccessFully")
+    return res.render("super_admin/home/home");
+  }
+
+  if(is_super_admin && is_user_added == 1){
+    req.flash("error","User Already Found")
+    return res.render("super_admin/home/home");
+  }
+  if(is_super_admin && is_user_added == 2){
+    req.flash("success","User Created SuccessFully")
+    return res.render("super_admin/home/home");
+  }
+
+
+
   if(is_super_admin){
 
     res.render("super_admin/home/home");

@@ -51,8 +51,14 @@
                                                     </div>
                                                     <div class="col-sm-6 align-self-center mt-3 text-sm-right">
                                                         <p class="inv-created-date"><span class="inv-title">Route : </span> <span class="inv-date"><%= user.route_name ? user.route_name : "Not Assigned" %> </span></p>
+                                                        <span style="cursor: pointer;" onclick="routeChangeHandler()" class="badge badge-secondary"> Change </span>
                                                         <!-- <p class="inv-due-date"><span class="inv-title">Due Date : </span> <span class="inv-date">26 Aug 2020</span></p> -->
                                                     </div>
+                                                    <script>
+                                                        function routeChangeHandler(){
+                                                            window.location.href = "/branch_admin/route/get_route"
+                                                        }
+                                                    </script>
                                                 
                                                 </div>
                                                 

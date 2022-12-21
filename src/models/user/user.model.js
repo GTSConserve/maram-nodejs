@@ -87,7 +87,7 @@ export const updateUserLocation = async (payload) => {
 
 export const insertUser = async (payload, otp) => {
 
-  const { mobile_number } = payload;
+  const { mobile_number, fcmToken, device, appOsFormat, appVersion } = payload;
   const query = await knex
     .insert([
       {

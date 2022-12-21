@@ -26,6 +26,19 @@ export const updateCancel = async (req, res) => {
   }
 };
 
+// export const updateSubscribedExistUser = async (req,res) => {
+//   try {
+//     const {router_id,user_id,date} = req.body
+
+
+    
+//   } catch (error) {
+//     console.log(error)
+//     return res.redirect("/home")
+//   }
+// }
+
+
 export const updateSubscribed = async (req, res) => {
   try {
     const { sub_id, router_id, date, add_on_id, user_id } = req.body;
@@ -118,46 +131,21 @@ export const updateSubscribed = async (req, res) => {
         .where({ id: address_id });
     }
 
-    // const sub_type_id = await knex("subscribed_user_details as sub")
-    //   .select("subscription_type.id", "sub.start_date")
-    //   .join(
-    //     "subscription_type",
-    //     "subscription_type.id",
-    //     "=",
-    //     "sub.subscribe_type_id"
-    //   )
-    //   .where({ "sub.id": sub_id });
 
-    //   const assigned_date = moment(date).format("YYYY-MM-DD");
-    //   const today_date = moment().format("YYYY-MM-DD");
+    if(sub_id){
 
-    //   if (assigned_date == today_date) {
-    //     req.flash("error", "Cannot Accept Today Date");
-    //     return res.redirect("/branch_admin/subscription/get_new_users");
-    //   }
-    // let dates;
-
-    // console.log(sub_type_id[0].id)
-
-    // for later need to check condition for date
-    // if (sub_type_id[0].id == "1") {
-    //   dates = date;
-    // } else if (sub_type_id[0].id == "2") {
-
-    // } else if (sub_type_id[0].id == "3") {
-    // }
-
-    await knex("subscribed_user_details")
+      await knex("subscribed_user_details")
       .update({
         subscription_status: "subscribed",
         router_id,
         subscription_start_date: new Date()
-          .toISOString()
-          .slice(0, 19)
-          .replace("T", " "),
+        .toISOString()
+        .slice(0, 19)
+        .replace("T", " "),
         date,
       })
       .where({ id: sub_id });
+    }
 
     req.flash("success", "subscribed successfully");
     if (is_exist) {
@@ -469,31 +457,46 @@ export const getExistUsers = async (req, res) => {
     const { searchKeyword } = req.query;
 
     let data_length = [];
+    let data_length_2 = [];
 
     if (searchKeyword) {
       const search_data_length = await knex.raw(
         `SELECT subscribed_user_details.id FROM subscribed_user_details JOIN users ON users.id = subscribed_user_details.user_id WHERE subscribed_user_details.branch_id = ${admin_id} AND subscribed_user_details.subscription_status = "branch_pending" AND users.user_unique_id LIKE '%${searchKeyword}%'`
       );
 
-      data_length = search_data_length[0];
+      const search_data_2_length = await knex.raw(
+        `SELECT adds.id,adds.user_id ,adds.delivery_date,adds.sub_total,
+        users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,
+          user_address.address,user_address.id as user_address_id ,user_address.landmark
+          FROM add_on_orders as adds 
+          JOIN users ON users.id = adds.user_id 
+          JOIN user_address ON user_address.id = adds.address_id
+          WHERE adds.branch_id = ${admin_id} AND adds.status = "branch_pending" AND  users.user_unique_id LIKE '%${searchKeyword}%'`
+      );
 
-      if (data_length.length === 0) {
+      data_length = search_data_length[0];
+      data_length_2 = search_data_2_length[0];
+      if (data_length.length === 0 && data_length_2.length === 0) {
         loading = false;
         req.query.searchKeyword = "";
-        req.flash("error", "No User  Found");
+        req.flash("error", "No User Found");
         return res.redirect("/branch_admin/subscription/get_exist_users");
       }
     } else {
       data_length = await knex("subscribed_user_details")
         .select("id")
-        .where({ subscription_status: "branch_pending", branch_id: admin_id });
+        .where({ subscription_status: "branch_pending" });
+
+      data_length_2 = await knex("add_on_orders")
+        .select("id")
+        .where({ branch_id: admin_id, status: "branch_pending" });
     }
 
     const routes = await knex("routes")
       .select("name", "id")
       .where({ status: "1", branch_id: admin_id });
 
-    if (data_length.length === 0) {
+    if (data_length.length === 0 && data_length_2.length === 0) {
       loading = false;
       return res.render("branch_admin/subscription/exist_user", {
         data: data_length,
@@ -502,6 +505,17 @@ export const getExistUsers = async (req, res) => {
       });
     }
 
+    let both_data = [];
+    if (data_length.length === 0 && data_length_2.length !== 0) {
+      both_data = data_length_2;
+    } else if (data_length.length !== 0 && data_length_2.length === 0) {
+      both_data = data_length;
+    } else {
+      both_data = [...data_length, ...data_length_2];
+    }
+
+    console.log(both_data);
+
     let {
       startingLimit,
       page,
@@ -509,66 +523,116 @@ export const getExistUsers = async (req, res) => {
       numberOfPages,
       iterator,
       endingLink,
-    } = await getPageNumber(
-      req,
-      res,
-      data_length,
-      "subscription/get_exist_users"
-    );
+    } = await getPageNumber(req, res, both_data, "subscription/get_exist_users");
 
     let results;
     let is_search = false;
+    let data = [];
+    if (data_length !== 0) {
+      if (searchKeyword) {
+        results = await knex.raw(
+          `SELECT sub.id , sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,
+        user_address.address,user_address.id as user_address_id ,user_address.landmark,products.name as product_name,products.price,products.unit_value,products.image,
+        unit_types.value,categories.name as category_name,routes.name as route_name ,routes.id as route_id
+        FROM subscribed_user_details AS sub 
+        JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id 
+        JOIN users ON users.id = sub.user_id 
+        JOIN user_address ON user_address.id = sub.user_address_id
+        JOIN routes ON routes.id = user_address.router_id
+        JOIN products ON products.id = sub.product_id
+        JOIN unit_types ON unit_types.id = products.unit_type_id
+        JOIN categories ON categories.id = products.category_id
+        WHERE sub.subscription_status = "branch_pending" AND sub.branch_id = ${admin_id} 
+        AND users.user_unique_id LIKE '%${searchKeyword}%'`
+        );
+        is_search = true;
+      } else {
+        results = await knex.raw(
+          `SELECT sub.id ,sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,
+        user_address.address,user_address.id as user_address_id ,user_address.landmark,products.name as product_name,products.price,products.unit_value,products.image,
+        unit_types.value,categories.name as category_name,routes.name as route_name ,routes.id as route_id
+        FROM subscribed_user_details AS sub 
+        JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id 
+        JOIN users ON users.id = sub.user_id 
+        JOIN user_address ON user_address.id = sub.user_address_id
+        JOIN routes ON routes.id = user_address.router_id
+        JOIN products ON products.id = sub.product_id
+        JOIN unit_types ON unit_types.id = products.unit_type_id
+        JOIN categories ON categories.id = products.category_id
+        WHERE sub.subscription_status = "branch_pending" AND sub.branch_id = ${admin_id}`
+        );
+      }
+      data = results[0];
+      for (let i = 0; i < data.length; i++) {
+        data[i].start_date = moment(data[i].start_date).format("YYYY-MM-DD");
+        data[i].image = process.env.BASE_URL + data[i].image;
+      }
+    }
+    let search_query;
     if (searchKeyword) {
-      results = await knex.raw(
-        `SELECT sub.id , sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,
-          user_address.address,user_address.landmark,routes.name as route_name, routes.id as route_id,products.name as product_name,products.price,products.unit_value,
-          unit_types.value,categories.name as category_name
-          FROM subscribed_user_details AS sub 
-          JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id 
-          JOIN users ON users.id = sub.user_id 
-          JOIN user_address ON user_address.id = sub.user_address_id
-          JOIN products ON products.id = sub.product_id
-          JOIN unit_types ON unit_types.id = products.unit_type_id
-          JOIN categories ON categories.id = products.category_id
-          JOIN routes ON routes.id = user_address.router_id
-          WHERE sub.subscription_status = "branch_pending" AND sub.branch_id = ${admin_id}
-          AND users.user_unique_id LIKE '%${searchKeyword}%' LIMIT ${startingLimit},${resultsPerPage}`
-      );
-      is_search = true;
-    } else {
-      results = await knex.raw(
-        `SELECT sub.id ,sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,
-          user_address.address,user_address.landmark,routes.name as route_name, routes.id as route_id,products.name as product_name,products.price,products.unit_value,
-          unit_types.value,categories.name as category_name
-          FROM subscribed_user_details AS sub 
-          JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id 
-          JOIN users ON users.id = sub.user_id 
-          JOIN user_address ON user_address.id = sub.user_address_id
-          JOIN products ON products.id = sub.product_id
-          JOIN unit_types ON unit_types.id = products.unit_type_id
-          JOIN categories ON categories.id = products.category_id
-          JOIN routes ON routes.id = user_address.router_id
-          WHERE sub.subscription_status = "branch_pending" AND sub.branch_id = ${admin_id} LIMIT ${startingLimit},${resultsPerPage}`
-      );
+      search_query = `AND  users.user_unique_id LIKE '%${searchKeyword}%'`;
     }
 
-    const data = results[0];
+    const add_on_order_query =
+      await knex.raw(`SELECT adds.id,adds.user_id ,adds.delivery_date,adds.sub_total,
+    users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,
+      user_address.address,user_address.id as user_address_id ,user_address.landmark
+      FROM add_on_orders as adds 
+      JOIN users ON users.id = adds.user_id 
+      JOIN user_address ON user_address.id = adds.address_id
+      WHERE adds.branch_id = ${admin_id} AND adds.status = "branch_pending" ${
+        searchKeyword ? search_query : ""
+      }`);
 
-    for (let i = 0; i < data.length; i++) {
-      data[i].start_date = moment(data[i].start_date).format("YYYY-MM-DD");
+    // console.log(add_on_order_query[0]);
+
+    let get_user_products_query;
+    if (add_on_order_query[0].length !== 0) {
+      for (let i = 0; i < add_on_order_query[0].length; i++) {
+        get_user_products_query = await knex("add_on_order_items as adds")
+          .select(
+            "adds.add_on_order_id",
+            "adds.quantity",
+            "adds.price",
+            "adds.total_price",
+            "products.name as product_name",
+            "products.image",
+            "products.unit_value",
+            "unit_types.value"
+          )
+          .join("products", "products.id", "=", "adds.product_id")
+          .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
+          .where({ "adds.add_on_order_id": add_on_order_query[0][i].id });
+
+        for (let j = 0; j < get_user_products_query.length; j++) {
+          get_user_products_query[j].image =
+            process.env.BASE_URL + get_user_products_query[j].image;
+        }
+        add_on_order_query[0][i].is_add_on = true;
+        add_on_order_query[0][i].add_on_products = get_user_products_query;
+        add_on_order_query[0][i].delivery_date = add_on_order_query[0][
+          i
+        ].delivery_date
+          .toString()
+          .slice(4, 16);
+        data.push(add_on_order_query[0][i]);
+      }
+      // console.log(get_user_products_query)
     }
+
     loading = false;
     res.render("branch_admin/subscription/exist_user", {
       data: data,
       page,
       iterator,
       endingLink,
-      numberOfPages,
+      numberOfPages: 1,
       is_search,
       searchKeyword,
       loading,
       routes,
     });
+    
   } catch (error) {
     console.log(error);
     res.redirect("/home");

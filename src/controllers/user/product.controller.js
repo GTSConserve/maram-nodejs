@@ -25,7 +25,7 @@ const remove = await remove_addonorders(product_id , delivery_date,addon_id);
 
     return res
     .status(responseCode.SUCCESS)
-    .json({ status: true, body:remove});
+    .json({ status: true, body:remove.status});
 
   } catch (error) {
     console.log(error);

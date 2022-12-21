@@ -105,7 +105,7 @@ export const getSingleUser = async (req, res) => {
   try {
     const { user_address_id } = req.query;
     const { admin_id } = req.body;
-    console.log(user_address_id,admin_id)
+    console.log(user_address_id, admin_id);
 
     const get_user_query =
       await knex.raw(`SELECT user_address.id as user_address_id,
@@ -257,56 +257,191 @@ export const getSingleUser = async (req, res) => {
   }
 };
 
-
-
-export const getAddUser = async(req,res) => {
+export const getAddUser = async (req, res) => {
   try {
+    const { admin_id } = req.body;
 
-    const get_subscription_products =  await knex("products")
-    .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
-    .select(
-      "products.id",
-      "products.name",
-      "products.unit_value",
-      "unit_types.value as unit_type",
-      "products.price"
-    )
-    .where({
-      "products.product_type_id": 1,
+    const get_routes = await knex("routes")
+      .select("id", "name")
+      .where({ status: "1", branch_id: admin_id });
+
+    const get_subscription_products = await knex("products")
+      .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
+      .select(
+        "products.id",
+        "products.name",
+        "products.unit_value",
+        "unit_types.value as unit_type",
+        "products.price"
+      )
+      .where({
+        "products.product_type_id": 1,
+        "products.status": "1"
+      });
+    const add_on_products = await knex("products")
+      .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
+      .select(
+        "products.id",
+        "products.name",
+        "products.unit_value",
+        "unit_types.value as unit_type",
+        "products.price"
+      )
+      .where({
+        "products.product_type_id": 2,
+        "products.status": "1"
+      });
+
+    const get_plan = await knex("subscription_type").select("name", "id").where({status : "1"})
+
+    res.render("branch_admin/users/add_user", {
+      get_subscription_products,
+      add_on_products,
+      get_plan,
+      get_routes,
     });
-    const add_on_products =  await knex("products")
-    .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
-    .select(
-      "products.id",
-      "products.name",
-      "products.unit_value",
-      "unit_types.value as unit_type",
-      "products.price"
-    )
-    .where({
-      "products.product_type_id": 2,
-    });
-
-    const get_plan = await knex("subscription_type").select("name","id")
-
-    console.log(get_subscription_products)
-    console.log(add_on_products)
-
-    res.render("branch_admin/users/add_user" ,{get_subscription_products , add_on_products, get_plan})
   } catch (error) {
-    console.log(error)
-    res.redirect("/home")
+    console.log(error);
+    res.redirect("/home");
   }
-}
+};
 
-
-export const createUser = async (req,res) => {
+export const createUser = async (req, res) => {
   try {
-    
-    console.log(req.body)
+    const { data, admin_id } = req.body;
+    console.log(req.body);
 
+    let user_query = {};
+    user_query.mobile_number = data.mobile_number;
+    user_query.name = data.user_name;
+
+    let get_all_users = await knex.select("id").from("users");
+    let users_length = get_all_users.length + 1;
+
+    user_query.user_unique_id = "CUSTOMER" + users_length;
+
+    if (data.email) {
+      user_query.email = data.email;
+    }
+
+    const user = await knex("users").insert(user_query);
+
+
+    const address = await knex("user_address").insert({
+      user_id: user[0],
+      branch_id: admin_id,
+      title: data.address_title,
+      address: data.address,
+      landmark: data.address_landmark,
+      type: data.address_type,
+      router_id: data.router_id ? data.router_id : null,
+    });
+
+    if (data.sub_product) {
+      let sub_product_query = {
+        start_date: data.sub_start_date,
+        user_id: user[0],
+        product_id: data.sub_product,
+        user_address_id: address[0],
+        quantity: data.sub_qty,
+        subscribe_type_id: data.your_plan,
+        branch_id: admin_id,
+        date: data.sub_start_date,
+        subscription_start_date: data.sub_start_date,
+        subscription_status: "subscribed",
+      };
+
+      if (data.router_id) {
+        sub_product_query.router_id = data.router_id;
+
+
+
+
+      }
+
+      if (data.your_plan == 3) {
+        let weekdays = await knex("weekdays").select("id", "name");
+        let store_weekdays = [];
+        for (let i = 0; i < data.custom_days.length; i++) {
+          for (let j = 0; j < weekdays.length; j++) {
+            if (weekdays[j].id == data.custom_days[i]) {
+              store_weekdays.push(weekdays[j].name);
+            }
+          }
+        }
+        sub_product_query.customized_days = JSON.stringify(store_weekdays);
+      }
+
+      await knex("subscribed_user_details").insert(sub_product_query)
+
+    }
+
+    if (data.add_on.length !== 0) {
+      const order = await knex("add_on_orders").insert({
+        user_id: user[0],
+        delivery_date: data.delivery_date,
+        address_id: address[0],
+        branch_id: admin_id,
+        status: "new_order",
+      });
+
+      let order_id = order[0];
+
+      let sub_total = 0;
+
+      for (let i = 0; i < data.add_on.length; i++) {
+        const product_price = await knex("products")
+          .select("price")
+          .where({ id: data.add_on[i].product_id });
+
+        await knex("add_on_order_items").insert({
+          add_on_order_id: order_id,
+          user_id: user[0],
+          product_id: data.add_on[i].product_id,
+          quantity: data.add_on[i].qty,
+          price: product_price[0].price,
+          total_price: product_price[0].price * data.add_on[i].qty,
+        });
+
+        sub_total = sub_total + product_price[0].price * data.add_on[i].qty;
+      }
+
+      await knex("add_on_orders").update({ sub_total }).where({ id: order_id });
+    }
+
+
+    // assign the route in user_mapping
+    if(data.router_id){
+      const users = await knex("routes")
+        .select("user_mapping")
+        .where({ id: data.router_id });
+
+      if (users.length === 0 || users[0].user_mapping === null) {
+        let arr_users = [Number(address[0])];
+        await knex("routes")
+          .update({ user_mapping: JSON.stringify(arr_users) })
+          .where({ id: data.router_id });
+      } else {
+        const get_users = await knex("routes")
+          .select("user_mapping")
+          .where({ id: data.router_id });
+        get_users[0].user_mapping.push(Number(address[0]));
+
+        await knex("routes")
+          .update({ user_mapping: JSON.stringify(get_users[0].user_mapping) })
+          .where({ id: data.router_id });
+      }
+
+      // await knex("user_address")
+      //   .update({ router_id: data.router_id })
+      //   .where({ id: address[0] });
+    }
+
+    req.flash("success","Success Fully Added")
+    res.redirect("/home?is_user_added=2")
+    // return { status: true };
   } catch (error) {
-    console.log(error)
-    res.redirect("/home")
+    console.log(error);
+    res.redirect("/home?is_user_added=1");
   }
-}
+};
