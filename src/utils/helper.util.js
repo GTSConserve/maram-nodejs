@@ -44,16 +44,19 @@ export const GetProduct = async (product, userId) => {
 
   if (userId) {
     sub_product = await knex("subscribed_user_details")
-      .select("product_id")
+      .select("product_id","id")
       .where({ user_id: userId, subscription_status: "pending" })
       .orWhere({ user_id: userId, subscription_status: "approved" });
   }
+  console.log(sub_product[0].id)
+const subscription_id = sub_product[0].id;
 
   if (product.length === 0) {
     return { status: false, message: "No Product Found" };
   }
 
   if (sub_product.length !== 0) {
+    console.log("hi")
     for (let i = 0; i < product.length; i++) {
       for (let j = 0; j < sub_product.length; j++) {
         if (product[i].id == sub_product[j].product_id) {
@@ -72,7 +75,7 @@ export const GetProduct = async (product, userId) => {
     }
   }
 
-  return { status: true, data: product,userId };
+  return { status: true, data: product,subscription_id };
 };
 
 export const getPageNumber = (req, res, data, url, is_super_admin = true) => {

@@ -15,7 +15,6 @@ export const get_subscription_or_add_on_products = async (id, userId) => {
         "products.price"
       )
       .where({ product_type_id: id });
-
     const response = await GetProduct(product, userId);
 
     if (response.status) {
@@ -170,6 +169,7 @@ export const remove_addonorders = async (product_id , delivery_date,addon_id) =>
   try{
 
    const addon_status = await knex('add_on_orders').select('status').where({id:addon_id,delivery_date:delivery_date})
+
    if(addon_status[0].status!="cancelled"){
 
     await knex("add_on_order_items").update({status : "removed"}).where({product_id:product_id,add_on_order_id:addon_id})

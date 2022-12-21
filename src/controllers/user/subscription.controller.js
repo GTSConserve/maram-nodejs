@@ -292,7 +292,7 @@ export const singleSubscription = async (req, res) => {
     }
 
     const response = {
-      additional_orders: [sub.query[0],query1[0]],
+      additional_orders: [sub.query[0]],
       this_month_item_detail: bottle_tracker
     }
 
@@ -376,7 +376,7 @@ export const changeQuantity = async (req, res) => {
   try {
     const { userId, subscription_id, quantity } = req.body;
 
-    if (!userId || !subscription_id || !quantity) {
+    if ( !subscription_id || !quantity) {
       return res
         .status(responseCode.FAILURE.BAD_REQUEST)
         .json({ status: false, message: messages.MANDATORY_ERROR });
@@ -412,7 +412,7 @@ export const changeSubscriptionplan = async (req, res) => {
       customized_days
     } = req.body;
 
-    if (!subscription_id || !subscription_plan_id || !start_date) {
+    if ( !subscription_id || !subscription_plan_id || !start_date) {
       return res
         .status(responseCode.FAILURE.BAD_REQUEST)
         .json({ status: false, message: messages.MANDATORY_ERROR });
@@ -440,7 +440,7 @@ export const pauseSubscription = async (req, res) => {
   try {
     const { userId, subscription_id, pausedates } = req.body;
 
-    if (!userId || !subscription_id || !pausedates) {
+    if ( !subscription_id || !pausedates) {
       return res
         .status(responseCode.FAILURE.BAD_REQUEST)
         .json({ status: false, message: messages.MANDATORY_ERROR });
