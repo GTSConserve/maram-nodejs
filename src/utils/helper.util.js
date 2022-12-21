@@ -68,6 +68,7 @@ let sub =[];
       console.log(product[i].subscription_id)
         } else {
           product[i].is_subscribed = "0";
+          product[i].subscription_id ="0";
         }
       }
     }
@@ -77,6 +78,7 @@ let sub =[];
     product[i].image = product[i].image ?  process.env.BASE_URL + product[i].image : null
     if (!userId || sub_product.length == 0) {
       product[i].is_subscribed = "0";
+      product[i].subscription_id ="0";
     }
   }
 

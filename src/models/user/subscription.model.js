@@ -254,8 +254,15 @@ export const change_quantity = async (userId,subscription_id,quantity,) => {
           }
           query.customized_days = JSON.stringify(store_weekdays);
 
-
-      const changeplan = await knex("subscription_users_change_plan").insert({user_id:userId,subscription_id:subscription_id,previous_subscription_type_id:previous[0].subscribe_type_id,change_subscription_type_id: subscription_plan_id,start_date:start_date,customized_days:query.customized_days})
+// console.log(query.customized_days)
+      // const changeplan = await knex("subscription_users_change_plan").insert({
+      //   user_id:userId,
+      //   subscription_id:subscription_id,
+      //   previous_subscription_type_id:previous[0].subscribe_type_id,
+      //   change_subscription_type_id: subscription_plan_id,
+      //   start_date:start_date,
+      //   customized_days:customized_days
+      // })
 
       // console.log(changeplan)
   return {status:true, message: "Successfully change subscription plan"}

@@ -409,7 +409,8 @@ export const changeQuantity = async (req, res) => {
 //  change subscription plan
 export const changeSubscriptionplan = async (req, res) => {
   try {
-    const { userId,
+    const { 
+      userId,
       subscription_id,
       subscription_plan_id,
       start_date,
@@ -446,16 +447,16 @@ export const changeSubscriptionplan = async (req, res) => {
 // pause subscription dates
 export const pauseSubscription = async (req, res) => {
   try {
-    const { userId, subscription_id, pausedates } = req.body;
+    const { userId, subscription_id, dates } = req.body;
 
-    if ( !subscription_id || !pausedates) {
+    if ( !subscription_id || !dates) {
       return res
         .status(responseCode.FAILURE.BAD_REQUEST)
         .json({ status: false, message: messages.MANDATORY_ERROR });
     }
 
-    const dates = await pause_subscriptiondate(userId, subscription_id, pausedates);
-    return res.status(responseCode.SUCCESS).json(dates)
+    const pausedates = await pause_subscriptiondate(userId, subscription_id, dates);
+    return res.status(responseCode.SUCCESS).json(pausedates)
 
   }
   catch (error) {
