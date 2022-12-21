@@ -353,7 +353,7 @@ var getAllSubscription = /*#__PURE__*/function () {
           case 7:
             for (i = 0; i < subscription_product.data.length; i++) {
               subscription_product.data[i].image = process.env.BASE_URL + subscription_product.data[i].image;
-              subscription_product.data[i].quantity = subscription_product.data[i].quantity,
+              subscription_product.data[i].quantity = subscription_product.data[i].quantity, subscription_product.data[i].price = subscription_product.data[i].price,
               // below next delivery date in static
               subscription_product.data[i].next_delivery_date = "22-Jan";
               subscription_product.data[i].next_delviery = "Next delivery 22-Jan-2022";
@@ -423,6 +423,9 @@ var singleSubscription = /*#__PURE__*/function () {
             for (i = 0; i < sub.data.length; i++) {
               sub.data[i].image = process.env.BASE_URL + sub.data[i].image;
               sub.data[i].customized_days = sub.data[i].customized_days;
+              sub.data[i].quantity = sub.data[i].quantity;
+              sub.data[i].price = sub.data[i].price;
+              sub.data[i].address_id = sub.data[i].address_id;
               sub.query[i].date = (0, _moment["default"])().format("YYYY-MM-DD");
               sub.data[i].subscription_start_date = (0, _moment["default"])().format("YYYY-MM-DD");
               sub.data[i].date = (0, _moment["default"])().format("YYYY-MM-DD");
@@ -683,14 +686,14 @@ var changeSubscriptionplan = /*#__PURE__*/function () {
 exports.changeSubscriptionplan = changeSubscriptionplan;
 var pauseSubscription = /*#__PURE__*/function () {
   var _ref14 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee14(req, res) {
-    var _req$body10, userId, subscription_id, pausedates, dates;
+    var _req$body10, userId, subscription_id, dates, pausedates;
     return _regeneratorRuntime().wrap(function _callee14$(_context14) {
       while (1) {
         switch (_context14.prev = _context14.next) {
           case 0:
             _context14.prev = 0;
-            _req$body10 = req.body, userId = _req$body10.userId, subscription_id = _req$body10.subscription_id, pausedates = _req$body10.pausedates;
-            if (!(!subscription_id || !pausedates)) {
+            _req$body10 = req.body, userId = _req$body10.userId, subscription_id = _req$body10.subscription_id, dates = _req$body10.dates;
+            if (!(!subscription_id || !dates)) {
               _context14.next = 4;
               break;
             }
@@ -700,10 +703,10 @@ var pauseSubscription = /*#__PURE__*/function () {
             }));
           case 4:
             _context14.next = 6;
-            return (0, _subscription.pause_subscriptiondate)(userId, subscription_id, pausedates);
+            return (0, _subscription.pause_subscriptiondate)(userId, subscription_id, dates);
           case 6:
-            dates = _context14.sent;
-            return _context14.abrupt("return", res.status(_responseCode["default"].SUCCESS).json(dates));
+            pausedates = _context14.sent;
+            return _context14.abrupt("return", res.status(_responseCode["default"].SUCCESS).json(pausedates));
           case 10:
             _context14.prev = 10;
             _context14.t0 = _context14["catch"](0);

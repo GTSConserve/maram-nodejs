@@ -21,7 +21,9 @@ var get_subscription_or_add_on_products = /*#__PURE__*/function () {
           case 0:
             _context.prev = 0;
             _context.next = 3;
-            return (0, _db["default"])("products").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id", "products.name", "products.image", "products.unit_value", "unit_types.value as unit_type", "products.price").where({
+            return (0, _db["default"])("products").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("subscribed_user_details", "subscribed_user_details.product_id", "=", "products.id").select("products.id", "products.name", "products.image", "products.unit_value", "unit_types.value as unit_type", "products.price"
+            // "subscribed_user_details.id as subscription_id"
+            ).where({
               product_type_id: id
             });
           case 3:
