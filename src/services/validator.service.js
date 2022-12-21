@@ -20,6 +20,21 @@ export const loginValidator = (payload) => {
   }
 };
 
+export const NumberValidator = (payload) => {
+  const mobile_number = payload.mobile_number ?? null;
+  // const email = payload.email ?? null
+  if (mobile_number ) {
+    if (phoneNumberValidator(mobile_number)) {
+      return { status: true, mobile_number};
+    } else {
+      return { status: false, message: "Invalid phone number" };
+    }
+  } else {
+    return { status: false, message: "Mandatory fields missing" };
+  }
+};
+
+
 export const userValidator = (payload) => {
   const user_name = payload.user_name ?? null;
   const password = payload.password ?? null;

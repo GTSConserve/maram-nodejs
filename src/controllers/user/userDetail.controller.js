@@ -259,10 +259,13 @@ export const checkDeliveryAddress = async (req, res) => {
     // let maram_longitude = '78.81283443421125'
 
     const check_address = await checkAddress(address_id);
+    console.log(check_address.body[0].latitude)
     
-    if (check_address.body[0].latitude <= 10.9956 && check_address.body[0].longitude <= 77.2852) {
+    if (check_address.body[0].latitude <= 10.9956 || check_address.body[0].longitude <= 77.2852) {
+      
+    
       return res
-      .status(responseCode.SUCCESS) 
+      .status(200) 
       .json({ status: true, message: "successfully delivery" });  
     }
       
@@ -281,10 +284,10 @@ export const getEmptyBottle = async (req, res) => {
 
       let get_user_bottle_detail = 
       {
-        "delivered_orders": "0",
-        "remaining_orders": "30",
-        "additional_delivered_orders": "0",
-        "additional_remaining_orders": "30"
+        "empty_bottle_in_hand_1_litre": "0",
+        "empty_bottle_in_hand_0.5_litre": "30",
+        "empty_bottle_return_1_litre": "0",
+        "empty_bottle_return_0.5_litre": "30"
       }
     
       res

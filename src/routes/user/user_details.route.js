@@ -39,9 +39,9 @@ userRouter.post("/edit_address",authenticateJWT, editAddress);
 userRouter.post("/delete_user_address",authenticateJWT, deleteUseraddress);
 userRouter.post("/check_delivery_address",authenticateJWT, checkDeliveryAddress);
 
-userRouter.post("/remove_orders", RemoveOrder);
-userRouter.post("/edit_orders", Edit);
-userRouter.post("/change_plan", changePlan);
+userRouter.post("/remove_orders", authenticateJWT,RemoveOrder);
+userRouter.post("/edit_orders", authenticateJWT,Edit);
+userRouter.post("/change_plan", authenticateJWT,changePlan);
 
 // empty bottle tracking api
 

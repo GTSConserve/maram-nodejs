@@ -4,6 +4,9 @@ import { get_Appcontrol, get_riderdetails, update_endtour, update_location, upda
 import responseCode from '../../constants/responseCode';
 import knex from '../../services/db.service'
 import { userValidator } from '../../services/validator.service';
+import id from 'date-fns/locale/id/index';
+import { createToken } from "../../services/jwt.service";
+import { updateRiderToken } from "../../models/rider/rider.model";
 
 
 
@@ -34,73 +37,63 @@ export const getAppControls = async (req, res) => {
 // rider login 
 export const login = async (req, res) => {
   try{
-    console.log("hi");
+    
     const payload = userValidator(req.body);
     const { user_name, password} = payload;
-console.log(payload)
+
     if (payload.status) {
-      console.log("hi");
-        // const checkPhoneNumber = await userLogin(password)
-       
-        // const checkPhoneNumber = await loginUser(mobile_number)
+      
         const checkPassword = await knex
           .select("id")
           .from("rider_details")
-          .where({ password });
+          .where({ password,user_name });
 
+          console.log(checkPassword);
          let query;
-        //  let userId = 0
-       
-        // const otp = process.env.USER_OTP || Math.floor(1000 + Math.random() * 9000)
-        // const otp = "1234";
-  
-        let users = await knex.select("id").from("rider_details");
-        let users_length = users.length + 1;
-  
-        console.log(checkPassword);
-  
-        // if (checkPassword.length === 0) {
-        //   query = await insertUser(payload,users_length);
-  
-        //   userId = users_length;
-        // } 
-        // else {
-        //   query = await updateUserOtp(payload);
-  
-        //   userId = checkPassword[0].user_id;
-        // }
 
-        return res
-        .status(200)
-        .json({
-          status: true,
-          user_id:checkPassword[0].id,
-          message: "messageCode.LOGINMESSAGE.OTP_SENT",
-        });
+         if (checkPassword[0].id ) {
+          const tokens = createToken({
+            user_name : user_name,
+          });
   
-      //   if (query.status === responseCode.SUCCESS) {
-      //     return res
-      //       .status(query.status)
-      //       .json({
-      //         status: true,
-      //         user_id: userId,
-      //         message: messageCode.LOGINMESSAGE.OTP_SENT,
-      //       });
-      //   } else {
-      //     res
-      //       .status(query.status)
-      //       .json({ status: false, message: query.message });
-      //   }
-      // } else {
-      //   res
-      //     .status(responseCode.FAILURE.BAD_REQUEST)
-      //     .json({ status: false, message: payload.message });
-      // }
+          if (tokens.status) {
+            await updateRiderToken(tokens.refreshToken, user_name);
+  
+            res
+              .status(responseCode.SUCCESS)
+              .json({
+                status: true,
+                token: tokens.token,
+                delivary_partner_id:checkPassword[0].id,
+                message: "Rider login successfully",
+                
+              });
+          } else {
+            res
+              .status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
+              .json({ status: false, message: "Token generation failed" });
+          }
+        } else {
+          res
+            .status(responseCode.FAILURE.BAD_REQUEST)
+            .json({ status: false, message: "otp mismatch" });
+        }
+      }
+            
+        // return res
+        // .status(200)
+        // .json({
+        //   status: true,
+        //   user_id:checkPassword[0].id,
+        //   message: "Rider login successfully",
+        // });
+  
+  
   }
-  }
+  
   catch (error) {
     console.error('Whooops! This broke with error: ', error)
-    res.status(500).send('Error!')
+    res.status(500).json({message:"user_id and password not matching"})
   }
   }
   

@@ -4,7 +4,19 @@ import responseCode from "../../constants/responseCode";
 
 
 
-
+export const updateRiderToken = async (refresh_token, user_name) => {
+  const query = await knex("rider_details")
+    .update({ refresh_token: refresh_token })
+    .where({ user_name: user_name });
+  try {
+    return { status: responseCode.SUCCESS, body: query };
+  } catch (error) {
+    return {
+      status: responseCode.FAILURE.INTERNAL_SERVER_ERROR,
+      message: error.message,
+    };
+  }
+};
 
 export const userLogin = async (password) => {
 

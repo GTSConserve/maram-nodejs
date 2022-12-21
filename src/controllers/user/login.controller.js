@@ -11,6 +11,7 @@ import messageCode from "../../constants/messages";
 import { createToken } from "../../services/jwt.service";
 import {
   loginValidator,
+  NumberValidator,
   verifyOtpValidator,
 } from "../../services/validator.service";
 import format from "date-fns/format";
@@ -188,27 +189,23 @@ export const userMobileNumberChange = async (req, res) => {
   try {
 
     const payload = req.body;
-    const payload1 = phoneNumberValidator(payload.mobile_number);
+    const payload1 = NumberValidator(req.body);
  
     const {user_id,mobile_number} = payload;
 
-    console.log(payload)
     if (payload1.status) {
-      console.log("checkPhoneNumber")
+    
       // const checkPhoneNumber = await loginUser(mobile_number)
       const checkPhoneNumber = await knex
-        .select("id")
+        .update({mobile_number:mobile_number})
         .from("users")
-        .where({ mobile_number });
-        console.log(checkPhoneNumber)
+        .where({ id:user_id });
+        // console.log(checkPhoneNumber)
       let query;
-      let userId = 0;
       // const otp = process.env.USER_OTP || Math.floor(1000 + Math.random() * 9000)
       const otp = "1234";
 
-      let users = await knex.select("id").from("users").update({mobile_number});
-
-      console.log(checkPhoneNumber);
+      
 
       if (checkPhoneNumber.length === 0) {
         query = await insertUser(payload, otp);
@@ -223,7 +220,7 @@ export const userMobileNumberChange = async (req, res) => {
           .status(query.status)
           .json({
             status: true,
-            user_id: userId,
+            user_id: payload.user_id,
             message: messageCode.LOGINMESSAGE.OTP_SENT,
           });
       } else {
