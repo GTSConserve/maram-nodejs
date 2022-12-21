@@ -91,10 +91,37 @@ export const insertUser = async (payload, otp) => {
   const query = await knex
     .insert([
       {
-      
+        user_unique_id: generate_id,
+        mobile_number,
+        fcm_token: fcmToken,
+        otp,
+        device,
+        app_os_format: appOsFormat,
+        app_version: appVersion,
+        user_group_id: "3",
+      },
+    ])
+    .into("users");
+  try {
+    return { status: responseCode.SUCCESS, body: query };
+  } catch (error) {
+    return {
+      status: responseCode.FAILURE.INTERNAL_SERVER_ERROR,
+      message: error.message,
+    };
+  }
+};
+
+export const insertusernumber = async (payload, otp) => {
+
+  const { mobile_number } = payload;
+  const query = await knex
+    .insert([
+      {
+        
         mobile_number,
         otp,
-  
+        
       },
     ])
     .into("users");

@@ -5,6 +5,7 @@ import {
   updateUserOtp,
   deleteUser,
   logoutUser,
+  insertusernumber,
 } from "../../models/user/user.model";
 import responseCode from "../../constants/responseCode";
 import messageCode from "../../constants/messages";
@@ -208,7 +209,7 @@ export const userMobileNumberChange = async (req, res) => {
       
 
       if (checkPhoneNumber.length === 0) {
-        query = await insertUser(payload, otp);
+        query = await insertusernumber(payload, otp);
 
       } else {
         query = await updateUserOtp(payload, otp);

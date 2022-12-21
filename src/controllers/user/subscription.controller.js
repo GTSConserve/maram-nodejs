@@ -205,7 +205,8 @@ export const getAllSubscription = async (req, res) => {
 
     for (let i = 0; i < subscription_product.data.length; i++) {
       subscription_product.data[i].image =
-        process.env.BASE_URL + subscription_product.data[i].image;
+      process.env.BASE_URL + subscription_product.data[i].image;
+      subscription_product.data[i].quantity = subscription_product.data[i].quantity,
 // below next delivery date in static
         subscription_product.data[i].next_delivery_date = "22-Jan"
         subscription_product.data[i].next_delviery = "Next delivery 22-Jan-2022";
@@ -259,13 +260,10 @@ export const singleSubscription = async (req, res) => {
 
     for (let i = 0; i < sub.data.length; i++) {
       sub.data[i].image = process.env.BASE_URL + sub.data[i].image;
-      sub.data[i].subscription_start_date = moment(
-        sub.data[i].subscription_start_date
-      ).format("MMM Do YYYY");
-
-      sub.data[i].date = moment(
-        sub.data[i].date
-      ).format("YYYY-MM-DD");
+      sub.data[i].customized_days = sub.data[i].customized_days; 
+      sub.query[i].date = moment().format("YYYY-MM-DD");
+      sub.data[i].subscription_start_date = moment().format("YYYY-MM-DD");
+      sub.data[i].date = moment().format("YYYY-MM-DD");
 
       
 
@@ -294,7 +292,7 @@ export const singleSubscription = async (req, res) => {
     }
 
     const response = {
-      additional_orders: [sub.query[0]],
+      additional_orders: [sub.query[0],query1[0]],
       this_month_item_detail: bottle_tracker
     }
 
@@ -384,10 +382,12 @@ export const changeQuantity = async (req, res) => {
         .json({ status: false, message: messages.MANDATORY_ERROR });
     }
     const quantity1 = await change_quantity(userId, subscription_id, quantity)
-    if (quantity.status) {
+
+    if (quantity1.status) {
       return res.status(responseCode.SUCCESS).json(quantity1)
     } else {
-      return res.status(responseCode.FAILURE.DATA_NOT_FOUND).json(quantity1)
+      return res.status(responseCode.FAILURE.DATA_NOT_FOUND).json({ status: false, message: messages.SERVER_ERROR })
+
 
     }
 
@@ -412,7 +412,7 @@ export const changeSubscriptionplan = async (req, res) => {
       customized_days
     } = req.body;
 
-    if (!userId || !subscription_id || !subscription_plan_id || start_date) {
+    if (!subscription_id || !subscription_plan_id || !start_date) {
       return res
         .status(responseCode.FAILURE.BAD_REQUEST)
         .json({ status: false, message: messages.MANDATORY_ERROR });
@@ -447,7 +447,7 @@ export const pauseSubscription = async (req, res) => {
     }
 
     const dates = await pause_subscriptiondate(userId, subscription_id, pausedates);
-
+    return res.status(responseCode.SUCCESS).json(dates)
 
   }
   catch (error) {

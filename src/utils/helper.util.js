@@ -72,7 +72,7 @@ export const GetProduct = async (product, userId) => {
     }
   }
 
-  return { status: true, data: product };
+  return { status: true, data: product,userId };
 };
 
 export const getPageNumber = (req, res, data, url, is_super_admin = true) => {
