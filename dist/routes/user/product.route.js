@@ -20,5 +20,9 @@ productRouter.get("/get_add_on_product", _authToken.authenticateJWT, _product.ge
 productRouter.post("/get_single_product", _authToken.authenticateJWT, _product.getSingleProduct);
 productRouter.post("/create_add_on_products", _authToken.authenticateJWT, _product.addon_Order);
 productRouter.post("/remove_add_on_products", _authToken.authenticateJWT, _product.removeAddOnOrder);
+
+// next day delivery product api for static
+
+productRouter.post("/next_day_product", _authToken.authenticateJWT, _product.nextDayProduct);
 var _default = productRouter;
 exports["default"] = _default;

@@ -527,6 +527,7 @@ var createTable = /*#__PURE__*/function () {
                   t.integer("additional_order_qty").nullable();
                   t.integer("total_qty").nullable();
                   t.enu("status", ["pending", "delivered", "undelivered"]).defaultTo("pending");
+                  t.enu("tour_status", ["0", "1", "2"]).defaultTo("0");
                   t.timestamps(true, true);
                 });
               }
