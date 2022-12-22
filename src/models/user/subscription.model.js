@@ -140,14 +140,14 @@ export const single_subscription = async (userId, sub_id) => {
       .join("user_address", "user_address.id", "=", "sub.user_address_id")
       .where({ "sub.user_id": userId, "sub.id": sub_id });
 
-      const query1 = await knex("additional_orders").select("date")
-      console.log(query1[0].date)
-      // .moment(query1[0].additional_orders.date).format('YYYY-MM-DD');
+      // const query1 = await knex("additional_orders").select("date")
+      // console.log(query1[0].date)
+      // // .moment(query1[0].additional_orders.date).format('YYYY-MM-DD');
 
       const query = await knex("additional_orders")
       .select(
         "additional_orders.id",
-        // "additional_orders.date",
+        "additional_orders.date",
         "additional_orders.quantity",
         "products.name as product_name",
         "products.image",
@@ -165,7 +165,7 @@ export const single_subscription = async (userId, sub_id) => {
       return { status: false, message: "No Subscription Found" };
     }
 
-    return { status: true, data: products, query,query1};
+    return { status: true, data: products, query};
   } catch (error) {
     console.log(error);
     return { status: false, message: error };

@@ -87,7 +87,7 @@ let sub =[];
       // console.log(product[i].subscription_id)
         } else {
           product[i].is_subscribed = "0";
-          product[i].subscription_id ="0";
+          product[i].subscription_id = 0;
         }
       }
     }

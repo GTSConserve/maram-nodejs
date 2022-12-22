@@ -1,6 +1,6 @@
 import express from 'express';
 import messages from '../../constants/messages';
-import { get_Appcontrol, get_riderdetails, update_endtour, update_location, update_riderstatus, update_starttour, userLogin } from '../../models/rider/rider.model';
+import { get_Appcontrol, get_riderdetails, statusupdate, update_endtour, update_location, update_riderstatus, update_starttour, userLogin,getsingleorder } from '../../models/rider/rider.model';
 import responseCode from '../../constants/responseCode';
 import knex from '../../services/db.service'
 import { userValidator } from '../../services/validator.service';
@@ -215,6 +215,53 @@ export const updateEndtour = async (req,res) => {
 
   }
   catch(error){
+    console.log(error);
+    return res.status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
+    .json({ status: false, message: messages.SERVER_ERROR });
+  }
+}
+
+
+// get single order 
+export const getSingleorder = async (req,res) => {
+  try{
+      const {user_id,order_id,delivery_partner_id,order_status} = req.body;
+
+      if(!user_id  ){
+        return res
+       .status(responseCode.FAILURE.BAD_REQUEST)
+       .json({ status: false, message: "Mandatory field Is Missing" });
+      }
+     const order = await getsingleorder (order_id,delivery_partner_id,order_status);
+
+     return res.status(responseCode.SUCCESS).json({status: true,order })
+  }
+  catch(error){
+    console.log(error);
+    return res.status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
+    .json({ status: false, message: messages.SERVER_ERROR });
+  }
+  }
+
+
+
+
+// order_status_update
+export const orderStatusUpdate = async (req,res) => {
+  try {
+        const {user_id,order_id,order_status,subscription_id,products,addons} = req.body;
+        if(!user_id || !order_id || !order_status){
+          return res
+          .status(responseCode.FAILURE.BAD_REQUEST)
+          .json({ status: false, message: "Mandatory field Is Missing" });
+         }
+
+        const orderstatus = await statusupdate(user_id,order_id,order_status,subscription_id,products,addons);
+
+
+
+        }
+   catch (error) {
     console.log(error);
     return res.status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
     .json({ status: false, message: messages.SERVER_ERROR });

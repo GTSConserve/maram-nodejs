@@ -17,10 +17,9 @@ export const get_subscription_or_add_on_products = async (id, userId) => {
         "products.demo_price"
         // "subscribed_user_details.id as subscription_id"
       )
-      .where({ product_type_id: id });
+      .where({ product_type_id: id })
     const response = await GetProduct(product, userId);
 
-    
     if (response.status) {
       return { status: true, data: response.data };
     } else {
@@ -172,7 +171,7 @@ export const addon_order = async (
 
 export const remove_addonorders = async (product_id , delivery_date,addon_id) => {
   try{
-
+      console.log(product_id)
    const addon_status = await knex('add_on_orders').select('status').where({id:addon_id,delivery_date:delivery_date})
 
    if(addon_status[0].status!="cancelled"){
@@ -189,7 +188,8 @@ export const remove_addonorders = async (product_id , delivery_date,addon_id) =>
   const update = await knex('add_on_orders').update({sub_total:total}).where({id:addon_id,delivery_date:delivery_date});
 
   const status = await knex('add_on_orders').update({status:"cancelled"}).where({sub_total:0})
-return{status:true,message:"Successfully removed"};
+
+  return{status:true,message:"Successfully removed"};
   }
   
   else{

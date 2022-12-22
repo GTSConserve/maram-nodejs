@@ -266,9 +266,9 @@ export const singleSubscription = async (req, res) => {
       sub.data[i].quantity = sub.data[i].quantity; 
       sub.data[i].price = sub.data[i].price; 
       sub.data[i].address_id = sub.data[i].address_id; 
-      sub.query[i].date = moment().format("YYYY-MM-DD");
+      sub.query[i].date = [moment().format("YYYY-MM-DD")];
       sub.data[i].subscription_start_date = moment().format("YYYY-MM-DD");
-      sub.data[i].date = sub.data[i].date;
+      sub.data[i].date = [moment().format("YYYY-MM-DD")];
 
       
 
