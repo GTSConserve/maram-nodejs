@@ -15,7 +15,7 @@ var productRouter = _express["default"].Router({
 productRouter.post("/get_categories", _product.getCategories);
 productRouter.post("/get_products", _product.getProducts);
 productRouter.post("/search_products", _product.searchProducts);
-productRouter.get("/get_subscription_product", _product.getSubscriptionProducts);
+productRouter.get("/get_subscription_product", _authToken.authenticateJWT, _product.getSubscriptionProducts);
 productRouter.get("/get_add_on_product", _authToken.authenticateJWT, _product.getAddOnProducts);
 productRouter.post("/get_single_product", _authToken.authenticateJWT, _product.getSingleProduct);
 productRouter.post("/create_add_on_products", _authToken.authenticateJWT, _product.addon_Order);

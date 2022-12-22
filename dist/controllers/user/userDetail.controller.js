@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updateUser = exports.getUser = exports.getEmptyBottle = exports.getAddress = exports.editAddress = exports.deleteUseraddress = exports.checkDeliveryAddress = exports.changePlan = exports.addUserAddress = exports.RemoveOrder = exports.Edit = void 0;
+exports.userAddressChange = exports.updateUser = exports.getUser = exports.getEmptyBottle = exports.getAddress = exports.editAddress = exports.deleteUseraddress = exports.checkDeliveryAddress = exports.changePlan = exports.addUserAddress = exports.RemoveOrder = exports.Edit = void 0;
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 var _jwt = require("../../services/jwt.service");
 var _validator = require("../../services/validator.service");
@@ -542,3 +542,35 @@ var getEmptyBottle = /*#__PURE__*/function () {
   };
 }();
 exports.getEmptyBottle = getEmptyBottle;
+var userAddressChange = /*#__PURE__*/function () {
+  var _ref12 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee12(req, res) {
+    var _req$body6, userId, title, address, landmark, type, address_id;
+    return _regeneratorRuntime().wrap(function _callee12$(_context12) {
+      while (1) {
+        switch (_context12.prev = _context12.next) {
+          case 0:
+            try {
+              _req$body6 = req.body, userId = _req$body6.userId, title = _req$body6.title, address = _req$body6.address, landmark = _req$body6.landmark, type = _req$body6.type, address_id = _req$body6.address_id; // await edit_address(userId, address_id, title, address, landmark, type);
+              res.status(_responseCode["default"].SUCCESS).json({
+                status: true,
+                message: "updated successfully"
+              });
+            } catch (error) {
+              console.log(error);
+              res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
+                status: false,
+                error: error
+              });
+            }
+          case 1:
+          case "end":
+            return _context12.stop();
+        }
+      }
+    }, _callee12);
+  }));
+  return function userAddressChange(_x23, _x24) {
+    return _ref12.apply(this, arguments);
+  };
+}();
+exports.userAddressChange = userAddressChange;

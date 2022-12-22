@@ -111,6 +111,9 @@ var GetProduct = /*#__PURE__*/function () {
             }).orWhere({
               user_id: userId,
               subscription_status: "approved"
+            }).orWhere({
+              user_id: userId,
+              subscription_status: "subscribed"
             });
           case 4:
             sub_product = _context2.sent;
@@ -153,6 +156,9 @@ var GetProduct = /*#__PURE__*/function () {
             }).orWhere({
               user_id: userId,
               subscription_status: "approved"
+            }).orWhere({
+              user_id: userId,
+              subscription_status: "subscribed"
             });
           case 17:
             sub = _context2.sent;

@@ -79,7 +79,7 @@ var getSingleProduct = /*#__PURE__*/function () {
             }));
           case 4:
             _context2.next = 6;
-            return (0, _db["default"])("products").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id as product_id", "products.name", "products.image", "products.unit_value", "unit_types.value as unit_type", "products.price").where({
+            return (0, _db["default"])("products").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id as product_id", "products.name", "products.image", "products.unit_value", "unit_types.value as unit_type", "products.price", "products.demo_price").where({
               "products.id": product_id
             });
           case 6:

@@ -21,7 +21,7 @@ var get_subscription_or_add_on_products = /*#__PURE__*/function () {
           case 0:
             _context.prev = 0;
             _context.next = 3;
-            return (0, _db["default"])("products").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("subscribed_user_details", "subscribed_user_details.product_id", "=", "products.id").select("products.id", "products.name", "products.image", "products.unit_value", "unit_types.value as unit_type", "products.price"
+            return (0, _db["default"])("products").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("subscribed_user_details", "subscribed_user_details.product_id", "=", "products.id").select("products.id", "products.name", "products.image", "products.unit_value", "unit_types.value as unit_type", "products.price", "products.demo_price"
             // "subscribed_user_details.id as subscription_id"
             ).where({
               product_type_id: id
@@ -77,7 +77,7 @@ var get_products = /*#__PURE__*/function () {
           case 0:
             _context2.prev = 0;
             _context2.next = 3;
-            return (0, _db["default"])("products").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id as product_id", "products.name", "products.image", "products.unit_value", "unit_types.value as unit_type", "products.price").where({
+            return (0, _db["default"])("products").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id as product_id", "products.name", "products.image", "products.unit_value", "unit_types.value as unit_type", "products.price", "products.demo_price").where({
               category_id: category_id,
               product_type_id: product_type_id
             });
@@ -170,7 +170,7 @@ var search_products = /*#__PURE__*/function () {
           case 0:
             _context4.prev = 0;
             _context4.next = 3;
-            return _db["default"].raw("\n                      SELECT products.id,products.name,products.image,products.unit_value,\n                      unit_types.value as unit_type,products.price FROM products\n                      JOIN unit_types ON unit_types.id = products.unit_type_id\n                      WHERE products.product_type_id = ".concat(product_type_id, " \n                      AND  products.name  LIKE '%").concat(search_keyword, "%'"));
+            return _db["default"].raw("\n                      SELECT products.id,products.name,products.image,products.unit_value,products.demo_price,\n                      unit_types.value as unit_type,products.price FROM products\n                      JOIN unit_types ON unit_types.id = products.unit_type_id\n                      WHERE products.product_type_id = ".concat(product_type_id, " \n                      AND  products.name  LIKE '%").concat(search_keyword, "%'"));
           case 3:
             product = _context4.sent;
             _context4.next = 6;
