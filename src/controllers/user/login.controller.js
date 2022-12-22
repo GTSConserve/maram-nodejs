@@ -195,7 +195,7 @@ export const userMobileNumberChange = async (req,res) => {
 
       await knex("users").update({mobile_number : mobile_number, otp:otp }).where({id : userId})
 
-      return res.status(responseCode.SUCCESS).json({status : true , user_id:userId, message : "mobile number change Successfully"})
+      return res.status(responseCode.SUCCESS).json({status : true , user_id:userId, message : "OTP sended to your registered phone number"})
 
   } catch (error) {
     console.log(error)
