@@ -330,7 +330,7 @@ var userMobileNumberChange = /*#__PURE__*/function () {
             return _context5.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               status: true,
               user_id: userId,
-              message: "mobile number change Successfully"
+              message: "OTP sended to your registered phone number"
             }));
           case 8:
             _context5.prev = 8;
