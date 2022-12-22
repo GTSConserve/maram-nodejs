@@ -94,7 +94,7 @@ export const get_subscription_product = async (userId) => {
         "subscription_type.id",
         "=",
         "sub.subscribe_type_id"
-      )
+      ).orderBy('subscription_id','desc')
       .where({ user_id: userId });
 
     if (products.length === 0) {

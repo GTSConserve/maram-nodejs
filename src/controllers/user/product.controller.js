@@ -1,5 +1,6 @@
 import responseCode from "../../constants/responseCode";
 import messages from "../../constants/messages";
+import { GetProduct } from "../../utils/helper.util";
 import {
   get_products,
   get_categories,
@@ -57,7 +58,8 @@ export const getSingleProduct = async (req, res) => {
         "products.demo_price"
         
       )
-      .where({ "products.id": product_id });
+      .where({ "products.id": product_id })
+      const response = await GetProduct(product);
 
     if (product.length === 0) {
       return res
@@ -69,7 +71,7 @@ export const getSingleProduct = async (req, res) => {
 
     return res
       .status(responseCode.SUCCESS)
-      .json({ status: true, data: product[0] });
+      .json({ status: true, data: response.data});
   } catch (error) {
     console.log(error);
     return res
@@ -156,9 +158,9 @@ export const getCategories = async (req, res) => {
 
 export const getSubscriptionProducts = async (req, res) => {
   try {
-    const { userId } = req.body;
+    const { userId, product_type_id } = req.body;
 
-    const products = await get_subscription_or_add_on_products( userId);
+    const products = await get_subscription_or_add_on_products( userId, product_type_id);
     if (!products.status) {
       return res
         .status(responseCode.FAILURE.DATA_NOT_FOUND)
