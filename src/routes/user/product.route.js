@@ -8,7 +8,8 @@ import {
   searchProducts,
   addon_Order,
   getSingleProduct,
-  removeAddOnOrder
+  removeAddOnOrder,
+  nextDayProduct
 } from "../../controllers/user/product.controller";
 
 const productRouter = express.Router({
@@ -27,5 +28,10 @@ productRouter.post("/get_single_product", authenticateJWT,getSingleProduct);
 
 productRouter.post("/create_add_on_products", authenticateJWT, addon_Order);
 productRouter.post("/remove_add_on_products", authenticateJWT,removeAddOnOrder);
+
+// next day delivery product api for static
+
+productRouter.post("/next_day_product", authenticateJWT,nextDayProduct);
+
 
 export default productRouter;

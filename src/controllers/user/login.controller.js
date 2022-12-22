@@ -237,19 +237,76 @@ export const logout = async (req, res) => {
 //   }
 // };
 
-export const userMobileNumberChange = async (req,res) => {
+// export const userMobileNumberChange = async (req,res) => {
+//   try {
+//       const {userId,mobile_number} = req.body
+
+//       await knex("users").update({mobile_number : mobile_number}).where({id : userId})
+
+//       return res.status(responseCode.SUCCESS).json({status : true , user_id:userId, message : "mobile number change Successfully"})
+
+//   } catch (error) {
+//     console.log(error)
+//     return res.status(responseCode.FAILURE.INTERNAL_SERVER_ERROR).json({status : false , message : messages.SERVER_ERROR})
+//   }
+// }
+
+
+export const userMobileNumberChange = async (req, res) => {
   try {
-      const {userId,mobile_number} = req.body
+    const payload = NumberValidator(req.body);
 
-      await knex("users").update({mobile_number : mobile_number}).where({id : userId})
+    const { mobile_number, user_id } = payload;
+    if (payload.status) {
+      // const checkPhoneNumber = await loginUser(mobile_number)
+      const checkPhoneNumber = await knex
+        .select("id")
+        .from("users")
+        .where({ mobile_number });
+        console.log(checkPhoneNumber)
+      let query;
+      let userId = 0;
+      // const otp = process.env.USER_OTP || Math.floor(1000 + Math.random() * 9000)
+      const otp = "1234";
 
-      return res.status(responseCode.SUCCESS).json({status : true , user_id:userId, message : "mobile number change Successfully"})
+      let users = await knex.select("id").from("users");
+     
 
+      console.log(checkPhoneNumber);
+
+      if (checkPhoneNumber.length === 0) {
+        query = await insertusernumber(payload, otp);
+
+      
+      } else {
+        query = await updateUserOtp(payload, otp);
+
+        userId = checkPhoneNumber[0].id;
+      } 
+
+      if (query.status === responseCode.SUCCESS) {
+        return res
+          .status(query.status)
+          .json({
+            status: true,
+            user_id: userId,
+            message: messageCode.LOGINMESSAGE.OTP_SENT,
+          });
+      } else {
+        res
+          .status(query.status)
+          .json({ status: false, message: query.message });
+      }
+    } else {
+      res
+        .status(responseCode.FAILURE.BAD_REQUEST)
+        .json({ status: false, message: payload.message });
+    }
   } catch (error) {
-    console.log(error)
-    return res.status(responseCode.FAILURE.INTERNAL_SERVER_ERROR).json({status : false , message : messages.SERVER_ERROR})
+    logger.error("Whooops! This broke with error: ", error);
+    res.status(500).send("Error!");
   }
-}
+};
 
 export const UserverifyOtp = async (req, res) => {
   try {

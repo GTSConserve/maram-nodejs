@@ -16,7 +16,7 @@ loginRouter.post('/account_delete',authenticateJWT, accountDelete)
 // user profile mobile number change api
 
 loginRouter.post('/user_mobile_number_change',authenticateJWT,userMobileNumberChange)
-loginRouter.post('/user_verifyotp', UserverifyOtp)
+loginRouter.post('/user_verifyotp', authenticateJWT,UserverifyOtp)
 
 
 export default loginRouter 
