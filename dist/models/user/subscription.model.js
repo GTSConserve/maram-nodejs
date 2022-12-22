@@ -148,7 +148,7 @@ var get_subscription_product = /*#__PURE__*/function () {
 exports.get_subscription_product = get_subscription_product;
 var single_subscription = /*#__PURE__*/function () {
   var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(userId, sub_id) {
-    var products, query1, query;
+    var products, query;
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
@@ -164,48 +164,39 @@ var single_subscription = /*#__PURE__*/function () {
           case 3:
             products = _context3.sent;
             _context3.next = 6;
-            return (0, _db["default"])("additional_orders").select("date");
-          case 6:
-            query1 = _context3.sent;
-            console.log(query1[0].date);
-            // .moment(query1[0].additional_orders.date).format('YYYY-MM-DD');
-            _context3.next = 10;
-            return (0, _db["default"])("additional_orders").select("additional_orders.id",
-            // "additional_orders.date",
-            "additional_orders.quantity", "products.name as product_name", "products.image", "products.unit_value", "unit_types.value as unit_type"
+            return (0, _db["default"])("additional_orders").select("additional_orders.id", "additional_orders.date", "additional_orders.quantity", "products.name as product_name", "products.image", "products.unit_value", "unit_types.value as unit_type"
             // "user_address.address",
             ).join("products", "products.id", "=", "additional_orders.id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("user_address", "user_address.id", "=", "additional_orders.subscription_id");
-          case 10:
+          case 6:
             query = _context3.sent;
             if (!(products.length === 0)) {
-              _context3.next = 13;
+              _context3.next = 9;
               break;
             }
             return _context3.abrupt("return", {
               status: false,
               message: "No Subscription Found"
             });
-          case 13:
+          case 9:
             return _context3.abrupt("return", {
               status: true,
               data: products,
-              query: query,
-              query1: query1
+              query: query
             });
-          case 16:
-            _context3.prev = 16;
+          case 12:
+            _context3.prev = 12;
             _context3.t0 = _context3["catch"](0);
             console.log(_context3.t0);
             return _context3.abrupt("return", {
               status: false,
               message: _context3.t0
             });
-          case 20:
+          case 16:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3, null, [[0, 16]]);
+    }, _callee3, null, [[0, 12]]);
   }));
   return function single_subscription(_x9, _x10) {
     return _ref3.apply(this, arguments);

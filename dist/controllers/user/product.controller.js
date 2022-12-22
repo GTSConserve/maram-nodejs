@@ -260,7 +260,7 @@ var getSubscriptionProducts = /*#__PURE__*/function () {
             _context5.prev = 0;
             userId = req.body.userId;
             _context5.next = 4;
-            return (0, _product.get_subscription_or_add_on_products)("1", userId);
+            return (0, _product.get_subscription_or_add_on_products)(userId);
           case 4:
             products = _context5.sent;
             if (products.status) {
@@ -464,7 +464,8 @@ var nextDayProduct = /*#__PURE__*/function () {
               "product_name": "Farm Fresh Natural Milk",
               "product_image": "https://i.pinimg.com/originals/af/31/cf/af31cff157e5304e32a3777c8245ae8c.jpg",
               "product_status": 1,
-              "product_variation": "1.5 litres"
+              "product_variation": "1.5 litres",
+              "Product price": 100
             }];
             if (static_response) {
               _context9.next = 5;

@@ -319,84 +319,85 @@ var remove_addonorders = /*#__PURE__*/function () {
         switch (_context6.prev = _context6.next) {
           case 0:
             _context6.prev = 0;
-            _context6.next = 3;
+            console.log(product_id);
+            _context6.next = 4;
             return (0, _db["default"])('add_on_orders').select('status').where({
               id: addon_id,
               delivery_date: delivery_date
             });
-          case 3:
+          case 4:
             addon_status = _context6.sent;
             if (!(addon_status[0].status != "cancelled")) {
-              _context6.next = 23;
+              _context6.next = 24;
               break;
             }
-            _context6.next = 7;
+            _context6.next = 8;
             return (0, _db["default"])("add_on_order_items").update({
               status: "removed"
             }).where({
               product_id: product_id,
               add_on_order_id: addon_id
             });
-          case 7:
-            _context6.next = 9;
+          case 8:
+            _context6.next = 10;
             return (0, _db["default"])('add_on_order_items').select("price").where({
               product_id: product_id,
               add_on_order_id: addon_id,
               status: "removed"
             });
-          case 9:
+          case 10:
             select = _context6.sent;
-            _context6.next = 12;
+            _context6.next = 13;
             return (0, _db["default"])('add_on_orders').select("sub_total").where({
               id: addon_id,
               delivery_date: delivery_date
             });
-          case 12:
+          case 13:
             select1 = _context6.sent;
             total = select1[0].sub_total - select[0].price;
-            _context6.next = 16;
+            _context6.next = 17;
             return (0, _db["default"])('add_on_orders').update({
               sub_total: total
             }).where({
               id: addon_id,
               delivery_date: delivery_date
             });
-          case 16:
+          case 17:
             update = _context6.sent;
-            _context6.next = 19;
+            _context6.next = 20;
             return (0, _db["default"])('add_on_orders').update({
               status: "cancelled"
             }).where({
               sub_total: 0
             });
-          case 19:
+          case 20:
             status = _context6.sent;
             return _context6.abrupt("return", {
               status: true,
               message: "Successfully removed"
             });
-          case 23:
+          case 24:
             return _context6.abrupt("return", {
               status: false,
               message: "already cancelled"
             });
-          case 24:
-            _context6.next = 30;
+          case 25:
+            _context6.next = 31;
             break;
-          case 26:
-            _context6.prev = 26;
+          case 27:
+            _context6.prev = 27;
             _context6.t0 = _context6["catch"](0);
             console.log(_context6.t0);
             return _context6.abrupt("return", {
               status: false,
               message: "Cannot Remove addon order"
             });
-          case 30:
+          case 31:
           case "end":
             return _context6.stop();
         }
       }
-    }, _callee6, null, [[0, 26]]);
+    }, _callee6, null, [[0, 27]]);
   }));
   return function remove_addonorders(_x14, _x15, _x16) {
     return _ref6.apply(this, arguments);

@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.userLogin = exports.update_starttour = exports.update_riderstatus = exports.update_location = exports.update_endtour = exports.updateRiderToken = exports.insertUser = exports.get_riderdetails = exports.get_Appcontrol = void 0;
+exports.userLogin = exports.update_starttour = exports.update_riderstatus = exports.update_location = exports.update_endtour = exports.updateRiderToken = exports.statusupdate = exports.insertUser = exports.getsingleorder = exports.get_riderdetails = exports.get_Appcontrol = void 0;
 var _db = _interopRequireDefault(require("../../services/db.service"));
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -323,16 +323,15 @@ var update_starttour = /*#__PURE__*/function () {
         switch (_context8.prev = _context8.next) {
           case 0:
             _context8.prev = 0;
-            if (!(tour_status == 2)) {
+            if (!(tour_status == 1)) {
               _context8.next = 8;
               break;
             }
             _context8.next = 4;
-            return (0, _db["default"])('routes').update({
-              status: '2'
+            return (0, _db["default"])('rider_details').update({
+              status: '1'
             }).where({
-              id: tour_id,
-              rider_id: delivary_partner_id
+              id: delivary_partner_id
             });
           case 4:
             updatetour = _context8.sent;
@@ -378,16 +377,15 @@ var update_endtour = /*#__PURE__*/function () {
         switch (_context9.prev = _context9.next) {
           case 0:
             _context9.prev = 0;
-            if (!(tour_status == 3)) {
+            if (!(tour_status == 2)) {
               _context9.next = 8;
               break;
             }
             _context9.next = 4;
-            return (0, _db["default"])('routes').update({
-              status: '3'
+            return (0, _db["default"])('rider_details').update({
+              status: '2'
             }).where({
-              id: tour_id,
-              rider_id: delivary_partner_id
+              id: delivary_partner_id
             });
           case 4:
             updatetour = _context9.sent;
@@ -422,4 +420,96 @@ var update_endtour = /*#__PURE__*/function () {
     return _ref9.apply(this, arguments);
   };
 }();
+
+// get single order
 exports.update_endtour = update_endtour;
+var getsingleorder = /*#__PURE__*/function () {
+  var _ref10 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10(user_id, order_id, delivery_partner_id, order_status) {
+    var query1, query2, query3, query4, query5;
+    return _regeneratorRuntime().wrap(function _callee10$(_context10) {
+      while (1) {
+        switch (_context10.prev = _context10.next) {
+          case 0:
+            _context10.prev = 0;
+            _context10.next = 3;
+            return (0, _db["default"])("daily_orders").select("daily_orders.id", "daily_orders.task_name", "daily_orders.tour_status", "daily_orders.status as order_status").where({
+              user_id: user_id
+            });
+          case 3:
+            query1 = _context10.sent;
+            _context10.next = 6;
+            return (0, _db["default"])("users").join("user_address", "user_address.user_id", "=", "users.id").select("users.id as user_id", "users.name as user_name", "users.user_unique_id as customer_id", "users.mobile_number as user_mobile", "user_address.address as user_address", "user_address.landmark", "user_address.latitude as user_latitude", "user_address.longitude as user_longitude").where({
+              user_id: user_id
+            });
+          case 6:
+            query2 = _context10.sent;
+            _context10.next = 9;
+            return (0, _db["default"])('daily_orders').join("subscribed_user_details", "subscribed_user_details.id", "=", "daily_orders.subscription_id").join("products", "products.id", "=", "subscribed_user_details.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id as product_id", "products.name as product_name", "subscribed_user_details.quantity as quantity", "products.unit_value", "unit_types.value as unit_type", "products.price");
+          case 9:
+            query3 = _context10.sent;
+            _context10.next = 12;
+            return (0, _db["default"])('daily_orders').join("additional_orders", "additional_orders.id", "=", "daily_orders.subscription_id").join("subscribed_user_details", "subscribed_user_details.id", "=", "daily_orders.additional_order_id").join("products", "products.id", "=", "subscribed_user_details.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id as product_id", "products.name as product_name", "additional_orders.quantity as quantity", "products.unit_value", "unit_types.value as unit_type", "products.price");
+          case 12:
+            query4 = _context10.sent;
+            _context10.next = 15;
+            return (0, _db["default"])('daily_orders').join("add_on_orders", "add_on_orders.id", "=", "daily_orders.add_on_order_id").join("add_on_order_items", "add_on_order_items.add_on_order_id", "=", "add_on_orders.id").join("products", "products.id", "=", "add_on_order_items.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id as product_id", "products.name as product_name", "add_on_order_items.quantity as quantity", "products.unit_value", "unit_types.value as unit_type", "products.price").where({
+              status: order_status
+            });
+          case 15:
+            query5 = _context10.sent;
+            console.log(query5);
+            return _context10.abrupt("return", {
+              status: true,
+              data: query3
+            });
+          case 20:
+            _context10.prev = 20;
+            _context10.t0 = _context10["catch"](0);
+            console.log(_context10.t0);
+            return _context10.abrupt("return", {
+              status: false,
+              message: "Cannot Update the status"
+            });
+          case 24:
+          case "end":
+            return _context10.stop();
+        }
+      }
+    }, _callee10, null, [[0, 20]]);
+  }));
+  return function getsingleorder(_x19, _x20, _x21, _x22) {
+    return _ref10.apply(this, arguments);
+  };
+}();
+
+// oder status update
+exports.getsingleorder = getsingleorder;
+var statusupdate = /*#__PURE__*/function () {
+  var _ref11 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11(user_id, order_id, order_status, subscription_id, products, addons) {
+    var update;
+    return _regeneratorRuntime().wrap(function _callee11$(_context11) {
+      while (1) {
+        switch (_context11.prev = _context11.next) {
+          case 0:
+            _context11.prev = 0;
+            _context11.next = 3;
+            return (0, _db["default"])();
+          case 3:
+            update = _context11.sent;
+            _context11.next = 8;
+            break;
+          case 6:
+            _context11.prev = 6;
+            _context11.t0 = _context11["catch"](0);
+          case 8:
+          case "end":
+            return _context11.stop();
+        }
+      }
+    }, _callee11, null, [[0, 6]]);
+  }));
+  return function statusupdate(_x23, _x24, _x25, _x26, _x27, _x28) {
+    return _ref11.apply(this, arguments);
+  };
+}();
+exports.statusupdate = statusupdate;

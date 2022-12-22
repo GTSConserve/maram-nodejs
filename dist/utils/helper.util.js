@@ -168,7 +168,7 @@ var GetProduct = /*#__PURE__*/function () {
             break;
           case 21:
             product[i].is_subscribed = "0";
-            product[i].subscription_id = "0";
+            product[i].subscription_id = 0;
           case 23:
             j++;
             _context2.next = 12;
