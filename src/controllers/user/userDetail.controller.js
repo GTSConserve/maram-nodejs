@@ -309,3 +309,19 @@ export const getEmptyBottle = async (req, res) => {
   }
 };
 
+export const userAddressChange = async (req, res) => {
+  try {
+    const { userId, title, address, landmark, type, address_id } = req.body;
+
+    // await edit_address(userId, address_id, title, address, landmark, type);
+
+    res
+      .status(responseCode.SUCCESS)
+      .json({ status: true, message: "updated successfully" });
+  } catch (error) {
+    console.log(error);
+
+    res.status(responseCode.FAILURE.BAD_REQUEST).json({ status: false, error });
+  }
+};
+

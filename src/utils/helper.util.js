@@ -63,7 +63,8 @@ export const GetProduct = async (product, userId) => {
     sub_product = await knex("subscribed_user_details")
       .select("product_id","id")
       .where({ user_id: userId, subscription_status: "pending" })
-      .orWhere({ user_id: userId, subscription_status: "approved" });
+      .orWhere({ user_id: userId, subscription_status: "approved" })
+      .orWhere({ user_id: userId, subscription_status: "subscribed" });
   }
   // console.log(sub_product.id)
 // const subscription_id = sub_product[0].id;
@@ -80,7 +81,8 @@ let sub =[];
           sub = await knex("subscribed_user_details")
       .select("id")
       .where({ user_id: userId, subscription_status: "pending" })
-      .orWhere({ user_id: userId, subscription_status: "approved" });
+      .orWhere({ user_id: userId, subscription_status: "approved" })
+      .orWhere({ user_id: userId, subscription_status: "subscribed" });
       product[i].subscription_id = sub[0].id;
       // console.log(product[i].subscription_id)
         } else {

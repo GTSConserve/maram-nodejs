@@ -21,7 +21,7 @@ productRouter.post("/get_categories", getCategories);
 productRouter.post("/get_products", getProducts);
 productRouter.post("/search_products", searchProducts);
 
-productRouter.get("/get_subscription_product",getSubscriptionProducts);
+productRouter.get("/get_subscription_product",authenticateJWT,getSubscriptionProducts);
 productRouter.get("/get_add_on_product", authenticateJWT,getAddOnProducts);
 
 productRouter.post("/get_single_product", authenticateJWT,getSingleProduct);
