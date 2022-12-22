@@ -7,6 +7,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.searchProducts = exports.removeAddOnOrder = exports.nextDayProduct = exports.getSubscriptionProducts = exports.getSingleProduct = exports.getProducts = exports.getCategories = exports.getAddOnProducts = exports.addon_Order = void 0;
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 var _messages = _interopRequireDefault(require("../../constants/messages"));
+var _helper = require("../../utils/helper.util");
 var _product = require("../../models/user/product.model");
 var _jwt = require("../../services/jwt.service");
 var _db = _interopRequireDefault(require("../../services/db.service"));
@@ -62,7 +63,7 @@ var removeAddOnOrder = /*#__PURE__*/function () {
 exports.removeAddOnOrder = removeAddOnOrder;
 var getSingleProduct = /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(req, res) {
-    var product_id, product;
+    var product_id, product, response;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
@@ -84,34 +85,38 @@ var getSingleProduct = /*#__PURE__*/function () {
             });
           case 6:
             product = _context2.sent;
+            _context2.next = 9;
+            return (0, _helper.GetProduct)(product);
+          case 9:
+            response = _context2.sent;
             if (!(product.length === 0)) {
-              _context2.next = 9;
+              _context2.next = 12;
               break;
             }
             return _context2.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
               message: "Product Not Found"
             }));
-          case 9:
+          case 12:
             product[0].image = process.env.BASE_URL + product[0].image;
             return _context2.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               status: true,
-              data: product[0]
+              data: response.data
             }));
-          case 13:
-            _context2.prev = 13;
+          case 16:
+            _context2.prev = 16;
             _context2.t0 = _context2["catch"](0);
             console.log(_context2.t0);
             return _context2.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
-          case 17:
+          case 20:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[0, 13]]);
+    }, _callee2, null, [[0, 16]]);
   }));
   return function getSingleProduct(_x3, _x4) {
     return _ref2.apply(this, arguments);
@@ -252,15 +257,15 @@ var getCategories = /*#__PURE__*/function () {
 exports.getCategories = getCategories;
 var getSubscriptionProducts = /*#__PURE__*/function () {
   var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(req, res) {
-    var userId, products;
+    var _req$body3, userId, product_type_id, products;
     return _regeneratorRuntime().wrap(function _callee5$(_context5) {
       while (1) {
         switch (_context5.prev = _context5.next) {
           case 0:
             _context5.prev = 0;
-            userId = req.body.userId;
+            _req$body3 = req.body, userId = _req$body3.userId, product_type_id = _req$body3.product_type_id;
             _context5.next = 4;
-            return (0, _product.get_subscription_or_add_on_products)(userId);
+            return (0, _product.get_subscription_or_add_on_products)(userId, product_type_id);
           case 4:
             products = _context5.sent;
             if (products.status) {
@@ -342,13 +347,13 @@ var getAddOnProducts = /*#__PURE__*/function () {
 exports.getAddOnProducts = getAddOnProducts;
 var searchProducts = /*#__PURE__*/function () {
   var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7(req, res) {
-    var _req$body3, search_keyword, product_type_id, token, userId, user, product;
+    var _req$body4, search_keyword, product_type_id, token, userId, user, product;
     return _regeneratorRuntime().wrap(function _callee7$(_context7) {
       while (1) {
         switch (_context7.prev = _context7.next) {
           case 0:
             _context7.prev = 0;
-            _req$body3 = req.body, search_keyword = _req$body3.search_keyword, product_type_id = _req$body3.product_type_id;
+            _req$body4 = req.body, search_keyword = _req$body4.search_keyword, product_type_id = _req$body4.product_type_id;
             if (!(!product_type_id || !search_keyword)) {
               _context7.next = 4;
               break;
@@ -415,13 +420,13 @@ var searchProducts = /*#__PURE__*/function () {
 exports.searchProducts = searchProducts;
 var addon_Order = /*#__PURE__*/function () {
   var _ref8 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8(req, res) {
-    var _req$body4, userId, delivery_date, products, address_id, addon;
+    var _req$body5, userId, delivery_date, products, address_id, addon;
     return _regeneratorRuntime().wrap(function _callee8$(_context8) {
       while (1) {
         switch (_context8.prev = _context8.next) {
           case 0:
             _context8.prev = 0;
-            _req$body4 = req.body, userId = _req$body4.userId, delivery_date = _req$body4.delivery_date, products = _req$body4.products, address_id = _req$body4.address_id;
+            _req$body5 = req.body, userId = _req$body5.userId, delivery_date = _req$body5.delivery_date, products = _req$body5.products, address_id = _req$body5.address_id;
             _context8.next = 4;
             return (0, _product.addon_order)(userId, delivery_date, products, address_id);
           case 4:

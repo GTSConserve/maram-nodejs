@@ -108,7 +108,7 @@ var get_subscription_product = /*#__PURE__*/function () {
           case 0:
             _context2.prev = 0;
             _context2.next = 3;
-            return (0, _db["default"])("subscribed_user_details AS sub").select("sub.id as subscription_id", "products.name as product_name", "products.image", "products.price", "products.unit_value", "unit_types.value as unit_type", "subscription_type.name as subscription_name", "sub.subscription_status", "sub.quantity").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("subscription_type", "subscription_type.id", "=", "sub.subscribe_type_id").where({
+            return (0, _db["default"])("subscribed_user_details AS sub").select("sub.id as subscription_id", "products.name as product_name", "products.image", "products.price", "products.unit_value", "unit_types.value as unit_type", "subscription_type.name as subscription_name", "sub.subscription_status", "sub.quantity").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("subscription_type", "subscription_type.id", "=", "sub.subscribe_type_id").orderBy('subscription_id', 'desc').where({
               user_id: userId
             });
           case 3:

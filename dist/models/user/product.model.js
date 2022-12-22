@@ -13,7 +13,7 @@ function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyri
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 var get_subscription_or_add_on_products = /*#__PURE__*/function () {
-  var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(id, userId) {
+  var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(userId, id) {
     var product, response;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) {
@@ -24,44 +24,46 @@ var get_subscription_or_add_on_products = /*#__PURE__*/function () {
             return (0, _db["default"])("products").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("subscribed_user_details", "subscribed_user_details.product_id", "=", "products.id").select("products.id", "products.name", "products.image", "products.unit_value", "unit_types.value as unit_type", "products.price", "products.demo_price"
             // "subscribed_user_details.id as subscription_id"
             ).where({
+              "subscription_status": "subscribed",
               product_type_id: id
             });
           case 3:
             product = _context.sent;
-            _context.next = 6;
+            console.log(product);
+            _context.next = 7;
             return (0, _helper.GetProduct)(product, userId);
-          case 6:
+          case 7:
             response = _context.sent;
             if (!response.status) {
-              _context.next = 11;
+              _context.next = 12;
               break;
             }
             return _context.abrupt("return", {
               status: true,
               data: response.data
             });
-          case 11:
+          case 12:
             return _context.abrupt("return", {
               status: false,
               message: response.message
             });
-          case 12:
-            _context.next = 18;
+          case 13:
+            _context.next = 19;
             break;
-          case 14:
-            _context.prev = 14;
+          case 15:
+            _context.prev = 15;
             _context.t0 = _context["catch"](0);
             console.log(_context.t0);
             return _context.abrupt("return", {
               status: false,
               error: _context.t0
             });
-          case 18:
+          case 19:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 14]]);
+    }, _callee, null, [[0, 15]]);
   }));
   return function get_subscription_or_add_on_products(_x, _x2) {
     return _ref.apply(this, arguments);
