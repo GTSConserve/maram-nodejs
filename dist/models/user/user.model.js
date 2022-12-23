@@ -180,7 +180,7 @@ var insertUser = /*#__PURE__*/function () {
             mobile_number = payload.mobile_number, fcmToken = payload.fcmToken, device = payload.device, appOsFormat = payload.appOsFormat, appVersion = payload.appVersion;
             _context4.next = 3;
             return _db["default"].insert([{
-              user_unique_id: generate_id,
+              // user_unique_id: generate_id,
               mobile_number: mobile_number,
               fcm_token: fcmToken,
               otp: otp,

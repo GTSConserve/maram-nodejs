@@ -105,6 +105,17 @@ var tommorowRouteMapping = /*#__PURE__*/function () {
             });
           case 25:
             daily_orders = _context2.sent;
+            if (!(daily_orders.length == 0)) {
+              _context2.next = 29;
+              break;
+            }
+            req.flash("error", "No User Found");
+            return _context2.abrupt("return", res.render("branch_admin/route/tommorrow_mapping", {
+              data: [],
+              loading: loading,
+              router_id: route_id
+            }));
+          case 29:
             address = [];
             for (_i = 0; _i < daily_orders.length; _i++) {
               address.push(daily_orders[_i].user_address_id);
@@ -123,19 +134,19 @@ var tommorowRouteMapping = /*#__PURE__*/function () {
               loading: loading,
               router_id: route_id
             });
-            _context2.next = 39;
+            _context2.next = 42;
             break;
-          case 35:
-            _context2.prev = 35;
+          case 38:
+            _context2.prev = 38;
             _context2.t0 = _context2["catch"](0);
             console.log(_context2.t0);
             res.redirect("/home");
-          case 39:
+          case 42:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[0, 35]]);
+    }, _callee2, null, [[0, 38]]);
   }));
   return function tommorowRouteMapping(_x3, _x4) {
     return _ref2.apply(this, arguments);

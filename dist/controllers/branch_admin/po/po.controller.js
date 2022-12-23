@@ -38,15 +38,18 @@ var getPoForm = /*#__PURE__*/function () {
             return _context.abrupt("return", res.redirect("/home"));
           case 10:
             _context.next = 12;
-            return (0, _db["default"])("daily_orders").select("subscription_id", "add_on_order_id").where({
+            return (0, _db["default"])("daily_orders").select("subscription_id", "add_on_order_id", "total_qty").where({
               branch_id: admin_id,
               date: tommorow_date.format("YYYY-MM-DD")
             });
           case 12:
             daily_orders = _context.sent;
-            _context.next = 15;
+            // if no daily orders length === 0  then return to home
+
+            console.log(daily_orders);
+            _context.next = 16;
             return (0, _po.getBothProducts)(daily_orders);
-          case 15:
+          case 16:
             _yield$getBothProduct = _context.sent;
             add_on_products = _yield$getBothProduct.add_on_products;
             subscription_products = _yield$getBothProduct.subscription_products;
@@ -56,19 +59,19 @@ var getPoForm = /*#__PURE__*/function () {
               add_on_products: add_on_products,
               subscription_products: subscription_products
             });
-            _context.next = 25;
+            _context.next = 26;
             break;
-          case 21:
-            _context.prev = 21;
+          case 22:
+            _context.prev = 22;
             _context.t0 = _context["catch"](0);
             console.log(_context.t0);
             res.redirect("/home");
-          case 25:
+          case 26:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 21]]);
+    }, _callee, null, [[0, 22]]);
   }));
   return function getPoForm(_x, _x2) {
     return _ref.apply(this, arguments);

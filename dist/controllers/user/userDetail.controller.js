@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.userAddressChange = exports.updateUser = exports.getUser = exports.getEmptyBottle = exports.getAddress = exports.editAddress = exports.deleteUseraddress = exports.checkDeliveryAddress = exports.changePlan = exports.addUserAddress = exports.RemoveOrder = exports.Edit = void 0;
+exports.userAddressChange = exports.updateUser = exports.getUser = exports.getSingleCalendar = exports.getEmptyBottle = exports.getAddress = exports.editAddress = exports.deleteUseraddress = exports.checkDeliveryAddress = exports.changePlan = exports.addUserAddress = exports.RemoveOrder = exports.Edit = void 0;
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 var _jwt = require("../../services/jwt.service");
 var _validator = require("../../services/validator.service");
@@ -574,3 +574,56 @@ var userAddressChange = /*#__PURE__*/function () {
   };
 }();
 exports.userAddressChange = userAddressChange;
+var getSingleCalendar = /*#__PURE__*/function () {
+  var _ref13 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee13(req, res) {
+    var date, single_calendar_data;
+    return _regeneratorRuntime().wrap(function _callee13$(_context13) {
+      while (1) {
+        switch (_context13.prev = _context13.next) {
+          case 0:
+            try {
+              date = req.body.date;
+              single_calendar_data = [{
+                "subscription_products": [{
+                  "subscription_id": 1,
+                  "product_name": "Farm Fresh Natural Milk",
+                  "product_image": "https://i.pinimg.com/originals/e1/e3/e6/e1e3e608910263114b0f03560bdcd966.jpg",
+                  "product_variation": 1,
+                  "product_price": 130,
+                  "product_quantity": 2,
+                  "subcription_status": "1",
+                  "subcription_mode": "Daily Order"
+                }],
+                "addons_products": [{
+                  "product_id": 1,
+                  "product_name": "Farm Fresh Natural Milk",
+                  "product_image": "https://i.pinimg.com/originals/e1/e3/e6/e1e3e608910263114b0f03560bdcd966.jpg",
+                  "product_variation": 1,
+                  "product_price": 130,
+                  "product_quantity": 2,
+                  "remove_status": 1
+                }]
+              }]; // await edit_address(userId, address_id, title, address, landmark, type);
+              res.status(_responseCode["default"].SUCCESS).json({
+                status: true,
+                data: single_calendar_data
+              });
+            } catch (error) {
+              console.log(error);
+              res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
+                status: false,
+                error: error
+              });
+            }
+          case 1:
+          case "end":
+            return _context13.stop();
+        }
+      }
+    }, _callee13);
+  }));
+  return function getSingleCalendar(_x25, _x26) {
+    return _ref13.apply(this, arguments);
+  };
+}();
+exports.getSingleCalendar = getSingleCalendar;

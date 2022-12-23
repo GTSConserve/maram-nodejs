@@ -34,5 +34,6 @@ userRouter.post("/change_plan", _authToken.authenticateJWT, _userDetail.changePl
 
 userRouter.get("/get_empty_bottle", _authToken.authenticateJWT, _userDetail.getEmptyBottle);
 userRouter.post("/user_address_change", _authToken.authenticateJWT, _userDetail.userAddressChange);
+userRouter.post("/single_calendar", _authToken.authenticateJWT, _userDetail.getSingleCalendar);
 var _default = userRouter;
 exports["default"] = _default;

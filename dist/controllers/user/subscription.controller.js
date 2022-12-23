@@ -73,14 +73,14 @@ var removeAdditionalOrder = /*#__PURE__*/function () {
 exports.removeAdditionalOrder = removeAdditionalOrder;
 var editAdditionalOrder = /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(req, res) {
-    var _req$body2, userId, subscription_id, dates, qty;
+    var _req$body2, userId, subscription_id, dates, qty, additional_order_id;
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.prev = 0;
-            _req$body2 = req.body, userId = _req$body2.userId, subscription_id = _req$body2.subscription_id, dates = _req$body2.dates, qty = _req$body2.qty;
-            if (!(!subscription_id || dates.length === 0 || !qty)) {
+            _req$body2 = req.body, userId = _req$body2.userId, subscription_id = _req$body2.subscription_id, dates = _req$body2.dates, qty = _req$body2.qty, additional_order_id = _req$body2.additional_order_id;
+            if (!(!subscription_id || dates.length === 0 || !qty || !additional_order_id)) {
               _context3.next = 4;
               break;
             }

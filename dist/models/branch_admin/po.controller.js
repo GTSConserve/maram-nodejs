@@ -17,7 +17,7 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 var getBothProducts = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(daily_orders) {
-    var sub_products_id, add_products_id, i, sub_product_id, add_product_id, _i, _i2, j, _i3, _j, subscription_products, _i4, product, add_on_products, _i5, _product, _i6, _i7;
+    var sub_products_id, add_products_id, i, sub_product_id, add_product_id, _i, removedIndex, _i2, j, k, removedIndexAdd, _i3, _j, _k, subscription_products, _i4, product, add_on_products, _i5, _product, _i6, _i7;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
@@ -42,7 +42,7 @@ var getBothProducts = /*#__PURE__*/function () {
             sub_product_id = _context.sent;
             sub_products_id.push({
               product_id: sub_product_id[0].product_id,
-              qty: Number(sub_product_id[0].quantity)
+              qty: Number(daily_orders[i].total_qty)
             });
           case 9:
             if (!(daily_orders[i].add_on_order_id !== null)) {
@@ -66,76 +66,96 @@ var getBothProducts = /*#__PURE__*/function () {
             _context.next = 3;
             break;
           case 17:
+            console.log(sub_products_id);
+            console.log(add_products_id);
+
             //////////////////////////////////////////////////////////////////////////////// get products id (sub)
             if (sub_products_id.length !== 0) {
+              removedIndex = [];
               for (_i2 = 0; _i2 < sub_products_id.length; _i2++) {
                 for (j = _i2 + 1; j < sub_products_id.length; j++) {
                   if (sub_products_id[_i2].product_id == sub_products_id[j].product_id) {
                     sub_products_id[_i2].qty = sub_products_id[_i2].qty + sub_products_id[j].qty;
-                    sub_products_id.splice([j], 1);
+                    removedIndex.push(j);
+                    // sub_products_id.splice(j, 1);
                   }
+                }
+
+                if (removedIndex.length !== 0) {
+                  for (k = removedIndex.length - 1; k >= 0; k--) {
+                    sub_products_id.splice(removedIndex[k], 1);
+                  }
+                  removedIndex = [];
                 }
               }
             }
 
             //////////////////////////////////////////////////////////////////////////////////// get products id (add on)
             if (add_products_id.length !== 0) {
+              removedIndexAdd = [];
               for (_i3 = 0; _i3 < add_products_id.length; _i3++) {
                 for (_j = _i3 + 1; _j < add_products_id.length; _j++) {
                   if (add_products_id[_i3].product_id == add_products_id[_j].product_id) {
                     add_products_id[_i3].qty = add_products_id[_i3].qty + add_products_id[_j].qty;
-                    add_products_id.splice([_j], 1);
+                    removedIndexAdd.push(_j);
                   }
+                }
+                if (removedIndexAdd.length !== 0) {
+                  for (_k = removedIndexAdd.length - 1; _k >= 0; _k--) {
+                    add_products_id.splice(removedIndexAdd[_k], 1);
+                  }
+                  removedIndexAdd = [];
                 }
               }
             }
 
             ///////////////////////////////////////////////////////////////////////// get subscription product
             subscription_products = [];
+            console.log(sub_products_id, "products");
             _i4 = 0;
-          case 21:
+          case 24:
             if (!(_i4 < sub_products_id.length)) {
-              _context.next = 29;
+              _context.next = 32;
               break;
             }
-            _context.next = 24;
+            _context.next = 27;
             return (0, _db["default"])("products").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id", "products.name", "products.image", "products.unit_value", "unit_types.value as unit_type", "products.price").where({
               "products.product_type_id": 1,
               "products.id": sub_products_id[_i4].product_id
             });
-          case 24:
+          case 27:
             product = _context.sent;
             subscription_products.push(_objectSpread(_objectSpread({}, product[0]), {}, {
               total_qty: sub_products_id[_i4].qty
             }));
-          case 26:
-            _i4++;
-            _context.next = 21;
-            break;
           case 29:
+            _i4++;
+            _context.next = 24;
+            break;
+          case 32:
             ///////////////////////////////////////////////////////////////////////// get add on product
             add_on_products = [];
             _i5 = 0;
-          case 31:
+          case 34:
             if (!(_i5 < add_products_id.length)) {
-              _context.next = 39;
+              _context.next = 42;
               break;
             }
-            _context.next = 34;
+            _context.next = 37;
             return (0, _db["default"])("products").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id", "products.name", "products.image", "products.unit_value", "unit_types.value as unit_type", "products.price").where({
               "products.product_type_id": 2,
               "products.id": add_products_id[_i5].product_id
             });
-          case 34:
+          case 37:
             _product = _context.sent;
             add_on_products.push(_objectSpread(_objectSpread({}, _product[0]), {}, {
               total_qty: add_products_id[_i5].qty
             }));
-          case 36:
-            _i5++;
-            _context.next = 31;
-            break;
           case 39:
+            _i5++;
+            _context.next = 34;
+            break;
+          case 42:
             ///////////////////////////////////////////////////////////////// calculating the units
             for (_i6 = 0; _i6 < subscription_products.length; _i6++) {
               if (subscription_products[_i6].unit_type == "ml") {
@@ -163,7 +183,7 @@ var getBothProducts = /*#__PURE__*/function () {
               add_on_products: add_on_products,
               subscription_products: subscription_products
             });
-          case 42:
+          case 45:
           case "end":
             return _context.stop();
         }

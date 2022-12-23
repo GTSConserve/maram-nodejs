@@ -5,7 +5,7 @@
         <nav class="breadcrumb-one" aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <!-- <li class="breadcrumb-item"><a href="javascript:void(0);">Apps</a></li> -->
-                <li class="breadcrumb-item"><a href="javascript:void(0);">Invoice</a></li>
+                <li class="breadcrumb-item"><a href="javascript:void(0);">PO</a></li>
                 <!-- <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Preview</a></li> -->
             </ol>
         </nav>
@@ -34,7 +34,7 @@
                                                 
                                                     <div class="col-sm-6 col-12 mr-auto">
                                                         <div class="d-flex">
-                                                            <p class="inv-to">Invoice</p>
+                                                            <p class="inv-to">Purchase Order</p>
                                                         </div>
                                                     </div>
 
@@ -49,7 +49,7 @@
                                                         <p class="inv-email-address">(128) 666 070</p>
                                                     </div>
                                                     <div class="col-sm-6 align-self-center mt-3 text-sm-right">
-                                                        <p class="inv-created-date"><span class="inv-title">Invoice Date : </span> <span class="inv-date">20 Aug 2020</span></p>
+                                                        <p class="inv-created-date"><span class="inv-title"> Date : </span> <span class="inv-date">20 Aug 2020</span></p>
                                                         <!-- <p class="inv-due-date"><span class="inv-title">Due Date : </span> <span class="inv-date">26 Aug 2020</span></p> -->
                                                     </div>
                                                 
@@ -88,24 +88,65 @@
                                                             <% let sub_excess_qty = 0  %>
                                                             
 
-                                                            <% for(sub_products of subscription_products){ %>
-                                                                <% sub_product_total = sub_product_total + (sub_products.total_qty * sub_products.price )  %> 
+                                                            <% for(let i = 0 ; i< subscription_products.length ; i++){ %>
+                                                                <% sub_product_total = sub_product_total + (subscription_products[i].total_qty * subscription_products[i].price )  %> 
                                                                 <tr>
-                                                                    <!-- <td  class="checkbox-column"> <input style="cursor: pointer;" value="<%= sub_products.id %>" name="product_id" type="checkbox" class="new-checkbox checkbox-primary"> </td> -->
-                                                                    <td name="name"><%= sub_products.name %></td>
-                                                                    <td><%= sub_products.value %></td> 
-                                                                    <td class="text-right"><%= sub_products.price %></td>
-                                                                    <td class="text-right"><%= sub_products.total_qty %></td>
-                                                                    <td class="text-right"><input style="width: 45px;" name="excess_qty" type="number" onchange="subChange(this)"></td>
-                                                                    <td class="text-right"><%= sub_products.total_qty * sub_products.price %> </td>
+                                                                    <!-- <td  class="checkbox-column"> <input style="cursor: pointer;" value="<%= subscription_products[i].id %>" name="product_id" type="checkbox" class="new-checkbox checkbox-primary"> </td> -->
+                                                                    <td name="name"><%= subscription_products[i].name %></td>
+                                                                    <td><%= subscription_products[i].value %></td> 
+                                                                    <td class="text-right" id="price<%= i %>"><%= subscription_products[i].price %></td>
+                                                                    <td class="text-right" id="qty<%= i %>"><%= subscription_products[i].total_qty %></td>
+                                                                    <td class="text-right"><input style="width: 45px;" name="excess_qty" id="<%= i %>" type="number" onkeyup="subChange(this)"></td>
+                                                                    <td class="text-right getSubTotalAmount" id="amount<%= i %>"><%= subscription_products[i].total_qty * subscription_products[i].price %> </td>
                                                                 </tr>
                                                                 <% }  %> 
                                        
                                                                     <script>
-                                                                        async function subChange(event){
-                                                                            console.log(sub_excess_qty , "sasda")
-                                                                            "<%= %>"
+                                                                         function subChange(event){
+                                                                  
+                                                                            const getAddonTotalAmount = document.getElementsByClassName("getAddonTotalAmount")
+                                                                            const getSubTotalAmount = document.getElementsByClassName("getSubTotalAmount")
+                                                               
+
+                                                               
+
+                                                                            const grandTotal = document.getElementById("grandTotal")
+
+                                                                            const excess_qty = event.value
+
+                                                                            const amount = document.getElementById("amount"+event.id).innerText
+                                                                            const price = document.getElementById("price"+event.id).innerText
+                                                                            const qty = document.getElementById("qty"+event.id).innerText
+
+
+
+                                                                            
+
+                                                                             document.getElementById("amount"+event.id).innerText =  (Number(event.value) + Number(qty))  * Number(price)
+
                                                                            
+
+                                                                             let AddtotalAmount = 0
+                                                                    let SubTotalAmount = 0
+
+                                                                    if(getAddonTotalAmount.length !== 0){
+
+                                                                        for(let i = 0 ; i <getAddonTotalAmount.length ; i++ ){
+                                                                            AddtotalAmount += Number(getAddonTotalAmount[i].innerText)
+                                                                        }
+                                                                    }
+
+
+                                                                    if(getSubTotalAmount.length !== 0){
+
+                                                                        for(let i = 0 ; i <getSubTotalAmount.length ; i++ ){
+                                                                            SubTotalAmount += Number(getSubTotalAmount[i].innerText)
+                                                                        }
+                                                                    }
+
+
+                                                                    grandTotal.innerText = SubTotalAmount + AddtotalAmount
+
                                                                         }
                                                                     </script>
 
@@ -119,6 +160,10 @@
 
                                             <div class="inv--product-table-section">
                                                 <h6 class="ml-2 pb-2" style="font-weight: 900;">Add On Products : </h6>
+                                                <div class="row">
+                                                    <div class="col-10"></div>
+                                                    <button class="btn btn-info btn-sm mb-3" onclick="addProducts()" type="button">Add Products</button>
+                                                </div>
                                                 <div class="table-responsive">
                                                     <table class="table">
                                                         <thead class="">
@@ -132,24 +177,118 @@
                                                                 <th class="text-right" scope="col">Amount</th>
                                                             </tr>
                                                         </thead>  
-                                                        <tbody>
+                                                        <tbody id="addOnTable">
 
 
 
-                                                            <% for(add_on_products of add_on_products){ %>
-                                                                <% add_on_product_total = add_on_product_total + (add_on_products.total_qty * add_on_products.price )  %> 
+                                                            <% for(let i = 0 ; i< add_on_products.length ; i++){ %>
+                                                                <% add_on_product_total = add_on_product_total + (add_on_products[i].total_qty * add_on_products[i].price )  %> 
                                                                 <tr>
-                                                                    <!-- <td  class="checkbox-column"> <input style="cursor: pointer;" value="<%= add_on_products.id %>" name="product_id" type="checkbox" class="new-checkbox checkbox-primary"> </td> -->
-                                                                    <td><%= add_on_products.name %></td>
-                                                                    <td><%= add_on_products.value %></td> 
-                                                                    <td class="text-right"><%= add_on_products.price %></td>
-                                                                    <td class="text-right"><%= add_on_products.total_qty %></td>
-                                                                    <td class="text-right"><input style="width: 45px;"name="excess_qty" type="number"></td>
-                                                                    <td class="text-right"><%= add_on_products.total_qty * add_on_products.price %></td>
+                                                                    
+                                                                    <td><%= add_on_products[i].name %></td>
+                                                                    <td><%= add_on_products[i].value %></td> 
+                                                                    <td class="text-right" id="addprice<%= i %>"><%= add_on_products[i].price %></td>
+                                                                    <td class="text-right" id="addqty<%= i %>"><%= add_on_products[i].total_qty %></td>
+                                                                    <td class="text-right"><input style="width: 45px;" name="addexcess_qty" id="<%= i %>" type="number" onkeyup="addOnChange(this)"></td>
+                                                                    <td class="text-right getAddonTotalAmount"  id="addamount<%= i %>"><%= add_on_products[i].total_qty * add_on_products[i].price %> </td>
                                                                 </tr>
                                                                 <% }  %> 
                                                           
                                                         </tbody>
+                                                        <script>
+
+                                                            function addProducts() {
+                                                            const addOnTable = document.getElementById("addOnTable")
+
+
+                                                            const count = document.getElementsByTagName('tr').length;
+                                                         
+                                                            const node = document.createElement("tr");
+                                                            // node.className="form-row"
+                                                            node.id = `remove${count}`
+                                                            node.innerHTML=   `
+                                                           
+                                                            
+                                                                    
+                                                                    <td>product name</td>
+                                                                    <td>adasd</td> 
+                                                                    <td class="text-right" id="addprice${count}">10</td>
+                                                                    <td class="text-right" id="addqty${count}">0</td>
+                                                                    <td class="text-right"><input style="width: 45px;" name="addexcess_qty" id="${count}" type="number" onkeyup="addOnChange(this)"></td>
+                                                                    <td class="text-right getAddonTotalAmount"  id="addamount${count}">some
+                                                                       
+                                                                        <span style="cursor: pointer;" id="${count}" onclick="removeProduct(this)" class="badge badge-danger ml-3"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg> </span>
+                                                                        </td>
+                                                           
+                                                                
+                                                                 `
+
+                                                                addOnTable.appendChild(node)
+                                                     
+                                                        }
+
+
+                                                        function removeProduct(event){
+                                                            document.getElementById(`remove${event.id}`).remove();
+                                                        }
+
+
+
+
+
+
+
+
+
+
+
+
+                                                            function addOnChange(event){
+                                                     
+
+                                                               const excess_qty = event.value
+
+                                                                const getAddonTotalAmount = document.getElementsByClassName("getAddonTotalAmount")
+                                                                const getSubTotalAmount = document.getElementsByClassName("getSubTotalAmount")
+                                                              
+
+                                                               
+
+                                                                const grandTotal = document.getElementById("grandTotal")
+                                                                const amount = document.getElementById("addamount"+event.id).innerText
+                                                                const price = document.getElementById("addprice"+event.id).innerText
+                                                                const qty = document.getElementById("addqty"+event.id).innerText
+                                                                
+                                                                
+
+                                               
+
+                                                                    document.getElementById("addamount"+event.id).innerText =  (Number(event.value) + Number(qty))  * Number(price)
+                                                                    
+                                                                    let AddtotalAmount = 0
+                                                                    let SubTotalAmount = 0
+
+                                                                    if(getAddonTotalAmount.length !== 0){
+
+                                                                        for(let i = 0 ; i <getAddonTotalAmount.length ; i++ ){
+                                                                            AddtotalAmount += Number(getAddonTotalAmount[i].innerText)
+                                                                        }
+                                                                    }
+
+
+                                                                    if(getSubTotalAmount.length !== 0){
+
+                                                                        for(let i = 0 ; i <getSubTotalAmount.length ; i++ ){
+                                                                            SubTotalAmount += Number(getSubTotalAmount[i].innerText)
+                                                                        }
+                                                                    }
+
+                                                                 
+                                                                    grandTotal.innerText = SubTotalAmount + AddtotalAmount
+                                                              
+                                                           }
+                                                       </script>
+
                                                     </table>
                                                 </div>
                                             </div>
@@ -188,7 +327,7 @@
                                                                     <h4 class="">Grand Total : </h4>
                                                                 </div>
                                                                 <div class="col-sm-4 col-5 grand-total-amount">
-                                                                    <h4 class=""><%= add_on_product_total + sub_product_total %>  </h4>
+                                                                    <h4 id="grandTotal"  class=""><%= add_on_product_total + sub_product_total %>  </h4>
                                                                 </div>
 
                                                             </div>
@@ -251,7 +390,7 @@
 
                                 <div class="row">
                                     <div class="col-xl-12 col-md-3 col-sm-6">
-                                        <button class="btn btn-primary btn-send" type="submit">Send Invoice</button>
+                                        <button class="btn btn-primary btn-lg " type="submit">Raise PO    </button>
                                     </div>
                                     <!-- <div class="col-xl-12 col-md-3 col-sm-6">
                                         <a href="javascript:void(0);" class="btn btn-secondary btn-print  action-print">Print</a>

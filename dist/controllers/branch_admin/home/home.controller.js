@@ -40,26 +40,26 @@ var getHomePage = /*#__PURE__*/function () {
 }();
 exports.getHomePage = getHomePage;
 var updateDailyTask = /*#__PURE__*/function () {
-  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(req, res) {
-    var admin_id, tommorow_date, tommorow_orders, tommorow_subscription_orders, tommorow_add_on_orders, j, i, _i, get_address_id, _i2, _get_address_id, tommorow_additional_orders, _i3, _j, tommorow_paused_users, paused_customers, _i4, _j2;
-    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(req, res) {
+    var admin_id, tommorow_date, tommorow_orders, tommorow_subscription_orders, tommorow_add_on_orders, j, i, _i, get_address_id, _i2, _get_address_id, tommorow_additional_orders, _i3, _j, tommorow_paused_users, paused_users, _i4, _j2, dates;
+    return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) {
-        switch (_context3.prev = _context3.next) {
+        switch (_context4.prev = _context4.next) {
           case 0:
-            _context3.prev = 0;
+            _context4.prev = 0;
             admin_id = req.body.admin_id; // need to delete(empty) the daily order
             //   const assigned_date = moment(date).format("YYYY-MM-DD");
             tommorow_date = (0, _moment["default"])(new Date(), "YYYY-MM-DD").add(1, "days");
             tommorow_orders = []; //////////////////////////////////////////////////////////////////////////////// Subscription Orders
-            _context3.next = 6;
+            _context4.next = 6;
             return (0, _db["default"])("subscribed_user_details").select("id as sub_id", "user_id", "date", "user_address_id", "quantity", "subscribe_type_id", "customized_days").where({
               date: tommorow_date.format("YYYY-MM-DD"),
               branch_id: admin_id,
               subscription_status: "subscribed"
             });
           case 6:
-            tommorow_subscription_orders = _context3.sent;
-            _context3.next = 9;
+            tommorow_subscription_orders = _context4.sent;
+            _context4.next = 9;
             return (0, _db["default"])("add_on_orders").select("user_id", "address_id", "delivery_date", "id as add_on_order_id").where({
               delivery_date: tommorow_date.format("YYYY-MM-DD"),
               status: "pending"
@@ -68,17 +68,16 @@ var updateDailyTask = /*#__PURE__*/function () {
               status: "new_order"
             });
           case 9:
-            tommorow_add_on_orders = _context3.sent;
+            tommorow_add_on_orders = _context4.sent;
             if (!(tommorow_subscription_orders.length === 0 && tommorow_add_on_orders.length === 0)) {
-              _context3.next = 15;
+              _context4.next = 14;
               break;
             }
-            console.log("No Customer Found For Tomorrow");
-            _context3.next = 14;
+            _context4.next = 13;
             return req.flash("error", "No Customer Found For Tomorrow");
+          case 13:
+            return _context4.abrupt("return", res.redirect("/home"));
           case 14:
-            return _context3.abrupt("return", res.redirect("/home"));
-          case 15:
             if (tommorow_add_on_orders.length !== 0 && tommorow_subscription_orders.length !== 0) {
               for (j = 0; j < tommorow_subscription_orders.length; j++) {
                 for (i = 0; i < tommorow_add_on_orders.length; i++) {
@@ -89,68 +88,58 @@ var updateDailyTask = /*#__PURE__*/function () {
                 }
               }
             }
-            // else if (
-            //   tommorow_add_on_orders.length === 0 &&
-            //   tommorow_subscription_orders.length !== 0
-            // ) {
-
-            // } else if (
-            //   tommorow_add_on_orders.length !== 0 &&
-            //   tommorow_subscription_orders.length === 0
-            // ) {
-            // }
-
-            console.log(tommorow_subscription_orders);
-            console.log(tommorow_add_on_orders);
             if (!(tommorow_subscription_orders.length !== 0)) {
-              _context3.next = 29;
+              _context4.next = 26;
               break;
             }
             _i = 0;
-          case 20:
+          case 17:
             if (!(_i < tommorow_subscription_orders.length)) {
-              _context3.next = 29;
+              _context4.next = 26;
               break;
             }
-            _context3.next = 23;
+            _context4.next = 20;
             return (0, _db["default"])("user_address").select("branch_id", "router_id").where({
               id: tommorow_subscription_orders[_i].user_address_id
             });
-          case 23:
-            get_address_id = _context3.sent;
+          case 20:
+            get_address_id = _context4.sent;
             console.log(get_address_id);
             tommorow_orders.push({
               branch_id: get_address_id[0].branch_id,
               user_id: tommorow_subscription_orders[_i].user_id,
               date: tommorow_date.format("YYYY-MM-DD"),
               subscription_id: tommorow_subscription_orders[_i].sub_id,
+              subscribe_type_id: tommorow_subscription_orders[_i].subscribe_type_id,
+              customized_days: tommorow_subscription_orders[_i].customized_days,
               add_on_order_id: tommorow_subscription_orders[_i].add_on_order_id ? tommorow_subscription_orders[_i].add_on_order_id : null,
               router_id: get_address_id[0].router_id,
               user_address_id: tommorow_subscription_orders[_i].user_address_id,
               qty: tommorow_subscription_orders[_i].quantity,
-              additional_order_qty: 0
+              additional_order_qty: 0,
+              additional_order_id: null
             });
-          case 26:
+          case 23:
             _i++;
-            _context3.next = 20;
+            _context4.next = 17;
             break;
-          case 29:
+          case 26:
             if (!(tommorow_add_on_orders.length !== 0)) {
-              _context3.next = 39;
+              _context4.next = 36;
               break;
             }
             _i2 = 0;
-          case 31:
+          case 28:
             if (!(_i2 < tommorow_add_on_orders.length)) {
-              _context3.next = 39;
+              _context4.next = 36;
               break;
             }
-            _context3.next = 34;
+            _context4.next = 31;
             return (0, _db["default"])("user_address").select("branch_id", "router_id").where({
               id: tommorow_add_on_orders[_i2].address_id
             });
-          case 34:
-            _get_address_id = _context3.sent;
+          case 31:
+            _get_address_id = _context4.sent;
             tommorow_orders.push({
               branch_id: _get_address_id[0].branch_id,
               user_id: tommorow_add_on_orders[_i2].user_id,
@@ -160,28 +149,24 @@ var updateDailyTask = /*#__PURE__*/function () {
               router_id: _get_address_id[0].router_id,
               user_address_id: tommorow_add_on_orders[_i2].address_id
             });
-          case 36:
+          case 33:
             _i2++;
-            _context3.next = 31;
+            _context4.next = 28;
             break;
-          case 39:
-            console.log(tommorow_orders);
-
-            ////////////////////////////////////////////////////////////////////////////////////////
-            // additionla orders
-            _context3.next = 42;
-            return (0, _db["default"])("additional_orders").select("user_id", "subscription_id", "date", "id", "quantity as additional_qty").where({
+          case 36:
+            _context4.next = 38;
+            return (0, _db["default"])("additional_orders").select("user_id", "subscription_id", "date", "id as additional_order_id", "quantity as additional_order_qty").where({
               date: tommorow_date.format("YYYY-MM-DD"),
               status: "pending"
             });
-          case 42:
-            tommorow_additional_orders = _context3.sent;
+          case 38:
+            tommorow_additional_orders = _context4.sent;
             if (tommorow_additional_orders.length !== 0) {
               for (_i3 = 0; _i3 < tommorow_additional_orders.length; _i3++) {
-                for (_j = 0; _j < tommorow_subscription_orders.length; _j++) {
-                  if (tommorow_subscription_orders[_j].sub_id == tommorow_additional_orders[_i3].subscription_id) {
-                    tommorow_subscription_orders[_j].additional_order_id = tommorow_additional_orders[_j].id;
-                    tommorow_subscription_orders[_j].additional_qty = tommorow_additional_orders[_j].additional_qty;
+                for (_j = 0; _j < tommorow_orders.length; _j++) {
+                  if (tommorow_orders[_j].subscription_id == tommorow_additional_orders[_i3].subscription_id) {
+                    tommorow_orders[_j].additional_order_qty = Number(tommorow_additional_orders[_i3].additional_order_qty);
+                    tommorow_orders[_j].additional_order_id = tommorow_additional_orders[_i3].additional_order_id;
                   }
                 }
               }
@@ -189,35 +174,55 @@ var updateDailyTask = /*#__PURE__*/function () {
 
             ////////////////////////////////////////////////////////////////////////////////////////
             // get tommorow pased dates
-            _context3.next = 46;
+            _context4.next = 42;
             return (0, _db["default"])("pause_dates").select("user_id", "subscription_id", "date").where({
               date: tommorow_date.format("YYYY-MM-DD")
             });
-          case 46:
-            tommorow_paused_users = _context3.sent;
-            paused_customers = []; // need to check paused date table
+          case 42:
+            tommorow_paused_users = _context4.sent;
+            // store a paused user in a array because we need to update the subscribe date to next date
+            paused_users = []; // need to check paused date table
             if (tommorow_paused_users.length !== 0) {
               for (_i4 = 0; _i4 < tommorow_paused_users.length; _i4++) {
-                for (_j2 = 0; _j2 < tommorow_subscription_orders.length; _j2++) {
-                  if (tommorow_subscription_orders[_j2].sub_id == tommorow_paused_users[_i4].subscription_id) {
-                    paused_customers.push(tommorow_subscription_orders[_j2]);
-                    tommorow_subscription_orders.splice([_j2], 1);
+                for (_j2 = 0; _j2 < tommorow_orders.length; _j2++) {
+                  if (tommorow_orders[_j2].subscription_id == tommorow_paused_users[_i4].subscription_id) {
+                    if (tommorow_orders[_j2].add_on_order_id == null) {
+                      paused_users.push({
+                        date: tommorow_orders[_j2].date,
+                        subscribe_type_id: tommorow_orders[_j2].subscribe_type_id,
+                        subscription_id: tommorow_orders[_j2].subscription_id,
+                        customized_days: tommorow_orders[_j2].customized_days
+                      });
+                      tommorow_orders.splice([_j2], 1);
+                    } else {
+                      paused_users.push({
+                        date: tommorow_orders[_j2].date,
+                        subscribe_type_id: tommorow_orders[_j2].subscribe_type_id,
+                        subscription_id: tommorow_orders[_j2].subscription_id,
+                        customized_days: tommorow_orders[_j2].customized_days
+                      });
+                      tommorow_orders[_j2].subscription_id = null;
+                      delete tommorow_orders[_j2].qty;
+                      delete tommorow_orders[_j2].additional_order_qty;
+                      delete tommorow_orders[_j2].subscribe_type_id;
+                      delete tommorow_orders[_j2].customized_days;
+                    }
                   }
                 }
               }
             }
-
-            /////////////////////////////////////////////////////////////////////////////////////////////
-            // need to add add_on_product id in daily order table
-
-            // checking add on orders and subscription product
-
-            // console.log("tommorow customers");
-            // console.log(tommorow_subscription_orders);
-            // console.log("paused customers");
-            // console.log(paused_customers);
-            _context3.next = 51;
-            return tommorow_subscription_orders.map( /*#__PURE__*/function () {
+            if (!(tommorow_orders.length === 0)) {
+              _context4.next = 49;
+              break;
+            }
+            _context4.next = 48;
+            return req.flash("error", "No Customer Found For Tomorrow");
+          case 48:
+            return _context4.abrupt("return", res.redirect("/home"));
+          case 49:
+            console.log(tommorow_orders);
+            _context4.next = 52;
+            return tommorow_orders.map( /*#__PURE__*/function () {
               var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(data) {
                 var date, customized_date;
                 return _regeneratorRuntime().wrap(function _callee2$(_context2) {
@@ -225,7 +230,7 @@ var updateDailyTask = /*#__PURE__*/function () {
                     switch (_context2.prev = _context2.next) {
                       case 0:
                         if (!data.subscribe_type_id) {
-                          _context2.next = 14;
+                          _context2.next = 16;
                           break;
                         }
                         if (!(data.subscribe_type_id == "1")) {
@@ -254,28 +259,39 @@ var updateDailyTask = /*#__PURE__*/function () {
                         customized_date = _context2.sent;
                         date = customized_date;
                       case 14:
-                        if (data.add_on_order_id) {
-                          // await knex("add_on_orders")
-                          //   .update({ status: "assigned" })
-                          //   .where({ id: data.add_on_order_id });
-                        }
-                        _context2.next = 17;
-                        return (0, _db["default"])("daily_orders").insert({
-                          branch_id: admin_id,
-                          user_id: data.user_id,
-                          user_address_id: data.user_address_id,
-                          date: data.date,
-                          router_id: data.router_id,
-                          // product_id: data.product_id && data.product_id,
-                          add_on_order_id: data.add_on_order_id && data.add_on_order_id,
-                          additional_order_id: data.additional_order_id && data.additional_order_id,
-                          subscription_id: data.sub_id && data.sub_id,
-                          qty: data.quantity && data.quantity,
-                          additional_order_qty: data.additional_qty && data.additional_qty,
-                          total_qty: data.additional_qty && Number(data.additional_qty) + Number(data.quantity)
-                          //       rider_id: rider_id[0].rider_id,
+                        _context2.next = 16;
+                        return (0, _db["default"])("subscribed_user_details").update({
+                          date: date.format("YYYY-MM-DD HH:mm:ss")
+                        }).where({
+                          id: data.subscription_id
                         });
-                      case 17:
+                      case 16:
+                        if (!data.add_on_order_id) {
+                          _context2.next = 19;
+                          break;
+                        }
+                        _context2.next = 19;
+                        return (0, _db["default"])("add_on_orders").update({
+                          status: "order_placed"
+                        }).where({
+                          id: data.add_on_order_id
+                        });
+                      case 19:
+                        _context2.next = 21;
+                        return (0, _db["default"])("daily_orders").insert({
+                          branch_id: data.branch_id,
+                          user_id: data.user_id,
+                          date: data.date,
+                          subscription_id: data.subscription_id,
+                          add_on_order_id: data.add_on_order_id,
+                          additional_order_id: data.additional_order_id ? data.additional_order_id : null,
+                          router_id: data.router_id,
+                          user_address_id: data.user_address_id,
+                          qty: data.qty ? data.qty : null,
+                          additional_order_qty: data.additional_order_qty ? data.additional_order_qty : null,
+                          total_qty: data.subscription_id != null ? data.qty !== null && data.additional_order_qty !== null ? Number(data.qty) + (data.additional_order_qty !== null ? Number(data.additional_order_qty) : 0) : null : null
+                        });
+                      case 21:
                       case "end":
                         return _context2.stop();
                     }
@@ -286,47 +302,82 @@ var updateDailyTask = /*#__PURE__*/function () {
                 return _ref3.apply(this, arguments);
               };
             }());
-          case 51:
-            // for paused customers need to update the date in subscribed user table
-            // if (paused_customers.length !== 0) {
-            //   let date;
-            //   paused_customers.map(async (data) => {
-            //     if (data.subscribe_type_id) {
-            //       if (data.subscribe_type_id == "1") {
-            //         date = moment(data.date, "YYYY-MM-DD").add(1, "days");
-            //       } else if (data.subscribe_type_id == "2") {
-            //         date = moment(data.date, "YYYY-MM-DD").add(2, "days");
-            //       } else if (data.subscribe_type_id == "3") {
-            //         const customized_date = await customizedDay(
-            //           data.date,
-            //           data.customized_days
-            //         );
-
-            //         date = customized_date;
-            //       }
-
-            //       // update the date in sub user details and insert the data ro daily orders
-            //       await knex("subscribed_user_details")
-            //         .update({ date: date.format("YYYY-MM-DD HH:mm:ss") })
-            //         .where({ id: data.sub_id });
-            //     }
-            //   });
-            // }
+          case 52:
+            if (!(paused_users.length !== 0)) {
+              _context4.next = 55;
+              break;
+            }
+            _context4.next = 55;
+            return paused_users.map( /*#__PURE__*/function () {
+              var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(data) {
+                var customized_date;
+                return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+                  while (1) {
+                    switch (_context3.prev = _context3.next) {
+                      case 0:
+                        if (!data.subscribe_type_id) {
+                          _context3.next = 16;
+                          break;
+                        }
+                        if (!(data.subscribe_type_id == "1")) {
+                          _context3.next = 5;
+                          break;
+                        }
+                        dates = (0, _moment["default"])(data.date, "YYYY-MM-DD").add(1, "days");
+                        _context3.next = 14;
+                        break;
+                      case 5:
+                        if (!(data.subscribe_type_id == "2")) {
+                          _context3.next = 9;
+                          break;
+                        }
+                        dates = (0, _moment["default"])(data.date, "YYYY-MM-DD").add(2, "days");
+                        _context3.next = 14;
+                        break;
+                      case 9:
+                        if (!(data.subscribe_type_id == "3")) {
+                          _context3.next = 14;
+                          break;
+                        }
+                        _context3.next = 12;
+                        return (0, _helper.customizedDay)(data.date, data.customized_days);
+                      case 12:
+                        customized_date = _context3.sent;
+                        dates = customized_date;
+                      case 14:
+                        _context3.next = 16;
+                        return (0, _db["default"])("subscribed_user_details").update({
+                          date: dates.format("YYYY-MM-DD HH:mm:ss")
+                        }).where({
+                          id: data.subscription_id
+                        });
+                      case 16:
+                      case "end":
+                        return _context3.stop();
+                    }
+                  }
+                }, _callee3);
+              }));
+              return function (_x6) {
+                return _ref4.apply(this, arguments);
+              };
+            }());
+          case 55:
             req.flash("success", "Tomorrow Routes and PO Updated");
             res.redirect("/home");
-            _context3.next = 59;
+            _context4.next = 63;
             break;
-          case 55:
-            _context3.prev = 55;
-            _context3.t0 = _context3["catch"](0);
-            console.log(_context3.t0);
-            return _context3.abrupt("return", res.redirect("/home"));
           case 59:
+            _context4.prev = 59;
+            _context4.t0 = _context4["catch"](0);
+            console.log(_context4.t0);
+            return _context4.abrupt("return", res.redirect("/home"));
+          case 63:
           case "end":
-            return _context3.stop();
+            return _context4.stop();
         }
       }
-    }, _callee3, null, [[0, 55]]);
+    }, _callee4, null, [[0, 59]]);
   }));
   return function updateDailyTask(_x3, _x4) {
     return _ref2.apply(this, arguments);
