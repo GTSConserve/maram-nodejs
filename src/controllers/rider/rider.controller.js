@@ -94,7 +94,7 @@ export const getRiderdetails = async (req, res) => {
 
     return res
       .status(responseCode.SUCCESS)
-      .json({  data: delivery_partner.body,status: true,message:"ok" });
+      .json({  data: delivery_partner.body[0],status: true,message:"ok" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ status: false });
@@ -105,14 +105,14 @@ export const getRiderdetails = async (req, res) => {
 // update single rider status
 export const updateRiderstatus = async (req,res) => {
   try{
-       const { delivery_partner_id,status} = req.body;
+       const { delivary_partner_id,status} = req.body;
 
-       if (!delivery_partner_id || !status) {
+       if (!delivary_partner_id || !status) {
        return res
         .status(responseCode.FAILURE.BAD_REQUEST)
         .json({ status: false, message: "Mandatory field Is Missing" });
     }
-       const riderstatus = await update_riderstatus(delivery_partner_id,status)
+       const riderstatus = await update_riderstatus(delivary_partner_id,status)
        if(riderstatus.status){
         return res.status(responseCode.SUCCESS).json(riderstatus)
       }else{
@@ -130,14 +130,14 @@ export const updateRiderstatus = async (req,res) => {
 // update single rider location 
 export const updeteRiderLocation = async (req,res) =>{
   try{
-       const {delivery_partner_id,latitude,longitude} = req.body;
+       const {delivary_partner_id,latitude,longitude} = req.body;
 
-       if (!delivery_partner_id || !latitude || !longitude) {
+       if (!delivary_partner_id || !latitude || !longitude) {
         return res
          .status(responseCode.FAILURE.BAD_REQUEST)
          .json({ status: false, message: "Mandatory field Is Missing" });
       }
-       const location = await update_location(delivery_partner_id,latitude,longitude);
+       const location = await update_location(delivary_partner_id,latitude,longitude);
        return res.status(responseCode.SUCCESS).json({status: true,message:"ok" })
   }
   catch(error){
@@ -150,15 +150,15 @@ export const updeteRiderLocation = async (req,res) =>{
 // update starttour 
 export const updateStartTour = async (req,res)=>{
   try {
-       const {delivery_partner_id,tour_id,tour_status} = req.body;
+       const {delivary_partner_id,tour_id,tour_status} = req.body;
 
-       if (!delivery_partner_id || !tour_id || !tour_status) {
+       if (!delivary_partner_id || !tour_id || !tour_status) {
         return res
          .status(responseCode.FAILURE.BAD_REQUEST)
          .json({ status: false, message: "Mandatory field Is Missing" });
       }
 
-       const starttour = await update_starttour(delivery_partner_id,tour_id,tour_status);
+       const starttour = await update_starttour(delivary_partner_id,tour_id,tour_status);
        if(starttour.status){
         return res.status(responseCode.SUCCESS).json(starttour)
       }else{
@@ -178,15 +178,15 @@ export const updateStartTour = async (req,res)=>{
 // update endtour
 export const updateEndtour = async (req,res) => {
   try{
-    const {delivery_partner_id,tour_id,tour_status} = req.body;
+    const {delivary_partner_id,tour_id,tour_status} = req.body;
 
-    if (!delivery_partner_id || !tour_id || !tour_status) {
+    if (!delivary_partner_id || !tour_id || !tour_status) {
       return res
        .status(responseCode.FAILURE.BAD_REQUEST)
        .json({ status: false, message: "Mandatory field Is Missing" });
     }
 
-    const endtour = await update_endtour(delivery_partner_id,tour_id,tour_status)
+    const endtour = await update_endtour(delivary_partner_id,tour_id,tour_status)
     if(endtour.status){
       return res.status(responseCode.SUCCESS).json(endtour);
     }
