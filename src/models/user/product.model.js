@@ -2,11 +2,11 @@ import e from "connect-flash";
 import knex from "../../services/db.service";
 import { GetProduct } from "../../utils/helper.util";
 
-export const get_subscription_or_add_on_products = async (userId,id) => {
+export const get_subscription_or_add_on_products = async (id,userId) => {
   try {
     const product = await knex("products")
       .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
-      .join("subscribed_user_details", "subscribed_user_details.product_id","=", "products.id")
+      // .join("subscribed_user_details", "subscribed_user_details.product_id","=", "products.id")
       .select(
         "products.id",
         "products.name",
@@ -18,7 +18,7 @@ export const get_subscription_or_add_on_products = async (userId,id) => {
         // "subscribed_user_details.id as subscription_id"
       )
 
-      .where({ "subscription_status":"subscribed",product_type_id: id })
+      .where({ product_type_id: id })
       // .where({ "subscription_status":"subscribed",product_type_id: id })
       
       console.log(product)
@@ -177,11 +177,12 @@ export const addon_order = async (
 export const remove_addonorders = async (product_id , delivery_date,addon_id) => {
   try{
       console.log(product_id)
-   const addon_status = await knex('add_on_orders').select('status').where({id:addon_id,delivery_date:delivery_date})
+   const addon_status = await knex('add_on_orders').select('status')
+   .where({id:addon_id,delivery_date:delivery_date})
 
-   console.log(addon_status[0].status)
+   console.log(addon_status)
 
-   if(addon_status[0].status!="cancelled"){
+   if(addon_status[0]!="cancelled"){
 
     await knex("add_on_order_items").update({status : "removed"}).where({product_id:product_id,add_on_order_id:addon_id})
 
@@ -191,6 +192,8 @@ export const remove_addonorders = async (product_id , delivery_date,addon_id) =>
 
 
     const total = select1[0].sub_total-select[0].price;
+
+    console.log(total)
 
     const update = await knex('add_on_orders').update({sub_total:total}).where({id:addon_id,delivery_date:delivery_date});
 

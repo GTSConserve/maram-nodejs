@@ -159,9 +159,9 @@ export const getCategories = async (req, res) => {
 
 export const getSubscriptionProducts = async (req, res) => {
   try {
-    const { userId, product_type_id } = req.body;
+    const { userId } = req.body;
 
-    const products = await get_subscription_or_add_on_products( userId, product_type_id);
+    const products = await get_subscription_or_add_on_products( "1",userId );
     if (!products.status) {
       return res
         .status(responseCode.FAILURE.DATA_NOT_FOUND)
