@@ -30,6 +30,8 @@ var get_subscription_or_add_on_products = /*#__PURE__*/function () {
             });
           case 3:
             product = _context.sent;
+            // .where({ "subscription_status":"subscribed",product_type_id: id })
+
             console.log(product);
             _context.next = 7;
             return (0, _helper.GetProduct)(product, userId);

@@ -583,7 +583,7 @@ var getSingleCalendar = /*#__PURE__*/function () {
           case 0:
             try {
               date = req.body.date;
-              single_calendar_data = [{
+              single_calendar_data = {
                 "subscription_products": [{
                   "subscription_id": 1,
                   "product_name": "Farm Fresh Natural Milk",
@@ -598,12 +598,12 @@ var getSingleCalendar = /*#__PURE__*/function () {
                   "product_id": 1,
                   "product_name": "Farm Fresh Natural Milk",
                   "product_image": "https://i.pinimg.com/originals/e1/e3/e6/e1e3e608910263114b0f03560bdcd966.jpg",
-                  "product_variation": 1,
+                  "product_variation": "1 liter",
                   "product_price": 130,
                   "product_quantity": 2,
-                  "remove_status": 1
+                  "remove_status": 0
                 }]
-              }]; // await edit_address(userId, address_id, title, address, landmark, type);
+              }; // await edit_address(userId, address_id, title, address, landmark, type);
               res.status(_responseCode["default"].SUCCESS).json({
                 status: true,
                 data: single_calendar_data
