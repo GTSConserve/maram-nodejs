@@ -164,7 +164,7 @@ var getRiderdetails = /*#__PURE__*/function () {
           case 6:
             delivery_partner = _context3.sent;
             return _context3.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
-              data: delivery_partner.body,
+              data: delivery_partner.body[0],
               status: true,
               message: "ok"
             }));
@@ -191,14 +191,14 @@ var getRiderdetails = /*#__PURE__*/function () {
 exports.getRiderdetails = getRiderdetails;
 var updateRiderstatus = /*#__PURE__*/function () {
   var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(req, res) {
-    var _req$body, delivery_partner_id, status, riderstatus;
+    var _req$body, delivary_partner_id, status, riderstatus;
     return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
             _context4.prev = 0;
-            _req$body = req.body, delivery_partner_id = _req$body.delivery_partner_id, status = _req$body.status;
-            if (!(!delivery_partner_id || !status)) {
+            _req$body = req.body, delivary_partner_id = _req$body.delivary_partner_id, status = _req$body.status;
+            if (!(!delivary_partner_id || !status)) {
               _context4.next = 4;
               break;
             }
@@ -208,7 +208,7 @@ var updateRiderstatus = /*#__PURE__*/function () {
             }));
           case 4:
             _context4.next = 6;
-            return (0, _rider.update_riderstatus)(delivery_partner_id, status);
+            return (0, _rider.update_riderstatus)(delivary_partner_id, status);
           case 6:
             riderstatus = _context4.sent;
             if (!riderstatus.status) {
@@ -244,14 +244,14 @@ var updateRiderstatus = /*#__PURE__*/function () {
 exports.updateRiderstatus = updateRiderstatus;
 var updeteRiderLocation = /*#__PURE__*/function () {
   var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(req, res) {
-    var _req$body2, delivery_partner_id, latitude, longitude, location;
+    var _req$body2, delivary_partner_id, latitude, longitude, location;
     return _regeneratorRuntime().wrap(function _callee5$(_context5) {
       while (1) {
         switch (_context5.prev = _context5.next) {
           case 0:
             _context5.prev = 0;
-            _req$body2 = req.body, delivery_partner_id = _req$body2.delivery_partner_id, latitude = _req$body2.latitude, longitude = _req$body2.longitude;
-            if (!(!delivery_partner_id || !latitude || !longitude)) {
+            _req$body2 = req.body, delivary_partner_id = _req$body2.delivary_partner_id, latitude = _req$body2.latitude, longitude = _req$body2.longitude;
+            if (!(!delivary_partner_id || !latitude || !longitude)) {
               _context5.next = 4;
               break;
             }
@@ -261,7 +261,7 @@ var updeteRiderLocation = /*#__PURE__*/function () {
             }));
           case 4:
             _context5.next = 6;
-            return (0, _rider.update_location)(delivery_partner_id, latitude, longitude);
+            return (0, _rider.update_location)(delivary_partner_id, latitude, longitude);
           case 6:
             location = _context5.sent;
             return _context5.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
@@ -291,14 +291,14 @@ var updeteRiderLocation = /*#__PURE__*/function () {
 exports.updeteRiderLocation = updeteRiderLocation;
 var updateStartTour = /*#__PURE__*/function () {
   var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(req, res) {
-    var _req$body3, delivery_partner_id, tour_id, tour_status, starttour;
+    var _req$body3, delivary_partner_id, tour_id, tour_status, starttour;
     return _regeneratorRuntime().wrap(function _callee6$(_context6) {
       while (1) {
         switch (_context6.prev = _context6.next) {
           case 0:
             _context6.prev = 0;
-            _req$body3 = req.body, delivery_partner_id = _req$body3.delivery_partner_id, tour_id = _req$body3.tour_id, tour_status = _req$body3.tour_status;
-            if (!(!delivery_partner_id || !tour_id || !tour_status)) {
+            _req$body3 = req.body, delivary_partner_id = _req$body3.delivary_partner_id, tour_id = _req$body3.tour_id, tour_status = _req$body3.tour_status;
+            if (!(!delivary_partner_id || !tour_id || !tour_status)) {
               _context6.next = 4;
               break;
             }
@@ -308,7 +308,7 @@ var updateStartTour = /*#__PURE__*/function () {
             }));
           case 4:
             _context6.next = 6;
-            return (0, _rider.update_starttour)(delivery_partner_id, tour_id, tour_status);
+            return (0, _rider.update_starttour)(delivary_partner_id, tour_id, tour_status);
           case 6:
             starttour = _context6.sent;
             if (!starttour.status) {
@@ -345,14 +345,14 @@ var updateStartTour = /*#__PURE__*/function () {
 exports.updateStartTour = updateStartTour;
 var updateEndtour = /*#__PURE__*/function () {
   var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7(req, res) {
-    var _req$body4, delivery_partner_id, tour_id, tour_status, endtour;
+    var _req$body4, delivary_partner_id, tour_id, tour_status, endtour;
     return _regeneratorRuntime().wrap(function _callee7$(_context7) {
       while (1) {
         switch (_context7.prev = _context7.next) {
           case 0:
             _context7.prev = 0;
-            _req$body4 = req.body, delivery_partner_id = _req$body4.delivery_partner_id, tour_id = _req$body4.tour_id, tour_status = _req$body4.tour_status;
-            if (!(!delivery_partner_id || !tour_id || !tour_status)) {
+            _req$body4 = req.body, delivary_partner_id = _req$body4.delivary_partner_id, tour_id = _req$body4.tour_id, tour_status = _req$body4.tour_status;
+            if (!(!delivary_partner_id || !tour_id || !tour_status)) {
               _context7.next = 4;
               break;
             }
@@ -362,7 +362,7 @@ var updateEndtour = /*#__PURE__*/function () {
             }));
           case 4:
             _context7.next = 6;
-            return (0, _rider.update_endtour)(delivery_partner_id, tour_id, tour_status);
+            return (0, _rider.update_endtour)(delivary_partner_id, tour_id, tour_status);
           case 6:
             endtour = _context7.sent;
             if (!endtour.status) {
