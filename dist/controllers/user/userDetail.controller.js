@@ -43,10 +43,10 @@ var addUserAddress = /*#__PURE__*/function () {
               user_id: payload.user_id
             });
           case 6:
-            res.status(_responseCode["default"].SUCCESS).json({
+            return _context.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               status: true,
               message: "address added successfully"
-            });
+            }));
           case 7:
             _context.next = 13;
             break;

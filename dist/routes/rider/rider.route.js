@@ -8,18 +8,18 @@ var _express = _interopRequireDefault(require("express"));
 var _rider = require("../../controllers/rider/rider.controller");
 var _authToken = require("../../middlewares/authToken.middleware");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-var loginRouter = _express["default"].Router({
+var riderRouter = _express["default"].Router({
   caseSensitive: true,
   strict: true
 });
-loginRouter.get("/app_controls", _rider.getAppControls);
-loginRouter.post("/login", _authToken.nonMandatoryToken, _rider.login);
-loginRouter.post("/rider_details", _rider.getRiderdetails);
-loginRouter.post("/update_rider_status", _rider.updateRiderstatus);
-loginRouter.post("/update_rider_location", _rider.updeteRiderLocation);
-loginRouter.post("/update_start_tour", _rider.updateStartTour);
-loginRouter.post("/update_end_tour", _rider.updateEndtour);
-loginRouter.post("/get_single_order", _rider.getSingleorder);
-loginRouter.post("/order_status_update", _rider.orderStatusUpdate);
-var _default = loginRouter;
+riderRouter.post("/rider_details", _rider.getRiderdetails);
+riderRouter.post("/update_rider_status", _rider.updateRiderstatus);
+riderRouter.post("/update_rider_location", _rider.updeteRiderLocation);
+riderRouter.post("/update_start_tour", _rider.updateStartTour);
+riderRouter.post("/update_end_tour", _rider.updateEndtour);
+riderRouter.post("/get_single_order", _rider.getSingleorder);
+riderRouter.post("/order_status_update", _rider.orderStatusUpdate);
+riderRouter.post("/rider_dashboard", _rider.riderDashboard);
+riderRouter.post("/cancel_order", _rider.riderDashboard);
+var _default = riderRouter;
 exports["default"] = _default;

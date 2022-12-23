@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updeteRiderLocation = exports.updateStartTour = exports.updateRiderstatus = exports.updateEndtour = exports.ten = exports.orderStatusUpdate = exports.login = exports.getSingleorder = exports.getRiderdetails = exports.getAppControls = void 0;
+exports.updeteRiderLocation = exports.updateStartTour = exports.updateRiderstatus = exports.updateEndtour = exports.ten = exports.riderDashboard = exports.orderStatusUpdate = exports.login = exports.getSingleorder = exports.getRiderdetails = exports.getAppControls = void 0;
 var _express = _interopRequireDefault(require("express"));
 var _messages = _interopRequireDefault(require("../../constants/messages"));
 var _rider = require("../../models/rider/rider.model");
@@ -191,14 +191,14 @@ var getRiderdetails = /*#__PURE__*/function () {
 exports.getRiderdetails = getRiderdetails;
 var updateRiderstatus = /*#__PURE__*/function () {
   var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(req, res) {
-    var _req$body, delivary_partner_id, status, riderstatus;
+    var _req$body, delivery_partner_id, status, riderstatus;
     return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
             _context4.prev = 0;
-            _req$body = req.body, delivary_partner_id = _req$body.delivary_partner_id, status = _req$body.status;
-            if (!(!delivary_partner_id || !status)) {
+            _req$body = req.body, delivery_partner_id = _req$body.delivery_partner_id, status = _req$body.status;
+            if (!(!delivery_partner_id || !status)) {
               _context4.next = 4;
               break;
             }
@@ -208,7 +208,7 @@ var updateRiderstatus = /*#__PURE__*/function () {
             }));
           case 4:
             _context4.next = 6;
-            return (0, _rider.update_riderstatus)(delivary_partner_id, status);
+            return (0, _rider.update_riderstatus)(delivery_partner_id, status);
           case 6:
             riderstatus = _context4.sent;
             if (!riderstatus.status) {
@@ -244,14 +244,14 @@ var updateRiderstatus = /*#__PURE__*/function () {
 exports.updateRiderstatus = updateRiderstatus;
 var updeteRiderLocation = /*#__PURE__*/function () {
   var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(req, res) {
-    var _req$body2, delivary_partner_id, latitude, longitude, location;
+    var _req$body2, delivery_partner_id, latitude, longitude, location;
     return _regeneratorRuntime().wrap(function _callee5$(_context5) {
       while (1) {
         switch (_context5.prev = _context5.next) {
           case 0:
             _context5.prev = 0;
-            _req$body2 = req.body, delivary_partner_id = _req$body2.delivary_partner_id, latitude = _req$body2.latitude, longitude = _req$body2.longitude;
-            if (!(!delivary_partner_id || !latitude || !longitude)) {
+            _req$body2 = req.body, delivery_partner_id = _req$body2.delivery_partner_id, latitude = _req$body2.latitude, longitude = _req$body2.longitude;
+            if (!(!delivery_partner_id || !latitude || !longitude)) {
               _context5.next = 4;
               break;
             }
@@ -261,7 +261,7 @@ var updeteRiderLocation = /*#__PURE__*/function () {
             }));
           case 4:
             _context5.next = 6;
-            return (0, _rider.update_location)(delivary_partner_id, latitude, longitude);
+            return (0, _rider.update_location)(delivery_partner_id, latitude, longitude);
           case 6:
             location = _context5.sent;
             return _context5.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
@@ -291,14 +291,14 @@ var updeteRiderLocation = /*#__PURE__*/function () {
 exports.updeteRiderLocation = updeteRiderLocation;
 var updateStartTour = /*#__PURE__*/function () {
   var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(req, res) {
-    var _req$body3, delivary_partner_id, tour_id, tour_status, starttour;
+    var _req$body3, delivery_partner_id, tour_id, tour_status, starttour;
     return _regeneratorRuntime().wrap(function _callee6$(_context6) {
       while (1) {
         switch (_context6.prev = _context6.next) {
           case 0:
             _context6.prev = 0;
-            _req$body3 = req.body, delivary_partner_id = _req$body3.delivary_partner_id, tour_id = _req$body3.tour_id, tour_status = _req$body3.tour_status;
-            if (!(!delivary_partner_id || !tour_id || !tour_status)) {
+            _req$body3 = req.body, delivery_partner_id = _req$body3.delivery_partner_id, tour_id = _req$body3.tour_id, tour_status = _req$body3.tour_status;
+            if (!(!delivery_partner_id || !tour_id || !tour_status)) {
               _context6.next = 4;
               break;
             }
@@ -308,7 +308,7 @@ var updateStartTour = /*#__PURE__*/function () {
             }));
           case 4:
             _context6.next = 6;
-            return (0, _rider.update_starttour)(delivary_partner_id, tour_id, tour_status);
+            return (0, _rider.update_starttour)(delivery_partner_id, tour_id, tour_status);
           case 6:
             starttour = _context6.sent;
             if (!starttour.status) {
@@ -345,14 +345,14 @@ var updateStartTour = /*#__PURE__*/function () {
 exports.updateStartTour = updateStartTour;
 var updateEndtour = /*#__PURE__*/function () {
   var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7(req, res) {
-    var _req$body4, delivary_partner_id, tour_id, tour_status, endtour;
+    var _req$body4, delivery_partner_id, tour_id, tour_status, endtour;
     return _regeneratorRuntime().wrap(function _callee7$(_context7) {
       while (1) {
         switch (_context7.prev = _context7.next) {
           case 0:
             _context7.prev = 0;
-            _req$body4 = req.body, delivary_partner_id = _req$body4.delivary_partner_id, tour_id = _req$body4.tour_id, tour_status = _req$body4.tour_status;
-            if (!(!delivary_partner_id || !tour_id || !tour_status)) {
+            _req$body4 = req.body, delivery_partner_id = _req$body4.delivery_partner_id, tour_id = _req$body4.tour_id, tour_status = _req$body4.tour_status;
+            if (!(!delivery_partner_id || !tour_id || !tour_status)) {
               _context7.next = 4;
               break;
             }
@@ -362,7 +362,7 @@ var updateEndtour = /*#__PURE__*/function () {
             }));
           case 4:
             _context7.next = 6;
-            return (0, _rider.update_endtour)(delivary_partner_id, tour_id, tour_status);
+            return (0, _rider.update_endtour)(delivery_partner_id, tour_id, tour_status);
           case 6:
             endtour = _context7.sent;
             if (!endtour.status) {
@@ -399,7 +399,7 @@ var updateEndtour = /*#__PURE__*/function () {
 exports.updateEndtour = updateEndtour;
 var getSingleorder = /*#__PURE__*/function () {
   var _ref8 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8(req, res) {
-    var _req$body5, user_id, order_id, delivery_partner_id, order_status, order;
+    var _req$body5, user_id, order_id, delivery_partner_id, order_status, rider, router_id, order;
     return _regeneratorRuntime().wrap(function _callee8$(_context8) {
       while (1) {
         switch (_context8.prev = _context8.next) {
@@ -417,27 +417,35 @@ var getSingleorder = /*#__PURE__*/function () {
           case 4:
             console.log(order_status);
             _context8.next = 7;
-            return (0, _rider.getsingleorder)(order_id, delivery_partner_id, order_status);
+            return (0, _db["default"])('routes').select("id as router_id").where({
+              rider_id: delivery_partner_id
+            });
           case 7:
+            rider = _context8.sent;
+            router_id = rider[0].router_id;
+            console.log(rider);
+            _context8.next = 12;
+            return (0, _rider.getsingleorder)(order_id, delivery_partner_id, order_status, router_id);
+          case 12:
             order = _context8.sent;
             return _context8.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               status: true,
               order: order
             }));
-          case 11:
-            _context8.prev = 11;
+          case 16:
+            _context8.prev = 16;
             _context8.t0 = _context8["catch"](0);
             console.log(_context8.t0);
             return _context8.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
-          case 15:
+          case 20:
           case "end":
             return _context8.stop();
         }
       }
-    }, _callee8, null, [[0, 11]]);
+    }, _callee8, null, [[0, 16]]);
   }));
   return function getSingleorder(_x15, _x16) {
     return _ref8.apply(this, arguments);
@@ -489,36 +497,93 @@ var orderStatusUpdate = /*#__PURE__*/function () {
     return _ref9.apply(this, arguments);
   };
 }();
+
+// rider dashboard
 exports.orderStatusUpdate = orderStatusUpdate;
-var ten = /*#__PURE__*/function () {
+var riderDashboard = /*#__PURE__*/function () {
   var _ref10 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10(req, res) {
-    var payload, user_name, password, checkPhoneNumber, query, userId, today;
+    var _req$body7, delivery_partner_id, date, total, bottle, sum, i, query;
     return _regeneratorRuntime().wrap(function _callee10$(_context10) {
       while (1) {
         switch (_context10.prev = _context10.next) {
           case 0:
             _context10.prev = 0;
+            _req$body7 = req.body, delivery_partner_id = _req$body7.delivery_partner_id, date = _req$body7.date;
+            _context10.next = 4;
+            return (0, _rider.dashboard)(delivery_partner_id, date);
+          case 4:
+            total = _context10.sent;
+            _context10.next = 7;
+            return (0, _db["default"])('daily_orders').select('total_collective_bottle').where({
+              router_id: total.data,
+              date: date
+            });
+          case 7:
+            bottle = _context10.sent;
+            sum = 0;
+            for (i = 0; i < bottle.length; i++) {
+              sum += Number(bottle[i].total_collective_bottle);
+            }
+            query = {
+              "total_orders": total.order.length,
+              "delivered_orders": total.delivery.length,
+              "undelivered_orders": total.pending.length + total.undelivered.length,
+              "empty_bottle": sum
+            };
+            console.log(query);
+            return _context10.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
+              status: true,
+              query: query
+            }));
+          case 15:
+            _context10.prev = 15;
+            _context10.t0 = _context10["catch"](0);
+            console.log(_context10.t0);
+            return _context10.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
+              status: false,
+              message: _messages["default"].SERVER_ERROR
+            }));
+          case 19:
+          case "end":
+            return _context10.stop();
+        }
+      }
+    }, _callee10, null, [[0, 15]]);
+  }));
+  return function riderDashboard(_x19, _x20) {
+    return _ref10.apply(this, arguments);
+  };
+}();
+exports.riderDashboard = riderDashboard;
+var ten = /*#__PURE__*/function () {
+  var _ref11 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11(req, res) {
+    var payload, user_name, password, checkPhoneNumber, query, userId, today;
+    return _regeneratorRuntime().wrap(function _callee11$(_context11) {
+      while (1) {
+        switch (_context11.prev = _context11.next) {
+          case 0:
+            _context11.prev = 0;
             payload = (0, _validator.userValidator)(req.body);
             user_name = payload.user_name, password = payload.password;
             if (!payload) {
-              _context10.next = 16;
+              _context11.next = 16;
               break;
             }
-            _context10.next = 6;
+            _context11.next = 6;
             return loginUser(password);
           case 6:
-            checkPhoneNumber = _context10.sent;
+            checkPhoneNumber = _context11.sent;
             userId = 0; // const otp = process.env.USER_OTP || Math.floor(1000 + Math.random() * 9000)
             // const otp = '1234'
             if (checkPhoneNumber.body.length) {
-              _context10.next = 13;
+              _context11.next = 13;
               break;
             }
             today = format(new Date(), 'yyyy-MM-dd H:i:s');
-            _context10.next = 12;
+            _context11.next = 12;
             return insertRider(payload);
           case 12:
-            query = _context10.sent;
+            query = _context11.sent;
           case 13:
             // else {
 
@@ -541,7 +606,7 @@ var ten = /*#__PURE__*/function () {
                 message: "pls check"
               });
             }
-            _context10.next = 17;
+            _context11.next = 17;
             break;
           case 16:
             res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
@@ -549,22 +614,22 @@ var ten = /*#__PURE__*/function () {
               message: "error"
             });
           case 17:
-            _context10.next = 23;
+            _context11.next = 23;
             break;
           case 19:
-            _context10.prev = 19;
-            _context10.t0 = _context10["catch"](0);
-            logger.error('Whooops! This broke with error: ', _context10.t0);
+            _context11.prev = 19;
+            _context11.t0 = _context11["catch"](0);
+            logger.error('Whooops! This broke with error: ', _context11.t0);
             res.status(500).send('Error!');
           case 23:
           case "end":
-            return _context10.stop();
+            return _context11.stop();
         }
       }
-    }, _callee10, null, [[0, 19]]);
+    }, _callee11, null, [[0, 19]]);
   }));
-  return function ten(_x19, _x20) {
-    return _ref10.apply(this, arguments);
+  return function ten(_x21, _x22) {
+    return _ref11.apply(this, arguments);
   };
 }();
 exports.ten = ten;

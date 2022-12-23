@@ -527,6 +527,12 @@ var createTable = /*#__PURE__*/function () {
                   t.integer("qty").nullable();
                   t.integer("additional_order_qty").nullable();
                   t.integer("total_qty").nullable();
+                  t.integer("given_one_liter_bottle").unsigned().nullable();
+                  t.integer("given_half_liter_bottle").unsigned().nullable();
+                  t.integer("collected_one_liter_bottle").unsigned().nullable();
+                  t.integer("collected_half_liter_bottle").unsigned().nullable();
+                  t.integer("total_given_bottle").nullable();
+                  t.integer("total_collective_bottle").nullable();
                   t.enu("status", ["pending", "delivered", "undelivered"]).defaultTo("pending");
                   t.enu("tour_status", ["0", "1", "2"]).defaultTo("0");
                   t.timestamps(true, true);
@@ -696,12 +702,31 @@ var createTable = /*#__PURE__*/function () {
               }
             });
           case 71:
+            _context.next = 73;
+            return _db["default"].schema.hasTable("empty_bottle_tracking").then(function (exists) {
+              if (!exists) {
+                return _db["default"].schema.createTable("empty_bottle_tracking", function (t) {
+                  t.increments("id").primary();
+                  t.integer("user_id").unsigned().notNullable();
+                  t.foreign("user_id").references("id").inTable("users");
+                  t.integer("total_one_liter").nullable();
+                  t.integer("total_half_liter").nullable();
+                  t.integer("one_liter_in_hand").nullable();
+                  t.integer("half_liter_in_hand").nullable();
+                  t.integer("one_liter_in_return").nullable();
+                  t.integer("half_liter_in_return").nullable();
+                  // t.enu("status", ["0", "1"]).defaultTo("1");
+                  t.timestamps(true, true);
+                });
+              }
+            });
+          case 73:
             return _context.abrupt("return", res.status(200).json({
               status: true,
               message: "table successfully created"
             }));
-          case 74:
-            _context.prev = 74;
+          case 76:
+            _context.prev = 76;
             _context.t0 = _context["catch"](0);
             console.log(_context.t0);
             return _context.abrupt("return", res.status(500).json({
@@ -709,12 +734,12 @@ var createTable = /*#__PURE__*/function () {
               message: "Error at creating tables",
               error: _context.t0
             }));
-          case 78:
+          case 80:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 74]]);
+    }, _callee, null, [[0, 76]]);
   }));
   return function createTable(_x, _x2) {
     return _ref.apply(this, arguments);

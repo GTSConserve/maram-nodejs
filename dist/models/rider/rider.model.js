@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.userLogin = exports.update_starttour = exports.update_riderstatus = exports.update_location = exports.update_endtour = exports.updateRiderToken = exports.statusupdate = exports.insertUser = exports.getsingleorder = exports.get_riderdetails = exports.get_Appcontrol = exports.checkPassword = void 0;
+exports.userLogin = exports.update_starttour = exports.update_riderstatus = exports.update_location = exports.update_endtour = exports.updateRiderToken = exports.statusupdate = exports.insertUser = exports.getsingleorder = exports.get_riderdetails = exports.get_Appcontrol = exports.dashboard = exports.checkPassword = void 0;
 var _db = _interopRequireDefault(require("../../services/db.service"));
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 var _bcrypt = _interopRequireDefault(require("bcrypt"));
@@ -491,61 +491,69 @@ var update_endtour = /*#__PURE__*/function () {
 // get single order
 exports.update_endtour = update_endtour;
 var getsingleorder = /*#__PURE__*/function () {
-  var _ref11 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11(user_id, order_id, delivery_partner_id, order_status) {
-    var query1, query2, query3, query4, query5;
+  var _ref11 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11(user_id, order_id, delivery_partner_id, order_status, router_id) {
+    var rider, query1, query2, query3, query4, query5;
     return _regeneratorRuntime().wrap(function _callee11$(_context11) {
       while (1) {
         switch (_context11.prev = _context11.next) {
           case 0:
-            console.log(order_status);
+            console.log(router_id);
             _context11.prev = 1;
             _context11.next = 4;
-            return (0, _db["default"])("daily_orders").select("daily_orders.id", "daily_orders.task_name", "daily_orders.tour_status", "daily_orders.status as order_status").where({
-              user_id: user_id
+            return (0, _db["default"])('routes').select("id as router_id").where({
+              rider_id: delivery_partner_id
             });
           case 4:
+            rider = _context11.sent;
+            console.log(rider[0].id);
+            _context11.next = 8;
+            return (0, _db["default"])("daily_orders").select("daily_orders.id", "daily_orders.task_name", "daily_orders.tour_status", "daily_orders.status as order_status").where({
+              user_id: user_id,
+              router_id: router_id
+            });
+          case 8:
             query1 = _context11.sent;
-            _context11.next = 7;
+            _context11.next = 11;
             return (0, _db["default"])("users").join("user_address", "user_address.user_id", "=", "users.id").select("users.id as user_id", "users.name as user_name", "users.user_unique_id as customer_id", "users.mobile_number as user_mobile", "user_address.address as user_address", "user_address.landmark", "user_address.latitude as user_latitude", "user_address.longitude as user_longitude").where({
               user_id: user_id
             });
-          case 7:
+          case 11:
             query2 = _context11.sent;
-            _context11.next = 10;
+            _context11.next = 14;
             return (0, _db["default"])('daily_orders').join("subscribed_user_details", "subscribed_user_details.id", "=", "daily_orders.subscription_id").join("products", "products.id", "=", "subscribed_user_details.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id as product_id", "products.name as product_name", "subscribed_user_details.quantity as quantity", "products.unit_value", "unit_types.value as unit_type", "products.price");
-          case 10:
+          case 14:
             query3 = _context11.sent;
-            _context11.next = 13;
+            _context11.next = 17;
             return (0, _db["default"])('daily_orders').join("additional_orders", "additional_orders.id", "=", "daily_orders.subscription_id").join("subscribed_user_details", "subscribed_user_details.id", "=", "daily_orders.additional_order_id").join("products", "products.id", "=", "subscribed_user_details.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id as product_id", "products.name as product_name", "additional_orders.quantity as quantity", "products.unit_value", "unit_types.value as unit_type", "products.price");
-          case 13:
+          case 17:
             query4 = _context11.sent;
-            _context11.next = 16;
+            _context11.next = 20;
             return (0, _db["default"])('daily_orders').join("add_on_orders", "add_on_orders.id", "=", "daily_orders.add_on_order_id").join("add_on_order_items", "add_on_order_items.add_on_order_id", "=", "add_on_orders.id").join("products", "products.id", "=", "add_on_order_items.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id as product_id", "products.name as product_name", "add_on_order_items.quantity as quantity", "products.unit_value", "unit_types.value as unit_type", "products.price").where({
               "daily_orders.status": order_status
             });
-          case 16:
+          case 20:
             query5 = _context11.sent;
             console.log(query5);
             return _context11.abrupt("return", {
               status: true,
-              data: query3
+              data: query1
             });
-          case 21:
-            _context11.prev = 21;
+          case 25:
+            _context11.prev = 25;
             _context11.t0 = _context11["catch"](1);
             console.log(_context11.t0);
             return _context11.abrupt("return", {
               status: false,
               message: "Cannot Update the status"
             });
-          case 25:
+          case 29:
           case "end":
             return _context11.stop();
         }
       }
-    }, _callee11, null, [[1, 21]]);
+    }, _callee11, null, [[1, 25]]);
   }));
-  return function getsingleorder(_x21, _x22, _x23, _x24) {
+  return function getsingleorder(_x21, _x22, _x23, _x24, _x25) {
     return _ref11.apply(this, arguments);
   };
 }();
@@ -561,7 +569,7 @@ var statusupdate = /*#__PURE__*/function () {
           case 0:
             _context12.prev = 0;
             _context12.next = 3;
-            return (0, _db["default"])();
+            return (0, _db["default"])('daily_orders');
           case 3:
             update = _context12.sent;
             _context12.next = 8;
@@ -576,8 +584,83 @@ var statusupdate = /*#__PURE__*/function () {
       }
     }, _callee12, null, [[0, 6]]);
   }));
-  return function statusupdate(_x25, _x26, _x27, _x28, _x29, _x30) {
+  return function statusupdate(_x26, _x27, _x28, _x29, _x30, _x31) {
     return _ref12.apply(this, arguments);
   };
 }();
+
+// dashboard
 exports.statusupdate = statusupdate;
+var dashboard = /*#__PURE__*/function () {
+  var _ref13 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee13(delivery_partner_id, date) {
+    var route, order, delivery, pending, undelivered;
+    return _regeneratorRuntime().wrap(function _callee13$(_context13) {
+      while (1) {
+        switch (_context13.prev = _context13.next) {
+          case 0:
+            _context13.prev = 0;
+            _context13.next = 3;
+            return (0, _db["default"])('routes').select('id').where({
+              rider_id: delivery_partner_id
+            });
+          case 3:
+            route = _context13.sent;
+            _context13.next = 6;
+            return (0, _db["default"])('daily_orders').select('id').where({
+              router_id: route[0].id,
+              date: date
+            });
+          case 6:
+            order = _context13.sent;
+            _context13.next = 9;
+            return (0, _db["default"])('daily_orders').select('id').where({
+              router_id: route[0].id,
+              date: date,
+              status: "delivered"
+            });
+          case 9:
+            delivery = _context13.sent;
+            _context13.next = 12;
+            return (0, _db["default"])('daily_orders').select('id').where({
+              router_id: route[0].id,
+              date: date,
+              status: "pending"
+            });
+          case 12:
+            pending = _context13.sent;
+            _context13.next = 15;
+            return (0, _db["default"])('daily_orders').select('id').where({
+              router_id: route[0].id,
+              date: date,
+              status: "undelivered"
+            });
+          case 15:
+            undelivered = _context13.sent;
+            return _context13.abrupt("return", {
+              status: true,
+              data: route[0].id,
+              order: order,
+              delivery: delivery,
+              pending: pending,
+              undelivered: undelivered
+            });
+          case 19:
+            _context13.prev = 19;
+            _context13.t0 = _context13["catch"](0);
+            console.log(_context13.t0);
+            return _context13.abrupt("return", {
+              status: false,
+              message: "No data found"
+            });
+          case 23:
+          case "end":
+            return _context13.stop();
+        }
+      }
+    }, _callee13, null, [[0, 19]]);
+  }));
+  return function dashboard(_x32, _x33) {
+    return _ref13.apply(this, arguments);
+  };
+}();
+exports.dashboard = dashboard;
