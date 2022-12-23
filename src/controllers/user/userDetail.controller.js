@@ -329,7 +329,7 @@ export const getSingleCalendar = async (req, res) => {
   try {
     const { date } = req.body;
 
-    const single_calendar_data = [
+    const single_calendar_data = 
       {
         "subscription_products": [
           {
@@ -348,15 +348,15 @@ export const getSingleCalendar = async (req, res) => {
             "product_id": 1,
             "product_name": "Farm Fresh Natural Milk",
             "product_image": "https://i.pinimg.com/originals/e1/e3/e6/e1e3e608910263114b0f03560bdcd966.jpg",
-            "product_variation": 1,
+            "product_variation": "1 liter",
             "product_price": 130,
             "product_quantity": 2,
-            "remove_status": 1
+            "remove_status": 0
           },
         ],
 
       }
-    ]
+    
 
     // await edit_address(userId, address_id, title, address, landmark, type);
 
