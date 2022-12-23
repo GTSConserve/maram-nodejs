@@ -41,11 +41,13 @@ export const addUserAddress = async (req, res) => {
         })
         .where({ user_id: payload.user_id });
 
-      res
+     return res
         .status(responseCode.SUCCESS)
 
         .json({ status: true, message: "address added successfully" });
     }
+
+
   } catch (error) {
     console.log(error);
 

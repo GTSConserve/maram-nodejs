@@ -636,6 +636,7 @@ export const createTable = async (req, res) => {
           t.foreign("additional_order_id")
             .references("id")
             .inTable("additional_orders");
+            
 
           // t.integer("product_id").unsigned().nullable();
           // t.foreign("product_id").references("id").inTable("products");
@@ -652,6 +653,13 @@ export const createTable = async (req, res) => {
           t.integer("qty").nullable();
           t.integer("additional_order_qty").nullable();
           t.integer("total_qty").nullable();
+
+          t.integer("given_one_liter_bottle").unsigned().nullable();
+          t.integer("given_half_liter_bottle").unsigned().nullable();
+          t.integer("collected_one_liter_bottle").unsigned().nullable();
+          t.integer("collected_half_liter_bottle").unsigned().nullable();
+          t.integer("total_given_bottle").nullable();
+          t.integer("total_collective_bottle").nullable();
 
           t.enu("status", ["pending", "delivered", "undelivered"]).defaultTo(
             "pending"
@@ -947,6 +955,26 @@ export const createTable = async (req, res) => {
             t.date("start_date").nullable();
             t.json("customized_days").nullable();
     
+            t.timestamps(true, true);
+          });
+        }
+      });
+
+      // empty bottle tracking
+
+      await knex.schema.hasTable("empty_bottle_tracking").then(function (exists) {
+        if (!exists) {
+          return knex.schema.createTable("empty_bottle_tracking", function (t) {
+            t.increments("id").primary();
+            t.integer("user_id").unsigned().notNullable();
+            t.foreign("user_id").references("id").inTable("users");
+            t.integer("total_one_liter").nullable();
+            t.integer("total_half_liter").nullable();
+            t.integer("one_liter_in_hand").nullable();
+            t.integer("half_liter_in_hand").nullable();
+            t.integer("one_liter_in_return").nullable();
+            t.integer("half_liter_in_return").nullable();
+            // t.enu("status", ["0", "1"]).defaultTo("1");
             t.timestamps(true, true);
           });
         }

@@ -16,13 +16,13 @@ import knex from "../../services/db.service";
 export const removeAddOnOrder = async (req, res) => {
   try {
 
-    const { product_id, delivery_date, addon_id } = req.body
+    const { userId,product_id, delivery_date, addon_id } = req.body
 
     if (!product_id || !delivery_date || !addon_id) {
       return res.status(responseCode.FAILURE.BAD_REQUEST).json({ status: false, message: messages.MANDATORY_ERROR })
     }
-
-    const remove = await remove_addonorders(product_id, delivery_date, addon_id);
+     console.log(userId,product_id, delivery_date, addon_id);
+    const remove = await remove_addonorders(product_id, delivery_date, addon_id,userId);
 
     return res
       .status(responseCode.SUCCESS)

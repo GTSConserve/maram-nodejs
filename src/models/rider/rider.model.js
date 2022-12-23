@@ -197,15 +197,15 @@ export const userLogin = async (password) => {
   }
   
   // get single order
-  export const getsingleorder = async (user_id,order_id,delivery_partner_id,order_status) => {
-    console.log(order_status)
+  export const getsingleorder = async (user_id,order_id,delivery_partner_id,order_status,router_id) => {
+    console.log(router_id)
         try {
 
-      // const riderid = await knex('routes').select("id as router_id","rider_id")
-      // .where({"rider_id":delivery_partner_id});
+      const rider = await knex('routes').select("id as router_id")
+      .where({rider_id:delivery_partner_id});
 
 
-      // console.log(riderid)
+      console.log(rider[0].id)
 
       
         const query1 =  await knex("daily_orders")
@@ -215,7 +215,7 @@ export const userLogin = async (password) => {
           "daily_orders.tour_status",
           "daily_orders.status as order_status",
         )
-        .where({user_id:user_id});
+        .where({user_id:user_id,router_id:router_id});
         
         const query2 = await knex("users")
         .join("user_address", "user_address.user_id", "=", "users.id")        
@@ -271,12 +271,10 @@ export const userLogin = async (password) => {
           "products.price"
         )
         .where({"daily_orders.status": order_status})
-
-
-
-
       console.log(query5)
-      return{status:true,data:query3}
+      
+      
+      return{status:true,data:query1}
 
 
     } catch (error) {
@@ -288,9 +286,36 @@ export const userLogin = async (password) => {
   // oder status update
   export const statusupdate = async (user_id,order_id,order_status,subscription_id,products,addons) => {
     try {
-         const update = await knex()
+         const update = await knex('daily_orders')
       
     } catch (error) {
       
+    }
+  }
+
+  // dashboard
+  export const dashboard = async(delivery_partner_id,date) => {
+    try {
+          const route = await knex('routes').select('id').where({rider_id:delivery_partner_id});
+          // console.log(route[0].id)
+          const order = await knex('daily_orders').select('id').where({router_id:route[0].id,date:date});
+
+          const delivery = await knex('daily_orders').select('id').where({router_id:route[0].id,date:date,status:"delivered"});
+          
+          const pending = await knex('daily_orders').select('id').where({router_id:route[0].id,date:date,status:"pending"})
+          // .orwhere({status:"undelivered"});
+          const undelivered = await knex('daily_orders').select('id').where({router_id:route[0].id,date:date,status:"undelivered"})
+         
+      
+      return{status:true,data:route[0].id,order,delivery,pending,undelivered}
+      
+      // console.log(order.length)
+      // console.log(delivery)
+      // console.log(sum)
+      // console.log(bottle.length)
+      
+    } catch (error) {
+      console.log(error);
+      return{ status: false, message: "No data found" };
     }
   }

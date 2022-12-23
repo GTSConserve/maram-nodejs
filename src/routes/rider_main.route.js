@@ -1,7 +1,9 @@
 import express from "express";
 
 // Inner routes
-import loginRouter from "./rider/rider.route";
+import loginRouter from "./rider/login.route";
+import riderRouter from "./rider/rider.route";
+
 
 
 
@@ -16,6 +18,12 @@ const defaultRoutes = [
     path: "/auth",
     route: loginRouter,
   },
+
+  {
+    path: "/rider",
+    route: riderRouter,
+  },
+  
   
 ];
 
