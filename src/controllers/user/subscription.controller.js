@@ -46,9 +46,9 @@ export const removeAdditionalOrder = async (req, res) => {
 
 export const editAdditionalOrder = async (req, res) => {
   try {
-    const { userId, subscription_id, dates, qty } = req.body;
+    const { userId, subscription_id, dates, qty, additional_order_id } = req.body;
 
-    if (!subscription_id || dates.length === 0 || !qty) {
+    if (!subscription_id || dates.length === 0 || !qty ||! additional_order_id) {
       return res
         .status(responseCode.FAILURE.BAD_REQUEST)
         .json({ status: false, message: messages.MANDATORY_ERROR });
