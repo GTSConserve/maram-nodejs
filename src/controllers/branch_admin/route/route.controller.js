@@ -66,6 +66,16 @@ export const tommorowRouteMapping = async (req, res) => {
       .select("user_address_id")
       .where({ router_id: route_id, date: tommorow_date.format("YYYY-MM-DD") });
 
+    if(daily_orders.length ==0 ){
+      req.flash("error", "No User Found");
+      return res.render("branch_admin/route/tommorrow_mapping", {
+        data: [],
+
+        loading,
+        router_id: route_id,
+      });
+    }
+
     const address = [];
     for (let i = 0; i < daily_orders.length; i++) {
       address.push(daily_orders[i].user_address_id);

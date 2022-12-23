@@ -511,7 +511,8 @@ export const createTable = async (req, res) => {
             "branch_pending",
             "branch_cancelled",
             "new_order",
-            "removed"
+            "removed",
+            "order_placed"
           ]).defaultTo("pending");
           t.integer("tip_amount").nullable();
           t.integer("grand_total").nullable();

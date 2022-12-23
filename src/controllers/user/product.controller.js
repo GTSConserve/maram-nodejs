@@ -55,8 +55,9 @@ export const getSingleProduct = async (req, res) => {
         "products.unit_value",
         "unit_types.value as unit_type",
         "products.price",
+
         "products.demo_price"
-        
+
       )
       .where({ "products.id": product_id })
       const response = await GetProduct(product);

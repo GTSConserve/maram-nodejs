@@ -18,16 +18,16 @@ const productRouter = express.Router({
 });
 
 productRouter.post("/get_categories", getCategories);
-productRouter.post("/get_products", getProducts);
-productRouter.post("/search_products", searchProducts);
+productRouter.post("/get_products", authenticateJWT,getProducts);
+productRouter.post("/search_products",authenticateJWT,searchProducts);
 
 productRouter.get("/get_subscription_product",authenticateJWT,getSubscriptionProducts);
 productRouter.get("/get_add_on_product", authenticateJWT,getAddOnProducts);
 
-productRouter.post("/get_single_product", authenticateJWT,getSingleProduct);
+productRouter.post("/get_single_product",authenticateJWT,getSingleProduct);
 
 productRouter.post("/create_add_on_products", authenticateJWT, addon_Order);
-productRouter.post("/remove_add_on_products", authenticateJWT,removeAddOnOrder);
+productRouter.post("/remove_add_on_products",authenticateJWT, removeAddOnOrder);
 
 // next day delivery product api for static
 

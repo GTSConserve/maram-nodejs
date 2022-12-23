@@ -14,9 +14,10 @@ export const get_subscription_or_add_on_products = async (userId,id) => {
         "products.unit_value",
         "unit_types.value as unit_type",
         "products.price",
-        "products.demo_price"
+        // "products.demo_price"
         // "subscribed_user_details.id as subscription_id"
       )
+
       .where({ "subscription_status":"subscribed",product_type_id: id })
       
       console.log(product)
@@ -47,7 +48,7 @@ export const get_products = async (category_id, product_type_id, userId) => {
         "products.unit_value",
         "unit_types.value as unit_type",
         "products.price",
-        "products.demo_price"
+        // "products.demo_price"
       )
       .where({ category_id, product_type_id });
 
@@ -177,6 +178,8 @@ export const remove_addonorders = async (product_id , delivery_date,addon_id) =>
       console.log(product_id)
    const addon_status = await knex('add_on_orders').select('status').where({id:addon_id,delivery_date:delivery_date})
 
+   console.log(addon_status[0].status)
+
    if(addon_status[0].status!="cancelled"){
 
     await knex("add_on_order_items").update({status : "removed"}).where({product_id:product_id,add_on_order_id:addon_id})
@@ -188,19 +191,19 @@ export const remove_addonorders = async (product_id , delivery_date,addon_id) =>
 
     const total = select1[0].sub_total-select[0].price;
 
-  const update = await knex('add_on_orders').update({sub_total:total}).where({id:addon_id,delivery_date:delivery_date});
+    const update = await knex('add_on_orders').update({sub_total:total}).where({id:addon_id,delivery_date:delivery_date});
 
-  const status = await knex('add_on_orders').update({status:"cancelled"}).where({sub_total:0})
+    const status = await knex('add_on_orders').update({status:"cancelled"}).where({sub_total:0})
 
-  return{status:true,message:"Successfully removed"};
-  }
+    return{status:true,message:"Successfully removed"};
+    }
   
-  else{
+    else{
     return{status:false,message:"already cancelled"};
-  }
-}
-  catch(error){
+    }
+    }
+    catch(error){
     console.log(error);
     return { status: false, message: "Cannot Remove addon order"};
-  }
-}
+     }
+   }

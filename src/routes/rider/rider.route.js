@@ -8,7 +8,7 @@ const loginRouter = express.Router({
 });
 loginRouter.get("/app_controls", getAppControls);
 loginRouter.post("/login",nonMandatoryToken,login)
-loginRouter.get("/rider_details",getRiderdetails)
+loginRouter.post("/rider_details",getRiderdetails)
 
 
 loginRouter.post("/update_rider_status",updateRiderstatus);

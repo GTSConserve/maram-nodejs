@@ -54,7 +54,6 @@ export const updateDailyTask = async (req, res) => {
       tommorow_subscription_orders.length === 0 &&
       tommorow_add_on_orders.length === 0
     ) {
-      console.log("No Customer Found For Tomorrow");
       await req.flash("error", "No Customer Found For Tomorrow");
       return res.redirect("/home");
     }
@@ -73,24 +72,12 @@ export const updateDailyTask = async (req, res) => {
           ) {
             tommorow_subscription_orders[j].add_on_order_id =
               tommorow_add_on_orders[i].add_on_order_id;
+
             tommorow_add_on_orders.splice([i], 1);
           }
         }
       }
     }
-    // else if (
-    //   tommorow_add_on_orders.length === 0 &&
-    //   tommorow_subscription_orders.length !== 0
-    // ) {
-
-    // } else if (
-    //   tommorow_add_on_orders.length !== 0 &&
-    //   tommorow_subscription_orders.length === 0
-    // ) {
-    // }
-
-    console.log(tommorow_subscription_orders);
-    console.log(tommorow_add_on_orders);
 
     if (tommorow_subscription_orders.length !== 0) {
       for (let i = 0; i < tommorow_subscription_orders.length; i++) {
@@ -104,13 +91,16 @@ export const updateDailyTask = async (req, res) => {
           user_id: tommorow_subscription_orders[i].user_id,
           date: tommorow_date.format("YYYY-MM-DD"),
           subscription_id: tommorow_subscription_orders[i].sub_id,
+          subscribe_type_id: tommorow_subscription_orders[i].subscribe_type_id,
+          customized_days: tommorow_subscription_orders[i].customized_days,
           add_on_order_id: tommorow_subscription_orders[i].add_on_order_id
             ? tommorow_subscription_orders[i].add_on_order_id
             : null,
           router_id: get_address_id[0].router_id,
           user_address_id: tommorow_subscription_orders[i].user_address_id,
           qty: tommorow_subscription_orders[i].quantity,
-          additional_order_qty : 0
+          additional_order_qty: 0,
+          additional_order_id: null,
         });
       }
     }
@@ -133,31 +123,29 @@ export const updateDailyTask = async (req, res) => {
       }
     }
 
-    console.log(tommorow_orders);
-
-    ////////////////////////////////////////////////////////////////////////////////////////
-    // additionla orders
+    ////////////////////////////////////////////////////////////////////////////////////////  additionla orders
     const tommorow_additional_orders = await knex("additional_orders")
       .select(
         "user_id",
         "subscription_id",
         "date",
-        "id",
-        "quantity as additional_qty"
+        "id as additional_order_id",
+        "quantity as additional_order_qty"
       )
       .where({ date: tommorow_date.format("YYYY-MM-DD"), status: "pending" });
 
     if (tommorow_additional_orders.length !== 0) {
       for (let i = 0; i < tommorow_additional_orders.length; i++) {
-        for (let j = 0; j < tommorow_subscription_orders.length; j++) {
+        for (let j = 0; j < tommorow_orders.length; j++) {
           if (
-            tommorow_subscription_orders[j].sub_id ==
+            tommorow_orders[j].subscription_id ==
             tommorow_additional_orders[i].subscription_id
           ) {
-            tommorow_subscription_orders[j].additional_order_id =
-              tommorow_additional_orders[j].id;
-            tommorow_subscription_orders[j].additional_qty =
-              tommorow_additional_orders[j].additional_qty;
+            tommorow_orders[j].additional_order_qty = Number(
+              tommorow_additional_orders[i].additional_order_qty
+            );
+            tommorow_orders[j].additional_order_id =
+              tommorow_additional_orders[i].additional_order_id;
           }
         }
       }
@@ -169,44 +157,53 @@ export const updateDailyTask = async (req, res) => {
       .select("user_id", "subscription_id", "date")
       .where({ date: tommorow_date.format("YYYY-MM-DD") });
 
-    let paused_customers = [];
+    // store a paused user in a array because we need to update the subscribe date to next date
+    let paused_users = [];
 
     // need to check paused date table
     if (tommorow_paused_users.length !== 0) {
       for (let i = 0; i < tommorow_paused_users.length; i++) {
-        for (let j = 0; j < tommorow_subscription_orders.length; j++) {
+        for (let j = 0; j < tommorow_orders.length; j++) {
           if (
-            tommorow_subscription_orders[j].sub_id ==
+            tommorow_orders[j].subscription_id ==
             tommorow_paused_users[i].subscription_id
           ) {
-            paused_customers.push(tommorow_subscription_orders[j]);
+            if (tommorow_orders[j].add_on_order_id == null) {
+              paused_users.push({
+                date: tommorow_orders[j].date,
+                subscribe_type_id: tommorow_orders[j].subscribe_type_id,
+                subscription_id: tommorow_orders[j].subscription_id,
+                customized_days: tommorow_orders[j].customized_days,
+              });
 
-            tommorow_subscription_orders.splice([j], 1);
+              tommorow_orders.splice([j], 1);
+            } else {
+              paused_users.push({
+                date: tommorow_orders[j].date,
+                subscribe_type_id: tommorow_orders[j].subscribe_type_id,
+                subscription_id: tommorow_orders[j].subscription_id,
+                customized_days: tommorow_orders[j].customized_days,
+              });
+
+              tommorow_orders[j].subscription_id = null;
+              delete tommorow_orders[j].qty;
+              delete tommorow_orders[j].additional_order_qty;
+              delete tommorow_orders[j].subscribe_type_id;
+              delete tommorow_orders[j].customized_days;
+            }
           }
         }
       }
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////
-    // need to add add_on_product id in daily order table
+    if (tommorow_orders.length === 0) {
+      await req.flash("error", "No Customer Found For Tomorrow");
+      return res.redirect("/home");
+    }
 
-    // checking add on orders and subscription product
+    console.log(tommorow_orders);
 
-    // console.log("tommorow customers");
-    // console.log(tommorow_subscription_orders);
-    // console.log("paused customers");
-    // console.log(paused_customers);
-
-    await tommorow_subscription_orders.map(async (data) => {
-      // data.date = moment(data.date, "YYYY-MM-DD")
-
-      // need to get rider id based on router id
-      // let rider_id = await knex("routes")
-      //   .select("rider_id")
-      //   .where({ id: data.router_id });
-
-      // before update the date need to check that if next update date is availble in paused date is it availble then choose another date
-
+    await tommorow_orders.map(async (data) => {
       let date;
 
       // before update the date nned to check the PO is raised or not (check the previous PO if no PO raised then date should not be updated)
@@ -227,63 +224,72 @@ export const updateDailyTask = async (req, res) => {
         }
 
         // update the date in sub user details and insert the data ro daily orders
-        // await knex("subscribed_user_details")
-        //   .update({ date: date.format("YYYY-MM-DD HH:mm:ss") })
-        //   .where({ id: data.sub_id });
+        await knex("subscribed_user_details")
+          .update({ date: date.format("YYYY-MM-DD HH:mm:ss") })
+          .where({ id: data.subscription_id });
       }
 
+      // update the addon orders
       if (data.add_on_order_id) {
-        // await knex("add_on_orders")
-        //   .update({ status: "assigned" })
-        //   .where({ id: data.add_on_order_id });
+        await knex("add_on_orders")
+          .update({ status: "order_placed" })
+          .where({ id: data.add_on_order_id });
       }
 
       await knex("daily_orders").insert({
-        branch_id: admin_id,
+        branch_id: data.branch_id,
         user_id: data.user_id,
-        user_address_id: data.user_address_id,
         date: data.date,
+        subscription_id: data.subscription_id,
+        add_on_order_id: data.add_on_order_id,
+
+        additional_order_id: data.additional_order_id
+          ? data.additional_order_id
+          : null,
         router_id: data.router_id,
-        // product_id: data.product_id && data.product_id,
-        add_on_order_id: data.add_on_order_id && data.add_on_order_id,
-        additional_order_id:
-          data.additional_order_id && data.additional_order_id,
-        subscription_id: data.sub_id && data.sub_id,
-        qty: data.quantity && data.quantity,
-        additional_order_qty: data.additional_qty && data.additional_qty,
+        user_address_id: data.user_address_id,
+
+        qty: data.qty ? data.qty : null,
+        additional_order_qty: data.additional_order_qty
+          ? data.additional_order_qty
+          : null,
         total_qty:
-          data.additional_qty &&
-          Number(data.additional_qty) + Number(data.quantity),
-        //       rider_id: rider_id[0].rider_id,
+          data.subscription_id != null
+            ? data.qty !== null && data.additional_order_qty !== null
+              ? Number(data.qty) +
+                (data.additional_order_qty !== null
+                  ? Number(data.additional_order_qty)
+                  : 0)
+              : null
+            : null,
       });
-      //     rider_id = "";
     });
 
-    // for paused customers need to update the date in subscribed user table
-    // if (paused_customers.length !== 0) {
-    //   let date;
-    //   paused_customers.map(async (data) => {
-    //     if (data.subscribe_type_id) {
-    //       if (data.subscribe_type_id == "1") {
-    //         date = moment(data.date, "YYYY-MM-DD").add(1, "days");
-    //       } else if (data.subscribe_type_id == "2") {
-    //         date = moment(data.date, "YYYY-MM-DD").add(2, "days");
-    //       } else if (data.subscribe_type_id == "3") {
-    //         const customized_date = await customizedDay(
-    //           data.date,
-    //           data.customized_days
-    //         );
+    if (paused_users.length !== 0) {
+      let dates;
+      await paused_users.map(async (data) => {
+        if (data.subscribe_type_id) {
+          if (data.subscribe_type_id == "1") {
+            dates = moment(data.date, "YYYY-MM-DD").add(1, "days");
+          } else if (data.subscribe_type_id == "2") {
+            dates = moment(data.date, "YYYY-MM-DD").add(2, "days");
+          } else if (data.subscribe_type_id == "3") {
+            const customized_date = await customizedDay(
+              data.date,
+              data.customized_days
+            );
 
-    //         date = customized_date;
-    //       }
+            dates = customized_date;
+          }
 
-    //       // update the date in sub user details and insert the data ro daily orders
-    //       await knex("subscribed_user_details")
-    //         .update({ date: date.format("YYYY-MM-DD HH:mm:ss") })
-    //         .where({ id: data.sub_id });
-    //     }
-    //   });
-    // }
+          // update the date in sub user details and insert the data ro daily orders
+          await knex("subscribed_user_details")
+            .update({ date: dates.format("YYYY-MM-DD HH:mm:ss") })
+            .where({ id: data.subscription_id });
+        }
+      });
+    }
+
     req.flash("success", "Tomorrow Routes and PO Updated");
     res.redirect("/home");
   } catch (error) {

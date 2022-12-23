@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken'
 
 export const createToken = (payload) => {
   try {
-    const token = jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: '10h' })
+    const token = jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: '1y' })
     const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1y' })
 
     return { status: true, token, refreshToken }

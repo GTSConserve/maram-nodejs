@@ -19,10 +19,12 @@ export const getPoForm = async (req, res) => {
     }
 
     const daily_orders = await knex("daily_orders")
-      .select("subscription_id", "add_on_order_id")
+      .select("subscription_id", "add_on_order_id" , "total_qty")
       .where({ branch_id: admin_id, date: tommorow_date.format("YYYY-MM-DD") });
 
     // if no daily orders length === 0  then return to home
+
+    console.log(daily_orders)
 
     const { add_on_products, subscription_products } = await getBothProducts(
       daily_orders

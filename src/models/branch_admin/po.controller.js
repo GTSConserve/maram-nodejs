@@ -12,7 +12,7 @@ export const getBothProducts = async (daily_orders) => {
 
       sub_products_id.push({
         product_id: sub_product_id[0].product_id,
-        qty: Number(sub_product_id[0].quantity),
+        qty: Number(daily_orders[i].total_qty),
       });
     }
     if (daily_orders[i].add_on_order_id !== null) {
@@ -29,34 +29,55 @@ export const getBothProducts = async (daily_orders) => {
     }
   }
 
+  console.log(sub_products_id);
+  console.log(add_products_id);
+
   //////////////////////////////////////////////////////////////////////////////// get products id (sub)
   if (sub_products_id.length !== 0) {
+    let removedIndex = [];
     for (let i = 0; i < sub_products_id.length; i++) {
       for (let j = i + 1; j < sub_products_id.length; j++) {
         if (sub_products_id[i].product_id == sub_products_id[j].product_id) {
           sub_products_id[i].qty =
             sub_products_id[i].qty + sub_products_id[j].qty;
-          sub_products_id.splice([j], 1);
+          removedIndex.push(j);
+          // sub_products_id.splice(j, 1);
         }
+      }
+
+      if (removedIndex.length !== 0) {
+        for (let k = removedIndex.length - 1; k >= 0; k--) {
+          sub_products_id.splice(removedIndex[k], 1);
+        }
+        removedIndex = [];
       }
     }
   }
 
   //////////////////////////////////////////////////////////////////////////////////// get products id (add on)
   if (add_products_id.length !== 0) {
+    let removedIndexAdd = []
     for (let i = 0; i < add_products_id.length; i++) {
       for (let j = i + 1; j < add_products_id.length; j++) {
         if (add_products_id[i].product_id == add_products_id[j].product_id) {
           add_products_id[i].qty =
             add_products_id[i].qty + add_products_id[j].qty;
-          add_products_id.splice([j], 1);
+            removedIndexAdd.push(j);
         }
+      }
+      if (removedIndexAdd.length !== 0) {
+        for (let k = removedIndexAdd.length - 1; k >= 0; k--) {
+          add_products_id.splice(removedIndexAdd[k], 1);
+        }
+        removedIndexAdd = [];
       }
     }
   }
 
   ///////////////////////////////////////////////////////////////////////// get subscription product
   let subscription_products = [];
+
+  console.log(sub_products_id, "products");
 
   for (let i = 0; i < sub_products_id.length; i++) {
     const product = await knex("products")
@@ -104,8 +125,6 @@ export const getBothProducts = async (daily_orders) => {
       total_qty: add_products_id[i].qty,
     });
   }
-
-
 
   ///////////////////////////////////////////////////////////////// calculating the units
   for (let i = 0; i < subscription_products.length; i++) {

@@ -11,7 +11,8 @@ import {
   Edit,
   checkDeliveryAddress,
   getEmptyBottle,
-  userAddressChange
+  userAddressChange,
+  getSingleCalendar
 } from "../../controllers/user/userDetail.controller";
 import multer from "multer";
 
@@ -48,6 +49,7 @@ userRouter.post("/change_plan", authenticateJWT,changePlan);
 
 userRouter.get("/get_empty_bottle", authenticateJWT, getEmptyBottle);
 userRouter.post("/user_address_change", authenticateJWT, userAddressChange);
+userRouter.post("/single_calendar", authenticateJWT, getSingleCalendar);
 
 
 export default userRouter;

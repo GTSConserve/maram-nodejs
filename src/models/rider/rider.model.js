@@ -1,5 +1,6 @@
 import knex from "../../services/db.service";
 import responseCode from "../../constants/responseCode";
+import bcrypt from "bcrypt"
 
 
 
@@ -17,6 +18,38 @@ export const updateRiderToken = async (refresh_token, user_name) => {
     };
   }
 };
+
+
+export const checkPassword = async (user_name, password) => {
+  // console.log(user_name, password)
+  try {
+    const get_user = await knex("rider_details")
+      .select( "password")
+      .where({ user_name ,status : "1" });
+      console.log(get_user)
+
+    if (get_user.length === 0) {
+      return { status: false, message: "User Not Found" };
+    }
+    console.log(get_user);
+
+    // const isPassword = '12345678'
+
+    const isPassword = await bcrypt.compare(password, get_user[0].password);
+    console.log(isPassword);
+
+    if (!isPassword) {
+      return { status: false, message: "Invalid Password" };
+    }
+
+    return { status: true , data : get_user[0] };
+  } catch (error) {
+    console.log(error);
+    return { status: false, message: "Error at getting user details" };
+  }
+};
+
+
 
 export const userLogin = async (password) => {
 
@@ -99,16 +132,16 @@ export const userLogin = async (password) => {
   }
 
   // update rider status
-  export const update_riderstatus = async (delivary_partner_id,status) => {
+  export const update_riderstatus = async (delivery_partner_id,status) => {
     try{
         if(status==1){
-        const update = await knex("rider_details").update({status:status}).where({id:delivary_partner_id})
+        const update = await knex("rider_details").update({status:status}).where({id:delivery_partner_id})
         return{status:true,message: "SuccessFully Updated"};
         }
         else{
           return{status:false,message:"cannot updated"}
         }
-      
+        
     }
     catch(error){
       console.log(error)
@@ -118,9 +151,9 @@ export const userLogin = async (password) => {
 
 
   // update rider location 
-  export const update_location = async (delivary_partner_id,latitude,longitude) => {
+  export const update_location = async (delivery_partner_id,latitude,longitude) => {
     try{
-        const riderlocation = await knex('rider_details').update({latitude:latitude,longitude:longitude}).where({id:delivary_partner_id})
+        const riderlocation = await knex('rider_details').update({latitude:latitude,longitude:longitude}).where({id:delivery_partner_id})
         return{status:true,data:riderlocation}
     }catch(error){
       console.log(error);
@@ -130,10 +163,10 @@ export const userLogin = async (password) => {
   }
 
   // update start tour 
-  export const update_starttour = async (delivary_partner_id,tour_id,tour_status) => {
+  export const update_starttour = async (delivery_partner_id,tour_id,tour_status) => {
     try {
       if(tour_status==1){
-      const updatetour = await knex('rider_details').update({status:'1'}).where({id:delivary_partner_id})
+      const updatetour = await knex('rider_details').update({status:'1'}).where({id:delivery_partner_id})
       return{status:true,message:"successfully updated"}
       }
       else{
@@ -147,10 +180,10 @@ export const userLogin = async (password) => {
 
 
   //  update endtour 
-  export const update_endtour = async (delivary_partner_id,tour_id,tour_status) => {
+  export const update_endtour = async (delivery_partner_id,tour_id,tour_status) => {
     try{
       if(tour_status==2){
-        const updatetour = await knex('rider_details').update({status:'2'}).where({id:delivary_partner_id})
+        const updatetour = await knex('rider_details').update({status:'2'}).where({id:delivery_partner_id})
         return{status:true,message:"successfully updated"}
         }
         else{
@@ -165,13 +198,14 @@ export const userLogin = async (password) => {
   
   // get single order
   export const getsingleorder = async (user_id,order_id,delivery_partner_id,order_status) => {
-    try {
+    console.log(order_status)
+        try {
 
       // const riderid = await knex('routes').select("id as router_id","rider_id")
       // .where({"rider_id":delivery_partner_id});
 
 
-      // console.log(riderid )
+      // console.log(riderid)
 
       
         const query1 =  await knex("daily_orders")
@@ -235,7 +269,8 @@ export const userLogin = async (password) => {
           "products.unit_value",
           "unit_types.value as unit_type",
           "products.price"
-        ).where({status:order_status})
+        )
+        .where({"daily_orders.status": order_status})
 
 
 

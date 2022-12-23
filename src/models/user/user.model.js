@@ -91,7 +91,7 @@ export const insertUser = async (payload, otp) => {
   const query = await knex
     .insert([
       {
-        user_unique_id: generate_id,
+        // user_unique_id: generate_id,
         mobile_number,
         fcm_token: fcmToken,
         otp,

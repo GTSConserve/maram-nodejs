@@ -4,7 +4,7 @@ import { userAddressValidator } from "../../services/validator.service";
 import knex from "../../services/db.service";
 import {
   change_plan,
-  delete_user_address, 
+  delete_user_address,
   edit,
   edit_address,
   get_address,
@@ -102,8 +102,8 @@ export const getUser = async (req, res) => {
       get_user_detail.user_id = data.id;
       get_user_detail.name = data.name;
       get_user_detail.image = data.image
-        // ? process.env.BASE_URL + data.image
-        // : null;
+      // ? process.env.BASE_URL + data.image
+      // : null;
       get_user_detail.mobile_number = data.mobile_number;
       get_user_detail.email = data.email;
       get_user_detail.total_bill_due_Amount = 'Bill due amount ₹0'
@@ -170,9 +170,9 @@ export const deleteUseraddress = async (req, res) => {
     if (!address_id)
       return res
         .status(responseCode.FAILURE.BAD_REQUEST)
-        .json({ status: false, message: messages.MANDATORY_ERROR});
+        .json({ status: false, message: messages.MANDATORY_ERROR });
 
-    const addresses = await delete_user_address(address_id,userId);
+    const addresses = await delete_user_address(address_id, userId);
 
 
     res
@@ -253,22 +253,22 @@ export const changePlan = async (req, res) => {
 
 export const checkDeliveryAddress = async (req, res) => {
   try {
-    const { address_id } = req.body;    
+    const { address_id } = req.body;
 
     // let maram_latitude = '10.369384601477861'
     // let maram_longitude = '78.81283443421125'
 
     const check_address = await checkAddress(address_id);
     console.log(check_address.body[0].latitude)
-    
+
     if (check_address.body[0].latitude <= 10.9956 || check_address.body[0].longitude <= 77.2852) {
-      
-    
+
+
       return res
-      .status(200) 
-      .json({ status: true, message: "successfully delivery" });  
+        .status(200)
+        .json({ status: true, message: "successfully delivery" });
     }
-      
+
   } catch (error) {
     console.log(error);
 
@@ -282,22 +282,22 @@ export const getEmptyBottle = async (req, res) => {
 
     if (userId) {
 
-      let get_user_bottle_detail = 
+      let get_user_bottle_detail =
       {
         "empty_bottle_in_hand_1_litre": "0",
         "empty_bottle_in_hand_0.5_litre": "30",
         "empty_bottle_return_1_litre": "0",
         "empty_bottle_return_0.5_litre": "30"
       }
-    
+
       res
-      .status(responseCode.SUCCESS)
-      .json({ status: true, this_month_item_detail: get_user_bottle_detail });
+        .status(responseCode.SUCCESS)
+        .json({ status: true, this_month_item_detail: get_user_bottle_detail });
     }
-    else{
+    else {
       return res
-      .status(responseCode.FAILURE.DATA_NOT_FOUND)
-      .json({ status: false, message: "Bottle Not Found" });
+        .status(responseCode.FAILURE.DATA_NOT_FOUND)
+        .json({ status: false, message: "Bottle Not Found" });
     }
 
   } catch (error) {
@@ -318,6 +318,51 @@ export const userAddressChange = async (req, res) => {
     res
       .status(responseCode.SUCCESS)
       .json({ status: true, message: "updated successfully" });
+  } catch (error) {
+    console.log(error);
+
+    res.status(responseCode.FAILURE.BAD_REQUEST).json({ status: false, error });
+  }
+};
+
+export const getSingleCalendar = async (req, res) => {
+  try {
+    const { date } = req.body;
+
+    const single_calendar_data = [
+      {
+        "subscription_products": [
+          {
+            "subscription_id": 1,
+            "product_name": "Farm Fresh Natural Milk",
+            "product_image": "https://i.pinimg.com/originals/e1/e3/e6/e1e3e608910263114b0f03560bdcd966.jpg",
+            "product_variation": 1,
+            "product_price": 130,
+            "product_quantity": 2,
+            "subcription_status": "1",
+            "subcription_mode": "Daily Order",
+          },
+        ],
+        "addons_products": [
+          {
+            "product_id": 1,
+            "product_name": "Farm Fresh Natural Milk",
+            "product_image": "https://i.pinimg.com/originals/e1/e3/e6/e1e3e608910263114b0f03560bdcd966.jpg",
+            "product_variation": 1,
+            "product_price": 130,
+            "product_quantity": 2,
+            "remove_status": 1
+          },
+        ],
+
+      }
+    ]
+
+    // await edit_address(userId, address_id, title, address, landmark, type);
+
+    res
+      .status(responseCode.SUCCESS)
+      .json({ status: true, data:single_calendar_data});
   } catch (error) {
     console.log(error);
 

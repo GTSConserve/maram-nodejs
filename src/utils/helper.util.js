@@ -17,6 +17,7 @@ export const customizedDay = async (date, user_days) => {
     }
   }
 
+
   let customized_date;
 
   if (current_day == user_days[user_days.length - 1]) {

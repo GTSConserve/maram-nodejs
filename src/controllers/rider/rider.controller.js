@@ -1,12 +1,14 @@
 import express from 'express';
 import messages from '../../constants/messages';
-import { get_Appcontrol, get_riderdetails, statusupdate, update_endtour, update_location, update_riderstatus, update_starttour, userLogin,getsingleorder } from '../../models/rider/rider.model';
+import { get_Appcontrol, get_riderdetails, statusupdate, update_endtour, update_location, update_riderstatus, update_starttour, userLogin,getsingleorder, checkPassword } from '../../models/rider/rider.model';
 import responseCode from '../../constants/responseCode';
 import knex from '../../services/db.service'
 import { userValidator } from '../../services/validator.service';
 import id from 'date-fns/locale/id/index';
 import { createToken } from "../../services/jwt.service";
 import { updateRiderToken } from "../../models/rider/rider.model";
+import bcrypt from "bcrypt";
+
 
 
 
@@ -41,56 +43,35 @@ export const login = async (req, res) => {
     const payload = userValidator(req.body);
     const { user_name, password} = payload;
 
-    if (payload.status) {
-      
-        const checkPassword = await knex
-          .select("id")
-          .from("rider_details")
-          .where({ password,user_name });
+    if (payload.status) {     
 
-          console.log(checkPassword);
-         let query;
+      const checkPassword1 = await knex
+      .select("id","password")
+      .from("rider_details")
+      .where({user_name,status:"1" });
+      console.log(checkPassword1[0].password);
 
-         if (checkPassword[0].id ) {
-          const tokens = createToken({
-            user_name : user_name,
-          });
-  
-          if (tokens.status) {
-            await updateRiderToken(tokens.refreshToken, user_name);
-  
-            res
+      const isPassword = await bcrypt.compare(password,checkPassword1[0].password);
+      console.log(isPassword);
+
+      console.log(checkPassword1);
+     let query;
+
+         if (isPassword) {
+          res
               .status(responseCode.SUCCESS)
-              .json({
-                status: true,
-                token: tokens.token,
-                delivary_partner_id:checkPassword[0].id,
-                message: "Rider login successfully",
-                
-              });
-          } else {
-            res
-              .status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
-              .json({ status: false, message: "Token generation failed" });
+              .json({ status: true, delivery_partner_id: checkPassword1[0].id, message: "Rider Login Successfully" });
           }
-        } else {
+  
+        else {
           res
             .status(responseCode.FAILURE.BAD_REQUEST)
-            .json({ status: false, message: "otp mismatch" });
+            .json({ status: false, message: "password mismatch" });
         }
       }
-            
-        // return res
-        // .status(200)
-        // .json({
-        //   status: true,
-        //   user_id:checkPassword[0].id,
-        //   message: "Rider login successfully",
-        // });
   
-  
-  }
-  
+    }
+
   catch (error) {
     console.error('Whooops! This broke with error: ', error)
     res.status(500).json({message:"user_id and password not matching"})
@@ -101,19 +82,19 @@ export const login = async (req, res) => {
 //  get single rider details
 export const getRiderdetails = async (req, res) => {
   try {
-    const { delivary_partner_id } = req.body;
+    const { delivery_partner_id } = req.body;
 
-    if (!delivary_partner_id) {
+    if (!delivery_partner_id) {
       return res
         .status(responseCode.FAILURE.BAD_REQUEST)
-        .json({ status: false, message: "delivary_partner_id Is Missing" });
+        .json({ status: false, message: "delivery_partner_id Is Missing" });
     }
 
-    const delivary_partner = await get_riderdetails(delivary_partner_id);
+    const delivery_partner = await get_riderdetails(delivery_partner_id);
 
     return res
       .status(responseCode.SUCCESS)
-      .json({  data: delivary_partner.body,status: true,message:"ok" });
+      .json({  data: delivery_partner.body,status: true,message:"ok" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ status: false });
@@ -124,14 +105,14 @@ export const getRiderdetails = async (req, res) => {
 // update single rider status
 export const updateRiderstatus = async (req,res) => {
   try{
-       const { delivary_partner_id,status} = req.body;
+       const { delivery_partner_id,status} = req.body;
 
-       if (!delivary_partner_id || !status) {
+       if (!delivery_partner_id || !status) {
        return res
         .status(responseCode.FAILURE.BAD_REQUEST)
         .json({ status: false, message: "Mandatory field Is Missing" });
     }
-       const riderstatus = await update_riderstatus(delivary_partner_id,status)
+       const riderstatus = await update_riderstatus(delivery_partner_id,status)
        if(riderstatus.status){
         return res.status(responseCode.SUCCESS).json(riderstatus)
       }else{
@@ -149,14 +130,14 @@ export const updateRiderstatus = async (req,res) => {
 // update single rider location 
 export const updeteRiderLocation = async (req,res) =>{
   try{
-       const {delivary_partner_id,latitude,longitude} = req.body;
+       const {delivery_partner_id,latitude,longitude} = req.body;
 
-       if (!delivary_partner_id || !latitude || !longitude) {
+       if (!delivery_partner_id || !latitude || !longitude) {
         return res
          .status(responseCode.FAILURE.BAD_REQUEST)
          .json({ status: false, message: "Mandatory field Is Missing" });
       }
-       const location = await update_location(delivary_partner_id,latitude,longitude);
+       const location = await update_location(delivery_partner_id,latitude,longitude);
        return res.status(responseCode.SUCCESS).json({status: true,message:"ok" })
   }
   catch(error){
@@ -169,15 +150,15 @@ export const updeteRiderLocation = async (req,res) =>{
 // update starttour 
 export const updateStartTour = async (req,res)=>{
   try {
-       const {delivary_partner_id,tour_id,tour_status} = req.body;
+       const {delivery_partner_id,tour_id,tour_status} = req.body;
 
-       if (!delivary_partner_id || !tour_id || !tour_status) {
+       if (!delivery_partner_id || !tour_id || !tour_status) {
         return res
          .status(responseCode.FAILURE.BAD_REQUEST)
          .json({ status: false, message: "Mandatory field Is Missing" });
       }
 
-       const starttour = await update_starttour(delivary_partner_id,tour_id,tour_status);
+       const starttour = await update_starttour(delivery_partner_id,tour_id,tour_status);
        if(starttour.status){
         return res.status(responseCode.SUCCESS).json(starttour)
       }else{
@@ -197,15 +178,15 @@ export const updateStartTour = async (req,res)=>{
 // update endtour
 export const updateEndtour = async (req,res) => {
   try{
-    const {delivary_partner_id,tour_id,tour_status} = req.body;
+    const {delivery_partner_id,tour_id,tour_status} = req.body;
 
-    if (!delivary_partner_id || !tour_id || !tour_status) {
+    if (!delivery_partner_id || !tour_id || !tour_status) {
       return res
        .status(responseCode.FAILURE.BAD_REQUEST)
        .json({ status: false, message: "Mandatory field Is Missing" });
     }
 
-    const endtour = await update_endtour(delivary_partner_id,tour_id,tour_status)
+    const endtour = await update_endtour(delivery_partner_id,tour_id,tour_status)
     if(endtour.status){
       return res.status(responseCode.SUCCESS).json(endtour);
     }
@@ -232,6 +213,7 @@ export const getSingleorder = async (req,res) => {
        .status(responseCode.FAILURE.BAD_REQUEST)
        .json({ status: false, message: "Mandatory field Is Missing" });
       }
+      console.log(order_status)
      const order = await getsingleorder (order_id,delivery_partner_id,order_status);
 
      return res.status(responseCode.SUCCESS).json({status: true,order })
@@ -242,6 +224,7 @@ export const getSingleorder = async (req,res) => {
     .json({ status: false, message: messages.SERVER_ERROR });
   }
   }
+  
 
 
 
