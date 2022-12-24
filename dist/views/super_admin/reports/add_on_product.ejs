@@ -1,0 +1,313 @@
+<% layout('layouts/boilerPlate') %>
+
+    <div class="widget-content widget-content-area br-6">
+        <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+            <div class="dt--top-section">
+                <div class="row">
+                    <div class="col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center">
+                        <div class="dataTables_length" id="DataTables_Table_0_length">
+                            <h4>Add on Products</h4>
+                        </div>
+                    </div>
+
+                    <div class="col-2"></div>
+                    <div class="form-group col-md-3">
+                        <input class="form-control rounded-5 py-2" type="search" value="search"
+                            id="example-search-input">
+
+                    </div>
+                    <div class="form-group col-md-1">
+                        <button class="btn btn-sm" data-toggle="modal" data-target="#addbarcategory">Add</button>
+                        <!-- __category add__ -->
+                        <div wire:ignore.self="" class="modal fade" id="addbarcategory" tabindex="-1"
+                            aria-labelledby="addCategoryTitle" style="display: none;" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalCenterTitle">Add Product</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                                height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                class="feather feather-x">
+                                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                    <div class="modal-body">
+
+                                        <div class="form-row mb-4">
+                                            <div class="col-sm-6  ">
+                                                <label>Products</label>
+                                                <select wire:model="countryid" class="form-control">
+                                                    <option value="">Select Products</option>
+                                                    <option value="1">
+                                                        India</option>
+                                                    <option value="2">
+                                                        United Arab Emirates</option>
+                                                    <option value="3">
+                                                        Malaysia</option>
+                                                </select>
+
+                                            </div>
+                                            <div class="col-6 ">
+                                                <label>Name</label>
+                                                <input type="text" class="form-control" wire:model="name"
+                                                    placeholder="Name">
+
+                                            </div>
+                                        </div>
+
+                                        <div class="form-row mb-4">
+                                            <div class="form-row mb-4">
+                                                <div class="col-sm-10">
+                                                    <label>Image</label>
+                                                    <input type="file" wire:model="image" placeholder="Image" name="image"
+                                                        class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- <div class="form-row mb-4">
+                                            <div class="col-6  ">
+                                                <label>Varaition Type</label>
+                                                <select wire:model="countryid" class="form-control">
+                                                    <option value="">Select Varaition</option>
+                                                    <option value="1">
+                                                        ml</option>
+                                                    <option value="2">
+                                                        liter</option>
+                                                    <option value="3">
+                                                        gram</option>
+                                                </select>
+
+                                            </div>
+                                        </div> -->
+
+
+                                </div>
+                                <div class="modal-footer">
+
+                                    <button class="btn btn-danger" id="addmodalClose" data-dismiss="modal"><i
+                                            class="flaticon-cancel-12"></i>Discard</button>
+                                    <button wire:click="save" class="btn btn-success">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="multi-table table table-hover dataTable" style="width: 100%;" id="DataTables_Table_0" role="grid"
+            aria-describedby="DataTables_Table_0_info">
+            <thead>
+
+                <tr role="row">
+                    <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                        aria-sort="ascending" aria-label="#: activate to sort column descending" style="width: 86px;">
+                        #</th>
+                    <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                        aria-label="NAME: activate to sort column ascending" style="width: 161px;">NAME</th>
+                    <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                        aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">IMAGE</th>
+                        <!-- <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                        aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">COUNTRY</th> -->
+                    <th class="text-center sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                        colspan="1" aria-label="Status: activate to sort column ascending" style="width: 49px;">
+                        Status</th>
+                    <th class="text-center dt-no-sorting sorting" tabindex="0" aria-controls="DataTables_Table_0"
+                        rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending"
+                        style="width: 56px;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr role="row">
+                    <td class="sorting_1">Cedric Kelly</td>
+                    <td>Senior Javascript Developer</td>
+                    <td>Edinburgh</td>
+                    <!-- <td>Edinburgh</td> -->
+
+                    <div>
+                        <td style="text-align: center; vertical-align: middle;">
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="customSwitches">
+                                <label class="custom-control-label" for="customSwitches"></label>
+                            </div>
+                        </td>
+                    </div>
+                    <td class="text-center"> <button class="btn btn-sm">edit</button> </td>
+                </tr>
+                <tr role="row">
+                    <td class="sorting_1">Dai Rios</td>
+                    <td>Personnel Lead</td>
+                    <td>Edinburgh</td>
+                    <!-- <td>Edinburgh</td> -->
+
+                    <div>
+                        <td style="text-align: center; vertical-align: middle;">
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="customSwitches1">
+                                <label class="custom-control-label" for="customSwitches1"></label>
+                            </div>
+                        </td>
+                    </div>
+                    <td class="text-center"> <button class="btn btn-sm">edit</button> </td>
+                </tr>
+                <tr role="row">
+                    <td class="sorting_1">Gavin Joyce</td>
+                    <td>Developer</td>
+                    <td>Edinburgh</td>
+                    <!-- <td>Edinburgh</td> -->
+
+                    <div>
+                        <td style="text-align: center; vertical-align: middle;">
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="customSwitches2">
+                                <label class="custom-control-label" for="customSwitches2"></label>
+                            </div>
+                        </td>
+                    </div>
+                    <td class="text-center"> <button class="btn btn-sm">edit</button> </td>
+                </tr>
+                <tr role="row">
+                    <td class="sorting_1">Jennifer Acosta</td>
+                    <td>Junior Javascript Developer</td>
+                    <td>Edinburgh</td>
+                    <!-- <td>Edinburgh</td> -->
+
+                    <div>
+                        <td style="text-align: center; vertical-align: middle;">
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="customSwitches3">
+                                <label class="custom-control-label" for="customSwitches3"></label>
+                            </div>
+                        </td>
+                    </div>
+                    <td class="text-center"> <button class="btn btn-sm">edit</button> </td>
+                </tr>
+                <tr role="row">
+                    <td class="sorting_1">Martena Mccray</td>
+                    <td>Post-Sales support</td>
+                    <td>Edinburgh</td>
+                    <!-- <td>Edinburgh</td> -->
+
+                    <div>
+                        <td style="text-align: center; vertical-align: middle;">
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="customSwitches4">
+                                <label class="custom-control-label" for="customSwitches4"></label>
+                            </div>
+                        </td>
+                    </div>
+
+                    <td class="text-center"> <button class="btn btn-sm">edit</button> </td>
+                </tr>
+                <tr role="row">
+                    <td class="sorting_1">Quinn Flynn</td>
+                    <td>Support Lead</td>
+                    <td>Edinburgh</td>
+                    <!-- <td>Edinburgh</td> -->
+
+                    <div>
+                        <td style="text-align: center; vertical-align: middle;">
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="customSwitches5">
+                                <label class="custom-control-label" for="customSwitches5"></label>
+                            </div>
+                        </td>
+                    </div>
+                    <td class="text-center"> <button class="btn btn-sm">edit</button> </td>
+                </tr>
+                <tr role="row">
+                    <td class="sorting_1">Shad Decker</td>
+                    <td>Regional Director</td>
+                    <td>Edinburgh</td>
+                    <!-- <td>Edinburgh</td> -->
+
+                    <div>
+                        <td style="text-align: center; vertical-align: middle;">
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="customSwitches6">
+                                <label class="custom-control-label" for="customSwitches6"></label>
+                            </div>
+                        </td>
+                    </div>
+                    <td class="text-center"> <button class="btn btn-sm">edit</button> </td>
+                </tr>
+            </tbody>
+
+        </table>
+    </div>
+    <div class="dt--bottom-section d-sm-flex justify-content-sm-between text-center">
+        <div class="dt--pages-count  mb-sm-0 mb-3">
+            <div class="dataTables_info" id="DataTables_Table_0_info" role="status" aria-live="polite">Showing
+                page 1 of 2</div>
+        </div>
+        <nav aria-label="...">
+            <ul class="pagination">
+                <li class="page-item disabled">
+                    <span class="page-link" style="padding-left: 5px;">Previous</span>
+                </li>
+                <li class="page-item" style="padding-left: 5px;"><a class="page-link" href="#">1</a></li>
+                <li class="page-item active">
+                    <span class="page-link">
+                        2
+                        <span class="sr-only">(current)</span>
+                    </span>
+                </li>
+                <li class="page-item" style="padding-left: 5px;"><a class="page-link" href="#">3</a></li>
+                <li class="page-item" style="padding-left: 5px;">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+            </ul>
+        </nav>
+        <!-- <div class="dt--pagination">
+                    <div class="dataTables_paginate paging_simple_numbers" id="DataTables_Table_0_paginate">
+                        <ul class="pagination">
+                            <li class="paginate_button page-item previous disabled" id="DataTables_Table_0_previous"><a
+                                    href="#" aria-controls="DataTables_Table_0" data-dt-idx="0" tabindex="0"
+                                    class="page-link"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round"
+                                        class="feather feather-arrow-left">
+                                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                                        <polyline points="12 19 5 12 12 5"></polyline>
+                                    </svg></a></li>
+                            <li class="paginate_button page-item active"><a href="#" aria-controls="DataTables_Table_0"
+                                    data-dt-idx="1" tabindex="0" class="page-link">1</a></li>
+                            <li class="paginate_button page-item "><a href="#" aria-controls="DataTables_Table_0"
+                                    data-dt-idx="2" tabindex="0" class="page-link">2</a></li>
+                            <li class="paginate_button page-item next" id="DataTables_Table_0_next"><a href="#"
+                                    aria-controls="DataTables_Table_0" data-dt-idx="3" tabindex="0"
+                                    class="page-link"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round"
+                                        class="feather feather-arrow-right">
+                                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                                        <polyline points="12 5 19 12 12 19"></polyline>
+                                    </svg></a></li>
+                        </ul>
+                    </div>
+                </div> -->
+    </div>
+    </div>
+    <div id="DataTables_Table_1_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+        <div class="dt--top-section">
+            <div class="row">
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="multi-table table table-bordered table-hover non-hover dataTable" style="width: 100%;"
+                id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info">
+
+            </table>
+        </div>
+    </div>
+    </div>
+    </div>
+    </div>

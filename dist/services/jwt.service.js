@@ -8,7 +8,9 @@ var _jsonwebtoken = _interopRequireDefault(require("jsonwebtoken"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 var createToken = function createToken(payload) {
   try {
-    var token = _jsonwebtoken["default"].sign(payload, process.env.TOKEN_SECRET, {});
+    var token = _jsonwebtoken["default"].sign(payload, process.env.TOKEN_SECRET, {
+      expiresIn: '1y'
+    });
     var refreshToken = _jsonwebtoken["default"].sign(payload, process.env.REFRESH_TOKEN_SECRET, {
       expiresIn: '1y'
     });
