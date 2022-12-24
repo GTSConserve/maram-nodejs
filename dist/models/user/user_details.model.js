@@ -35,7 +35,7 @@ var get_address = /*#__PURE__*/function () {
         switch (_context.prev = _context.next) {
           case 0:
             _context.next = 2;
-            return _db["default"].select("id as address_id", "title", "address", "landmark", "type").from("user_address").where({
+            return _db["default"].select("id as address_id", "title", "address", "landmark", "type", "alternate_mobile", "latitude", "longitude").from("user_address").where({
               user_id: userId,
               status: "1"
             });
@@ -125,7 +125,7 @@ var get_user = /*#__PURE__*/function () {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.next = 2;
-            return _db["default"].select("id", "name", "image", "mobile_number", "email").from("users").where({
+            return _db["default"].select("id", "name", "image", "mobile_number", "email", "total_bill_due_Amount", "total_bill_count", "total_address_count", "total_subcription_count", 'total_delivered_product_count', 'rider_status').from("users").where({
               id: id
             });
           case 2:

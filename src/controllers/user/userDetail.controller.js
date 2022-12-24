@@ -34,8 +34,10 @@ export const addUserAddress = async (req, res) => {
           alternate_mobile: payload.alternate_mobile,
 
           latitude: payload.latitude,
+          
+          longitude: payload.longitude,
 
-          longitude: payload.longitude
+
         })
         .where({ user_id: payload.user_id });
 
@@ -96,7 +98,7 @@ export const getUser = async (req, res) => {
         .status(responseCode.FAILURE.DATA_NOT_FOUND)
         .json({ status: false, message: "User Not Found" });
     }
-
+    
     let get_user_detail = {};
     user.body.map((data) => {
       get_user_detail.user_id = data.id;
@@ -106,6 +108,13 @@ export const getUser = async (req, res) => {
       // : null;
       get_user_detail.mobile_number = data.mobile_number;
       get_user_detail.email = data.email;
+      get_user_detail.total_bill_due_Amount = 'Bill due amount ₹0'
+      get_user_detail.total_bill_count = '0 bills'
+      get_user_detail.total_address_count = '0 Saved Address'
+      get_user_detail.total_subcription_count = '0 subscriptions'
+      get_user_detail.total_delivered_product_count = '0 Product Delivery'
+      get_user_detail.rider_status = 'No rider Assign'
+      get_user_detail.rider_status = '0 empty bottles in hand'
     });
 
     res

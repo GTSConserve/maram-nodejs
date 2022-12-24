@@ -37,9 +37,6 @@ export const accountDelete = async (req,res) => {
   }
 }
 
-
-
-
 export const login = async (req, res) => {
   try {
     const payload = loginValidator(req.body);

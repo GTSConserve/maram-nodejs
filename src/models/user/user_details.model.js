@@ -28,6 +28,9 @@ export const get_address = async (userId) => {
       "address",
       "landmark",
       "type",
+      "alternate_mobile",
+      "latitude",
+      "longitude"
 
     )
     .from("user_address")
@@ -81,7 +84,7 @@ export const edit_address = async (
 
 export const get_user = async (id) => {
   const getuser = await knex
-    .select("id", "name", "image", "mobile_number", "email")
+    .select("id", "name", "image", "mobile_number", "email","total_bill_due_Amount","total_bill_count","total_address_count","total_subcription_count",'total_delivered_product_count','rider_status')
     .from("users")
     .where({ id });
   try {
