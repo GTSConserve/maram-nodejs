@@ -26,6 +26,7 @@ productRouter.get("/get_add_on_product", nonMandatoryToken,getAddOnProducts);
 
 productRouter.post("/get_single_product",authenticateJWT,nonMandatoryToken,getSingleProduct);
 
+
 productRouter.post("/create_add_on_products", authenticateJWT,nonMandatoryToken,addon_Order);
 productRouter.post("/remove_add_on_products",authenticateJWT,nonMandatoryToken,removeAddOnOrder);
 

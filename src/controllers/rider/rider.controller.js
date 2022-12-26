@@ -1,6 +1,6 @@
 import express from 'express';
 import messages from '../../constants/messages';
-import { get_Appcontrol, get_riderdetails, statusupdate, update_endtour, update_location, update_riderstatus, update_starttour, userLogin,getsingleorder, checkPassword, dashboard, cancel_order } from '../../models/rider/rider.model';
+import { get_Appcontrol, get_riderdetails, statusupdate, update_endtour, update_location, update_riderstatus, update_starttour, userLogin,getsingleorder, checkPassword, dashboard, cancel_order, order_list } from '../../models/rider/rider.model';
 import responseCode from '../../constants/responseCode';
 import knex from '../../services/db.service'
 import { userValidator } from '../../services/validator.service';
@@ -327,6 +327,35 @@ export const riderDashboard = async (req,res) => {
     }
   }
 
+
+  // order list 
+  export const OrderList = async (req,res) => {
+    try{
+      const {delivery_partner_id,status} = req.body;
+      const order = await order_list(delivery_partner_id,status)
+      let query ={
+        "tour_id":order.router[0].id,
+        "tour_route":order.router[0].name,
+        "total_orders":order.order.length,
+        "completed_orders":order.delivery.length       
+       }
+       let data ={
+        "order_id":order.order[0].id,
+        "milk_variation":order.order[0].total_qty +" "+ "liter",
+        "addon_items":order.addon.length,
+        "user_name":order.user[0].name,
+        "customer_id":order.user[0].user_unique_id,
+        "bottle_return":order.order1[0].total_collective_bottle,
+        "order_status":order.order1[0].status
+       }
+       return res.status(responseCode.SUCCESS).json({status: true, query,data:data })
+    }
+    catch(error){
+      console.log(error);
+      return res.status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
+     .json({ status: false, message: messages.SERVER_ERROR });
+    }
+  }
 
 export const ten = async (req,res)=>{
   try{
