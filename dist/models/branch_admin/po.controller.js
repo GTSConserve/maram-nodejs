@@ -58,7 +58,7 @@ var getBothProducts = /*#__PURE__*/function () {
             for (_i = 0; _i < add_product_id.length; _i++) {
               add_products_id.push({
                 product_id: add_product_id[_i].product_id,
-                qty: Number(add_product_id[0].quantity)
+                qty: Number(add_product_id[_i].quantity)
               });
             }
           case 14:

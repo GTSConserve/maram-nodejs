@@ -18,5 +18,9 @@ userRouter.get('/single_user', _users.getSingleUser);
 // add user
 userRouter.get('/get_add_users', _users.getAddUser);
 userRouter.post('/create_user', _users.createUser);
+
+// new subscription product
+userRouter.post('/new_subscription', _users.newSubscription);
+userRouter.post('/new_add_on', _users.newAddOn);
 var _default = userRouter;
 exports["default"] = _default;

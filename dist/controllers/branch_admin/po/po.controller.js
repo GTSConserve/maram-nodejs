@@ -92,12 +92,9 @@ var getPoForm = /*#__PURE__*/function () {
             });
           case 15:
             daily_orders = _context2.sent;
-            // if no daily orders length === 0  then return to home
-
-            console.log(daily_orders);
-            _context2.next = 19;
+            _context2.next = 18;
             return (0, _po.getBothProducts)(daily_orders);
-          case 19:
+          case 18:
             _yield$getBothProduct = _context2.sent;
             add_on_products = _yield$getBothProduct.add_on_products;
             subscription_products = _yield$getBothProduct.subscription_products;
@@ -113,19 +110,19 @@ var getPoForm = /*#__PURE__*/function () {
               today_date: today_date,
               excess_add_on_products: excess_add_on_products
             });
-            _context2.next = 30;
+            _context2.next = 29;
             break;
-          case 26:
-            _context2.prev = 26;
+          case 25:
+            _context2.prev = 25;
             _context2.t0 = _context2["catch"](0);
             console.log(_context2.t0);
             res.redirect("/home");
-          case 30:
+          case 29:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[0, 26]]);
+    }, _callee2, null, [[0, 25]]);
   }));
   return function getPoForm(_x3, _x4) {
     return _ref2.apply(this, arguments);

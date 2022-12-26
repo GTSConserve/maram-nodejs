@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getusers = exports.getSingleUser = exports.getAddUser = exports.createUser = void 0;
+exports.newSubscription = exports.newAddOn = exports.getusers = exports.getSingleUser = exports.getAddUser = exports.createUser = void 0;
 var _moment = _interopRequireDefault(require("moment"));
 var _db = _interopRequireDefault(require("../../../services/db.service"));
 var _helper = require("../../../utils/helper.util");
@@ -132,7 +132,7 @@ var getusers = /*#__PURE__*/function () {
 exports.getusers = getusers;
 var getSingleUser = /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(req, res) {
-    var user_address_id, admin_id, get_user_query, user, get_subscription_products, is_subscription_active, i, add_on_order_query, add_on, is_add_on_active, get_user_products_query, _i, j;
+    var user_address_id, admin_id, get_user_query, user, get_subscription_products, is_subscription_active, i, add_on_order_query, add_on, is_add_on_active, get_user_products_query, _i, j, get_plan, sub_product_id, _i2, add_subscription_products, add_on_products;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
@@ -154,13 +154,12 @@ var getSingleUser = /*#__PURE__*/function () {
           case 10:
             user = get_user_query[0][0]; // console.log(user);
             _context2.next = 13;
-            return (0, _db["default"])("subscribed_user_details as sub").select("sub.id as sub_id", "sub.user_id", "sub.start_date", "sub.customized_days", "sub.quantity", "sub.subscription_status", "products.name as product_name", "products.unit_value", "products.price", "unit_types.value", "subscription_type.name as sub_name").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("subscription_type", "subscription_type.id", "=", "sub.subscribe_type_id").where({
+            return (0, _db["default"])("subscribed_user_details as sub").select("sub.id as sub_id", "sub.user_id", "sub.start_date", "sub.customized_days", "sub.quantity", "sub.subscription_status", "products.name as product_name", "products.unit_value", "products.id as product_id", "products.price", "unit_types.value", "subscription_type.name as sub_name").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("subscription_type", "subscription_type.id", "=", "sub.subscribe_type_id").where({
               "sub.user_id": user.user_id,
               "sub.user_address_id": user_address_id
             });
           case 13:
             get_subscription_products = _context2.sent;
-            // console.log(get_subscription_products);
             is_subscription_active = 0;
             if (get_subscription_products.length !== 0) {
               for (i = 0; i < get_subscription_products.length; i++) {
@@ -170,36 +169,6 @@ var getSingleUser = /*#__PURE__*/function () {
                 get_subscription_products[i].start_date = (0, _moment["default"])(get_subscription_products[i].start_date).format("YYYY-MM-DD");
               }
             }
-
-            // const add_on_details = await knex("add_on_orders as adds")
-            //   .select(
-            //     "adds.delivery_date",
-            //     "adds.sub_total",
-            //     "adds.status as order_status",
-            //     "adds.id as add_on_id",
-            //     "products.name",
-            //     "products.unit_value",
-            //     "products.price",
-            //     "unit_types.value",
-            //     "add_on_order_items.quantity",
-            //     "add_on_order_items.price",
-            //     "add_on_order_items.total_price",
-            //     "add_on_order_items.status as product_status"
-            //   )
-            //   .join(
-            //     "add_on_order_items",
-            //     "add_on_order_items.add_on_order_id",
-            //     "=",
-            //     "adds.id"
-            //   )
-            //   .join("products", "products.id", "=", "add_on_order_items.product_id")
-            //   .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
-            //   .where({
-            //     "adds.user_id": user.user_id,
-            //     "adds.address_id": user_address_id,
-            //   });
-
-            // console.log(add_on_details);
             _context2.next = 18;
             return _db["default"].raw("SELECT adds.id,adds.user_id ,adds.delivery_date,adds.sub_total,adds.status\n      FROM add_on_orders as adds \n      WHERE adds.user_id = ".concat(user.user_id, " AND adds.address_id = ").concat(user_address_id));
           case 18:
@@ -236,26 +205,55 @@ var getSingleUser = /*#__PURE__*/function () {
             _context2.next = 23;
             break;
           case 34:
+            _context2.next = 36;
+            return (0, _db["default"])("subscription_type").select("name", "id").where({
+              status: "1"
+            });
+          case 36:
+            get_plan = _context2.sent;
+            sub_product_id = [];
+            if (get_subscription_products.length !== 0) {
+              for (_i2 = 0; _i2 < get_subscription_products.length; _i2++) {
+                sub_product_id.push(get_subscription_products[_i2].product_id);
+              }
+            }
+            _context2.next = 41;
+            return (0, _db["default"])("products").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id", "products.name", "products.unit_value", "unit_types.value as unit_type", "products.price").where({
+              "products.product_type_id": 1,
+              "products.status": "1"
+            }).whereNotIn("products.id", sub_product_id);
+          case 41:
+            add_subscription_products = _context2.sent;
+            _context2.next = 44;
+            return (0, _db["default"])("products").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id", "products.name", "products.unit_value", "unit_types.value as unit_type", "products.price").where({
+              "products.product_type_id": 2,
+              "products.status": "1"
+            });
+          case 44:
+            add_on_products = _context2.sent;
             res.render("branch_admin/users/user_detail", {
               user: user,
               sub_products: get_subscription_products,
               add_on: add_on,
               is_add_on_active: is_add_on_active,
-              is_subscription_active: is_subscription_active
+              is_subscription_active: is_subscription_active,
+              get_plan: get_plan,
+              get_subscription_products: add_subscription_products,
+              add_on_products: add_on_products
             });
-            _context2.next = 41;
+            _context2.next = 52;
             break;
-          case 37:
-            _context2.prev = 37;
+          case 48:
+            _context2.prev = 48;
             _context2.t0 = _context2["catch"](0);
             console.log(_context2.t0);
             return _context2.abrupt("return", res.redirect("/home"));
-          case 41:
+          case 52:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[0, 37]]);
+    }, _callee2, null, [[0, 48]]);
   }));
   return function getSingleUser(_x3, _x4) {
     return _ref2.apply(this, arguments);
@@ -325,7 +323,7 @@ var getAddUser = /*#__PURE__*/function () {
 exports.getAddUser = getAddUser;
 var createUser = /*#__PURE__*/function () {
   var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(req, res) {
-    var _req$body, data, admin_id, user_query, get_all_users, users_length, user, address, sub_product_query, weekdays, store_weekdays, i, j, order, order_id, sub_total, _i2, product_price, users, arr_users, get_users;
+    var _req$body, data, admin_id, user_query, get_all_users, users_length, user, address, sub_product_query, weekdays, store_weekdays, i, j, order, order_id, sub_total, _i3, product_price, users, arr_users, get_users;
     return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
@@ -419,15 +417,15 @@ var createUser = /*#__PURE__*/function () {
             order = _context4.sent;
             order_id = order[0];
             sub_total = 0;
-            _i2 = 0;
+            _i3 = 0;
           case 37:
-            if (!(_i2 < data.add_on.length)) {
+            if (!(_i3 < data.add_on.length)) {
               _context4.next = 47;
               break;
             }
             _context4.next = 40;
             return (0, _db["default"])("products").select("price").where({
-              id: data.add_on[_i2].product_id
+              id: data.add_on[_i3].product_id
             });
           case 40:
             product_price = _context4.sent;
@@ -435,15 +433,15 @@ var createUser = /*#__PURE__*/function () {
             return (0, _db["default"])("add_on_order_items").insert({
               add_on_order_id: order_id,
               user_id: user[0],
-              product_id: data.add_on[_i2].product_id,
-              quantity: data.add_on[_i2].qty,
+              product_id: data.add_on[_i3].product_id,
+              quantity: data.add_on[_i3].qty,
               price: product_price[0].price,
-              total_price: product_price[0].price * data.add_on[_i2].qty
+              total_price: product_price[0].price * data.add_on[_i3].qty
             });
           case 43:
-            sub_total = sub_total + product_price[0].price * data.add_on[_i2].qty;
+            sub_total = sub_total + product_price[0].price * data.add_on[_i3].qty;
           case 44:
-            _i2++;
+            _i3++;
             _context4.next = 37;
             break;
           case 47:
@@ -515,3 +513,158 @@ var createUser = /*#__PURE__*/function () {
   };
 }();
 exports.createUser = createUser;
+var newSubscription = /*#__PURE__*/function () {
+  var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(req, res) {
+    var _req$body2, data, user_address_id, user_query, user, sub_product_query, weekdays, store_weekdays, i, j;
+    return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+      while (1) {
+        switch (_context5.prev = _context5.next) {
+          case 0:
+            _context5.prev = 0;
+            _req$body2 = req.body, data = _req$body2.data, user_address_id = _req$body2.user_address_id;
+            _context5.next = 4;
+            return (0, _db["default"])("user_address").select("user_id", "branch_id", "router_id").where({
+              "id": user_address_id
+            });
+          case 4:
+            user_query = _context5.sent;
+            user = user_query[0];
+            sub_product_query = {
+              start_date: data.sub_start_date,
+              user_id: user.user_id,
+              product_id: data.sub_product,
+              user_address_id: user_address_id,
+              quantity: data.sub_qty,
+              subscribe_type_id: data.your_plan,
+              branch_id: user.branch_id,
+              date: data.sub_start_date,
+              subscription_start_date: data.sub_start_date,
+              subscription_status: "subscribed"
+            };
+            if (user.router_id) {
+              sub_product_query.router_id = user.router_id;
+            }
+            if (!(data.your_plan == 3)) {
+              _context5.next = 15;
+              break;
+            }
+            _context5.next = 11;
+            return (0, _db["default"])("weekdays").select("id", "name");
+          case 11:
+            weekdays = _context5.sent;
+            store_weekdays = [];
+            for (i = 0; i < data.custom_days.length; i++) {
+              for (j = 0; j < weekdays.length; j++) {
+                if (weekdays[j].id == data.custom_days[i]) {
+                  store_weekdays.push(weekdays[j].name);
+                }
+              }
+            }
+            sub_product_query.customized_days = JSON.stringify(store_weekdays);
+          case 15:
+            _context5.next = 17;
+            return (0, _db["default"])("subscribed_user_details").insert(sub_product_query);
+          case 17:
+            return _context5.abrupt("return", res.status(200).json({
+              status: true
+            }));
+          case 20:
+            _context5.prev = 20;
+            _context5.t0 = _context5["catch"](0);
+            console.log(_context5.t0);
+            return _context5.abrupt("return", res.redirect("/home"));
+          case 24:
+          case "end":
+            return _context5.stop();
+        }
+      }
+    }, _callee5, null, [[0, 20]]);
+  }));
+  return function newSubscription(_x9, _x10) {
+    return _ref5.apply(this, arguments);
+  };
+}();
+exports.newSubscription = newSubscription;
+var newAddOn = /*#__PURE__*/function () {
+  var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(req, res) {
+    var _req$body3, data, user_address_id, user_query, user, order, order_id, sub_total, i, product_price;
+    return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+      while (1) {
+        switch (_context6.prev = _context6.next) {
+          case 0:
+            _context6.prev = 0;
+            _req$body3 = req.body, data = _req$body3.data, user_address_id = _req$body3.user_address_id;
+            _context6.next = 4;
+            return (0, _db["default"])("user_address").select("user_id", "branch_id", "router_id").where({
+              "id": user_address_id
+            });
+          case 4:
+            user_query = _context6.sent;
+            user = user_query[0];
+            _context6.next = 8;
+            return (0, _db["default"])("add_on_orders").insert({
+              user_id: user.user_id,
+              delivery_date: data.delivery_date,
+              address_id: user_address_id,
+              branch_id: user.branch_id,
+              status: "new_order"
+            });
+          case 8:
+            order = _context6.sent;
+            order_id = order[0];
+            sub_total = 0;
+            i = 0;
+          case 12:
+            if (!(i < data.add_on.length)) {
+              _context6.next = 22;
+              break;
+            }
+            _context6.next = 15;
+            return (0, _db["default"])("products").select("price").where({
+              id: data.add_on[i].product_id
+            });
+          case 15:
+            product_price = _context6.sent;
+            _context6.next = 18;
+            return (0, _db["default"])("add_on_order_items").insert({
+              add_on_order_id: order_id,
+              user_id: user.user_id,
+              product_id: data.add_on[i].product_id,
+              quantity: data.add_on[i].qty,
+              price: product_price[0].price,
+              total_price: product_price[0].price * data.add_on[i].qty
+            });
+          case 18:
+            sub_total = sub_total + product_price[0].price * data.add_on[i].qty;
+          case 19:
+            i++;
+            _context6.next = 12;
+            break;
+          case 22:
+            _context6.next = 24;
+            return (0, _db["default"])("add_on_orders").update({
+              sub_total: sub_total
+            }).where({
+              id: order_id
+            });
+          case 24:
+            return _context6.abrupt("return", res.status(200).json({
+              status: true
+            }));
+          case 27:
+            _context6.prev = 27;
+            _context6.t0 = _context6["catch"](0);
+            console.log(_context6.t0);
+            return _context6.abrupt("return", res.redirect("/home"));
+          case 31:
+          case "end":
+            return _context6.stop();
+        }
+      }
+    }, _callee6, null, [[0, 27]]);
+  }));
+  return function newAddOn(_x11, _x12) {
+    return _ref6.apply(this, arguments);
+  };
+}();
+exports.newAddOn = newAddOn;
