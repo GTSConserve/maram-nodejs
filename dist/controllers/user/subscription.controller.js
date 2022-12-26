@@ -392,7 +392,7 @@ var getAllSubscription = /*#__PURE__*/function () {
 exports.getAllSubscription = getAllSubscription;
 var singleSubscription = /*#__PURE__*/function () {
   var _ref9 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9(req, res) {
-    var _req$body5, userId, subscription_id, sub, i, bottle_tracker, response;
+    var _req$body5, userId, subscription_id, sub, i, response;
     return _regeneratorRuntime().wrap(function _callee9$(_context9) {
       while (1) {
         switch (_context9.prev = _context9.next) {
@@ -412,7 +412,7 @@ var singleSubscription = /*#__PURE__*/function () {
             return (0, _subscription.single_subscription)(userId, subscription_id);
           case 6:
             sub = _context9.sent;
-            console.log(sub);
+            console.log(sub.query);
             if (sub.status) {
               _context9.next = 10;
               break;
@@ -430,8 +430,7 @@ var singleSubscription = /*#__PURE__*/function () {
               sub.data[i].address_id = sub.data[i].address_id;
               sub.data[i].date = [(0, _moment["default"])().format("YYYY-MM-DD")];
               sub.data[i].subscription_start_date = (0, _moment["default"])().format("YYYY-MM-DD");
-              // sub.query[i].date = [moment().format("YYYY-MM-DD")];
-
+              sub.query[i].date = [(0, _moment["default"])().format("YYYY-MM-DD")];
               if (sub.data[i].unit_value >= 500) {
                 sub.data[i].unit = sub.data[i].unit_value / 1000 + " " + (sub.data[i].unit_type === "ml" ? "litre" : sub.data[i].unit_type);
               } else {
@@ -442,34 +441,35 @@ var singleSubscription = /*#__PURE__*/function () {
             }
 
             // const query = [{data: sub.data[0],additional_orders: sub.additional_orders[0]}]
-            bottle_tracker = {
-              "delivered_orders": 25,
-              "remaining_orders": 5,
-              "additional_delivered_orders": 5,
-              "additional_remaining_orders": 25
-            };
+
+            // const bottle_tracker = {
+            //   "delivered_orders": 25,
+            //   "remaining_orders": 5,
+            //   "additional_delivered_orders": 5,
+            //   "additional_remaining_orders": 25
+            // }
             response = {
               additional_orders: [sub.query[0]],
-              this_month_item_detail: bottle_tracker
+              this_month_item_detail: sub.this_month_item_detail
             };
             return _context9.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               status: true,
               data: _objectSpread(_objectSpread({}, sub.data[0]), response)
             }));
-          case 16:
-            _context9.prev = 16;
+          case 15:
+            _context9.prev = 15;
             _context9.t0 = _context9["catch"](0);
             console.log(_context9.t0);
             return _context9.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
-          case 20:
+          case 19:
           case "end":
             return _context9.stop();
         }
       }
-    }, _callee9, null, [[0, 16]]);
+    }, _callee9, null, [[0, 15]]);
   }));
   return function singleSubscription(_x15, _x16) {
     return _ref9.apply(this, arguments);
