@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.userLogin = exports.update_starttour = exports.update_riderstatus = exports.update_location = exports.update_endtour = exports.updateRiderToken = exports.statusupdate = exports.insertUser = exports.getsingleorder = exports.get_riderdetails = exports.get_Appcontrol = exports.dashboard = exports.checkPassword = exports.cancel_order = void 0;
+exports.userLogin = exports.update_starttour = exports.update_riderstatus = exports.update_location = exports.update_endtour = exports.updateRiderToken = exports.statusupdate = exports.order_list = exports.insertUser = exports.getsingleorder = exports.get_riderdetails = exports.get_Appcontrol = exports.dashboard = exports.checkPassword = exports.cancel_order = void 0;
 var _db = _interopRequireDefault(require("../../services/db.service"));
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 var _bcrypt = _interopRequireDefault(require("bcrypt"));
@@ -713,4 +713,82 @@ var cancel_order = /*#__PURE__*/function () {
     return _ref14.apply(this, arguments);
   };
 }();
+
+// order list 
 exports.cancel_order = cancel_order;
+var order_list = /*#__PURE__*/function () {
+  var _ref15 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee15(delivery_partner_id, status) {
+    var router, order, delivery, order1, addon, user;
+    return _regeneratorRuntime().wrap(function _callee15$(_context15) {
+      while (1) {
+        switch (_context15.prev = _context15.next) {
+          case 0:
+            _context15.prev = 0;
+            _context15.next = 3;
+            return (0, _db["default"])('routes').select('id', 'name').where({
+              rider_id: delivery_partner_id
+            });
+          case 3:
+            router = _context15.sent;
+            _context15.next = 6;
+            return (0, _db["default"])('daily_orders').select('id', 'total_collective_bottle', 'status', 'add_on_order_id', 'user_id', 'total_qty').where({
+              router_id: router[0].id
+            });
+          case 6:
+            order = _context15.sent;
+            _context15.next = 9;
+            return (0, _db["default"])('daily_orders').select('id').where({
+              router_id: router[0].id,
+              status: "delivered"
+            });
+          case 9:
+            delivery = _context15.sent;
+            _context15.next = 12;
+            return (0, _db["default"])('daily_orders').select('id', 'total_collective_bottle', 'status', 'add_on_order_id', 'user_id', 'total_qty').where({
+              router_id: router[0].id,
+              status: status
+            });
+          case 12:
+            order1 = _context15.sent;
+            console.log(order1);
+            _context15.next = 16;
+            return (0, _db["default"])('add_on_order_items').select('id').where({
+              add_on_order_id: order1[0].add_on_order_id
+            });
+          case 16:
+            addon = _context15.sent;
+            _context15.next = 19;
+            return (0, _db["default"])('users').select('name', 'user_unique_id').where({
+              id: order[0].user_id
+            });
+          case 19:
+            user = _context15.sent;
+            return _context15.abrupt("return", {
+              status: true,
+              router: router,
+              order: order,
+              delivery: delivery,
+              addon: addon,
+              order1: order1,
+              user: user
+            });
+          case 23:
+            _context15.prev = 23;
+            _context15.t0 = _context15["catch"](0);
+            console.log(_context15.t0);
+            return _context15.abrupt("return", {
+              status: false,
+              message: "No data found"
+            });
+          case 27:
+          case "end":
+            return _context15.stop();
+        }
+      }
+    }, _callee15, null, [[0, 23]]);
+  }));
+  return function order_list(_x40, _x41) {
+    return _ref15.apply(this, arguments);
+  };
+}();
+exports.order_list = order_list;

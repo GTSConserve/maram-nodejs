@@ -17,14 +17,14 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 var removeAddOnOrder = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(req, res) {
-    var _req$body, userId, product_id, delivery_date, addon_id, remove;
+    var _req$body, userId, product_id, delivery_date, remove;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             _context.prev = 0;
-            _req$body = req.body, userId = _req$body.userId, product_id = _req$body.product_id, delivery_date = _req$body.delivery_date, addon_id = _req$body.addon_id;
-            if (!(!product_id || !delivery_date || !addon_id)) {
+            _req$body = req.body, userId = _req$body.userId, product_id = _req$body.product_id, delivery_date = _req$body.delivery_date;
+            if (!(!product_id || !delivery_date)) {
               _context.next = 4;
               break;
             }
@@ -33,29 +33,28 @@ var removeAddOnOrder = /*#__PURE__*/function () {
               message: _messages["default"].MANDATORY_ERROR
             }));
           case 4:
-            console.log(userId, product_id, delivery_date, addon_id);
-            _context.next = 7;
-            return (0, _product.remove_addonorders)(product_id, delivery_date, addon_id, userId);
-          case 7:
+            _context.next = 6;
+            return (0, _product.remove_addonorders)(product_id, delivery_date, userId);
+          case 6:
             remove = _context.sent;
             return _context.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               status: true,
-              body: remove.status
+              body: remove
             }));
-          case 11:
-            _context.prev = 11;
+          case 10:
+            _context.prev = 10;
             _context.t0 = _context["catch"](0);
             console.log(_context.t0);
             return _context.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
-          case 15:
+          case 14:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 11]]);
+    }, _callee, null, [[0, 10]]);
   }));
   return function removeAddOnOrder(_x, _x2) {
     return _ref.apply(this, arguments);

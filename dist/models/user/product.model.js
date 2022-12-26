@@ -22,8 +22,9 @@ var get_subscription_or_add_on_products = /*#__PURE__*/function () {
             _context.prev = 0;
             _context.next = 3;
             return (0, _db["default"])("products").join("unit_types", "unit_types.id", "=", "products.unit_type_id")
-            // .join("subscribed_user_details", "subscribed_user_details.product_id","=", "products.id")
+            // .join("subscribed_user_details", "subscribed_user_details.id","=", "products.id")
             .select("products.id", "products.name", "products.image", "products.unit_value", "unit_types.value as unit_type", "products.price"
+            // "subscribed_user_details.id"
             // "products.demo_price"
             // "subscribed_user_details.id as subscription_id"
             ).where({
@@ -31,43 +32,40 @@ var get_subscription_or_add_on_products = /*#__PURE__*/function () {
             });
           case 3:
             product = _context.sent;
-            // .where({ "subscription_status":"subscribed",product_type_id: id })
-
-            console.log(product);
-            _context.next = 7;
+            _context.next = 6;
             return (0, _helper.GetProduct)(product, userId);
-          case 7:
+          case 6:
             response = _context.sent;
             if (!response.status) {
-              _context.next = 12;
+              _context.next = 11;
               break;
             }
             return _context.abrupt("return", {
               status: true,
               data: response.data
             });
-          case 12:
+          case 11:
             return _context.abrupt("return", {
               status: false,
               message: response.message
             });
-          case 13:
-            _context.next = 19;
+          case 12:
+            _context.next = 18;
             break;
-          case 15:
-            _context.prev = 15;
+          case 14:
+            _context.prev = 14;
             _context.t0 = _context["catch"](0);
             console.log(_context.t0);
             return _context.abrupt("return", {
               status: false,
               error: _context.t0
             });
-          case 19:
+          case 18:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 15]]);
+    }, _callee, null, [[0, 14]]);
   }));
   return function get_subscription_or_add_on_products(_x, _x2) {
     return _ref.apply(this, arguments);
@@ -320,97 +318,92 @@ var addon_order = /*#__PURE__*/function () {
 }();
 exports.addon_order = addon_order;
 var remove_addonorders = /*#__PURE__*/function () {
-  var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(product_id, delivery_date, addon_id, userId) {
+  var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(product_id, delivery_date) {
     var addon_status, select, select1, total, update, status;
     return _regeneratorRuntime().wrap(function _callee6$(_context6) {
       while (1) {
         switch (_context6.prev = _context6.next) {
           case 0:
-            console.log("hi");
-            _context6.prev = 1;
-            console.log(product_id);
-            _context6.next = 5;
-            return (0, _db["default"])('add_on_orders').select('status').where({
-              id: addon_id,
+            _context6.prev = 0;
+            _context6.next = 3;
+            return (0, _db["default"])('add_on_orders').select('status', 'id').where({
               delivery_date: delivery_date
             });
-          case 5:
+          case 3:
             addon_status = _context6.sent;
-            console.log(addon_status);
             if (!(addon_status[0] != "cancelled")) {
-              _context6.next = 27;
+              _context6.next = 23;
               break;
             }
-            _context6.next = 10;
+            _context6.next = 7;
             return (0, _db["default"])("add_on_order_items").update({
               status: "removed"
             }).where({
               product_id: product_id,
-              add_on_order_id: addon_id
+              add_on_order_id: addon_status[0].id
             });
-          case 10:
-            _context6.next = 12;
+          case 7:
+            _context6.next = 9;
             return (0, _db["default"])('add_on_order_items').select("price").where({
               product_id: product_id,
-              add_on_order_id: addon_id,
+              add_on_order_id: addon_status[0].id,
               status: "removed"
             });
-          case 12:
+          case 9:
             select = _context6.sent;
-            _context6.next = 15;
+            _context6.next = 12;
             return (0, _db["default"])('add_on_orders').select("sub_total").where({
-              id: addon_id,
+              id: addon_status[0].id,
               delivery_date: delivery_date
             });
-          case 15:
+          case 12:
             select1 = _context6.sent;
-            total = select1[0].sub_total - select[0].price;
-            console.log(total);
-            _context6.next = 20;
+            total = select1[0].sub_total - select[0].price; // console.log(total)
+            _context6.next = 16;
             return (0, _db["default"])('add_on_orders').update({
               sub_total: total
             }).where({
-              id: addon_id,
+              id: addon_status[0].id,
               delivery_date: delivery_date
             });
-          case 20:
+          case 16:
             update = _context6.sent;
-            _context6.next = 23;
+            _context6.next = 19;
             return (0, _db["default"])('add_on_orders').update({
               status: "cancelled"
             }).where({
               sub_total: 0
             });
-          case 23:
+          case 19:
             status = _context6.sent;
             return _context6.abrupt("return", {
               status: true,
               message: "Successfully removed"
             });
-          case 27:
+          case 23:
             return _context6.abrupt("return", {
               status: false,
               message: "already cancelled"
             });
-          case 28:
-            _context6.next = 34;
+          case 24:
+            _context6.next = 30;
             break;
-          case 30:
-            _context6.prev = 30;
-            _context6.t0 = _context6["catch"](1);
+          case 26:
+            _context6.prev = 26;
+            _context6.t0 = _context6["catch"](0);
             console.log(_context6.t0);
             return _context6.abrupt("return", {
               status: false,
               message: "Cannot Remove addon order"
             });
-          case 34:
+          case 30:
           case "end":
             return _context6.stop();
         }
       }
-    }, _callee6, null, [[1, 30]]);
+    }, _callee6, null, [[0, 26]]);
   }));
-  return function remove_addonorders(_x14, _x15, _x16, _x17) {
+  return function remove_addonorders(_x14, _x15) {
     return _ref6.apply(this, arguments);
   };
 }();

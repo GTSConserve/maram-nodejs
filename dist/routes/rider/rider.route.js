@@ -21,5 +21,6 @@ riderRouter.post("/get_single_order", _rider.getSingleorder);
 riderRouter.post("/order_status_update", _rider.orderStatusUpdate);
 riderRouter.post("/rider_dashboard", _rider.riderDashboard);
 riderRouter.post("/cancel_order", _rider.cancelOrder);
+riderRouter.post("/order_list", _rider.OrderList);
 var _default = riderRouter;
 exports["default"] = _default;

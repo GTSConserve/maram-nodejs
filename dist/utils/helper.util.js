@@ -94,12 +94,12 @@ var customizedDay = /*#__PURE__*/function () {
 exports.customizedDay = customizedDay;
 var GetProduct = /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(product, userId) {
-    var sub_product, sub, i, j, _i;
+    var sub_product, i, j, _i;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
-            sub_product = []; // console.log(userId)
+            sub_product = [];
             if (!userId) {
               _context2.next = 5;
               break;
@@ -127,69 +127,30 @@ var GetProduct = /*#__PURE__*/function () {
               message: "No Product Found"
             });
           case 7:
-            sub = [];
-            if (!(sub_product.length !== 0)) {
-              _context2.next = 29;
-              break;
+            if (sub_product.length !== 0) {
+              for (i = 0; i < product.length; i++) {
+                for (j = 0; j < sub_product.length; j++) {
+                  if (product[i].id == sub_product[j].product_id) {
+                    product[i].is_subscribed = "1";
+                  } else {
+                    product[i].is_subscribed = "0";
+                    product[i].subscription_id = 0;
+                  }
+                }
+              }
             }
-            i = 0;
-          case 10:
-            if (!(i < product.length)) {
-              _context2.next = 29;
-              break;
-            }
-            j = 0;
-          case 12:
-            if (!(j < sub_product.length)) {
-              _context2.next = 26;
-              break;
-            }
-            if (!(product[i].id == sub_product[j].product_id)) {
-              _context2.next = 21;
-              break;
-            }
-            product[i].is_subscribed = "1";
-            _context2.next = 17;
-            return (0, _db["default"])("subscribed_user_details").select("id").where({
-              user_id: userId,
-              subscription_status: "pending"
-            }).orWhere({
-              user_id: userId,
-              subscription_status: "approved"
-            }).orWhere({
-              user_id: userId,
-              subscription_status: "subscribed"
-            });
-          case 17:
-            sub = _context2.sent;
-            product[i].subscription_id = sub[0].id;
-            // console.log(product[i].subscription_id)
-            _context2.next = 23;
-            break;
-          case 21:
-            product[i].is_subscribed = "0";
-            product[i].subscription_id = 0;
-          case 23:
-            j++;
-            _context2.next = 12;
-            break;
-          case 26:
-            i++;
-            _context2.next = 10;
-            break;
-          case 29:
             for (_i = 0; _i < product.length; _i++) {
               product[_i].image = product[_i].image ? process.env.BASE_URL + product[_i].image : null;
               if (!userId || sub_product.length == 0) {
                 product[_i].is_subscribed = "0";
-                product[_i].subscription_id = "0";
+                product[_i].subscription_id = 0;
               }
             }
             return _context2.abrupt("return", {
               status: true,
               data: product
             });
-          case 31:
+          case 10:
           case "end":
             return _context2.stop();
         }

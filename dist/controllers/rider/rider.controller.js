@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updeteRiderLocation = exports.updateStartTour = exports.updateRiderstatus = exports.updateEndtour = exports.ten = exports.riderDashboard = exports.orderStatusUpdate = exports.login = exports.getSingleorder = exports.getRiderdetails = exports.getAppControls = exports.cancelOrder = void 0;
+exports.updeteRiderLocation = exports.updateStartTour = exports.updateRiderstatus = exports.updateEndtour = exports.ten = exports.riderDashboard = exports.orderStatusUpdate = exports.login = exports.getSingleorder = exports.getRiderdetails = exports.getAppControls = exports.cancelOrder = exports.OrderList = void 0;
 var _express = _interopRequireDefault(require("express"));
 var _messages = _interopRequireDefault(require("../../constants/messages"));
 var _rider = require("../../models/rider/rider.model");
@@ -610,36 +610,91 @@ var cancelOrder = /*#__PURE__*/function () {
     return _ref11.apply(this, arguments);
   };
 }();
+
+// order list 
 exports.cancelOrder = cancelOrder;
-var ten = /*#__PURE__*/function () {
+var OrderList = /*#__PURE__*/function () {
   var _ref12 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee12(req, res) {
-    var payload, user_name, password, checkPhoneNumber, query, userId, today;
+    var _req$body9, delivery_partner_id, status, order, query, data;
     return _regeneratorRuntime().wrap(function _callee12$(_context12) {
       while (1) {
         switch (_context12.prev = _context12.next) {
           case 0:
             _context12.prev = 0;
+            _req$body9 = req.body, delivery_partner_id = _req$body9.delivery_partner_id, status = _req$body9.status;
+            _context12.next = 4;
+            return (0, _rider.order_list)(delivery_partner_id, status);
+          case 4:
+            order = _context12.sent;
+            query = {
+              "tour_id": order.router[0].id,
+              "tour_route": order.router[0].name,
+              "total_orders": order.order.length,
+              "completed_orders": order.delivery.length
+            };
+            data = {
+              "order_id": order.order[0].id,
+              "milk_variation": order.order[0].total_qty + " " + "liter",
+              "addon_items": order.addon.length,
+              "user_name": order.user[0].name,
+              "customer_id": order.user[0].user_unique_id,
+              "bottle_return": order.order1[0].total_collective_bottle,
+              "order_status": order.order1[0].status
+            };
+            return _context12.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
+              status: true,
+              query: query,
+              data: data
+            }));
+          case 10:
+            _context12.prev = 10;
+            _context12.t0 = _context12["catch"](0);
+            console.log(_context12.t0);
+            return _context12.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
+              status: false,
+              message: _messages["default"].SERVER_ERROR
+            }));
+          case 14:
+          case "end":
+            return _context12.stop();
+        }
+      }
+    }, _callee12, null, [[0, 10]]);
+  }));
+  return function OrderList(_x23, _x24) {
+    return _ref12.apply(this, arguments);
+  };
+}();
+exports.OrderList = OrderList;
+var ten = /*#__PURE__*/function () {
+  var _ref13 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee13(req, res) {
+    var payload, user_name, password, checkPhoneNumber, query, userId, today;
+    return _regeneratorRuntime().wrap(function _callee13$(_context13) {
+      while (1) {
+        switch (_context13.prev = _context13.next) {
+          case 0:
+            _context13.prev = 0;
             payload = (0, _validator.userValidator)(req.body);
             user_name = payload.user_name, password = payload.password;
             if (!payload) {
-              _context12.next = 16;
+              _context13.next = 16;
               break;
             }
-            _context12.next = 6;
+            _context13.next = 6;
             return loginUser(password);
           case 6:
-            checkPhoneNumber = _context12.sent;
+            checkPhoneNumber = _context13.sent;
             userId = 0; // const otp = process.env.USER_OTP || Math.floor(1000 + Math.random() * 9000)
             // const otp = '1234'
             if (checkPhoneNumber.body.length) {
-              _context12.next = 13;
+              _context13.next = 13;
               break;
             }
             today = format(new Date(), 'yyyy-MM-dd H:i:s');
-            _context12.next = 12;
+            _context13.next = 12;
             return insertRider(payload);
           case 12:
-            query = _context12.sent;
+            query = _context13.sent;
           case 13:
             // else {
 
@@ -662,7 +717,7 @@ var ten = /*#__PURE__*/function () {
                 message: "pls check"
               });
             }
-            _context12.next = 17;
+            _context13.next = 17;
             break;
           case 16:
             res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
@@ -670,22 +725,22 @@ var ten = /*#__PURE__*/function () {
               message: "error"
             });
           case 17:
-            _context12.next = 23;
+            _context13.next = 23;
             break;
           case 19:
-            _context12.prev = 19;
-            _context12.t0 = _context12["catch"](0);
-            logger.error('Whooops! This broke with error: ', _context12.t0);
+            _context13.prev = 19;
+            _context13.t0 = _context13["catch"](0);
+            logger.error('Whooops! This broke with error: ', _context13.t0);
             res.status(500).send('Error!');
           case 23:
           case "end":
-            return _context12.stop();
+            return _context13.stop();
         }
       }
-    }, _callee12, null, [[0, 19]]);
+    }, _callee13, null, [[0, 19]]);
   }));
-  return function ten(_x23, _x24) {
-    return _ref12.apply(this, arguments);
+  return function ten(_x25, _x26) {
+    return _ref13.apply(this, arguments);
   };
 }();
 exports.ten = ten;
