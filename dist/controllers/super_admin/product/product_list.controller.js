@@ -63,13 +63,13 @@ var updateProductStatus = /*#__PURE__*/function () {
 exports.updateProductStatus = updateProductStatus;
 var updateProduct = /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(req, res) {
-    var _req$body2, product_name, id, unit_type_id, category_id, product_type_id, description, price, unit_value, file, query, image;
+    var _req$body2, product_name, id, unit_type_id, category_id, product_type_id, description, price, unit_value, branch_price, demo_price, file, query, image;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
             _context2.prev = 0;
-            _req$body2 = req.body, product_name = _req$body2.product_name, id = _req$body2.id, unit_type_id = _req$body2.unit_type_id, category_id = _req$body2.category_id, product_type_id = _req$body2.product_type_id, description = _req$body2.description, price = _req$body2.price, unit_value = _req$body2.unit_value;
+            _req$body2 = req.body, product_name = _req$body2.product_name, id = _req$body2.id, unit_type_id = _req$body2.unit_type_id, category_id = _req$body2.category_id, product_type_id = _req$body2.product_type_id, description = _req$body2.description, price = _req$body2.price, unit_value = _req$body2.unit_value, branch_price = _req$body2.branch_price, demo_price = _req$body2.demo_price;
             file = req.file;
             if (product_name) {
               _context2.next = 6;
@@ -105,6 +105,8 @@ var updateProduct = /*#__PURE__*/function () {
             query.description = description;
             query.price = price;
             query.unit_value = unit_value;
+            query.demo_price = demo_price;
+            query.branch_price = branch_price;
             if (file) {
               image = req.file.destination.slice(1) + "/" + req.file.filename;
               query.image = image;
@@ -118,26 +120,26 @@ var updateProduct = /*#__PURE__*/function () {
             if (category_id) {
               query.category_id = category_id;
             }
-            _context2.next = 27;
+            _context2.next = 29;
             return (0, _db["default"])("products").update(query).where({
               id: id
             });
-          case 27:
+          case 29:
             req.flash("success", "Updated SuccessFully");
             res.redirect("/super_admin/product/get_product_list");
-            _context2.next = 35;
+            _context2.next = 37;
             break;
-          case 31:
-            _context2.prev = 31;
+          case 33:
+            _context2.prev = 33;
             _context2.t0 = _context2["catch"](0);
             console.log(_context2.t0);
             res.redirect("/home");
-          case 35:
+          case 37:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[0, 31]]);
+    }, _callee2, null, [[0, 33]]);
   }));
   return function updateProduct(_x3, _x4) {
     return _ref2.apply(this, arguments);
@@ -227,7 +229,7 @@ var getProductList = /*#__PURE__*/function () {
               break;
             }
             _context3.next = 43;
-            return _db["default"].raw("SELECT  products.id,products.name as product_name,products.image,products.description,products.status,products.price,products.unit_value,\n        product_type.name as product_type_name,categories.name as category_name, unit_types.value FROM products\n        JOIN product_type ON products.product_type_id = product_type.id \n        JOIN categories ON products.category_id = categories.id \n        JOIN unit_types ON products.unit_type_id = unit_types.id\n         WHERE products.name LIKE '%".concat(searchKeyword, "%' LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
+            return _db["default"].raw("SELECT  products.id,products.name as product_name,products.image,products.description,products.status,products.price,products.unit_value,\n        product_type.name as product_type_name,categories.name as category_name, unit_types.value,products.demo_price,products.branch_price FROM products\n        JOIN product_type ON products.product_type_id = product_type.id \n        JOIN categories ON products.category_id = categories.id \n        JOIN unit_types ON products.unit_type_id = unit_types.id\n         WHERE products.name LIKE '%".concat(searchKeyword, "%' LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
           case 43:
             results = _context3.sent;
             is_search = true;
@@ -235,7 +237,7 @@ var getProductList = /*#__PURE__*/function () {
             break;
           case 47:
             _context3.next = 49;
-            return _db["default"].raw("SELECT  products.id,products.name as product_name,products.image,products.description,products.status,products.price,products.unit_value,\n         product_type.name as product_type_name,categories.name as category_name, unit_types.value FROM products\n         JOIN product_type ON products.product_type_id = product_type.id \n         JOIN categories ON products.category_id = categories.id \n         JOIN unit_types ON products.unit_type_id = unit_types.id \n         LIMIT ".concat(startingLimit, ",").concat(resultsPerPage));
+            return _db["default"].raw("SELECT  products.id,products.name as product_name,products.image,products.description,products.status,products.price,products.unit_value,\n         product_type.name as product_type_name,categories.name as category_name, unit_types.value,products.demo_price,products.branch_price FROM products\n         JOIN product_type ON products.product_type_id = product_type.id \n         JOIN categories ON products.category_id = categories.id \n         JOIN unit_types ON products.unit_type_id = unit_types.id \n         LIMIT ".concat(startingLimit, ",").concat(resultsPerPage));
           case 49:
             results = _context3.sent;
           case 50:
@@ -278,13 +280,13 @@ var getProductList = /*#__PURE__*/function () {
 exports.getProductList = getProductList;
 var createProduct = /*#__PURE__*/function () {
   var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(req, res) {
-    var _req$body3, name, description, category_id, unit_value, unit_type_id, price, product_type_id, image;
+    var _req$body3, name, description, category_id, unit_value, unit_type_id, price, product_type_id, demo_price, branch_price, image;
     return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
             _context4.prev = 0;
-            _req$body3 = req.body, name = _req$body3.name, description = _req$body3.description, category_id = _req$body3.category_id, unit_value = _req$body3.unit_value, unit_type_id = _req$body3.unit_type_id, price = _req$body3.price, product_type_id = _req$body3.product_type_id;
+            _req$body3 = req.body, name = _req$body3.name, description = _req$body3.description, category_id = _req$body3.category_id, unit_value = _req$body3.unit_value, unit_type_id = _req$body3.unit_type_id, price = _req$body3.price, product_type_id = _req$body3.product_type_id, demo_price = _req$body3.demo_price, branch_price = _req$body3.branch_price;
             if (name) {
               _context4.next = 5;
               break;
@@ -351,7 +353,9 @@ var createProduct = /*#__PURE__*/function () {
               unit_value: unit_value,
               price: price,
               image: image,
-              description: description
+              description: description,
+              branch_price: branch_price,
+              demo_price: demo_price ? demo_price : null
             });
           case 29:
             req.flash("success", "Successfully Created");

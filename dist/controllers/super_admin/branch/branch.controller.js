@@ -15,13 +15,13 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 var updateBranch = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(req, res) {
-    var _req$body, location, id, mobile_number, city_id, query;
+    var _req$body, location, id, mobile_number, city_id, incharge_name, query;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             _context.prev = 0;
-            _req$body = req.body, location = _req$body.location, id = _req$body.id, mobile_number = _req$body.mobile_number, city_id = _req$body.city_id;
+            _req$body = req.body, location = _req$body.location, id = _req$body.id, mobile_number = _req$body.mobile_number, city_id = _req$body.city_id, incharge_name = _req$body.incharge_name;
             if (location) {
               _context.next = 5;
               break;
@@ -40,28 +40,29 @@ var updateBranch = /*#__PURE__*/function () {
             if (city_id) {
               query.city_id = city_id;
             }
+            query.incharge_name = incharge_name;
             query.location = location;
             query.mobile_number = mobile_number;
-            _context.next = 14;
+            _context.next = 15;
             return (0, _db["default"])("admin_users").update(query).where({
               id: id
             });
-          case 14:
+          case 15:
             req.flash("success", "Updated SuccessFully");
             res.redirect("/super_admin/branch/get_branch_admin");
-            _context.next = 22;
+            _context.next = 23;
             break;
-          case 18:
-            _context.prev = 18;
+          case 19:
+            _context.prev = 19;
             _context.t0 = _context["catch"](0);
             console.log(_context.t0);
             res.redirect("/home");
-          case 22:
+          case 23:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 18]]);
+    }, _callee, null, [[0, 19]]);
   }));
   return function updateBranch(_x, _x2) {
     return _ref.apply(this, arguments);
@@ -121,13 +122,13 @@ var updateBranchStatus = /*#__PURE__*/function () {
 exports.updateBranchStatus = updateBranchStatus;
 var createBranchAdmin = /*#__PURE__*/function () {
   var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(req, res) {
-    var _req$body3, name, email, password, location, mobile_number, zone_id, hash_password;
+    var _req$body3, name, email, password, location, mobile_number, zone_id, incharge_name, hash_password;
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.prev = 0;
-            _req$body3 = req.body, name = _req$body3.name, email = _req$body3.email, password = _req$body3.password, location = _req$body3.location, mobile_number = _req$body3.mobile_number, zone_id = _req$body3.zone_id;
+            _req$body3 = req.body, name = _req$body3.name, email = _req$body3.email, password = _req$body3.password, location = _req$body3.location, mobile_number = _req$body3.mobile_number, zone_id = _req$body3.zone_id, incharge_name = _req$body3.incharge_name;
             if (name) {
               _context3.next = 5;
               break;
@@ -175,7 +176,8 @@ var createBranchAdmin = /*#__PURE__*/function () {
               // location,
               mobile_number: mobile_number,
               email: email,
-              zone_id: zone_id
+              zone_id: zone_id,
+              incharge_name: incharge_name
             });
           case 22:
             req.flash("success", "Successfully Created");
@@ -271,7 +273,7 @@ var getBranchAdmin = /*#__PURE__*/function () {
               break;
             }
             _context4.next = 38;
-            return _db["default"].raw("SELECT admin_users.id,admin_users.first_name,admin_users.location,admin_users.mobile_number,admin_users.email,admin_users.status,admin_users.password,admin_users.is_password_change,zones.name as zone_name,zones.id as zone_id FROM admin_users \n        JOIN zones ON zones.id = admin_users.zone_id \n        WHERE admin_users.user_group_id = \"2\" AND admin_users.first_name LIKE '%".concat(searchKeyword, "%' LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
+            return _db["default"].raw("SELECT admin_users.id,admin_users.first_name,admin_users.location,admin_users.mobile_number,admin_users.email,admin_users.status,admin_users.password,admin_users.is_password_change,zones.name as zone_name,zones.id as zone_id,admin_users.incharge_name FROM admin_users \n        JOIN zones ON zones.id = admin_users.zone_id \n        WHERE admin_users.user_group_id = \"2\" AND admin_users.first_name LIKE '%".concat(searchKeyword, "%' LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
           case 38:
             results = _context4.sent;
             is_search = true;
@@ -279,7 +281,7 @@ var getBranchAdmin = /*#__PURE__*/function () {
             break;
           case 42:
             _context4.next = 44;
-            return _db["default"].raw("SELECT admin_users.id,admin_users.first_name,admin_users.location,admin_users.mobile_number,admin_users.email,admin_users.status,admin_users.password,admin_users.is_password_change,zones.name as zone_name,zones.id as zone_id FROM admin_users \n        JOIN zones ON zones.id = admin_users.zone_id\n         WHERE admin_users.user_group_id = \"2\" LIMIT ".concat(startingLimit, ",").concat(resultsPerPage));
+            return _db["default"].raw("SELECT admin_users.id,admin_users.first_name,admin_users.location,admin_users.mobile_number,admin_users.email,admin_users.status,admin_users.password,admin_users.is_password_change,zones.name as zone_name,zones.id as zone_id,admin_users.incharge_name FROM admin_users \n        JOIN zones ON zones.id = admin_users.zone_id\n         WHERE admin_users.user_group_id = \"2\" LIMIT ".concat(startingLimit, ",").concat(resultsPerPage));
           case 44:
             results = _context4.sent;
           case 45:

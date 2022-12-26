@@ -13,6 +13,7 @@ var poRouter = _express["default"].Router({
 });
 poRouter.get('/get_po_form', _po.getPoForm);
 poRouter.post('/create_po', _po.createPoForm);
+poRouter.post('/add_on_excess_po', _po.getAddOnExcessProductPO);
 poRouter.get('/get_po_pending', _po.getPoFormPending);
 poRouter.get('/get_po_approved', _po.getApprovePO);
 poRouter.get('/get_po_single_approved', _po.getSingleApprovePO);

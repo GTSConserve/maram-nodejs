@@ -44,24 +44,37 @@
                                         </div>
 
                                         <div class="form-row mb-4">
-                                            <div class="form-group col-md-3">
-                                                <label for="type">Type</label>
-                                                <input type="text" class="form-control"  id="type" name="address_type" placeholder="Eg. Home,Office,Others">
-                                            </div>
-                                            <div class="col-3"></div>
-                                            <div class="form-group col-md-3">
+                                          
+                                            <div class="form-group col-md-4">
                                                 <label for="title">Title</label>
-                                                <input type="text" class="form-control" name="address_title" id="title" placeholder="Eg. My Friend Home">
+                                                <input type="text" class="form-control" name="address_title" id="title" placeholder="Eg. Home,Office,Others">
+                                            </div>
+                                            <div class="col-2"></div>
+                                            <div class="form-group col-md-4">
+                                                <label for="type">Alternate Mobile Number <span style="font-size : 12px;">(optional)</span></label>
+                                                <input type="text" class="form-control"  id="type" name="alternate_mobile_number" placeholder="10 Digit Mobile Number">
+                                            </div>
+                                            <div class="form-group col-md-4">
+                                                <label for="latitude">Latitude</label>
+                                                <input type="text" class="form-control"  id="latitude" name="latitude" placeholder="latitude">
+                                            </div>
+                                            <div class="col-2"></div>
+
+                                            <div class="form-group col-md-4">
+                                                <label for="longitude">Longitude</label>
+                                                <input type="text" class="form-control"  id="longitude" name="longitude" placeholder="longitude">
+                                                
                                             </div>
                                             <div class="form-group col-md-6">
                                                 <label for="address">Address</label>
                                                 <textarea id="address" class="form-control" name="address"></textarea>
                                             </div>
                                             <div class="form-group col-md-6">
-                                                <label for="landmark">Landmark</label>
+                                                <label for="landmark">Landmark <span style="font-size : 12px;">(optional)</span></label>
                                                 <textarea id="landmark" class="form-control" name="address_landmark"></textarea>
                                                 
                                             </div>
+                                           
                                             
                                         </div>
 
@@ -308,7 +321,9 @@
 
                                                 
                                                 //address
-                                                const address_type = e.target.address_type.value
+                                                const latitude = e.target.latitude.value
+                                                const longitude= e.target.longitude.value
+                                                const alternate_mobile_number= e.target.alternate_mobile_number.value
                                                 const address_title = e.target.address_title.value
                                                 const address_landmark = e.target.address_landmark.value
                                                 const address = e.target.address.value
@@ -400,7 +415,7 @@
                                                 }
 
                                                 // address
-                                                if(address_type.length ==0 || address_title.length == 0 || address_landmark.length == 0 || address.length == 0){
+                                                if(latitude.length ==0 || longitude.length ==0 || address_title.length == 0 ||  address.length == 0){
                                                         
                                                         document.body.insertAdjacentElement("afterbegin",ErroHandler) 
                                                     return document.getElementById("dynamic_content_error").innerText = "Please Fill the Address Details"
@@ -450,7 +465,11 @@
                                                
                                              
                                          
-                                                query.address_type = address_type
+                                              
+                                                query.alternate_mobile_number = alternate_mobile_number
+                                                query.latitude = latitude
+                                                query.longitude = longitude
+                                             
                                                 query.address_title = address_title
                                                 query.address_landmark = address_landmark
                                                 query.address = address

@@ -177,41 +177,40 @@ var updateappsettings = /*#__PURE__*/function () {
           case 0:
             _context3.prev = 0;
             _req$body2 = req.body, name = _req$body2.name, key = _req$body2.key, value = _req$body2.value, id = _req$body2.id;
-            if (name) {
+            if (value) {
               _context3.next = 5;
               break;
             }
-            req.flash("error", "Name is missing");
+            req.flash("error", "Value is missing");
             return _context3.abrupt("return", res.redirect("/super_admin/settings/app_settings"));
           case 5:
             query = {};
-            query.name = name;
             if (key) {
               query.key = key;
             }
             if (value) {
               query.value = value;
             }
-            _context3.next = 11;
+            _context3.next = 10;
             return (0, _db["default"])("app_settings").update(query).where({
               id: id
             });
-          case 11:
+          case 10:
             req.flash("success", "Updated SuccessFully");
             res.redirect("/super_admin/settings/app_settings");
-            _context3.next = 19;
+            _context3.next = 18;
             break;
-          case 15:
-            _context3.prev = 15;
+          case 14:
+            _context3.prev = 14;
             _context3.t0 = _context3["catch"](0);
             console.log(_context3.t0);
             res.redirect("/home");
-          case 19:
+          case 18:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3, null, [[0, 15]]);
+    }, _callee3, null, [[0, 14]]);
   }));
   return function updateappsettings(_x5, _x6) {
     return _ref3.apply(this, arguments);

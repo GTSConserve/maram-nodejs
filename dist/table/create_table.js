@@ -67,6 +67,7 @@ var createTable = /*#__PURE__*/function () {
                   t.foreign("user_group_id").references("id").inTable("user_groups");
                   t.string("first_name", 255).notNullable();
                   t.string("last_name", 255).nullable();
+                  t.string("incharge_name", 255).nullable();
                   t.integer("zone_id").unsigned().nullable();
                   t.foreign("zone_id").references("id").inTable("zones");
                   t.string("location", 255).nullable();
@@ -336,6 +337,7 @@ var createTable = /*#__PURE__*/function () {
                   //   .references("id")
                   //   .inTable("subscription_type");
 
+                  t.string("branch_price", 255).nullable();
                   t.string("demo_price", 255).nullable();
                   t.string("name", 255).nullable();
                   t.text("description").nullable();

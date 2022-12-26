@@ -71,11 +71,7 @@ var tommorowRouteMapping = /*#__PURE__*/function () {
             }
             loading = false;
             req.flash("error", "No User Found");
-            return _context2.abrupt("return", res.render("branch_admin/route/tommorrow_mapping", {
-              data: [],
-              loading: loading,
-              router_id: route_id
-            }));
+            return _context2.abrupt("return", res.redirect("/branch_admin/route/get_route"));
           case 11:
             get_user_details = [];
             i = 0;
@@ -110,11 +106,7 @@ var tommorowRouteMapping = /*#__PURE__*/function () {
               break;
             }
             req.flash("error", "No User Found");
-            return _context2.abrupt("return", res.render("branch_admin/route/tommorrow_mapping", {
-              data: [],
-              loading: loading,
-              router_id: route_id
-            }));
+            return _context2.abrupt("return", res.redirect("/branch_admin/route/get_route"));
           case 29:
             address = [];
             for (_i = 0; _i < daily_orders.length; _i++) {

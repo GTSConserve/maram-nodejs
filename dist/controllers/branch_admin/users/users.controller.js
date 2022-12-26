@@ -355,8 +355,10 @@ var createUser = /*#__PURE__*/function () {
               branch_id: admin_id,
               title: data.address_title,
               address: data.address,
-              landmark: data.address_landmark,
-              type: data.address_type,
+              landmark: data.address_landmark ? data.address_landmark : null,
+              latitude: data.latitude,
+              longitude: data.longitude,
+              alternate_mobile: data.alternate_mobile_number ? data.alternate_mobile_number : null,
               router_id: data.router_id ? data.router_id : null
             });
           case 17:

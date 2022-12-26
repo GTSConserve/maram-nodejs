@@ -16,7 +16,7 @@
                         <button onclick="goBackHandler()" class="btn btn-md btn-info">Go Back</button>
                     </div>
                     <div class="col">
-                        <button onclick="submitHandler()" class="btn btn-md btn-primary">Save Changes</button>
+                        <button onclick="submitHandler()" class="btn btn-md btn-primary ">Save </button>
                     </div>
                     <div class="col">
                         <button onclick="goBackHandler()" class="btn btn-md btn-secondary">Cancel</button>
@@ -54,18 +54,19 @@
 
                                         <% for(let i = 0 ; i< data.length; i++ ){ %> 
 
-                                        <div class="media  d-md-flex d-block text-sm-left text-center" style="border-width:3px ;border-color:#80C659">
+                                        <div class="media  d-md-flex d-block text-sm-left text-center" style="border-width:2px ;border-color:#2196f3" >
+                                            <h4 class="pr-5"><%= i + 1 %>.</h4>
                                             <!-- <img alt="avatar" src="assets/img/90x90.jpg" class="img-fluid "> -->
-                                            <div class="media-body">
+                                            <div class="media-body" >
                                                 <div class="d-xl-flex d-block justify-content-between">
                                                     <div class="viewMappingValue" data-value="<%= data[i].id %>">
-                                                        <h4 class=""><%= i + 1 %>.  <%= data[i].user_name %>   (<%= data[i].user_unique_id %>)  </h4>
+                                                        <h4 class="">  <%= data[i].user_name %>   (<%= data[i].user_unique_id %>)  </h4>
                                                         <p class=""> <span style="font-size:14px;font-weight : bold ;color: black;"><%= data[i].address %></span> </p>
                                                         <!-- <p class=""> Landmark - <%= user.landmark %> </p> -->
                                                     </div>
-                                                    <!-- <div>
-                                                        <button class="btn btn-primary btn-sm">View</button>
-                                                    </div> -->
+                                                    <div>
+                                                        <button class="btn btn-info btn-sm">UnAssign</button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

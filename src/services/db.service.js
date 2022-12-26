@@ -49,6 +49,10 @@ console.log("database Connected");
 // }
 // hl();
 // console.log(knex)
+
+
+
+
 export default knex;
 
 

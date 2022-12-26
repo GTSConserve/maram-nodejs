@@ -47,10 +47,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group col-md-1">
+                    <!-- <div class="form-group col-md-1">
                             <button class="btn btn-sm btn-primary" data-toggle="modal"
                                 data-target="#addbarcategory">Add</button>
-                            <!-- __category add__ -->
+                          
                             <div wire:ignore.self="" class="modal fade" id="addbarcategory" tabindex="-1"
                                 aria-labelledby="addCategoryTitle" style="display: none;" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered" role="document">
@@ -87,12 +87,12 @@
                                             
                                                 
                                               
-                                                    <!-- <div class="col-sm-6">
+                                                    <div class="col-sm-6">
                                                         <label>key</label>
                                                         <input type="text" class="form-control" wire:model="name" 
                                                             placeholder="key" name="key">
                                                        
-                                                    </div> -->
+                                                    </div> 
                                                    
                                              
                                                 
@@ -108,7 +108,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     
                 </div>
             </div>
@@ -135,11 +135,11 @@
                             <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
                                 colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
                                 style="width: 86px;">#</th>
-                            <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                            <!-- <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
                                 colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
-                                style="width: 86px;"> Name</th>
-                            <!-- <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
-                                aria-label="NAME: activate to sort column ascending" style="width: 100px;">key</th> -->
+                                style="width: 86px;"> Name</th> -->
+                            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                                aria-label="NAME: activate to sort column ascending" style="width: 100px;">key</th>
                             <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
                                 aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">value</th>
                             <th class="text-center sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
@@ -156,8 +156,8 @@
 
                             <% for(app_settings of data){ %>
                                     <td class="sorting_1"><%=app_settings.id %></td>
-                                    <td><%=app_settings.name %></td>
-                                    <!-- <td><%=app_settings.key %> </td> -->
+                                    <!-- <td><%=app_settings.name %></td> -->
+                                    <td><%=app_settings.key %> </td>
                                     <td><%=app_settings.value %></td>
                                    
 
@@ -197,7 +197,7 @@
                                     <div class="modal-dialog modal-dialog-centered" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalCenterTitle">Edit App</h5>
+                                                <h5 class="modal-title" id="exampleModalCenterTitle">Edit App Setting</h5>
                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                     <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
                                                         height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -213,12 +213,12 @@
                                             <div class="modal-body">
                                                 <form method="post" action="/super_admin/settings/update_appsettings">
                                                     <div class="form-row mb-4">
-                                                        <div class="col-sm-6">
+                                                        <!-- <div class="col-sm-6">
                                                             <label> Name</label>
                                                             <input type="text" class="form-control" wire:model="name"
                                                                 placeholder="Name" name="name" value="<%=app_settings.name %>" required>
 
-                                                        </div>
+                                                        </div> -->
                                                         <div class="col-6">
                                                             <label>value</label>
                                                             <input type="text" class="form-control" wire:model="name" 

@@ -50,8 +50,10 @@ var createUsers = /*#__PURE__*/function () {
               branch_id: data.branch_id,
               title: data.address_title,
               address: data.address,
-              landmark: data.address_landmark,
-              type: data.address_type
+              landmark: data.address_landmark ? data.address_landmark : null,
+              latitude: data.latitude,
+              longitude: data.longitude,
+              alternate_mobile: data.alternate_mobile_number ? data.alternate_mobile_number : null
             });
           case 17:
             address = _context.sent;
@@ -311,7 +313,8 @@ var getNewUsers = /*#__PURE__*/function () {
           case 27:
             _context4.next = 29;
             return (0, _db["default"])("admin_users").select("first_name", "id", "location").where({
-              user_group_id: "2"
+              user_group_id: "2",
+              status: "1"
             });
           case 29:
             branches = _context4.sent;
@@ -442,7 +445,7 @@ var getNewUsers = /*#__PURE__*/function () {
 exports.getNewUsers = getNewUsers;
 var getAllUsers = /*#__PURE__*/function () {
   var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(req, res) {
-    var admin_id, loading, searchKeyword, data_length, search_data_length, routes, _yield$getPageNumber2, startingLimit, page, resultsPerPage, numberOfPages, iterator, endingLink, results, is_search, data;
+    var admin_id, loading, searchKeyword, data_length, search_data_length, branch, routes, _yield$getPageNumber2, startingLimit, page, resultsPerPage, numberOfPages, iterator, endingLink, results, is_search, data;
     return _regeneratorRuntime().wrap(function _callee5$(_context5) {
       while (1) {
         switch (_context5.prev = _context5.next) {
@@ -479,25 +482,33 @@ var getAllUsers = /*#__PURE__*/function () {
             data_length = _context5.sent;
           case 20:
             _context5.next = 22;
+            return (0, _db["default"])("admin_users").select("first_name", "id").where({
+              status: "1",
+              user_group_id: "2"
+            });
+          case 22:
+            branch = _context5.sent;
+            _context5.next = 25;
             return (0, _db["default"])("users").select("name", "id").where({
               status: "1"
             });
-          case 22:
+          case 25:
             routes = _context5.sent;
             if (!(data_length.length === 0)) {
-              _context5.next = 26;
+              _context5.next = 29;
               break;
             }
             loading = false;
             return _context5.abrupt("return", res.render("super_admin/users/users", {
               data: data_length,
               searchKeyword: searchKeyword,
-              routes: routes
+              routes: routes,
+              branch: branch
             }));
-          case 26:
-            _context5.next = 28;
+          case 29:
+            _context5.next = 31;
             return (0, _helper.getPageNumber)(req, res, data_length, "users_subscription/get_all_users");
-          case 28:
+          case 31:
             _yield$getPageNumber2 = _context5.sent;
             startingLimit = _yield$getPageNumber2.startingLimit;
             page = _yield$getPageNumber2.page;
@@ -508,22 +519,22 @@ var getAllUsers = /*#__PURE__*/function () {
             console.log(data_length);
             is_search = false;
             if (!searchKeyword) {
-              _context5.next = 44;
+              _context5.next = 47;
               break;
             }
-            _context5.next = 40;
-            return _db["default"].raw("SELECT user_address.id as user_address_id ,user_address.address,user_address.user_id as user_id, \n      users.name as user_name,users.user_unique_id,users.mobile_number,\n      admin_users.first_name as branch_name\n      FROM user_address \n      JOIN users ON users.id = user_address.user_id \n      LEFT JOIN admin_users ON admin_users.id = user_address.branch_id\n      WHERE users.name LIKE '%".concat(searchKeyword, "%' \n      OR users.mobile_number LIKE '%").concat(searchKeyword, "%' \n      OR admin_users.first_name LIKE '%").concat(searchKeyword, "%'\n      LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
-          case 40:
+            _context5.next = 43;
+            return _db["default"].raw("SELECT user_address.id as user_address_id ,user_address.address,user_address.user_id as user_id, \n      users.name as user_name,users.user_unique_id,users.mobile_number,\n      admin_users.first_name as branch_name , admin_users.id as branch_id\n      FROM user_address \n      JOIN users ON users.id = user_address.user_id \n      LEFT JOIN admin_users ON admin_users.id = user_address.branch_id\n      WHERE users.name LIKE '%".concat(searchKeyword, "%' \n      OR users.mobile_number LIKE '%").concat(searchKeyword, "%' \n      OR admin_users.first_name LIKE '%").concat(searchKeyword, "%'\n      LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
+          case 43:
             results = _context5.sent;
             is_search = true;
-            _context5.next = 47;
+            _context5.next = 50;
             break;
-          case 44:
-            _context5.next = 46;
-            return _db["default"].raw("SELECT user_address.id as user_address_id ,user_address.address,user_address.user_id as user_id, \n      users.name as user_name,users.user_unique_id,users.mobile_number,\n      admin_users.first_name as branch_name\n      FROM user_address \n      JOIN users ON users.id = user_address.user_id \n      LEFT JOIN admin_users ON admin_users.id = user_address.branch_id\n      LIMIT ".concat(startingLimit, ",").concat(resultsPerPage));
-          case 46:
-            results = _context5.sent;
           case 47:
+            _context5.next = 49;
+            return _db["default"].raw("SELECT user_address.id as user_address_id ,user_address.address,user_address.user_id as user_id, \n      users.name as user_name,users.user_unique_id,users.mobile_number,\n      admin_users.first_name as branch_name,admin_users.id as branch_id\n      FROM user_address \n      JOIN users ON users.id = user_address.user_id \n      LEFT JOIN admin_users ON admin_users.id = user_address.branch_id\n      LIMIT ".concat(startingLimit, ",").concat(resultsPerPage));
+          case 49:
+            results = _context5.sent;
+          case 50:
             data = results[0];
             loading = false;
             res.render("super_admin/users/users", {
@@ -535,7 +546,8 @@ var getAllUsers = /*#__PURE__*/function () {
               is_search: is_search,
               searchKeyword: searchKeyword,
               loading: loading,
-              routes: routes
+              routes: routes,
+              branch: branch
             });
 
             // let loading = true;
@@ -675,19 +687,19 @@ var getAllUsers = /*#__PURE__*/function () {
             //   loading,
             //   // branches,
             // });
-            _context5.next = 56;
+            _context5.next = 59;
             break;
-          case 52:
-            _context5.prev = 52;
+          case 55:
+            _context5.prev = 55;
             _context5.t0 = _context5["catch"](0);
             console.log(_context5.t0);
             res.redirect("/home");
-          case 56:
+          case 59:
           case "end":
             return _context5.stop();
         }
       }
-    }, _callee5, null, [[0, 52]]);
+    }, _callee5, null, [[0, 55]]);
   }));
   return function getAllUsers(_x9, _x10) {
     return _ref5.apply(this, arguments);

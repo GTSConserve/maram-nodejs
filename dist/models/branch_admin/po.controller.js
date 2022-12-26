@@ -17,7 +17,7 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 var getBothProducts = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(daily_orders) {
-    var sub_products_id, add_products_id, i, sub_product_id, add_product_id, _i, removedIndex, _i2, j, k, removedIndexAdd, _i3, _j, _k, subscription_products, _i4, product, add_on_products, _i5, _product, _i6, _i7;
+    var sub_products_id, add_products_id, i, sub_product_id, add_product_id, _i, removedIndex, _i2, j, k, removedIndexAdd, _i3, _j, _k, subscription_products, _i4, product, add_on_products, add_on_products_id, _i5, _product, _i6, _i7, excess_add_on_product, _i8;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
@@ -119,7 +119,7 @@ var getBothProducts = /*#__PURE__*/function () {
               break;
             }
             _context.next = 27;
-            return (0, _db["default"])("products").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id", "products.name", "products.image", "products.unit_value", "unit_types.value as unit_type", "products.price").where({
+            return (0, _db["default"])("products").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id", "products.name", "products.image", "products.unit_value", "unit_types.value as unit_type", "products.branch_price as price").where({
               "products.product_type_id": 1,
               "products.id": sub_products_id[_i4].product_id
             });
@@ -135,27 +135,29 @@ var getBothProducts = /*#__PURE__*/function () {
           case 32:
             ///////////////////////////////////////////////////////////////////////// get add on product
             add_on_products = [];
+            add_on_products_id = [];
             _i5 = 0;
-          case 34:
+          case 35:
             if (!(_i5 < add_products_id.length)) {
-              _context.next = 42;
+              _context.next = 44;
               break;
             }
-            _context.next = 37;
-            return (0, _db["default"])("products").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id", "products.name", "products.image", "products.unit_value", "unit_types.value as unit_type", "products.price").where({
+            _context.next = 38;
+            return (0, _db["default"])("products").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id", "products.name", "products.image", "products.unit_value", "unit_types.value as unit_type", "products.branch_price as price").where({
               "products.product_type_id": 2,
               "products.id": add_products_id[_i5].product_id
             });
-          case 37:
+          case 38:
             _product = _context.sent;
             add_on_products.push(_objectSpread(_objectSpread({}, _product[0]), {}, {
               total_qty: add_products_id[_i5].qty
             }));
-          case 39:
+            add_on_products_id.push(_product[0].id);
+          case 41:
             _i5++;
-            _context.next = 34;
+            _context.next = 35;
             break;
-          case 42:
+          case 44:
             ///////////////////////////////////////////////////////////////// calculating the units
             for (_i6 = 0; _i6 < subscription_products.length; _i6++) {
               if (subscription_products[_i6].unit_type == "ml") {
@@ -179,11 +181,33 @@ var getBothProducts = /*#__PURE__*/function () {
                 add_on_products[_i7].value = add_on_products[_i7].unit_value + " " + add_on_products[_i7].unit_type;
               }
             }
+            _context.next = 48;
+            return (0, _db["default"])("products").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id", "products.name", "products.image", "products.unit_value", "unit_types.value as unit_type", "products.branch_price as price").where({
+              "products.product_type_id": 2
+            }).whereNotIn("products.id", add_on_products_id);
+          case 48:
+            excess_add_on_product = _context.sent;
+            if (excess_add_on_product.length !== 0) {
+              for (_i8 = 0; _i8 < excess_add_on_product.length; _i8++) {
+                if (excess_add_on_product[_i8].unit_type == "ml") {
+                  if (excess_add_on_product[_i8].unit_value >= 500) {
+                    excess_add_on_product[_i8].value = excess_add_on_product[_i8].unit_value / 1000 + " litre";
+                  } else {
+                    excess_add_on_product[_i8].value = excess_add_on_product[_i8].unit_value + " litre";
+                  }
+                } else {
+                  excess_add_on_product[_i8].value = excess_add_on_product[_i8].unit_value + " " + excess_add_on_product[_i8].unit_type;
+                }
+              }
+            }
+            console.log(add_on_products_id);
+            console.log(excess_add_on_product);
             return _context.abrupt("return", {
               add_on_products: add_on_products,
-              subscription_products: subscription_products
+              subscription_products: subscription_products,
+              excess_add_on_products: excess_add_on_product
             });
-          case 45:
+          case 53:
           case "end":
             return _context.stop();
         }
