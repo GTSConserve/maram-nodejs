@@ -50,7 +50,7 @@
                         <!-- __category add__ -->
                         <div wire:ignore.self="" class="modal fade" id="addbarcategory" tabindex="-1"
                             aria-labelledby="addCategoryTitle" style="display: none;" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="exampleModalCenterTitle">Add Branch Admin</h5>
@@ -79,25 +79,30 @@
                                         <form action="/super_admin/branch/create_branch_admin" method="post">
 
                                         <div class="form-row mb-4">
-                                            <div class="col-sm-12 p-1">
+                                            <div class="col-sm-6 p-1">
                                                 <label>Branch Name</label>
                                                 <input type="text" wire:model="name" placeholder="name" required name="name"
                                                     class="form-control">
                                             </div>
+                                            <div class="col-sm-6 p-1">
+                                                <label>Incharge Name</label>
+                                                <input type="text" wire:model="name" placeholder="Incharge name" required name="incharge_name"
+                                                    class="form-control">
+                                            </div>
 
-                                            <div class="col-sm-12 p-1">
+                                            <div class="col-sm-6 p-1">
                                                 <label>Email</label>
                                                 <input type="email" wire:model="email" placeholder="email@mail.com" required name="email"
                                                     class="form-control">
                                             </div>
 
-                                            <div class="col-sm-12 p-1">
+                                            <div class="col-sm-6 p-1">
                                                 <label>Password</label>
                                                 <input type="password" minlength="8" wire:model="password" name="password" placeholder="password" required
                                                     class="form-control">
                                             </div>
 
-                                            <div class="col-sm-12  p-1">
+                                            <div class="col-sm-6  p-1">
                                                 <label>Mobile Number</label>
                                                 <input type="number" wire:model="name" minlength="10" maxlength="10" name="mobile_number" placeholder="Enter 10 digit mobile number" required
                                                     class="form-control">
@@ -172,6 +177,9 @@
                         <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
                             colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
                             style="width: 86px;">Branch Name</th>
+                        <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                            colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
+                            style="width: 86px;">Incharge Name</th>
                         <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
                             aria-label="NAME: activate to sort column ascending" style="width: 30px;">Email</th>
                         
@@ -196,6 +204,7 @@
                         <% for(user of data){ %>
                                 <td class="sorting_1"><%=user.id %></td>
                                 <td><%=user.first_name %></td>
+                                <td><%=user.incharge_name %></td>
                                 <td ><%=user.email %></td>
                              
                                 <td><%=user.mobile_number %></td>
@@ -265,12 +274,12 @@
                             <div class="modal-body">
                                 <form method="post" action="/super_admin/branch/update_branch"  >
                                     <div class="form-row mb-4">
-                                        <!-- <div class="col-sm-6">
-                                            <label>Location</label>
+                                        <div class="col-sm-6">
+                                            <label>Incharge Name</label>
                                             <input type="text" class="form-control" wire:model="name"
-                                                placeholder="Location" required  value="<%=user.location %>" name="location">
+                                                placeholder="Location" required  value="<%=user.incharge_name %>" name="incharge_name">
     
-                                        </div> -->
+                                        </div>
                                         <div class="col-sm-6">
                                             <label>City</label>
                                                 <select wire:model="countryid" class="form-control" name="zone_id" required>

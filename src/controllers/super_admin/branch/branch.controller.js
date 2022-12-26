@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 
 export const updateBranch = async (req, res) => {
   try {
-    const { location, id, mobile_number, city_id } = req.body;
+    const { location, id, mobile_number, city_id ,incharge_name} = req.body;
 
     if (!location) {
       req.flash("error", "location is missing");
@@ -22,6 +22,7 @@ export const updateBranch = async (req, res) => {
     }
 
 
+    query.incharge_name = incharge_name;
     query.location = location;
     query.mobile_number = mobile_number;
 
@@ -55,7 +56,7 @@ export const updateBranchStatus = async (req, res) => {
 
 export const createBranchAdmin = async (req, res) => {
   try {
-    const { name, email, password, location, mobile_number, zone_id } = req.body;
+    const { name, email, password, location, mobile_number, zone_id ,incharge_name} = req.body;
     if (!name) {
       req.flash("error", "Name is missing");
       return res.redirect("/super_admin/branch/get_branch_admin");
@@ -91,7 +92,8 @@ export const createBranchAdmin = async (req, res) => {
       // location,
       mobile_number,
       email,
-      zone_id
+      zone_id,
+      incharge_name
     });
 
     req.flash("success", "Successfully Created");
@@ -153,14 +155,14 @@ export const getBranchAdmin = async (req, res) => {
     let is_search = false;
     if (searchKeyword) {
       results = await knex.raw(
-        `SELECT admin_users.id,admin_users.first_name,admin_users.location,admin_users.mobile_number,admin_users.email,admin_users.status,admin_users.password,admin_users.is_password_change,zones.name as zone_name,zones.id as zone_id FROM admin_users 
+        `SELECT admin_users.id,admin_users.first_name,admin_users.location,admin_users.mobile_number,admin_users.email,admin_users.status,admin_users.password,admin_users.is_password_change,zones.name as zone_name,zones.id as zone_id,admin_users.incharge_name FROM admin_users 
         JOIN zones ON zones.id = admin_users.zone_id 
         WHERE admin_users.user_group_id = "2" AND admin_users.first_name LIKE '%${searchKeyword}%' LIMIT ${startingLimit},${resultsPerPage}`
       );
       is_search = true;
     } else {
       results = await knex.raw(
-        `SELECT admin_users.id,admin_users.first_name,admin_users.location,admin_users.mobile_number,admin_users.email,admin_users.status,admin_users.password,admin_users.is_password_change,zones.name as zone_name,zones.id as zone_id FROM admin_users 
+        `SELECT admin_users.id,admin_users.first_name,admin_users.location,admin_users.mobile_number,admin_users.email,admin_users.status,admin_users.password,admin_users.is_password_change,zones.name as zone_name,zones.id as zone_id,admin_users.incharge_name FROM admin_users 
         JOIN zones ON zones.id = admin_users.zone_id
          WHERE admin_users.user_group_id = "2" LIMIT ${startingLimit},${resultsPerPage}`
       );

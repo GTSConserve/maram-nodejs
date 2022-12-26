@@ -290,6 +290,7 @@ export const userLogin = async (password) => {
       
     } catch (error) {
       
+      
     }
   }
 
@@ -309,11 +310,22 @@ export const userLogin = async (password) => {
       
       return{status:true,data:route[0].id,order,delivery,pending,undelivered}
       
-      // console.log(order.length)
-      // console.log(delivery)
-      // console.log(sum)
-      // console.log(bottle.length)
-      
+    } catch (error) {
+      console.log(error);
+      return{ status: false, message: "No data found" };
+    }
+  }
+
+
+  // rider cancel order
+  export const cancel_order = async (user_id,order_id,delivery_partner_id,order_status,date,reason) => {
+    try { 
+         
+        const router = await knex('routes').select('id').where({rider_id:delivery_partner_id});
+
+         const order = await knex('daily_orders').update({status:order_status}).where({user_id:user_id,router_id:router[0].id,date:date});
+         return{status:true,message:"order cancelled by rider"};
+
     } catch (error) {
       console.log(error);
       return{ status: false, message: "No data found" };

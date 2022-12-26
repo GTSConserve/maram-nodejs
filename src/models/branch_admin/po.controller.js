@@ -88,7 +88,7 @@ export const getBothProducts = async (daily_orders) => {
         "products.image",
         "products.unit_value",
         "unit_types.value as unit_type",
-        "products.price"
+        "products.branch_price as price"
       )
       .where({
         "products.product_type_id": 1,
@@ -103,6 +103,7 @@ export const getBothProducts = async (daily_orders) => {
 
   ///////////////////////////////////////////////////////////////////////// get add on product
   let add_on_products = [];
+  let add_on_products_id = []
 
   for (let i = 0; i < add_products_id.length; i++) {
     const product = await knex("products")
@@ -113,7 +114,7 @@ export const getBothProducts = async (daily_orders) => {
         "products.image",
         "products.unit_value",
         "unit_types.value as unit_type",
-        "products.price"
+        "products.branch_price as price"
       )
       .where({
         "products.product_type_id": 2,
@@ -124,6 +125,7 @@ export const getBothProducts = async (daily_orders) => {
       ...product[0],
       total_qty: add_products_id[i].qty,
     });
+    add_on_products_id.push(product[0].id)
   }
 
   ///////////////////////////////////////////////////////////////// calculating the units
@@ -157,5 +159,43 @@ export const getBothProducts = async (daily_orders) => {
     }
   }
 
-  return { add_on_products, subscription_products };
+
+
+
+  const excess_add_on_product = await knex("products")
+      .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
+      .select(
+        "products.id",
+        "products.name",
+        "products.image",
+        "products.unit_value",
+        "unit_types.value as unit_type",
+        "products.branch_price as price"
+      )
+      .where({
+        "products.product_type_id": 2,
+      }).whereNotIn("products.id",add_on_products_id)
+
+
+      if(excess_add_on_product.length !==0){
+        for (let i = 0; i < excess_add_on_product.length; i++) {
+          if (excess_add_on_product[i].unit_type == "ml") {
+            if (excess_add_on_product[i].unit_value >= 500) {
+              excess_add_on_product[i].value =
+                excess_add_on_product[i].unit_value / 1000 + " litre";
+            } else {
+              excess_add_on_product[i].value = excess_add_on_product[i].unit_value + " litre";
+            }
+          } else {
+            excess_add_on_product[i].value =
+              excess_add_on_product[i].unit_value + " " + excess_add_on_product[i].unit_type;
+          }
+        }
+      }
+
+
+      console.log(add_on_products_id)
+      console.log(excess_add_on_product)
+
+  return { add_on_products, subscription_products,excess_add_on_products : excess_add_on_product };
 };

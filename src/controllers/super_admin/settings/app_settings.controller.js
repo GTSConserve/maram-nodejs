@@ -124,14 +124,14 @@ export const getAppSettings = async (req, res) => {
     try {
       const { name,key,value,id } = req.body;
   
-      if (!name) {
-        req.flash("error", "Name is missing");
+      if (!value) {
+        req.flash("error", "Value is missing");
         return res.redirect("/super_admin/settings/app_settings");
       }
   
       let query = {};
   
-      query.name = name;
+  
      
     
       if (key) {

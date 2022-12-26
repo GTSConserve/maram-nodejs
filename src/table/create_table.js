@@ -66,6 +66,7 @@ export const createTable = async (req, res) => {
           t.foreign("user_group_id").references("id").inTable("user_groups");
           t.string("first_name", 255).notNullable();
           t.string("last_name", 255).nullable();
+          t.string("incharge_name", 255).nullable();
 
           t.integer("zone_id").unsigned().nullable();
           t.foreign("zone_id").references("id").inTable("zones");
@@ -368,6 +369,7 @@ export const createTable = async (req, res) => {
           //   .references("id")
           //   .inTable("subscription_type");
 
+          t.string("branch_price", 255).nullable();
           t.string("demo_price", 255).nullable();
           t.string("name", 255).nullable();
           t.text("description").nullable();
@@ -661,7 +663,7 @@ export const createTable = async (req, res) => {
           t.integer("total_given_bottle").nullable();
           t.integer("total_collective_bottle").nullable();
 
-          t.enu("status", ["pending", "delivered", "undelivered"]).defaultTo(
+          t.enu("status", ["pending", "delivered", "undelivered","cancelled"]).defaultTo(
             "pending"
           );
           t.enu("tour_status", ["0","1", "2",]).defaultTo(

@@ -30,8 +30,10 @@ export const createUsers = async (req,res) => {
       branch_id: data.branch_id,
       title: data.address_title,
       address: data.address,
-      landmark: data.address_landmark,
-      type: data.address_type,
+      landmark: data.address_landmark ? data.address_landmark : null,
+      latitude: data.latitude,
+      longitude: data.longitude,
+      alternate_mobile : data.alternate_mobile_number ? data.alternate_mobile_number : null
     });
 
     if (data.sub_product) {
@@ -221,7 +223,7 @@ export const getNewUsers = async (req, res) => {
 
     const branches = await knex("admin_users")
       .select("first_name", "id", "location")
-      .where({ user_group_id: "2" });
+      .where({ user_group_id: "2"  , status : "1"});
 
     if (data_length.length === 0 && data_length_2.length === 0) {
       loading = false;
@@ -400,6 +402,12 @@ export const getAllUsers = async (req, res) => {
         .select("id")
         // .where({ branch_id: admin_id });
     }
+    const branch = await knex("admin_users")
+      .select("first_name", "id")
+      .where({ status: "1"  , user_group_id : "2"});
+
+
+
     const routes = await knex("users")
       .select("name", "id")
       .where({ status: "1" });
@@ -410,6 +418,7 @@ export const getAllUsers = async (req, res) => {
         data: data_length,
         searchKeyword,
         routes,
+        branch
       });
     }
 
@@ -431,7 +440,7 @@ export const getAllUsers = async (req, res) => {
       results =
         await knex.raw(`SELECT user_address.id as user_address_id ,user_address.address,user_address.user_id as user_id, 
       users.name as user_name,users.user_unique_id,users.mobile_number,
-      admin_users.first_name as branch_name
+      admin_users.first_name as branch_name , admin_users.id as branch_id
       FROM user_address 
       JOIN users ON users.id = user_address.user_id 
       LEFT JOIN admin_users ON admin_users.id = user_address.branch_id
@@ -444,7 +453,7 @@ export const getAllUsers = async (req, res) => {
       results =
         await knex.raw(`SELECT user_address.id as user_address_id ,user_address.address,user_address.user_id as user_id, 
       users.name as user_name,users.user_unique_id,users.mobile_number,
-      admin_users.first_name as branch_name
+      admin_users.first_name as branch_name,admin_users.id as branch_id
       FROM user_address 
       JOIN users ON users.id = user_address.user_id 
       LEFT JOIN admin_users ON admin_users.id = user_address.branch_id
@@ -464,6 +473,7 @@ export const getAllUsers = async (req, res) => {
       searchKeyword,
       loading,
       routes,
+      branch
     });
 
 

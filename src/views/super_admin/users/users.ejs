@@ -103,13 +103,12 @@
                                 
                                 <td><%=user.address %></td>
                                 <td><%=user.mobile_number %> </td>
-                                
-                                
-                          
-    
                                 <div>
-                                    
                                     <td  class="text-center" > 
+                                        <button style="font-weight: bold;" class="btn  btn-md  btn-info" 
+                                             data-toggle="modal"
+                                       data-target="#userUpdate<%=user.user_address_id%>"
+                                        >Edit</button>
                                         <button style="font-weight: bold;" class="btn  btn-md  btn-primary" 
                                         onclick="viewhandler(this)" id="<%= user.user_address_id%>"
                                         >view</button>
@@ -128,6 +127,69 @@
  
                 
     </div>
+
+
+    <div wire:ignore.self="" class="modal fade" id="userUpdate<%= user.user_address_id %>" tabindex="-1"
+        aria-labelledby="addCategoryTitle" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Edit User</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                            height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="feather feather-x">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <form method="post" action="/super_admin/users_subscription/updateUser">
+                        <div class="form-row mb-4">
+                            <div class="col-sm-6">
+                                <label>User Name</label>
+                                <input type="text" class="form-control" wire:model="name"
+                                    placeholder="Name" name="user_name" value="<%=user.user_name %>" required>
+
+                            </div>
+                            <div class="col-sm-6">
+                                <label>Mobile Number</label>
+                                <input type="text" class="form-control" wire:model="name"
+                                    placeholder="10 digtit Mobile Number" name="mobile_number" value="<%=user.mobile_number %>" required>
+
+                            </div>
+                        </div>
+                        <div class="form-row mb-4">
+                            <div class="col-12">
+                                <label>Choose a Branch</label>
+                                <select wire:model="countryid" class="form-control" name="city_id" required>
+                                    <option value="<%=user.branch_id ? user.branch_id : ""%>"><%=user.branch_name ? user.branch_name  : "Choose a Branch" %></option>
+                                    <% for(branch of branch){ %>
+                                        
+                                        <option  value="<%=branch.id %>"><%=branch.first_name %></option>
+                                        <% } %>
+                                        
+                                    </select>
+                              
+                            </div>
+                            <div class="col-12 mt-3">
+                                <label for="address">Address</label>
+                                <textarea id="address" class="form-control" name="address"><%= user.address %> </textarea>
+                            </div>
+                            
+                        </div>
+                        
+                        <div class="modal-footer">
+                                <button wire:click="save" name="address_id" value="<%=user.user_address_id %>"  type="submit" class="btn btn-success">Save</button>
+                        </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     
     
     </div>

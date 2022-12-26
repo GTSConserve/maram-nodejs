@@ -34,12 +34,13 @@ export const tommorowRouteMapping = async (req, res) => {
     if (users.length === 0 || users[0].user_mapping === null) {
       loading = false;
       req.flash("error", "No User Found");
-      return res.render("branch_admin/route/tommorrow_mapping", {
-        data: [],
+      return res.redirect("/branch_admin/route/get_route");
+      // return res.render("branch_admin/route/tommorrow_mapping", {
+      //   data: [],
 
-        loading,
-        router_id: route_id,
-      });
+      //   loading,
+      //   router_id: route_id,
+      // });
     }
 
     let get_user_details = [];
@@ -68,12 +69,13 @@ export const tommorowRouteMapping = async (req, res) => {
 
     if(daily_orders.length ==0 ){
       req.flash("error", "No User Found");
-      return res.render("branch_admin/route/tommorrow_mapping", {
-        data: [],
+      return res.redirect("/branch_admin/route/get_route");
+      // return res.render("branch_admin/route/tommorrow_mapping", {
+      //   data: [],
 
-        loading,
-        router_id: route_id,
-      });
+      //   loading,
+      //   router_id: route_id,
+      // });
     }
 
     const address = [];

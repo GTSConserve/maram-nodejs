@@ -106,7 +106,13 @@
                                         </div>
 
                                         <div class="form-row mb-4">
-                                            <div class="col-sm-4">
+                                            <div class="col-6">
+                                                <label>Unit Value</label>
+                                                <input type="text" class="form-control" wire:model="name" required
+                                                    placeholder="Unit Value" name="unit_value">
+
+                                            </div>
+                                            <div class="col-sm-6">
                                                 <label>Select a Unit</label>
                                                 <select wire:model="countryid" class="form-control" name="unit_type_id" required>
                                                     <option value="">Select Unit </option>
@@ -118,31 +124,42 @@
                                                 </select>
                                                
                                             </div>
-                                            <div class="col-4 ">
-                                                <label>Unit Value</label>
-                                                <input type="text" class="form-control" wire:model="name" required
-                                                    placeholder="Unit Value" name="unit_value">
+                                            
 
-                                            </div>
-
-                                            <div class="col-4 ">
-                                                <label>Price</label>
-                                                <input type="text" class="form-control" wire:model="name" required
-                                                    placeholder="price" name="price">
-
-                                            </div>
+                                            
                                         </div>
                                         <div class="form-row mb-4">
-                                                <div class="col-6">
-                                                    
-                                                    <label>Image</label>
-                                                    <input type="file" wire:model="image" placeholder="Image" name="image" required
-                                                        class="form-control">
-    
-                                                </div>
-                                            <div class="col-sm-6">
+                                            <div class="col-4 ">
+                                                <label>MRP</label>
+                                                <input type="text" class="form-control" wire:model="name" 
+                                                    placeholder="demo price" name="demo_price">
+
+                                            </div>
+                                            <div class="col-4 ">
+                                                <label>Selling Price</label>
+                                                <input type="text" class="form-control" wire:model="name" required
+                                                    placeholder="Selling price" name="price">
+
+                                            </div>
+                                            <div class="col-4 ">
+                                                <label>Branch Price</label>
+                                                <input type="text" class="form-control" wire:model="name" required
+                                                    placeholder="branch price" name="branch_price">
+
+                                            </div>
+                                        
+                                    </div>
+                                        <div class="form-row mb-4">
+                                            <div class="col-sm-12 ">
                                                 <label>Description</label>
                                                 <textarea required name="description" placeholder="Description..." class="form-control"></textarea>
+                                                
+                                            </div>
+                                            <div class="col-6 mt-2" >
+                                                
+                                                <label>Image</label>
+                                                <input type="file" wire:model="image" placeholder="Image" name="image" required
+                                                    class="form-control">
 
                                             </div>
                                         </div>
@@ -277,23 +294,24 @@
                             <form method="post" action="/super_admin/product/update_product"  enctype="multipart/form-data">
                                 <div class="form-row mb-4">
                                     <div class="col-sm-4">
-                                        <label>Names</label>
+                                        <label>Product Name</label>
                                         <input type="text" class="form-control" wire:model="name"
                                             placeholder="Name"  value="<%=product.product_name %>" name="product_name">
 
                                     </div>
-                                    <div class="col-sm-4">
-                                        <label>Unit Type</label>
-                                        <select wire:model="countryid" class="form-control" name="unit_type_id">
-                                            <option value=""><%=product.value %></option>
-                                            <% for(unit of unit_types){ %>
+                                    <div class="col-4">
+                                        <label>Product Type</label>
+                                        <select wire:model="countryid" class="form-control" name="product_type_id">
+                                            <option value=""><%=product.product_type_name %></option>
+                                            <% for(product_type of productType){ %>
 
-                                                <option value="<%=unit.id %>"><%=unit.value %></option>
+                                                <option value="<%=product_type.id %>"><%=product_type.name %></option>
                                             <% } %>
 
                                         </select>
 
                                     </div>
+                                    
 
                                     <div class="col-sm-4">
                                         <label>Category</label>
@@ -310,49 +328,69 @@
                                 </div>
                                 <div class="form-row mb-4">
                                     
-                                    <div class="col-4">
-                                        <label>Product Type</label>
-                                        <select wire:model="countryid" class="form-control" name="product_type_id">
-                                            <option value=""><%=product.product_type_name %></option>
-                                            <% for(product_type of productType){ %>
+                                    
 
-                                                <option value="<%=product_type.id %>"><%=product_type.name %></option>
+                                    <div class="col-6 ">
+                                        <label>Unit Value</label>
+                                        <input type="text" class="form-control" wire:model="name"
+                                            placeholder="Unit Value" value="<%= product.unit_value %>" name="unit_value">
+                
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <label>Unit Type</label>
+                                        <select wire:model="countryid" class="form-control" name="unit_type_id">
+                                            <option value=""><%=product.value %></option>
+                                            <% for(unit of unit_types){ %>
+
+                                                <option value="<%=unit.id %>"><%=unit.value %></option>
                                             <% } %>
 
                                         </select>
 
                                     </div>
 
-                                    <div class="col-4 ">
-                                        <label>Unit Value</label>
+                                    
+                                </div>
+                                
+                                <div class="form-row mb-4">
+                                    <div class="col-4">
+                                        <label>MRP</label>
                                         <input type="text" class="form-control" wire:model="name"
-                                            placeholder="Unit Value" value="<%= product.unit_value %>" name="unit_value">
+                                            placeholder="price" value="<%= product.demo_price%>" name="demo_price">
                 
                                     </div>
                                     <div class="col-4">
-                                        <label>Price</label>
+                                        <label>Selling Price</label>
                                         <input type="text" class="form-control" wire:model="name"
                                             placeholder="price" value="<%= product.price %>" name="price">
                 
                                     </div>
-                                </div>
-                                
-                               
+                                    <div class="col-4">
+                                        <label>Branch Price</label>
+                                        <input type="text" class="form-control" wire:model="name"
+                                            placeholder="price" value="<%= product.branch_price %>" name="branch_price">
+                
+                                    </div>
+                                    
+                               </div>
                                 <div class="form-row mb-4">
-                                    <div class="col-sm-6">
+                                    <div class="col-sm-12 ">
                                         <label>Description</label>
                                         <textarea  class="form-control"  name="description"   placeholder="description" ><%=product.description %></textarea> 
                                             
                                     </div>
-                                    <div class="col-sm-6">
+                                    <div class="col-sm-6 mt-3">
+
                                         <label>Image (Old Image)</label>
-                                        <div>
-                                            <img style="width: 200px;height : 150px" class="pb-5" src="<%=product.image %>">
-                                            <input type="file" wire:model="image" placeholder="Image" name="image"
+                                        <div class="row"> 
+                                            <img style="width: 170px;height : 150px" class="pb-5 col-5" src="<%=product.image %>">
+                                            <input type="file" wire:model="image"  placeholder="Image" name="image"
                                             
-                                            class="form-control">
+                                            class="form-control col-7" >
                                         </div>
                                     </div>
+                                   
                                 </div>
                              </div>
                                 <div class="modal-footer">
@@ -396,11 +434,16 @@
                             placeholder="Name"  value="<%= product.product_name %>"> -->
 
                     </div>
+
+
                     <div class="col-sm-4">
-                        <label>Unit</label>
-                        <p style="font-weight: 900;"><%=product.value %></p>
-                       
+                        <label>Product Type</label>
+                        <p style="font-weight: 900;"><%=product.product_type_name %></p>
+                        
+
                     </div>
+
+                    
                     <div class="col-sm-4">
                         <label>Category</label>
                         <p style="font-weight: 900;"><%=product.category_name %></p>
@@ -410,25 +453,38 @@
                 </div>
 
                 <div class="form-row mb-4">
-                    
-                    <div class="col-sm-4">
-                        <label>Product Type</label>
-                        <p style="font-weight: 900;"><%=product.product_type_name %></p>
-                        
-
-                    </div>
-
-                    <div class="col-4">
-                        <label>Price</label>
-                        <p style="font-weight: 900;"><%=product.price %></p>
-
-                    </div>
-                    
                     <div class="col-4 ">
                         <label>Unit Value</label>
                         <p style="font-weight: 900;"><%=product.unit_value %></p>
 
                     </div>
+                    <div class="col-sm-4">
+                        <label>Unit</label>
+                        <p style="font-weight: 900;"><%=product.value %></p>
+                       
+                    </div>
+                    
+                  
+                </div>
+                <div class="form-row mb-4">
+                    <div class="col-4 ">
+                        <label>Selling Price</label>
+                        <p style="font-weight: 900;"><%=product.price %></p>
+
+                    </div>
+                    <div class="col-sm-4">
+                        <label>MRP</label>
+                        <p style="font-weight: 900;"><%=product.demo_price %></p>
+                       
+                    </div>
+
+                    <div class="col-4">
+                        <label>Branch Price</label>
+                        <p style="font-weight: 900;"><%=product.branch_price %></p>
+
+                    </div>
+                    
+                  
                 </div>
 
                 <div class="form-row mb-4">

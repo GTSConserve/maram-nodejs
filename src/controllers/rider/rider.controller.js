@@ -1,6 +1,6 @@
 import express from 'express';
 import messages from '../../constants/messages';
-import { get_Appcontrol, get_riderdetails, statusupdate, update_endtour, update_location, update_riderstatus, update_starttour, userLogin,getsingleorder, checkPassword, dashboard } from '../../models/rider/rider.model';
+import { get_Appcontrol, get_riderdetails, statusupdate, update_endtour, update_location, update_riderstatus, update_starttour, userLogin,getsingleorder, checkPassword, dashboard, cancel_order } from '../../models/rider/rider.model';
 import responseCode from '../../constants/responseCode';
 import knex from '../../services/db.service'
 import { userValidator } from '../../services/validator.service';
@@ -263,6 +263,13 @@ export const riderDashboard = async (req,res) => {
   try{
     const {delivery_partner_id,date} = req.body;
 
+    if(!delivery_partner_id || !date){
+      return res
+      .status(responseCode.FAILURE.BAD_REQUEST)
+      .json({ status: false, message: "Mandatory field Is Missing" });
+     }
+
+
     const total = await dashboard(delivery_partner_id,date);
     // console.log(total);
 
@@ -283,14 +290,41 @@ export const riderDashboard = async (req,res) => {
       console.log(query)
       return res.status(responseCode.SUCCESS).json({status: true, query })
     }
-
-
   
   catch(error){
     console.log(error);
     return res.status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
     .json({ status: false, message: messages.SERVER_ERROR });
   }
+  }
+
+
+  // rider cancel order 
+  export const cancelOrder = async (req,res) => {
+    try{
+      const {user_id,order_id,delivery_partner_id,order_status,reason,date}= req.body;
+
+      if(!delivery_partner_id || !order_status || !date){
+        return res
+        .status(responseCode.FAILURE.BAD_REQUEST)
+        .json({ status: false, message: "Mandatory field Is Missing" });
+       }
+
+      const cancel = await cancel_order(user_id,order_id,delivery_partner_id,order_status,date);
+      
+    // if(cancel.status=true){
+    //   const reason1 = await knex('daily_orders').insert({reason:reason})
+    // }
+
+      return res.status(responseCode.SUCCESS).json({data:cancel})
+
+
+    }
+    catch(error){
+      console.log(error)
+      return res.status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
+     .json({ status: false, message: messages.SERVER_ERROR });
+    }
   }
 
 
