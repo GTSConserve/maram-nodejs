@@ -72,7 +72,7 @@ export const getSingleProduct = async (req, res) => {
 
     return res
       .status(responseCode.SUCCESS)
-      .json({ status: true, data: response.data});
+      .json({ status: true, data: response.data[0] });
   } catch (error) {
     console.log(error);
     return res
