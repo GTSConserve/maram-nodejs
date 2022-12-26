@@ -157,45 +157,53 @@ var single_subscription = /*#__PURE__*/function () {
             _context3.next = 3;
             return (0, _db["default"])("subscribed_user_details AS sub").select("sub.id as subscription_id", "sub.subscription_start_date", "sub.customized_days", "sub.subscription_status", "sub.quantity",
             // "product.id",
-            "products.name as product_name", "products.image", "products.price", "products.unit_value", "unit_types.value as unit_type", "subscription_type.name as subscription_name", "user_address.address", "user_address.id as address_id", "sub.date as date").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("subscription_type", "subscription_type.id", "=", "sub.subscribe_type_id").join("user_address", "user_address.id", "=", "sub.user_address_id").where({
-              "sub.user_id": userId
-            });
+            "products.name as product_name", "products.image", "products.price", "products.unit_value", "unit_types.value as unit_type", "subscription_type.name as subscription_name", "user_address.address", "user_address.id as address_id", "sub.date as date").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("subscription_type", "subscription_type.id", "=", "sub.subscribe_type_id").join("user_address", "user_address.id", "=", "sub.user_address_id");
           case 3:
             products = _context3.sent;
-            _context3.next = 6;
+            // .where({ "sub.user_id": userId, "sub.id": sub_id });
+
+            // const query1 = await knex("additional_orders").select("date")
+            // console.log(query1[0].date)
+            // // .moment(query1[0].additional_orders.date).format('YYYY-MM-DD');
+            console.log(products);
+            _context3.next = 7;
             return (0, _db["default"])("additional_orders").select("additional_orders.id", "additional_orders.date", "additional_orders.quantity", "products.name as product_name", "products.image", "products.unit_value", "unit_types.value as unit_type"
             // "user_address.address",
-            ).join("products", "products.id", "=", "additional_orders.id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("user_address", "user_address.id", "=", "additional_orders.id");
-          case 6:
+            ).join("products", "products.id", "=", "additional_orders.id").join("unit_types", "unit_types.id", "=", "products.unit_type_id")
+            // .join("user_address", "user_address.id", "=", "additional_orders.id")
+            .where({
+              "additional_orders.user_id": userId
+            });
+          case 7:
             query = _context3.sent;
             if (!(products.length === 0)) {
-              _context3.next = 9;
+              _context3.next = 10;
               break;
             }
             return _context3.abrupt("return", {
               status: false,
               message: "No Subscription Found"
             });
-          case 9:
+          case 10:
             return _context3.abrupt("return", {
               status: true,
               data: products,
               query: query
             });
-          case 12:
-            _context3.prev = 12;
+          case 13:
+            _context3.prev = 13;
             _context3.t0 = _context3["catch"](0);
             console.log(_context3.t0);
             return _context3.abrupt("return", {
               status: false,
               message: _context3.t0
             });
-          case 16:
+          case 17:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3, null, [[0, 12]]);
+    }, _callee3, null, [[0, 13]]);
   }));
   return function single_subscription(_x9, _x10) {
     return _ref3.apply(this, arguments);

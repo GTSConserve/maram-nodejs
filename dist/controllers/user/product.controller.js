@@ -101,7 +101,7 @@ var getSingleProduct = /*#__PURE__*/function () {
             product[0].image = process.env.BASE_URL + product[0].image;
             return _context2.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               status: true,
-              data: response.data
+              data: response.data[0]
             }));
           case 16:
             _context2.prev = 16;
