@@ -6,7 +6,7 @@
                 <div class="row">
                     <div class="col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center">
                         <div class="dataTables_length" >
-                            <h4>Pending PO</h4>
+                            <h4>Approved  PO</h4>
                         </div>
                     </div>
 
@@ -36,6 +36,9 @@
                             <th class="text-center sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
                                 colspan="1" aria-label="Status: activate to sort column ascending" style="width: 49px;">
                                 date</th>
+                            <th class="text-center sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                                colspan="1" aria-label="Status: activate to sort column ascending" style="width: 49px;">
+                                Total Amount</th>
                             <th class="text-center dt-no-sorting sorting" tabindex="0"
                                 aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
                                 aria-label="Action: activate to sort column ascending" style="width: 56px;">Action</th>
@@ -49,6 +52,7 @@
                                 <td class="sorting_1 font-weight: bold;"><%=po.first_name %></td>
                             <td><%=po.zone_name %></td>
                             <td><%=po.date %></td>
+                            <td class="text-center"><%=po.grand_total %></td>
                             
                             
                              

@@ -16,7 +16,7 @@
             
             <div class="doc-container">
 
-                <form>
+                <form id="submitPoHandler">
                 <div class="row">
                     <div class="col-xl-9">
 
@@ -354,10 +354,12 @@
                                                            }
                                                        
                                                        
-                                                           const form=document.querySelector("form")
-                                                    form.addEventListener("submit",async(e)=>{
+                                        const form=document.getElementById("submitPoHandler")
+                                        
+                                        form.addEventListener("submit",async(e)=>{
 
                                                 e.preventDefault()
+                                              
                                                 // action="/branch_admin/po/create_po" method="post"
                                                 let query = {}
 
@@ -378,6 +380,7 @@
 
 
                                                 let sub_products = []
+                                                
                                                 if(sub_product_id != undefined){
 
                                                     if(excess_qty.length == undefined){
@@ -407,6 +410,7 @@
                                                     }
                                                 }
 
+                                              
                                                 let add_on_products = []
                                                 if(add_product_id != undefined){
 
@@ -438,7 +442,7 @@
 
                                                 console.log(sub_products)
                                                 console.log(add_on_products)
-
+                                               
                                                 await fetch('/branch_admin/po/create_po', {
                                                     method: 'POST',
                                                     headers: {
@@ -538,7 +542,7 @@
 
                                 <div class="row">
                                     <div class="col-xl-12 col-md-3 col-sm-6">
-                                        <button class="btn btn-primary btn-lg " type="submit">Raise PO    </button>
+                                        <button class="btn btn-primary btn-lg " style="width: 210px;" data-toggle="modal" data-target="#exampleModalCenter" type="button" >Raise PO    </button>
                                     </div>
                                     <!-- <div class="col-xl-12 col-md-3 col-sm-6">
                                         <a href="javascript:void(0);" class="btn btn-secondary btn-print  action-print">Print</a>
@@ -552,6 +556,27 @@
                                 </div>
                             </div>
                             
+                            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalCenterTitle">Raise Purchase Order</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <h4 class="modal-heading mb-4 mt-2">Are You Sure?</h4>
+                                                <p class="modal-text">In hac habitasse platea dictumst. Proin sollicitudin et lacus in tincidunt. Integer nisl ex, sollicitudin eget nulla nec, pharetra lacinia nisl. Aenean nec nunc ex. Integer varius neque at dolor scelerisque porttitor.</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn" data-dismiss="modal" type="button"> <i class="flaticon-cancel-12"></i> Discard</button>
+                                            <button  class="btn btn-primary" type="submit">Proceed</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                         
                     </div>

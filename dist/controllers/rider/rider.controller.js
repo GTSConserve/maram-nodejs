@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updeteRiderLocation = exports.updateStartTour = exports.updateRiderstatus = exports.updateEndtour = exports.ten = exports.riderDashboard = exports.orderStatusUpdate = exports.login = exports.getSingleorder = exports.getRiderdetails = exports.getAppControls = void 0;
+exports.updeteRiderLocation = exports.updateStartTour = exports.updateRiderstatus = exports.updateEndtour = exports.ten = exports.riderDashboard = exports.orderStatusUpdate = exports.login = exports.getSingleorder = exports.getRiderdetails = exports.getAppControls = exports.cancelOrder = void 0;
 var _express = _interopRequireDefault(require("express"));
 var _messages = _interopRequireDefault(require("../../constants/messages"));
 var _rider = require("../../models/rider/rider.model");
@@ -509,16 +509,25 @@ var riderDashboard = /*#__PURE__*/function () {
           case 0:
             _context10.prev = 0;
             _req$body7 = req.body, delivery_partner_id = _req$body7.delivery_partner_id, date = _req$body7.date;
-            _context10.next = 4;
-            return (0, _rider.dashboard)(delivery_partner_id, date);
+            if (!(!delivery_partner_id || !date)) {
+              _context10.next = 4;
+              break;
+            }
+            return _context10.abrupt("return", res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
+              status: false,
+              message: "Mandatory field Is Missing"
+            }));
           case 4:
+            _context10.next = 6;
+            return (0, _rider.dashboard)(delivery_partner_id, date);
+          case 6:
             total = _context10.sent;
-            _context10.next = 7;
+            _context10.next = 9;
             return (0, _db["default"])('daily_orders').select('total_collective_bottle').where({
               router_id: total.data,
               date: date
             });
-          case 7:
+          case 9:
             bottle = _context10.sent;
             sum = 0;
             for (i = 0; i < bottle.length; i++) {
@@ -535,55 +544,102 @@ var riderDashboard = /*#__PURE__*/function () {
               status: true,
               query: query
             }));
-          case 15:
-            _context10.prev = 15;
+          case 17:
+            _context10.prev = 17;
             _context10.t0 = _context10["catch"](0);
             console.log(_context10.t0);
             return _context10.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
-          case 19:
+          case 21:
           case "end":
             return _context10.stop();
         }
       }
-    }, _callee10, null, [[0, 15]]);
+    }, _callee10, null, [[0, 17]]);
   }));
   return function riderDashboard(_x19, _x20) {
     return _ref10.apply(this, arguments);
   };
 }();
+
+// rider cancel order 
 exports.riderDashboard = riderDashboard;
-var ten = /*#__PURE__*/function () {
+var cancelOrder = /*#__PURE__*/function () {
   var _ref11 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11(req, res) {
-    var payload, user_name, password, checkPhoneNumber, query, userId, today;
+    var _req$body8, user_id, order_id, delivery_partner_id, order_status, reason, date, cancel;
     return _regeneratorRuntime().wrap(function _callee11$(_context11) {
       while (1) {
         switch (_context11.prev = _context11.next) {
           case 0:
             _context11.prev = 0;
+            _req$body8 = req.body, user_id = _req$body8.user_id, order_id = _req$body8.order_id, delivery_partner_id = _req$body8.delivery_partner_id, order_status = _req$body8.order_status, reason = _req$body8.reason, date = _req$body8.date;
+            if (!(!delivery_partner_id || !order_status || !date)) {
+              _context11.next = 4;
+              break;
+            }
+            return _context11.abrupt("return", res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
+              status: false,
+              message: "Mandatory field Is Missing"
+            }));
+          case 4:
+            _context11.next = 6;
+            return (0, _rider.cancel_order)(user_id, order_id, delivery_partner_id, order_status, date);
+          case 6:
+            cancel = _context11.sent;
+            return _context11.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
+              data: cancel
+            }));
+          case 10:
+            _context11.prev = 10;
+            _context11.t0 = _context11["catch"](0);
+            console.log(_context11.t0);
+            return _context11.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
+              status: false,
+              message: _messages["default"].SERVER_ERROR
+            }));
+          case 14:
+          case "end":
+            return _context11.stop();
+        }
+      }
+    }, _callee11, null, [[0, 10]]);
+  }));
+  return function cancelOrder(_x21, _x22) {
+    return _ref11.apply(this, arguments);
+  };
+}();
+exports.cancelOrder = cancelOrder;
+var ten = /*#__PURE__*/function () {
+  var _ref12 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee12(req, res) {
+    var payload, user_name, password, checkPhoneNumber, query, userId, today;
+    return _regeneratorRuntime().wrap(function _callee12$(_context12) {
+      while (1) {
+        switch (_context12.prev = _context12.next) {
+          case 0:
+            _context12.prev = 0;
             payload = (0, _validator.userValidator)(req.body);
             user_name = payload.user_name, password = payload.password;
             if (!payload) {
-              _context11.next = 16;
+              _context12.next = 16;
               break;
             }
-            _context11.next = 6;
+            _context12.next = 6;
             return loginUser(password);
           case 6:
-            checkPhoneNumber = _context11.sent;
+            checkPhoneNumber = _context12.sent;
             userId = 0; // const otp = process.env.USER_OTP || Math.floor(1000 + Math.random() * 9000)
             // const otp = '1234'
             if (checkPhoneNumber.body.length) {
-              _context11.next = 13;
+              _context12.next = 13;
               break;
             }
             today = format(new Date(), 'yyyy-MM-dd H:i:s');
-            _context11.next = 12;
+            _context12.next = 12;
             return insertRider(payload);
           case 12:
-            query = _context11.sent;
+            query = _context12.sent;
           case 13:
             // else {
 
@@ -606,7 +662,7 @@ var ten = /*#__PURE__*/function () {
                 message: "pls check"
               });
             }
-            _context11.next = 17;
+            _context12.next = 17;
             break;
           case 16:
             res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
@@ -614,22 +670,22 @@ var ten = /*#__PURE__*/function () {
               message: "error"
             });
           case 17:
-            _context11.next = 23;
+            _context12.next = 23;
             break;
           case 19:
-            _context11.prev = 19;
-            _context11.t0 = _context11["catch"](0);
-            logger.error('Whooops! This broke with error: ', _context11.t0);
+            _context12.prev = 19;
+            _context12.t0 = _context12["catch"](0);
+            logger.error('Whooops! This broke with error: ', _context12.t0);
             res.status(500).send('Error!');
           case 23:
           case "end":
-            return _context11.stop();
+            return _context12.stop();
         }
       }
-    }, _callee11, null, [[0, 19]]);
+    }, _callee12, null, [[0, 19]]);
   }));
-  return function ten(_x21, _x22) {
-    return _ref11.apply(this, arguments);
+  return function ten(_x23, _x24) {
+    return _ref12.apply(this, arguments);
   };
 }();
 exports.ten = ten;

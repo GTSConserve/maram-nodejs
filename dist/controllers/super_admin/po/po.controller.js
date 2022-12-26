@@ -20,31 +20,30 @@ var getPoPending = /*#__PURE__*/function () {
           case 0:
             _context.prev = 0;
             _context.next = 3;
-            return (0, _db["default"])("branch_purchase_order as po").select("po.branch_id", "po.id", "po.date", "admin_users.first_name", "zones.name as zone_name").join("admin_users", "admin_users.id", "=", "po.branch_id").join("zones", "zones.id", "=", "admin_users.zone_id").where({
+            return (0, _db["default"])("branch_purchase_order as po").select("po.branch_id", "po.id", "po.date", "po.grand_total", "admin_users.first_name", "zones.name as zone_name").join("admin_users", "admin_users.id", "=", "po.branch_id").join("zones", "zones.id", "=", "admin_users.zone_id").where({
               "po.status": "pending"
             });
           case 3:
             getPo = _context.sent;
-            console.log(getPo);
             for (i = 0; i < getPo.length; i++) {
               getPo[i].date = (0, _moment["default"])(getPo[i].date).format("YYYY-MM-DD");
             }
             res.render("super_admin/po/po_pending", {
               data: getPo
             });
-            _context.next = 13;
+            _context.next = 12;
             break;
-          case 9:
-            _context.prev = 9;
+          case 8:
+            _context.prev = 8;
             _context.t0 = _context["catch"](0);
             console.log(_context.t0);
             res.redirect("/home");
-          case 13:
+          case 12:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 9]]);
+    }, _callee, null, [[0, 8]]);
   }));
   return function getPoPending(_x, _x2) {
     return _ref.apply(this, arguments);
@@ -53,7 +52,7 @@ var getPoPending = /*#__PURE__*/function () {
 exports.getPoPending = getPoPending;
 var getSinglePoPending = /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(req, res) {
-    var po_id, subscription_products, add_on_products;
+    var po_id, po_details, branch, subscription_products, add_on_products;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
@@ -61,37 +60,47 @@ var getSinglePoPending = /*#__PURE__*/function () {
             _context2.prev = 0;
             po_id = req.query.po_id;
             _context2.next = 4;
-            return (0, _db["default"])("branch_purchase_order_items as branch").select("branch.product_type_id", "branch.qty as total_qty", "branch.excess_qty", "branch.unit_value as value", "branch.price", "products.name").join("products", "products.id", "=", "branch.product_id").where({
+            return (0, _db["default"])("branch_purchase_order as po").select("po.grand_total", "po.date", "admin_users.first_name").join("admin_users", "admin_users.id", "=", "po.branch_id").where({
+              "po.id": po_id
+            });
+          case 4:
+            po_details = _context2.sent;
+            branch = po_details[0].first_name;
+            po_details[0].date = (0, _moment["default"])(po_details[0].date).format("YYYY-MM-DD");
+            _context2.next = 9;
+            return (0, _db["default"])("branch_purchase_order_items as branch").select("branch.product_type_id", "branch.qty", "branch.excess_qty", "branch.total_qty", "branch.unit_value as value", "branch.price", "branch.total_price", "products.name", "branch.product_id").join("products", "products.id", "=", "branch.product_id").where({
               "branch.branch_purchase_order_id": po_id,
               "branch.product_type_id": 1
             });
-          case 4:
+          case 9:
             subscription_products = _context2.sent;
-            _context2.next = 7;
-            return (0, _db["default"])("branch_purchase_order_items as branch").select("branch.product_type_id", "branch.qty as total_qty", "branch.excess_qty", "branch.unit_value as value", "branch.price", "products.name").join("products", "products.id", "=", "branch.product_id").where({
+            _context2.next = 12;
+            return (0, _db["default"])("branch_purchase_order_items as branch").select("branch.product_type_id", "branch.qty", "branch.excess_qty", "branch.total_qty", "branch.unit_value as value", "branch.price", "branch.total_price", "products.name", "branch.product_id").join("products", "products.id", "=", "branch.product_id").where({
               "branch.branch_purchase_order_id": po_id,
               "branch.product_type_id": 2
             });
-          case 7:
+          case 12:
             add_on_products = _context2.sent;
             res.render("super_admin/po/single_po_pending", {
               subscription_products: subscription_products,
               add_on_products: add_on_products,
-              po_id: po_id
+              po_id: po_id,
+              po_details: po_details[0],
+              branch_name: branch
             });
-            _context2.next = 15;
+            _context2.next = 20;
             break;
-          case 11:
-            _context2.prev = 11;
+          case 16:
+            _context2.prev = 16;
             _context2.t0 = _context2["catch"](0);
             console.log(_context2.t0);
             return _context2.abrupt("return", res.redirect("/home"));
-          case 15:
+          case 20:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[0, 11]]);
+    }, _callee2, null, [[0, 16]]);
   }));
   return function getSinglePoPending(_x3, _x4) {
     return _ref2.apply(this, arguments);
@@ -100,37 +109,89 @@ var getSinglePoPending = /*#__PURE__*/function () {
 exports.getSinglePoPending = getSinglePoPending;
 var updatePo = /*#__PURE__*/function () {
   var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(req, res) {
-    var id;
+    var _req$body, po_id, sub_products, add_on_products, add_on_total, sub_total, i, _i;
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.prev = 0;
-            id = req.body.id;
-            console.log("hititit");
-            console.log(req.body);
-            console.log(id);
-            _context3.next = 7;
+            _req$body = req.body, po_id = _req$body.po_id, sub_products = _req$body.sub_products, add_on_products = _req$body.add_on_products;
+            add_on_total = 0;
+            sub_total = 0;
+            if (!(add_on_products.length !== 0)) {
+              _context3.next = 13;
+              break;
+            }
+            i = 0;
+          case 6:
+            if (!(i < add_on_products.length)) {
+              _context3.next = 13;
+              break;
+            }
+            add_on_total = add_on_total + Number(add_on_products[i].total_price);
+            _context3.next = 10;
+            return (0, _db["default"])("branch_purchase_order_items").update({
+              qty: add_on_products[i].qty,
+              excess_qty: add_on_products[i].excess_qty ? add_on_products[i].excess_qty : 0,
+              total_qty: add_on_products[i].total_qty,
+              total_price: add_on_products[i].total_price
+            }).where({
+              branch_purchase_order_id: po_id,
+              product_id: add_on_products[i].product_id
+            });
+          case 10:
+            i++;
+            _context3.next = 6;
+            break;
+          case 13:
+            if (!(sub_products.length !== 0)) {
+              _context3.next = 22;
+              break;
+            }
+            _i = 0;
+          case 15:
+            if (!(_i < sub_products.length)) {
+              _context3.next = 22;
+              break;
+            }
+            sub_total = sub_total + Number(sub_products[_i].total_price);
+            _context3.next = 19;
+            return (0, _db["default"])("branch_purchase_order_items").update({
+              qty: sub_products[_i].qty,
+              excess_qty: sub_products[_i].excess_qty ? sub_products[_i].excess_qty : 0,
+              total_qty: sub_products[_i].total_qty,
+              total_price: sub_products[_i].total_price
+            }).where({
+              branch_purchase_order_id: po_id,
+              product_id: sub_products[_i].product_id
+            });
+          case 19:
+            _i++;
+            _context3.next = 15;
+            break;
+          case 22:
+            _context3.next = 24;
             return (0, _db["default"])("branch_purchase_order").update({
+              grand_total: add_on_total + sub_total,
               status: "approved"
             }).where({
-              id: id
+              id: po_id
             });
-          case 7:
-            res.redirect("/super_admin/po/get_po_pending");
-            _context3.next = 14;
-            break;
-          case 10:
-            _context3.prev = 10;
+          case 24:
+            return _context3.abrupt("return", res.status(200).json({
+              status: true
+            }));
+          case 27:
+            _context3.prev = 27;
             _context3.t0 = _context3["catch"](0);
             console.log(_context3.t0);
             res.redirect("/home");
-          case 14:
+          case 31:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3, null, [[0, 10]]);
+    }, _callee3, null, [[0, 27]]);
   }));
   return function updatePo(_x5, _x6) {
     return _ref3.apply(this, arguments);
@@ -146,7 +207,7 @@ var getPoApproved = /*#__PURE__*/function () {
           case 0:
             _context4.prev = 0;
             _context4.next = 3;
-            return (0, _db["default"])("branch_purchase_order as po").select("po.branch_id", "po.id", "po.date", "admin_users.first_name", "zones.name as zone_name").join("admin_users", "admin_users.id", "=", "po.branch_id").join("zones", "zones.id", "=", "admin_users.zone_id").where({
+            return (0, _db["default"])("branch_purchase_order as po").select("po.branch_id", "po.id", "po.date", "po.grand_total", "admin_users.first_name", "zones.name as zone_name").join("admin_users", "admin_users.id", "=", "po.branch_id").join("zones", "zones.id", "=", "admin_users.zone_id").where({
               "po.status": "approved"
             });
           case 3:
@@ -178,45 +239,92 @@ var getPoApproved = /*#__PURE__*/function () {
 exports.getPoApproved = getPoApproved;
 var getSinglePoApproved = /*#__PURE__*/function () {
   var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(req, res) {
-    var po_id, subscription_products, add_on_products;
+    var po_id, admin_id, po_details, branch, subscription_products, add_on_products;
     return _regeneratorRuntime().wrap(function _callee5$(_context5) {
       while (1) {
         switch (_context5.prev = _context5.next) {
           case 0:
             _context5.prev = 0;
             po_id = req.query.po_id;
-            _context5.next = 4;
-            return (0, _db["default"])("branch_purchase_order_items as branch").select("branch.product_type_id", "branch.qty as total_qty", "branch.excess_qty", "branch.unit_value as value", "branch.price", "products.name").join("products", "products.id", "=", "branch.product_id").where({
+            admin_id = req.body.admin_id; // const branch = await knex("admin_users")
+            //   .select("first_name")
+            //   .where({ id: admin_id });
+            _context5.next = 5;
+            return (0, _db["default"])("branch_purchase_order as po").select("po.grand_total", "po.date", "admin_users.first_name").join("admin_users", "admin_users.id", "=", "po.branch_id").where({
+              "po.id": po_id
+            });
+          case 5:
+            po_details = _context5.sent;
+            branch = po_details[0].first_name;
+            po_details[0].date = (0, _moment["default"])(po_details[0].date).format("YYYY-MM-DD");
+            _context5.next = 10;
+            return (0, _db["default"])("branch_purchase_order_items as branch").select("branch.product_type_id", "branch.qty", "branch.excess_qty", "branch.total_qty", "branch.unit_value as value", "branch.price", "branch.total_price", "products.name").join("products", "products.id", "=", "branch.product_id").where({
               "branch.branch_purchase_order_id": po_id,
               "branch.product_type_id": 1
             });
-          case 4:
+          case 10:
             subscription_products = _context5.sent;
-            _context5.next = 7;
-            return (0, _db["default"])("branch_purchase_order_items as branch").select("branch.product_type_id", "branch.qty as total_qty", "branch.excess_qty", "branch.unit_value as value", "branch.price", "products.name").join("products", "products.id", "=", "branch.product_id").where({
+            _context5.next = 13;
+            return (0, _db["default"])("branch_purchase_order_items as branch").select("branch.product_type_id", "branch.qty ", "branch.excess_qty", "branch.total_qty", "branch.unit_value as value", "branch.price", "branch.total_price", "products.name").join("products", "products.id", "=", "branch.product_id").where({
               "branch.branch_purchase_order_id": po_id,
               "branch.product_type_id": 2
             });
-          case 7:
+          case 13:
             add_on_products = _context5.sent;
             res.render("super_admin/po/single_po_approved", {
               subscription_products: subscription_products,
               add_on_products: add_on_products,
-              po_id: po_id
+              po_id: po_id,
+              po_details: po_details[0],
+              branch_name: branch
             });
-            _context5.next = 15;
+            // try {
+
+            //   const {po_id} = req.query
+
+            //   const subscription_products = await knex(
+            //     "branch_purchase_order_items as branch"
+            //   ).select(
+            //       "branch.product_type_id",
+            //       "branch.qty as total_qty",
+            //       "branch.excess_qty",
+            //       "branch.unit_value as value",
+            //       "branch.price",
+            //       "products.name"
+            //     )
+            //     .join("products", "products.id", "=", "branch.product_id")
+            //     .where({ "branch.branch_purchase_order_id": po_id, "branch.product_type_id": 1 });
+
+            //   const add_on_products = await knex("branch_purchase_order_items as branch")
+            //     .select(
+            //       "branch.product_type_id",
+            //       "branch.qty as total_qty",
+            //       "branch.excess_qty",
+            //       "branch.unit_value as value",
+            //       "branch.price",
+            //       "products.name"
+            //     )
+            //     .join("products", "products.id", "=", "branch.product_id")
+            //     .where({ "branch.branch_purchase_order_id": po_id, "branch.product_type_id": 2 });
+
+            //   res.render("super_admin/po/single_po_approved", {
+            //     subscription_products,
+            //     add_on_products,
+            //     po_id
+            //   });
+            _context5.next = 21;
             break;
-          case 11:
-            _context5.prev = 11;
+          case 17:
+            _context5.prev = 17;
             _context5.t0 = _context5["catch"](0);
             console.log(_context5.t0);
             return _context5.abrupt("return", res.redirect("/home"));
-          case 15:
+          case 21:
           case "end":
             return _context5.stop();
         }
       }
-    }, _callee5, null, [[0, 11]]);
+    }, _callee5, null, [[0, 17]]);
   }));
   return function getSinglePoApproved(_x9, _x10) {
     return _ref5.apply(this, arguments);

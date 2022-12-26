@@ -535,7 +535,7 @@ var createTable = /*#__PURE__*/function () {
                   t.integer("collected_half_liter_bottle").unsigned().nullable();
                   t.integer("total_given_bottle").nullable();
                   t.integer("total_collective_bottle").nullable();
-                  t.enu("status", ["pending", "delivered", "undelivered"]).defaultTo("pending");
+                  t.enu("status", ["pending", "delivered", "undelivered", "cancelled"]).defaultTo("pending");
                   t.enu("tour_status", ["0", "1", "2"]).defaultTo("0");
                   t.timestamps(true, true);
                 });

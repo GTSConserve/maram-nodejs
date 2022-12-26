@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.userLogin = exports.update_starttour = exports.update_riderstatus = exports.update_location = exports.update_endtour = exports.updateRiderToken = exports.statusupdate = exports.insertUser = exports.getsingleorder = exports.get_riderdetails = exports.get_Appcontrol = exports.dashboard = exports.checkPassword = void 0;
+exports.userLogin = exports.update_starttour = exports.update_riderstatus = exports.update_location = exports.update_endtour = exports.updateRiderToken = exports.statusupdate = exports.insertUser = exports.getsingleorder = exports.get_riderdetails = exports.get_Appcontrol = exports.dashboard = exports.checkPassword = exports.cancel_order = void 0;
 var _db = _interopRequireDefault(require("../../services/db.service"));
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 var _bcrypt = _interopRequireDefault(require("bcrypt"));
@@ -663,4 +663,54 @@ var dashboard = /*#__PURE__*/function () {
     return _ref13.apply(this, arguments);
   };
 }();
+
+// rider cancel order
 exports.dashboard = dashboard;
+var cancel_order = /*#__PURE__*/function () {
+  var _ref14 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee14(user_id, order_id, delivery_partner_id, order_status, date, reason) {
+    var router, order;
+    return _regeneratorRuntime().wrap(function _callee14$(_context14) {
+      while (1) {
+        switch (_context14.prev = _context14.next) {
+          case 0:
+            _context14.prev = 0;
+            _context14.next = 3;
+            return (0, _db["default"])('routes').select('id').where({
+              rider_id: delivery_partner_id
+            });
+          case 3:
+            router = _context14.sent;
+            _context14.next = 6;
+            return (0, _db["default"])('daily_orders').update({
+              status: order_status
+            }).where({
+              user_id: user_id,
+              router_id: router[0].id,
+              date: date
+            });
+          case 6:
+            order = _context14.sent;
+            return _context14.abrupt("return", {
+              status: true,
+              message: "order cancelled by rider"
+            });
+          case 10:
+            _context14.prev = 10;
+            _context14.t0 = _context14["catch"](0);
+            console.log(_context14.t0);
+            return _context14.abrupt("return", {
+              status: false,
+              message: "No data found"
+            });
+          case 14:
+          case "end":
+            return _context14.stop();
+        }
+      }
+    }, _callee14, null, [[0, 10]]);
+  }));
+  return function cancel_order(_x34, _x35, _x36, _x37, _x38, _x39) {
+    return _ref14.apply(this, arguments);
+  };
+}();
+exports.cancel_order = cancel_order;
