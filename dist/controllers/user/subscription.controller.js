@@ -450,7 +450,7 @@ var singleSubscription = /*#__PURE__*/function () {
             // }
             response = {
               additional_orders: [sub.query[0]],
-              this_month_item_detail: sub.this_month_item_detail
+              this_month_item_detail: sub.this_month_item_detail[0]
             };
             return _context9.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               status: true,

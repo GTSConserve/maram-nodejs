@@ -158,7 +158,8 @@ var single_subscription = /*#__PURE__*/function () {
             return (0, _db["default"])("subscribed_user_details AS sub").select("sub.id as subscription_id", "sub.subscription_start_date", "sub.customized_days", "sub.subscription_status", "sub.quantity",
             // "product.id",
             "products.name as product_name", "products.image", "products.price", "products.unit_value", "unit_types.value as unit_type", "subscription_type.name as subscription_name", "user_address.address", "user_address.id as address_id", "sub.date as date").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("subscription_type", "subscription_type.id", "=", "sub.subscribe_type_id").join("user_address", "user_address.id", "=", "sub.user_address_id").where({
-              "sub.id": sub_id
+              "sub.id": sub_id,
+              "sub.subscription_status": "subscribed"
             });
           case 3:
             products = _context3.sent;
