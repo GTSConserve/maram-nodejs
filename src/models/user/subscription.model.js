@@ -138,7 +138,7 @@ export const single_subscription = async (userId, sub_id) => {
         "sub.subscribe_type_id"
       )
       .join("user_address", "user_address.id", "=", "sub.user_address_id")
-      .where({ "sub.id": sub_id });
+      .where({ "sub.id": sub_id, "sub.subscription_status": "subscribed" });
       
       // const query1 = await knex("additional_orders").select("date")
       // console.log(query1[0].date)

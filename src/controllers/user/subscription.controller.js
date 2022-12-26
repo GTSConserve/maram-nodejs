@@ -299,7 +299,7 @@ export const singleSubscription = async (req, res) => {
 
     const response = {
       additional_orders: [sub.query[0]],
-      this_month_item_detail: sub.this_month_item_detail
+      this_month_item_detail: sub.this_month_item_detail[0]
     }
 
     return res
