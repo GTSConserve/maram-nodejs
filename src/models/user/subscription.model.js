@@ -138,7 +138,7 @@ export const single_subscription = async (userId, sub_id) => {
         "sub.subscribe_type_id"
       )
       .join("user_address", "user_address.id", "=", "sub.user_address_id")
-      // .where({ "sub.user_id": userId, "sub.id": sub_id });
+      .where({ "sub.id": sub_id });
       
       // const query1 = await knex("additional_orders").select("date")
       // console.log(query1[0].date)
@@ -153,19 +153,27 @@ export const single_subscription = async (userId, sub_id) => {
         "products.image",
         "products.unit_value",
         "unit_types.value as unit_type",
+        "additional_orders.date"
         // "user_address.address",
     
       )
       .join("products", "products.id", "=", "additional_orders.id")
       .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
       // .join("user_address", "user_address.id", "=", "additional_orders.id")
-      .where({ "additional_orders.user_id": userId });
+      // .where({ "additional_orders.user_id": userId });
+        // console.log(query)
 
+        const this_month_item_detail = await knex("empty_bottle_tracking").select(
+          "one_liter_in_hand as delivered_orders",
+          "one_liter_in_return as remaining_orders",
+          "half_liter_in_hand as additional_delivered_orders",
+          "one_liter_in_return as additional_remaining_orders"
+        )
     if (products.length === 0) {
       return { status: false, message: "No Subscription Found" };
     }
 
-    return { status: true, data: products, query};
+    return { status: true, data: products, query, this_month_item_detail};
   } catch (error) {
     console.log(error);
     return { status: false, message: error };

@@ -254,7 +254,7 @@ export const singleSubscription = async (req, res) => {
 
     const sub = await single_subscription(userId, subscription_id);
 
-    console.log(sub)
+    console.log(sub.query)
     if (!sub.status) {
       return res
         .status(responseCode.FAILURE.DATA_NOT_FOUND)
@@ -269,7 +269,7 @@ export const singleSubscription = async (req, res) => {
       sub.data[i].address_id = sub.data[i].address_id; 
       sub.data[i].date = [moment().format("YYYY-MM-DD")];
       sub.data[i].subscription_start_date = moment().format("YYYY-MM-DD");
-      // sub.query[i].date = [moment().format("YYYY-MM-DD")];
+      sub.query[i].date = [moment().format("YYYY-MM-DD")];
 
       
 
@@ -290,16 +290,16 @@ export const singleSubscription = async (req, res) => {
 
     // const query = [{data: sub.data[0],additional_orders: sub.additional_orders[0]}]
 
-    const bottle_tracker = {
-      "delivered_orders": 25,
-      "remaining_orders": 5,
-      "additional_delivered_orders": 5,
-      "additional_remaining_orders": 25
-    }
+    // const bottle_tracker = {
+    //   "delivered_orders": 25,
+    //   "remaining_orders": 5,
+    //   "additional_delivered_orders": 5,
+    //   "additional_remaining_orders": 25
+    // }
 
     const response = {
       additional_orders: [sub.query[0]],
-      this_month_item_detail: bottle_tracker
+      this_month_item_detail: sub.this_month_item_detail
     }
 
     return res
