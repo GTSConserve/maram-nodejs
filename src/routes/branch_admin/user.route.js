@@ -1,5 +1,5 @@
 import express  from 'express';
-import { getusers,getSingleUser,getAddUser,createUser } from '../../controllers/branch_admin/users/users.controller';
+import { getusers,getSingleUser,getAddUser,createUser,newSubscription,newAddOn } from '../../controllers/branch_admin/users/users.controller';
 
 
 
@@ -16,6 +16,9 @@ userRouter.get('/single_user',getSingleUser)
 userRouter.get('/get_add_users',getAddUser)
 userRouter.post('/create_user',createUser)
 
+// new subscription product
+userRouter.post('/new_subscription',newSubscription)
+userRouter.post('/new_add_on',newAddOn)
 
 
 

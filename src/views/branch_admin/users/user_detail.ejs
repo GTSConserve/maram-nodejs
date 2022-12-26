@@ -85,6 +85,115 @@
                                                         <% } %> 
                                                     <% } %> 
                                                 </h6>
+                                                <span style="cursor: pointer;"  data-toggle="modal" data-target="#modalSubscription" class="badge badge-primary float-right p-2 m-2">  New Subscription Product </span>
+                                                
+                                                <div class="modal fade" id="modalSubscription"  tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalCenterTitle">Add Subscription Product</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                                                </button>
+                                                            </div>
+                                                            <form id="subscriptionForm">
+                                                                <div class="modal-body">
+                                                                    <!-- <h4 class="modal-heading mb-4 mt-2">Are You Sure?</h4> -->
+                                                                    <div class="form-row mb-4">
+                                                                        <div class="form-group col-md-4">
+                                                                            <label>Product</label>
+                                                                            <select wire:model="countryid" class="form-control"  name="sub_product" >
+                                                                                <option value="" selected ><%=get_subscription_products .length !==0 ? "Select Product" : "No Product Found" %>  </option>
+                                                                                <% for(product of get_subscription_products){ %>
+                                                                                    
+                                                                                    <option value="<%=product.id %>"><%=product.name %>  / <%= product.unit_value %>-<%= product.unit_type %>    </option>
+                                                                                    <% } %>
+                                                                                    
+                                                                                </select>
+                                                                            </div>
+                                                                            <div class="form-group col-md-4">
+                                                                                <label for="sub_qty">Qty</label>
+                                                                                <input type="number"  class="form-control" name="sub_qty" id="sub_qty" placeholder="qty">
+                                                                            </div>
+                                                                            <div class="form-group col-md-4">
+                                                                                <label for="start_date">Start Date</label>
+                                                                                <input type="date"   class="form-control"   min=<%=   new Date().toISOString().split('T')[0]%>   id="start_date" name="sub_start_date">
+                                                                            </div>
+                                                                        </div>
+                                                                        <input type="hidden"  name="user_address_id" value="<%= user.user_address_id %>">
+                                                                        <div class="form-row mb-4">
+                                                                            <div class="form-group col-md-4">
+                                                                                <label>Choose Your Plan</label>
+                                                                                <select onchange="checkHandler(this)"  wire:model="countryid" class="form-control" name="your_plan" >
+                                                                                    <option value="" selected >Choose Your plan </option>
+                                                                                    <% for(plan of get_plan){ %>
+                                                                                        
+                                                                                        <option  value="<%=plan.id %>"><%=plan.name %>  </option>
+                                                                                        <% } %>
+                                                                                    </select>
+                                                                                </div>
+                                                                               
+                                                                                <div class="form-group col-md-4 pl-3 " id="custom_days">
+                                                                                 
+                                                                                    
+                                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button class="btn btn-dark" data-dismiss="modal" type="button"> <i class="flaticon-cancel-12"></i> Discard</button>
+                                                                <button  class="btn btn-primary" type="submit">Add</button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                    </div>
+                                                </div>
+</div>
+
+                                                <script>
+                                                    function checkHandler(event){
+                                                        console.log(event)
+                                                        if(event.value == 3){
+                                                            document.getElementById("custom_days").innerHTML = ` <label for="delivery_days">Choose Your Custome Days</label>
+                                                            <div class="row">
+                                                                <div class="col-5">
+                                                    <div class="custom-control custom-checkbox checkbox-info">
+                                                        <input type="checkbox" name="custom_days" value="1" class="custom-control-input" id="hChkbox">
+                                                        <label class="custom-control-label" for="hChkbox">Sun</label>
+                                                    </div>
+                                                    <div class="custom-control custom-checkbox checkbox-info">
+                                                        <input type="checkbox" name="custom_days" value="2" class="custom-control-input" id="hChkbox2">
+                                                        <label class="custom-control-label" for="hChkbox2">Mon</label>
+                                                    </div>
+                                                    <div class="custom-control custom-checkbox checkbox-info">
+                                                        <input type="checkbox" name="custom_days" value="3" class="custom-control-input" id="hChkbox3">
+                                                        <label class="custom-control-label" for="hChkbox3">Tue</label>
+                                                    </div>
+                                                    <div class="custom-control custom-checkbox checkbox-info">
+                                                        <input type="checkbox" name="custom_days" value="4" class="custom-control-input" id="hChkbox4">
+                                                        <label class="custom-control-label" for="hChkbox4">Wed</label>
+                                                    </div>
+                                                    </div>
+                                                    <div class="col-5">
+                                                    <div class="custom-control custom-checkbox checkbox-info">
+                                                        <input type="checkbox" name="custom_days" value="5" class="custom-control-input" id="hChkbox5">
+                                                        <label class="custom-control-label" for="hChkbox5">Thu</label>
+                                                    </div>
+                                                    <div class="custom-control custom-checkbox checkbox-info">
+                                                        <input type="checkbox" name="custom_days" value="6" class="custom-control-input" id="hChkbox6">
+                                                        <label class="custom-control-label" for="hChkbox6">Fri</label>
+                                                    </div>
+                                                    <div class="custom-control custom-checkbox checkbox-info">
+                                                        <input type="checkbox" name="custom_days" value="7" class="custom-control-input" id="hChkbox7">
+                                                        <label class="custom-control-label" for="hChkbox7">Sat</label>
+                                                    </div>
+                                                    </div>
+                                                    `
+                                                        }else{
+                                                            document.getElementById("custom_days").innerHTML = ``
+                                                        }
+                                                    }
+                                                </script>
+
+
                                                 <% if(sub_products.length === 0){ %>
                                                     <h6 class="pl-5">No Subscription Product Found</h6>
                                                     <% }else{ %>
@@ -140,6 +249,107 @@
                                                     <% } %> 
                                                 
                                                 </h6>
+                                                <span style="cursor: pointer;"  data-toggle="modal" data-target="#modalAddon" class="badge badge-primary float-right p-2 m-2">  New Add On Product </span>
+
+                                                <div class="modal fade" id="modalAddon" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalCenterTitle">New Add On Product</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                  <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                                                </button>
+                                                            </div>
+                                                            <form id="addOnForm">
+                                                            <div class="modal-body">
+                                                                <!-- <h4 class="modal-heading mb-4 mt-2">Are You Sure?</h4> -->
+                                                                <div class="form-row mb-4" >
+                                                                    <div class="form-group col-md-4">
+                                                                        <label for="delivery_date">Delivery Date</label>
+                                                                        <input type="date" min=<%=   new Date().toISOString().split('T')[0]%> class="form-control"  minlength="3" id="delivery_date" name="add_on_delivery_date" placeholder="Name">
+                                                                    </div>
+                                                                    <div class="col-8"></div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label>Product</label>
+                                                                        <select wire:model="countryid" class="form-control" name="add_on_products" >
+                                                                            <option value="" selected >Select Product </option>
+                                                                            <% for(product of add_on_products){ %>
+                        
+                                                                                <option value="<%=product.id %>"><%=product.name %>  / <%= product.unit_value %>-<%= product.unit_type %>    </option>
+                                                                            <% } %>
+                        
+                                                                        </select>
+                                                                    </div>
+                                                                    <input type="hidden" name="user_address_id" value="<%= user.user_address_id %>">
+                                                                    <div class="form-group col-md-3">
+                                                                        <label for="add_on_qty">Qty</label>
+                                                                        <input type="number" class="form-control" id="add_on_qty" name="add_on_qty" placeholder="qty">
+                                                                    </div>
+                                                                    <div class="form-group col-md-2">
+                                                                        
+                                                                       <button type="button" onclick="addProducts()" class="btn btn-info" style="margin-top: 32px;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
+                                                                    </div>
+                                                                    <span class="col-12 " id="add_on">
+    
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button class="btn btn-dark" data-dismiss="modal" type="button"> <i class="flaticon-cancel-12"></i> Discard</button>
+                                                                <button  class="btn btn-primary" type="submit">Proceed</button>
+                                                            </div>
+                                                        </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <script>
+                                                    function addProducts() {
+                                                        const get_length = document.getElementById("add_on")
+                                                        const count = document.getElementsByTagName('span').length;
+                                                     
+                                                        const node = document.createElement("span");
+                                                        node.className="form-row"
+                                                        node.id = `remove${count}`
+                                                        node.innerHTML=   `
+                                                       
+                                                            <div class="form-group col-6">
+                                                                <label>Product</label>
+                                                                <select wire:model="countryid" class="form-control" name="add_on_products" >
+                                                                    <option value="" selected >Select Product </option>
+                                                                    <% for(product of add_on_products){ %>
+                
+                                                                        <option value="<%=product.id %>"><%=product.name %>  / <%= product.unit_value %>-<%= product.unit_type %>    </option>
+                                                                    <% } %>
+                
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group col-3">
+                                                                <label for="add_on_qty${count}">Qty</label>
+                                                                <input type="number" class="form-control" id="add_on_qty" name="add_on_qty" placeholder="qty">
+                                                            </div>
+                                                            <div class="form-group col-2">
+                                                                
+                                                                <button type="button" onclick="removeProduct(this)" name="${count}" class="btn btn-danger" style="margin-top: 32px;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg></button>
+                                                             </div>
+                                                             
+                                                    
+                                                            `
+                                                        // const textnode = document.createTextNode("Water");
+
+                                                        console.log(get_length.length)
+                                                        document.getElementById("add_on").appendChild(node)
+                                                    //  ;
+                                                    }
+
+
+                                                    function removeProduct(event){
+                                                        document.getElementById(`remove${event.name}`).remove();
+                                                    }
+
+                                                </script>
+
+
                                                 <% if(add_on.length === 0){ %>
                                                     <h6 class="pl-5">No Add On Product Found</h6>
                                                     <% }else{ %>
@@ -323,3 +533,218 @@
     </div>
     
 </div>
+
+<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            </div>
+            <div class="modal-body">
+                <p class="modal-text" id="dynamic_content_error">Pleas Fill this Form </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-dark" onclick="removeErrorModal()" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Discard</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>    
+                                let error = document.getElementById("errorModal")
+
+                                const addOnForm=document.getElementById("addOnForm")
+                                addOnForm.addEventListener("submit",async(e)=>{
+                                    let query = {}
+
+                                                e.preventDefault()
+
+                                                //  addon product
+                                                const add_on_delivery_date = e.target.add_on_delivery_date.value
+                                                const user_address_id = e.target.user_address_id.value
+
+                                                
+                                                let add_on_products 
+                                                let add_on_qty
+                                             
+              
+
+                                                    if(e.target.add_on_qty.length == undefined){
+                                                         add_on_products = e.target.add_on_products.value
+                                                         add_on_qty = e.target.add_on_qty.value
+                                                        }else{
+                                                            add_on_products = e.target.add_on_products
+                                                            add_on_qty = e.target.add_on_qty
+                                                    }
+
+                                               
+                                                    let add_on = []
+                                                    if(e.target.add_on_qty.length == undefined){
+                                                        if(add_on_delivery_date.length != 0 ||add_on_products.length != 0 ||add_on_qty.length != 0   ){
+                                                    
+                                                             if(add_on_delivery_date.length === 0 ||add_on_products.length === 0 ||add_on_qty.length === 0   ){
+                                                                error.style ="display: block; padding-right: 17px;"
+                                                                error.className = "modal fade show"
+
+                                                                     return document.getElementById("dynamic_content_error").innerText = "Please Fill the Add on  Product Details"
+    
+                                                                 }
+
+                                                                let add_on_object = {}
+                                                                 add_on_object.product_id = add_on_products
+                                                                 add_on_object.qty = add_on_qty
+                                                                 add_on.push(add_on_object)
+
+                                                                //  query.is_add_on = true
+                                                                 query.delivery_date = add_on_delivery_date
+                                                        }
+                                                    }else{
+                                                        query.delivery_date = add_on_delivery_date
+                                                        let add_on_object = {}
+
+                                                        for(let i = 0 ; i < add_on_products.length; i++){
+
+                                                            if(add_on_products[i].value.length === 0 || add_on_qty[i].value.length === 0){
+                                                                error.style ="display: block; padding-right: 17px;"
+                                                                error.className = "modal fade show"
+ 
+                                                            return document.getElementById("dynamic_content_error").innerText = "Please Fill the Add on  Product Details"
+
+                                                        }
+
+
+                                                        add_on_object.product_id = add_on_products[i].value
+                                                        add_on_object.qty = add_on_qty[i].value
+
+                                                        add_on.push(add_on_object)
+                                                        add_on_object = {}
+
+                                                        }
+                                                    }
+
+                                                    
+                                                    query.add_on = add_on
+
+                                                    console.log(query)
+
+                                                         await fetch('/branch_admin/user/new_add_on', {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'Accept': 'application/json',
+                                                        'Content-Type': 'application/json'
+                                                    },
+                                                    body: JSON.stringify({"data": query,"user_address_id": user_address_id})
+                                                    })
+                                                    
+                                                   
+                                                    window.location.href = "/branch_admin/user/single_user?user_address_id=" + user_address_id
+
+                                })
+
+
+
+
+
+
+
+                                const form=document.getElementById("subscriptionForm")
+                                            form.addEventListener("submit",async(e)=>{
+
+                                                let query = {}
+
+                                                e.preventDefault()
+
+
+                                              
+                                                // sub products
+                                                const sub_product = e.target.sub_product.value
+                                                const sub_qty = e.target.sub_qty.value
+                                                const sub_start_date = e.target.sub_start_date.value
+                                                const your_plan = e.target.your_plan.value
+                                                
+                                                const user_address_id = e.target.user_address_id.value
+
+
+                                                let custom_days 
+                                                if(your_plan){
+                                                         custom_days = e.target.custom_days
+                                                }
+                                            
+                                               
+                                                // sub product
+                                                if(sub_product.length != 0 ||sub_qty.length != 0 ||your_plan.length != 0 ||sub_start_date.length != 0  ){
+                                                    
+                                                    if(sub_product.length === 0 ||sub_qty.length === 0 ||your_plan.length === 0 ||sub_start_date.length === 0  ){
+
+
+                                                        error.style ="display: block; padding-right: 17px;"
+                                                        error.className = "modal fade show"
+
+                                                        return document.getElementById("dynamic_content_error").innerText = "Please Fill the Subscription Product Details"
+                                
+    
+                                                    }
+
+                                                    if(your_plan == 3){
+
+                                                        let count = 0
+                                                        let cutsom = []
+
+                                                        for(days of custom_days){
+                                                            if(!days.checked){
+                                                                count += 1
+                                                            }
+                                                            if (count == 7){
+                                                                error.style ="display: block; padding-right: 17px;"
+                                                                error.className = "modal fade show"
+                                                                return document.getElementById("dynamic_content_error").innerText = "Please Choose A Day "
+                                                            }
+
+                                                            if(days.checked){
+                                                                cutsom.push(days.value)
+                                                            }
+
+                                                        }
+                                                        query.custom_days = cutsom
+                                                    }
+
+                                                    query.sub_product = sub_product
+                                                    query.sub_qty = sub_qty
+                                                    query.your_plan = your_plan
+                                                    query.sub_start_date = sub_start_date
+
+                                                }
+
+
+
+                                                console.log(query)
+
+                                                
+
+                                                await fetch('/branch_admin/user/new_subscription', {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'Accept': 'application/json',
+                                                        'Content-Type': 'application/json'
+                                                    },
+                                                    body: JSON.stringify({"data": query , "user_address_id" : user_address_id})
+                                                    })
+                                                    alert("asda")                                                   
+                                                 window.location.href = "/branch_admin/user/single_user?user_address_id=" + user_address_id
+
+
+                                            })
+
+
+
+                               
+
+                                            function removeModal(){
+                                                ErroHandler.remove()
+                                            }
+                                            function removeErrorModal(){
+                                                error.style ="display: none; padding-right: 17px;"
+                                                        error.className = "modal fade"
+
+                                            }
+</script>

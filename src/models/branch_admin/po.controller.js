@@ -21,9 +21,10 @@ export const getBothProducts = async (daily_orders) => {
         .where({ add_on_order_id: daily_orders[i].add_on_order_id });
 
       for (let i = 0; i < add_product_id.length; i++) {
+       
         add_products_id.push({
           product_id: add_product_id[i].product_id,
-          qty: Number(add_product_id[0].quantity),
+          qty: Number(add_product_id[i].quantity),
         });
       }
     }

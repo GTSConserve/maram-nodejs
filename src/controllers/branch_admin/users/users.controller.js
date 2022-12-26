@@ -138,6 +138,7 @@ export const getSingleUser = async (req, res) => {
         "sub.subscription_status",
         "products.name as product_name",
         "products.unit_value",
+        "products.id as product_id",
         "products.price",
         "unit_types.value",
         "subscription_type.name as sub_name"
@@ -156,7 +157,7 @@ export const getSingleUser = async (req, res) => {
         "sub.user_address_id": user_address_id,
       });
 
-    // console.log(get_subscription_products);
+
 
     let is_subscription_active = 0;
     if (get_subscription_products.length !== 0) {
@@ -171,35 +172,7 @@ export const getSingleUser = async (req, res) => {
       }
     }
 
-    // const add_on_details = await knex("add_on_orders as adds")
-    //   .select(
-    //     "adds.delivery_date",
-    //     "adds.sub_total",
-    //     "adds.status as order_status",
-    //     "adds.id as add_on_id",
-    //     "products.name",
-    //     "products.unit_value",
-    //     "products.price",
-    //     "unit_types.value",
-    //     "add_on_order_items.quantity",
-    //     "add_on_order_items.price",
-    //     "add_on_order_items.total_price",
-    //     "add_on_order_items.status as product_status"
-    //   )
-    //   .join(
-    //     "add_on_order_items",
-    //     "add_on_order_items.add_on_order_id",
-    //     "=",
-    //     "adds.id"
-    //   )
-    //   .join("products", "products.id", "=", "add_on_order_items.product_id")
-    //   .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
-    //   .where({
-    //     "adds.user_id": user.user_id,
-    //     "adds.address_id": user_address_id,
-    //   });
 
-    // console.log(add_on_details);
 
     const add_on_order_query =
       await knex.raw(`SELECT adds.id,adds.user_id ,adds.delivery_date,adds.sub_total,adds.status
@@ -244,12 +217,56 @@ export const getSingleUser = async (req, res) => {
       }
     }
 
+    // for new subscription and add on 
+
+    const get_plan = await knex("subscription_type").select("name", "id").where({status : "1"})
+
+    let sub_product_id = []
+    if(get_subscription_products.length !== 0){
+      for (let i = 0 ; i< get_subscription_products.length ; i++){
+        sub_product_id.push(get_subscription_products[i].product_id)
+      }
+    }
+
+    const add_subscription_products = await knex("products")
+      .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
+      .select(
+        "products.id",
+        "products.name",
+        "products.unit_value",
+        "unit_types.value as unit_type",
+        "products.price"
+      )
+      .where({
+        "products.product_type_id": 1,
+        "products.status": "1"
+      }).whereNotIn("products.id",sub_product_id)
+
+
+    const add_on_products = await knex("products")
+      .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
+      .select(
+        "products.id",
+        "products.name",
+        "products.unit_value",
+        "unit_types.value as unit_type",
+        "products.price"
+      )
+      .where({
+        "products.product_type_id": 2,
+        "products.status": "1"
+      });
+
+
     res.render("branch_admin/users/user_detail", {
       user,
       sub_products: get_subscription_products,
       add_on,
       is_add_on_active,
       is_subscription_active,
+      get_plan,
+      get_subscription_products : add_subscription_products,
+      add_on_products
     });
   } catch (error) {
     console.log(error);
@@ -447,3 +464,108 @@ export const createUser = async (req, res) => {
     res.redirect("/home?is_user_added=1");
   }
 };
+
+export const newSubscription = async(req,res) => {
+  try {
+    const {data,user_address_id} = req.body
+
+
+    const user_query = await knex("user_address")
+    .select("user_id","branch_id","router_id")
+    .where({"id":user_address_id})
+
+    const user = user_query[0]
+
+    
+      let sub_product_query = {
+        start_date: data.sub_start_date,
+        user_id: user.user_id,
+        product_id: data.sub_product,
+        user_address_id,
+        quantity: data.sub_qty,
+        subscribe_type_id: data.your_plan,
+        branch_id: user.branch_id,
+        date: data.sub_start_date,
+        subscription_start_date: data.sub_start_date,
+        subscription_status: "subscribed",
+      };
+
+      if (user.router_id) {
+        sub_product_query.router_id = user.router_id;
+
+      }
+
+      if (data.your_plan == 3) {
+        let weekdays = await knex("weekdays").select("id", "name");
+        let store_weekdays = [];
+        for (let i = 0; i < data.custom_days.length; i++) {
+          for (let j = 0; j < weekdays.length; j++) {
+            if (weekdays[j].id == data.custom_days[i]) {
+              store_weekdays.push(weekdays[j].name);
+            }
+          }
+        }
+        sub_product_query.customized_days = JSON.stringify(store_weekdays);
+      }
+
+      await knex("subscribed_user_details").insert(sub_product_query)
+
+return res.status(200).json({status : true})
+  } catch (error) {
+    console.log(error)
+    return res.redirect("/home")
+  }
+}
+
+
+export const newAddOn = async(req,res) =>{
+  try {
+    const {data,user_address_id} = req.body
+
+
+    const user_query = await knex("user_address")
+    .select("user_id","branch_id","router_id")
+    .where({"id":user_address_id})
+
+    const user = user_query[0]
+
+    
+   
+      const order = await knex("add_on_orders").insert({
+        user_id: user.user_id,
+        delivery_date: data.delivery_date,
+        address_id: user_address_id,
+        branch_id: user.branch_id,
+        status: "new_order",
+      });
+
+      let order_id = order[0];
+
+      let sub_total = 0;
+
+      for (let i = 0; i < data.add_on.length; i++) {
+        const product_price = await knex("products")
+          .select("price")
+          .where({ id: data.add_on[i].product_id });
+
+        await knex("add_on_order_items").insert({
+          add_on_order_id: order_id,
+          user_id: user.user_id,
+          product_id: data.add_on[i].product_id,
+          quantity: data.add_on[i].qty,
+          price: product_price[0].price,
+          total_price: product_price[0].price * data.add_on[i].qty,
+        });
+
+        sub_total = sub_total + product_price[0].price * data.add_on[i].qty;
+      }
+
+      await knex("add_on_orders").update({ sub_total }).where({ id: order_id });
+   
+
+return res.status(200).json({status : true})
+  } catch (error) {
+    console.log(error)
+    return res.redirect("/home")
+  }
+}

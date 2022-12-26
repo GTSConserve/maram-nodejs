@@ -61,7 +61,7 @@ export const getPoForm = async (req, res) => {
 
     // if no daily orders length === 0  then return to home
 
-    console.log(daily_orders);
+
 
     const { add_on_products, subscription_products, excess_add_on_products } =
       await getBothProducts(daily_orders);
