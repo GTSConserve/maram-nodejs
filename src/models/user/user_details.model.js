@@ -211,3 +211,25 @@ export const checkAddress = async (id) => {
     };
   }
 };
+
+export const get_user_bill = async (userId) => {
+  const getuser = await knex
+    .select("id", "items","bill_no", "bill_value", "status")
+    .from("bill_history")
+    .where({ user_id: userId });
+    console.log(getuser)
+  try {
+    return { status: responseCode.SUCCESS, body: getuser };
+  } catch (error) {
+    console.log(error);
+    return { status: responseCode.FAILURE.INTERNAL_SERVER_ERROR, error };
+  }
+};
+
+export const get_single_bill = async () => {
+  try {
+    
+  } catch (error) {
+    
+  }
+}

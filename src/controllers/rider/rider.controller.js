@@ -1,6 +1,6 @@
 import express from 'express';
 import messages from '../../constants/messages';
-import { get_Appcontrol, get_riderdetails, statusupdate, update_endtour, update_location, update_riderstatus, update_starttour, userLogin,getsingleorder, checkPassword, dashboard, cancel_order, order_list } from '../../models/rider/rider.model';
+import { get_Appcontrol, get_riderdetails, statusupdate, update_endtour, update_location, update_riderstatus, update_starttour, userLogin,getsingleorder, checkPassword, dashboard, cancel_order, order_list, locationcheck } from '../../models/rider/rider.model';
 import responseCode from '../../constants/responseCode';
 import knex from '../../services/db.service'
 import { userValidator } from '../../services/validator.service';
@@ -8,6 +8,7 @@ import id from 'date-fns/locale/id/index';
 import { createToken } from "../../services/jwt.service";
 import { updateRiderToken } from "../../models/rider/rider.model";
 import bcrypt from "bcrypt";
+import haversine from "haversine-distance";
 
 
 
@@ -218,7 +219,7 @@ export const getSingleorder = async (req,res) => {
      const order = await getsingleorder (order_id,delivery_partner_id,order_status)
 
 
-     console.log(order.query5)
+    //  console.log(order.query5)
      if(order.status = true){
       let data = {
                 "task_id":order.query1[0].id,
@@ -242,22 +243,22 @@ export const getSingleorder = async (req,res) => {
                  "user_longitude": order.query2[0].user_longitude
       }
 
-      let products = [
-        {
-   
+      let products = [];
+      for( let i=0;i<order.query3.length;i++){
+   products.push({
      "product_id": order.query3[0].id,
      "product_name":order.query3[0].product_name,
      "variation":order.query3[0].unit_value + "" +order.query3[0].unit_type,
-     "quantity": order.query3[0].quantity},
-     {
-
+     "quantity": order.query3[0].quantity
+    })}
+    for( let i=0;i<order.query4.length;i++){
+      products.push({
      "product_id": order.query4[0].add_id,
      "product_name":order.query4[0].product_name,
      "variation":order.query4[0].unit_value + "" +order.query3[0].unit_type,
      "quantity": order.query4[0].quantity,
-       }
- 
-]
+       })}
+
 
       let addons =[];
 
@@ -290,16 +291,17 @@ export const getSingleorder = async (req,res) => {
 // order_status_update
 export const orderStatusUpdate = async (req,res) => {
   try {
-        const {user_id,order_id,order_status,subscription_id,products,addons} = req.body;
+        const {user_id,delivery_partner_id,one_iltre_count,half_litre_count,order_id,order_status,products,addons} = req.body;
         if(!user_id || !order_id || !order_status){
           return res
           .status(responseCode.FAILURE.BAD_REQUEST)
           .json({ status: false, message: "Mandatory field Is Missing" });
          }
 
-        const orderstatus = await statusupdate(user_id,order_id,order_status,subscription_id,products,addons);
+        const orderstatus = await statusupdate(user_id,delivery_partner_id,one_iltre_count,half_litre_count,order_id,order_status,products,addons);
 
 
+        return res.status(responseCode.SUCCESS).json({status: true,orderstatus})
 
         }
    catch (error) {
@@ -362,13 +364,16 @@ export const riderDashboard = async (req,res) => {
         .json({ status: false, message: "Mandatory field Is Missing" });
        }
 
-      const cancel = await cancel_order(user_id,order_id,delivery_partner_id,order_status,date);
-      
+       const router = await knex('routes').select('id').where({rider_id:delivery_partner_id});
+
+       const order = await knex('daily_orders').update({status:order_status}).where({user_id:user_id,router_id:router[0].id,date:date});
+       
+       return res.status(responseCode.SUCCESS).json({status:true,message:"order cancelled by rider"});
     // if(cancel.status=true){
     //   const reason1 = await knex('daily_orders').insert({reason:reason})
     // }
 
-      return res.status(responseCode.SUCCESS).json({data:cancel})
+      // return res.status(responseCode.SUCCESS).json({data:cancel.status})
 
 
     }
@@ -392,22 +397,29 @@ export const riderDashboard = async (req,res) => {
        }
 
       const order = await order_list(delivery_partner_id,status)
-      console.log(order)
+      // console.log(order)
       let query ={
         "tour_id":order.router[0].id,
         "tour_route":order.router[0].name,
         "total_orders":order.order.length,
+        "tour_status":order.order[0].status,
         "completed_orders":order.delivery.length       
        }
-       let data ={
+
+      //  console.log(query)
+       let data =[{
         "order_id":order.order[0].id,
         "milk_variation":order.order[0].total_qty +" "+ order.query3[0].unit_type,
-        "addon_items":order.addon.length,
+        "addon_items_delivered":order.addon.length,
+        "addon_items_undelivered":order.addon1.length,
         "user_name":order.user[0].name,
         "customer_id":order.user[0].user_unique_id,
         "bottle_return":order.order1[0].total_collective_bottle,
         "order_status":order.order1[0].status
-       }
+       }]
+       
+      //  const  = Object.keys(person);
+
        return res.status(responseCode.SUCCESS).json({status: true, ...query,data })
     }
     catch(error){
@@ -417,44 +429,44 @@ export const riderDashboard = async (req,res) => {
     }
   }
 
-export const ten = async (req,res)=>{
-  try{
- const payload = userValidator(req.body)
-  const { user_name, password} = payload
-  if (payload) {
-    const checkPhoneNumber = await loginUser(password)
-    let query;
-    let userId = 0
-    // const otp = process.env.USER_OTP || Math.floor(1000 + Math.random() * 9000)
-    // const otp = '1234'
-    if (!checkPhoneNumber.body.length) {
-    
-      const today = format(new Date(), 'yyyy-MM-dd H:i:s')
-      query = await insertRider(payload)
 
-    } 
-    // else {
-      
-    //   userId = checkPhoneNumber.body[0].id
-    //   query = await updateUserOtp(payload, otp)
-    // }
-  
-    // if (!userId) {
-    //   userId = query.body.body.insertId
-    // }
+  // location check
+  export const LocationCheck = async(req,res) => {
+    try {
+         const{delivery_partner_id,order_id} = req.body;
 
-    if (query.status === responseCode.SUCCESS) {
-      res.status(query.status).json({ status: true, messages: "Failed...." })
-    } else {
-      res.status(query.status).json({ status: false, message: "pls check" })
+         if(!delivery_partner_id || !order_id ){
+          return res
+          .status(responseCode.FAILURE.BAD_REQUEST)
+          .json({ status: false, message: "Mandatory field Is Missing" });
+         }
+
+         const location = await locationcheck(delivery_partner_id,order_id);
+
+         var point1 = { lat: location.check[0].latitude, lng: location.check[0].longitude }
+
+         //Second point in your haversine calculation
+         var point2 = { lat: location.address[0].latitude, lng: location.address[0].longitude}
+         
+         var haversine_m = haversine(point1, point2); //Results in meters (default)
+         var haversine_km = haversine_m /1000; //Results in kilometers
+         
+        //  console.log("distance (in meters): " + haversine_m + "m");
+        //  console.log("distance (in kilometers): " + haversine_km + "km");
+
+         if(haversine_km<=1000){
+          return res.status(responseCode.SUCCESS).json({status: true,message:"ok" })
+         }
+         else{
+          return res.status(responseCode.FAILURE.BAD_REQUEST).json({status: false,message:"out of range" })
+
+         }
+         
+
+    } catch (error) {
+      console.log(error);
+      return res.status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
+     .json({ status: false, message: messages.SERVER_ERROR });
     }
-  } else {
+  }
 
-    res.status(responseCode.FAILURE.BAD_REQUEST).json({ status: false, message: "error" })
-  }
-  }
-catch (error) {
-  logger.error('Whooops! This broke with error: ', error)
-  res.status(500).send('Error!')
-}
-}

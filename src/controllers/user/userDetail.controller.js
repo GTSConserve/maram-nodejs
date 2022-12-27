@@ -10,7 +10,9 @@ import {
   get_address,
   get_user,
   remove_order,
-  checkAddress
+  checkAddress,
+  get_user_bill,
+  get_single_bill
 } from "../../models/user/user_details.model";
 import messages from "../../constants/messages";
 
@@ -284,13 +286,12 @@ export const getEmptyBottle = async (req, res) => {
 
     if (userId) {
 
-      let get_user_bottle_detail =
-      {
-        "empty_bottle_in_hand_1_litre": "0",
-        "empty_bottle_in_hand_0.5_litre": "30",
-        "empty_bottle_return_1_litre": "0",
-        "empty_bottle_return_0.5_litre": "30"
-      }
+      const this_month_item_detail = await knex("empty_bottle_tracking").select(
+          "one_liter_in_hand as delivered_orders",
+          "one_liter_in_return as remaining_orders",
+          "half_liter_in_hand as additional_delivered_orders",
+          "one_liter_in_return as additional_remaining_orders"
+        )
 
       res
         .status(responseCode.SUCCESS)
@@ -369,6 +370,63 @@ export const getSingleCalendar = async (req, res) => {
     console.log(error);
 
     res.status(responseCode.FAILURE.BAD_REQUEST).json({ status: false, error });
+  }
+};
+
+
+export const getBillList = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    const user = await get_user_bill(userId);
+    if (user.body.length === 0) {
+      return res
+        .status(responseCode.FAILURE.DATA_NOT_FOUND)
+        .json({ status: false, message: "User Not Found" });
+    }
+
+    let get_bill = {};
+    user.body.map((data) => {
+      get_bill.id = data.id;
+      get_bill.user_id = data.user_id;
+      get_bill.payment_id = data.id // payment id set to id
+      // ? process.env.BASE_URL + data.image
+      // : null;
+      get_bill.items = data.items;
+      get_bill.bill_no = data.bill_no
+      get_bill.bill_value = data.bill_value; 
+      get_bill.status = data.status; 
+    });
+
+    res
+      .status(responseCode.SUCCESS)
+      .json({ status: true, data: get_bill });
+  } catch (error) {
+    console.log(error);
+
+    res
+      .status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
+      .json({ status: false, message: "no user" });
+  }
+};
+
+export const getSingleBillList = async (req, res) => {
+  try {
+    const { bill_id } = req.body;
+
+    if (!bill_id) {
+      return res
+        .status(responseCode.FAILURE.DATA_NOT_FOUND)
+        .json({ status: false, message: "Cannot find bill list" });
+    }
+
+    const get_single_bill_list = await get_single_bill(userId);
+
+    res.status(200).json({ status: true, data: address.body });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({ status: false });
   }
 };
 
