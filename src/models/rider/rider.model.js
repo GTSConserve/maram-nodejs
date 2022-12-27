@@ -197,21 +197,14 @@ export const userLogin = async (password) => {
   }
   
   // get single order
-  export const getsingleorder = async (user_id,order_id,delivery_partner_id,order_status,router_id) => {
+  export const getsingleorder = async (order_id,delivery_partner_id,order_status,router_id) => {
     
         try {
               
-          const daily = await knex('daily_orders').select('id','router_id','status','total_collective_bottle','add_on_order_id','user_id','subscription_id','additional_order_id',"total_qty").where({status:order_status,user_id:user_id})
+          const daily = await knex('daily_orders').select('id','router_id','status','total_collective_bottle','add_on_order_id','user_id','subscription_id','additional_order_id',"total_qty").where({status:order_status,id:order_id})
 
           // console.log(daily);
 
-      // const rider = await knex('routes').select("id as router_id")
-      // .where({id:router_id});
-
-
-      // console.log(rider[0].router_id)
-
-      
         const query1 =  await knex("daily_orders")
         .select(
           "id",
@@ -357,7 +350,7 @@ export const userLogin = async (password) => {
 export const order_list = async (delivery_partner_id,status) =>{
   try {
     const router = await knex('routes').select('id','name').where({rider_id:delivery_partner_id});
-
+    console.log(router)
     const query3 = await knex('daily_orders')
         .join("subscribed_user_details", "subscribed_user_details.id", "=", "daily_orders.subscription_id")
         .join("products", "products.id", "=", "subscribed_user_details.product_id")
@@ -370,18 +363,33 @@ export const order_list = async (delivery_partner_id,status) =>{
           
         )
 
-    const order = await knex('daily_orders').select('id','total_collective_bottle','status','add_on_order_id','user_id','total_qty').where({router_id:router[0].id});
+    const order = await knex('daily_orders').select(
+      'id',
+      'total_collective_bottle',
+      'status','add_on_order_id',
+      'user_id','total_qty')
+      .where({router_id:router[0].id});
 
-    const delivery = await knex('daily_orders').select('id').where({router_id:router[0].id,status:"delivered"});
+    const delivery = await knex('daily_orders')
+    .select('id')
+    .where({router_id:router[0].id,status:status});
 
-    const order1 = await knex('daily_orders').select('id','total_collective_bottle','status','add_on_order_id','user_id','total_qty').where({router_id:router[0].id,status:status});
-    console.log(order1)
+    const order1 = await knex('daily_orders').select(
+      'id',
+      'total_collective_bottle',
+      'status',
+      'add_on_order_id',
+      'user_id','total_qty')
+      .where({router_id:router[0].id,status:status});
+    // console.log(order1)
 
-    const addon = await knex('add_on_order_items').select('id').where({add_on_order_id:order1[0].add_on_order_id});
+    const addon = await knex('add_on_order_items')
+    .select('id')
+    .where({add_on_order_id:order1[0].add_on_order_id});
 
-    const user = await knex('users').select('name','user_unique_id').where({id:order[0].user_id})
-
-
+    const user = await knex('users')
+    .select('name','user_unique_id')
+    .where({id:order[0].user_id})
 
     // console.log(router,router1,order,delivery,addon)
     return{status:true,router,order,delivery,addon,order1,user,query3};

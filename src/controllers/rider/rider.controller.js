@@ -206,21 +206,16 @@ export const updateEndtour = async (req,res) => {
 // get single order 
 export const getSingleorder = async (req,res) => {
   try{
-      const {user_id,order_id,delivery_partner_id,order_status} = req.body;
+      const {order_id,delivery_partner_id,order_status} = req.body;
 
-      if(!user_id  ){
+      if(!order_id  ){
         return res
        .status(responseCode.FAILURE.BAD_REQUEST)
        .json({ status: false, message: "Mandatory field Is Missing" });
       }
       // console.log(order_status)
-      // const rider = await knex('routes').select("id as router_id")
-      // .where({rider_id:delivery_partner_id});
 
-      // const router_id = rider[0].router_id
-      // console.log(rider)
-
-     const order = await getsingleorder (user_id,order_id,delivery_partner_id,order_status)
+     const order = await getsingleorder (order_id,delivery_partner_id,order_status)
 
 
      console.log(order.query5)
@@ -389,7 +384,15 @@ export const riderDashboard = async (req,res) => {
   export const OrderList = async (req,res) => {
     try{
       const {delivery_partner_id,status} = req.body;
+
+      if(!delivery_partner_id){
+        return res
+        .status(responseCode.FAILURE.BAD_REQUEST)
+        .json({ status: false, message: "Mandatory field Is Missing" });
+       }
+
       const order = await order_list(delivery_partner_id,status)
+      console.log(order)
       let query ={
         "tour_id":order.router[0].id,
         "tour_route":order.router[0].name,
@@ -405,7 +408,7 @@ export const riderDashboard = async (req,res) => {
         "bottle_return":order.order1[0].total_collective_bottle,
         "order_status":order.order1[0].status
        }
-       return res.status(responseCode.SUCCESS).json({status: true,data:query,data })
+       return res.status(responseCode.SUCCESS).json({status: true, ...query,data })
     }
     catch(error){
       console.log(error);
