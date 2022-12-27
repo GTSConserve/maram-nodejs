@@ -492,66 +492,91 @@ var update_endtour = /*#__PURE__*/function () {
 exports.update_endtour = update_endtour;
 var getsingleorder = /*#__PURE__*/function () {
   var _ref11 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11(user_id, order_id, delivery_partner_id, order_status, router_id) {
-    var rider, query1, query2, query3, query4, query5;
+    var daily, query1, query2, query3, query4, query7, query5, query6;
     return _regeneratorRuntime().wrap(function _callee11$(_context11) {
       while (1) {
         switch (_context11.prev = _context11.next) {
           case 0:
-            console.log(router_id);
-            _context11.prev = 1;
-            _context11.next = 4;
-            return (0, _db["default"])('routes').select("id as router_id").where({
-              rider_id: delivery_partner_id
-            });
-          case 4:
-            rider = _context11.sent;
-            console.log(rider[0].id);
-            _context11.next = 8;
-            return (0, _db["default"])("daily_orders").select("daily_orders.id", "daily_orders.task_name", "daily_orders.tour_status", "daily_orders.status as order_status").where({
-              user_id: user_id,
-              router_id: router_id
-            });
-          case 8:
-            query1 = _context11.sent;
-            _context11.next = 11;
-            return (0, _db["default"])("users").join("user_address", "user_address.user_id", "=", "users.id").select("users.id as user_id", "users.name as user_name", "users.user_unique_id as customer_id", "users.mobile_number as user_mobile", "user_address.address as user_address", "user_address.landmark", "user_address.latitude as user_latitude", "user_address.longitude as user_longitude").where({
+            _context11.prev = 0;
+            _context11.next = 3;
+            return (0, _db["default"])('daily_orders').select('id', 'router_id', 'status', 'total_collective_bottle', 'add_on_order_id', 'user_id', 'subscription_id', 'additional_order_id', "total_qty").where({
+              status: order_status,
               user_id: user_id
             });
-          case 11:
-            query2 = _context11.sent;
-            _context11.next = 14;
-            return (0, _db["default"])('daily_orders').join("subscribed_user_details", "subscribed_user_details.id", "=", "daily_orders.subscription_id").join("products", "products.id", "=", "subscribed_user_details.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id as product_id", "products.name as product_name", "subscribed_user_details.quantity as quantity", "products.unit_value", "unit_types.value as unit_type", "products.price");
-          case 14:
-            query3 = _context11.sent;
-            _context11.next = 17;
-            return (0, _db["default"])('daily_orders').join("additional_orders", "additional_orders.id", "=", "daily_orders.subscription_id").join("subscribed_user_details", "subscribed_user_details.id", "=", "daily_orders.additional_order_id").join("products", "products.id", "=", "subscribed_user_details.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id as product_id", "products.name as product_name", "additional_orders.quantity as quantity", "products.unit_value", "unit_types.value as unit_type", "products.price");
-          case 17:
-            query4 = _context11.sent;
-            _context11.next = 20;
-            return (0, _db["default"])('daily_orders').join("add_on_orders", "add_on_orders.id", "=", "daily_orders.add_on_order_id").join("add_on_order_items", "add_on_order_items.add_on_order_id", "=", "add_on_orders.id").join("products", "products.id", "=", "add_on_order_items.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id as product_id", "products.name as product_name", "add_on_order_items.quantity as quantity", "products.unit_value", "unit_types.value as unit_type", "products.price").where({
-              "daily_orders.status": order_status
+          case 3:
+            daily = _context11.sent;
+            _context11.next = 6;
+            return (0, _db["default"])("daily_orders").select("id",
+            // "daily_orders.task_name",
+            "tour_status", "status ").where({
+              "daily_orders.id": daily[0].id
             });
-          case 20:
+          case 6:
+            query1 = _context11.sent;
+            _context11.next = 9;
+            return (0, _db["default"])("users").join("user_address", "user_address.user_id", "=", "users.id").select("users.id as user_id", "users.name as user_name", "users.user_unique_id as customer_id", "users.mobile_number as user_mobile", "user_address.address as user_address", "user_address.landmark as landmark", "user_address.latitude as user_latitude", "user_address.longitude as user_longitude").where({
+              "users.id": daily[0].user_id
+            });
+          case 9:
+            query2 = _context11.sent;
+            _context11.next = 12;
+            return (0, _db["default"])('daily_orders').join("subscribed_user_details", "subscribed_user_details.id", "=", "daily_orders.subscription_id").join("products", "products.id", "=", "subscribed_user_details.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id as product_id", "products.name as product_name", "subscribed_user_details.quantity as quantity", "products.unit_value as unit_value", "unit_types.value as unit_type", "products.price as price", "subscribed_user_details.id as id").where({
+              "subscribed_user_details.id": daily[0].subscription_id
+            });
+          case 12:
+            query3 = _context11.sent;
+            _context11.next = 15;
+            return (0, _db["default"])('daily_orders').join("additional_orders", "additional_orders.id", "=", "daily_orders.additional_order_id").join("subscribed_user_details", "subscribed_user_details.id", "=", "daily_orders.subscription_id").join("products", "products.id", "=", "subscribed_user_details.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id as product_id", "products.name as product_name", "additional_orders.quantity as quantity", "products.unit_value", "unit_types.value as unit_type", "products.price", "additional_orders.id as add_id").where({
+              "additional_orders.id": daily[0].additional_order_id
+            });
+          case 15:
+            query4 = _context11.sent;
+            _context11.next = 18;
+            return (0, _db["default"])('add_on_order_items').select('id', 'add_on_order_id').where({
+              "add_on_order_items.add_on_order_id": daily[0].add_on_order_id
+            });
+          case 18:
+            query7 = _context11.sent;
+            console.log(query7.length);
+            _context11.next = 22;
+            return (0, _db["default"])('daily_orders').join("add_on_orders", "add_on_orders.id", "=", "daily_orders.add_on_order_id").join("add_on_order_items", "add_on_order_items.add_on_order_id", "=", "add_on_orders.id").join("products", "products.id", "=", "add_on_order_items.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id as product_id", "products.name as product_name", "add_on_order_items.quantity as quantity", "products.unit_value as unit_value", "unit_types.value as unit_type", "products.price", "add_on_orders.id as order_id", "add_on_orders.id as addon_id").where({
+              "add_on_orders.id": daily[0].add_on_order_id
+            });
+          case 22:
             query5 = _context11.sent;
-            console.log(query5);
+            console.log(query5.length);
+            _context11.next = 26;
+            return (0, _db["default"])('add_on_order_items').select('id', 'add_on_order_id').where({
+              "add_on_order_items.add_on_order_id": daily[0].add_on_order_id,
+              status: "delivered"
+            });
+          case 26:
+            query6 = _context11.sent;
             return _context11.abrupt("return", {
               status: true,
-              data: query1
+              daily: daily,
+              query1: query1,
+              query2: query2,
+              query3: query3,
+              query4: query4,
+              query5: query5,
+              query6: query6,
+              data: query5.length
             });
-          case 25:
-            _context11.prev = 25;
-            _context11.t0 = _context11["catch"](1);
+          case 30:
+            _context11.prev = 30;
+            _context11.t0 = _context11["catch"](0);
             console.log(_context11.t0);
             return _context11.abrupt("return", {
               status: false,
               message: "Cannot Update the status"
             });
-          case 29:
+          case 34:
           case "end":
             return _context11.stop();
         }
       }
-    }, _callee11, null, [[1, 25]]);
+    }, _callee11, null, [[0, 30]]);
   }));
   return function getsingleorder(_x21, _x22, _x23, _x24, _x25) {
     return _ref11.apply(this, arguments);
@@ -718,7 +743,7 @@ var cancel_order = /*#__PURE__*/function () {
 exports.cancel_order = cancel_order;
 var order_list = /*#__PURE__*/function () {
   var _ref15 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee15(delivery_partner_id, status) {
-    var router, order, delivery, order1, addon, user;
+    var router, query3, order, delivery, order1, addon, user;
     return _regeneratorRuntime().wrap(function _callee15$(_context15) {
       while (1) {
         switch (_context15.prev = _context15.next) {
@@ -731,37 +756,41 @@ var order_list = /*#__PURE__*/function () {
           case 3:
             router = _context15.sent;
             _context15.next = 6;
+            return (0, _db["default"])('daily_orders').join("subscribed_user_details", "subscribed_user_details.id", "=", "daily_orders.subscription_id").join("products", "products.id", "=", "subscribed_user_details.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.unit_value as unit_value", "unit_types.value as unit_type", "products.price as price");
+          case 6:
+            query3 = _context15.sent;
+            _context15.next = 9;
             return (0, _db["default"])('daily_orders').select('id', 'total_collective_bottle', 'status', 'add_on_order_id', 'user_id', 'total_qty').where({
               router_id: router[0].id
             });
-          case 6:
+          case 9:
             order = _context15.sent;
-            _context15.next = 9;
+            _context15.next = 12;
             return (0, _db["default"])('daily_orders').select('id').where({
               router_id: router[0].id,
               status: "delivered"
             });
-          case 9:
+          case 12:
             delivery = _context15.sent;
-            _context15.next = 12;
+            _context15.next = 15;
             return (0, _db["default"])('daily_orders').select('id', 'total_collective_bottle', 'status', 'add_on_order_id', 'user_id', 'total_qty').where({
               router_id: router[0].id,
               status: status
             });
-          case 12:
+          case 15:
             order1 = _context15.sent;
             console.log(order1);
-            _context15.next = 16;
+            _context15.next = 19;
             return (0, _db["default"])('add_on_order_items').select('id').where({
               add_on_order_id: order1[0].add_on_order_id
             });
-          case 16:
+          case 19:
             addon = _context15.sent;
-            _context15.next = 19;
+            _context15.next = 22;
             return (0, _db["default"])('users').select('name', 'user_unique_id').where({
               id: order[0].user_id
             });
-          case 19:
+          case 22:
             user = _context15.sent;
             return _context15.abrupt("return", {
               status: true,
@@ -770,22 +799,23 @@ var order_list = /*#__PURE__*/function () {
               delivery: delivery,
               addon: addon,
               order1: order1,
-              user: user
+              user: user,
+              query3: query3
             });
-          case 23:
-            _context15.prev = 23;
+          case 26:
+            _context15.prev = 26;
             _context15.t0 = _context15["catch"](0);
             console.log(_context15.t0);
             return _context15.abrupt("return", {
               status: false,
               message: "No data found"
             });
-          case 27:
+          case 30:
           case "end":
             return _context15.stop();
         }
       }
-    }, _callee15, null, [[0, 23]]);
+    }, _callee15, null, [[0, 26]]);
   }));
   return function order_list(_x40, _x41) {
     return _ref15.apply(this, arguments);
