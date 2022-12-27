@@ -491,7 +491,7 @@ var update_endtour = /*#__PURE__*/function () {
 // get single order
 exports.update_endtour = update_endtour;
 var getsingleorder = /*#__PURE__*/function () {
-  var _ref11 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11(user_id, order_id, delivery_partner_id, order_status, router_id) {
+  var _ref11 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11(order_id, delivery_partner_id, order_status, router_id) {
     var daily, query1, query2, query3, query4, query7, query5, query6;
     return _regeneratorRuntime().wrap(function _callee11$(_context11) {
       while (1) {
@@ -501,7 +501,7 @@ var getsingleorder = /*#__PURE__*/function () {
             _context11.next = 3;
             return (0, _db["default"])('daily_orders').select('id', 'router_id', 'status', 'total_collective_bottle', 'add_on_order_id', 'user_id', 'subscription_id', 'additional_order_id', "total_qty").where({
               status: order_status,
-              user_id: user_id
+              id: order_id
             });
           case 3:
             daily = _context11.sent;
@@ -578,7 +578,7 @@ var getsingleorder = /*#__PURE__*/function () {
       }
     }, _callee11, null, [[0, 30]]);
   }));
-  return function getsingleorder(_x21, _x22, _x23, _x24, _x25) {
+  return function getsingleorder(_x21, _x22, _x23, _x24) {
     return _ref11.apply(this, arguments);
   };
 }();
@@ -609,7 +609,7 @@ var statusupdate = /*#__PURE__*/function () {
       }
     }, _callee12, null, [[0, 6]]);
   }));
-  return function statusupdate(_x26, _x27, _x28, _x29, _x30, _x31) {
+  return function statusupdate(_x25, _x26, _x27, _x28, _x29, _x30) {
     return _ref12.apply(this, arguments);
   };
 }();
@@ -684,7 +684,7 @@ var dashboard = /*#__PURE__*/function () {
       }
     }, _callee13, null, [[0, 19]]);
   }));
-  return function dashboard(_x32, _x33) {
+  return function dashboard(_x31, _x32) {
     return _ref13.apply(this, arguments);
   };
 }();
@@ -734,7 +734,7 @@ var cancel_order = /*#__PURE__*/function () {
       }
     }, _callee14, null, [[0, 10]]);
   }));
-  return function cancel_order(_x34, _x35, _x36, _x37, _x38, _x39) {
+  return function cancel_order(_x33, _x34, _x35, _x36, _x37, _x38) {
     return _ref14.apply(this, arguments);
   };
 }();
@@ -755,31 +755,31 @@ var order_list = /*#__PURE__*/function () {
             });
           case 3:
             router = _context15.sent;
-            _context15.next = 6;
+            console.log(router);
+            _context15.next = 7;
             return (0, _db["default"])('daily_orders').join("subscribed_user_details", "subscribed_user_details.id", "=", "daily_orders.subscription_id").join("products", "products.id", "=", "subscribed_user_details.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.unit_value as unit_value", "unit_types.value as unit_type", "products.price as price");
-          case 6:
+          case 7:
             query3 = _context15.sent;
-            _context15.next = 9;
+            _context15.next = 10;
             return (0, _db["default"])('daily_orders').select('id', 'total_collective_bottle', 'status', 'add_on_order_id', 'user_id', 'total_qty').where({
               router_id: router[0].id
             });
-          case 9:
+          case 10:
             order = _context15.sent;
-            _context15.next = 12;
+            _context15.next = 13;
             return (0, _db["default"])('daily_orders').select('id').where({
               router_id: router[0].id,
-              status: "delivered"
+              status: status
             });
-          case 12:
+          case 13:
             delivery = _context15.sent;
-            _context15.next = 15;
+            _context15.next = 16;
             return (0, _db["default"])('daily_orders').select('id', 'total_collective_bottle', 'status', 'add_on_order_id', 'user_id', 'total_qty').where({
               router_id: router[0].id,
               status: status
             });
-          case 15:
+          case 16:
             order1 = _context15.sent;
-            console.log(order1);
             _context15.next = 19;
             return (0, _db["default"])('add_on_order_items').select('id').where({
               add_on_order_id: order1[0].add_on_order_id
@@ -817,7 +817,7 @@ var order_list = /*#__PURE__*/function () {
       }
     }, _callee15, null, [[0, 26]]);
   }));
-  return function order_list(_x40, _x41) {
+  return function order_list(_x39, _x40) {
     return _ref15.apply(this, arguments);
   };
 }();

@@ -15,6 +15,8 @@ var _index = _interopRequireDefault(require("date-fns/locale/id/index"));
 var _jwt = require("../../services/jwt.service");
 var _bcrypt = _interopRequireDefault(require("bcrypt"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
@@ -402,14 +404,14 @@ var updateEndtour = /*#__PURE__*/function () {
 exports.updateEndtour = updateEndtour;
 var getSingleorder = /*#__PURE__*/function () {
   var _ref8 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8(req, res) {
-    var _req$body5, user_id, order_id, delivery_partner_id, order_status, order, data, user, products, addons, i;
+    var _req$body5, order_id, delivery_partner_id, order_status, order, data, user, products, addons, i;
     return _regeneratorRuntime().wrap(function _callee8$(_context8) {
       while (1) {
         switch (_context8.prev = _context8.next) {
           case 0:
             _context8.prev = 0;
-            _req$body5 = req.body, user_id = _req$body5.user_id, order_id = _req$body5.order_id, delivery_partner_id = _req$body5.delivery_partner_id, order_status = _req$body5.order_status;
-            if (user_id) {
+            _req$body5 = req.body, order_id = _req$body5.order_id, delivery_partner_id = _req$body5.delivery_partner_id, order_status = _req$body5.order_status;
+            if (order_id) {
               _context8.next = 4;
               break;
             }
@@ -419,7 +421,7 @@ var getSingleorder = /*#__PURE__*/function () {
             }));
           case 4:
             _context8.next = 6;
-            return (0, _rider.getsingleorder)(user_id, order_id, delivery_partner_id, order_status);
+            return (0, _rider.getsingleorder)(order_id, delivery_partner_id, order_status);
           case 6:
             order = _context8.sent;
             console.log(order.query5);
@@ -667,10 +669,20 @@ var OrderList = /*#__PURE__*/function () {
           case 0:
             _context12.prev = 0;
             _req$body9 = req.body, delivery_partner_id = _req$body9.delivery_partner_id, status = _req$body9.status;
-            _context12.next = 4;
-            return (0, _rider.order_list)(delivery_partner_id, status);
+            if (delivery_partner_id) {
+              _context12.next = 4;
+              break;
+            }
+            return _context12.abrupt("return", res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
+              status: false,
+              message: "Mandatory field Is Missing"
+            }));
           case 4:
+            _context12.next = 6;
+            return (0, _rider.order_list)(delivery_partner_id, status);
+          case 6:
             order = _context12.sent;
+            console.log(order);
             query = {
               "tour_id": order.router[0].id,
               "tour_route": order.router[0].name,
@@ -686,24 +698,25 @@ var OrderList = /*#__PURE__*/function () {
               "bottle_return": order.order1[0].total_collective_bottle,
               "order_status": order.order1[0].status
             };
-            return _context12.abrupt("return", res.status(_responseCode["default"].SUCCESS).json(_defineProperty({
-              status: true,
-              data: query
-            }, "data", data)));
-          case 10:
-            _context12.prev = 10;
+            return _context12.abrupt("return", res.status(_responseCode["default"].SUCCESS).json(_objectSpread(_objectSpread({
+              status: true
+            }, query), {}, {
+              data: data
+            })));
+          case 13:
+            _context12.prev = 13;
             _context12.t0 = _context12["catch"](0);
             console.log(_context12.t0);
             return _context12.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
-          case 14:
+          case 17:
           case "end":
             return _context12.stop();
         }
       }
-    }, _callee12, null, [[0, 10]]);
+    }, _callee12, null, [[0, 13]]);
   }));
   return function OrderList(_x23, _x24) {
     return _ref12.apply(this, arguments);
