@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.userAddressChange = exports.updateUser = exports.getUser = exports.getSingleCalendar = exports.getEmptyBottle = exports.getAddress = exports.editAddress = exports.deleteUseraddress = exports.checkDeliveryAddress = exports.changePlan = exports.addUserAddress = exports.RemoveOrder = exports.Edit = void 0;
+exports.userAddressChange = exports.updateUser = exports.getUser = exports.getSingleCalendar = exports.getSingleBillList = exports.getEmptyBottle = exports.getBillList = exports.getAddress = exports.editAddress = exports.deleteUseraddress = exports.checkDeliveryAddress = exports.changePlan = exports.addUserAddress = exports.RemoveOrder = exports.Edit = void 0;
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 var _jwt = require("../../services/jwt.service");
 var _validator = require("../../services/validator.service");
@@ -17,21 +17,21 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 var addUserAddress = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(req, res) {
-    var payload, userId;
+    var payload, _userId;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             _context.prev = 0;
             payload = (0, _validator.userAddressValidator)(req.body);
-            userId = req.body.userId;
+            _userId = req.body.userId;
             if (!payload.status) {
               _context.next = 7;
               break;
             }
             _context.next = 6;
             return (0, _db["default"])("user_address").insert({
-              user_id: userId,
+              user_id: _userId,
               address: payload.address,
               landmark: payload.landmark,
               title: payload.title,
@@ -72,20 +72,20 @@ var addUserAddress = /*#__PURE__*/function () {
 exports.addUserAddress = addUserAddress;
 var getAddress = /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(req, res) {
-    var userId, address;
+    var _userId2, _address;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
             _context2.prev = 0;
-            userId = req.body.userId;
+            _userId2 = req.body.userId;
             _context2.next = 4;
-            return (0, _user_details.get_address)(userId);
+            return (0, _user_details.get_address)(_userId2);
           case 4:
-            address = _context2.sent;
+            _address = _context2.sent;
             res.status(200).json({
               status: true,
-              data: address.body
+              data: _address.body
             });
             _context2.next = 12;
             break;
@@ -110,15 +110,15 @@ var getAddress = /*#__PURE__*/function () {
 exports.getAddress = getAddress;
 var editAddress = /*#__PURE__*/function () {
   var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(req, res) {
-    var _req$body, userId, title, address, landmark, type, address_id;
+    var _req$body, _userId3, title, _address2, landmark, type, address_id;
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.prev = 0;
-            _req$body = req.body, userId = _req$body.userId, title = _req$body.title, address = _req$body.address, landmark = _req$body.landmark, type = _req$body.type, address_id = _req$body.address_id;
+            _req$body = req.body, _userId3 = _req$body.userId, title = _req$body.title, _address2 = _req$body.address, landmark = _req$body.landmark, type = _req$body.type, address_id = _req$body.address_id;
             _context3.next = 4;
-            return (0, _user_details.edit_address)(userId, address_id, title, address, landmark, type);
+            return (0, _user_details.edit_address)(_userId3, address_id, title, _address2, landmark, type);
           case 4:
             res.status(_responseCode["default"].SUCCESS).json({
               status: true,
@@ -148,15 +148,15 @@ var editAddress = /*#__PURE__*/function () {
 exports.editAddress = editAddress;
 var getUser = /*#__PURE__*/function () {
   var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(req, res) {
-    var userId, user, get_user_detail;
+    var _userId4, user, get_user_detail;
     return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
             _context4.prev = 0;
-            userId = req.body.userId;
+            _userId4 = req.body.userId;
             _context4.next = 4;
-            return (0, _user_details.get_user)(userId);
+            return (0, _user_details.get_user)(_userId4);
           case 4:
             user = _context4.sent;
             if (!(user.body.length === 0)) {
@@ -271,13 +271,13 @@ var updateUser = /*#__PURE__*/function () {
 exports.updateUser = updateUser;
 var deleteUseraddress = /*#__PURE__*/function () {
   var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(req, res) {
-    var _req$body3, userId, address_id, addresses;
+    var _req$body3, _userId5, address_id, addresses;
     return _regeneratorRuntime().wrap(function _callee6$(_context6) {
       while (1) {
         switch (_context6.prev = _context6.next) {
           case 0:
             _context6.prev = 0;
-            _req$body3 = req.body, userId = _req$body3.userId, address_id = _req$body3.address_id;
+            _req$body3 = req.body, _userId5 = _req$body3.userId, address_id = _req$body3.address_id;
             if (address_id) {
               _context6.next = 4;
               break;
@@ -288,7 +288,7 @@ var deleteUseraddress = /*#__PURE__*/function () {
             }));
           case 4:
             _context6.next = 6;
-            return (0, _user_details.delete_user_address)(address_id, userId);
+            return (0, _user_details.delete_user_address)(address_id, _userId5);
           case 6:
             addresses = _context6.sent;
             res.status(_responseCode["default"].SUCCESS).json({
@@ -491,51 +491,49 @@ var checkDeliveryAddress = /*#__PURE__*/function () {
 exports.checkDeliveryAddress = checkDeliveryAddress;
 var getEmptyBottle = /*#__PURE__*/function () {
   var _ref11 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11(req, res) {
-    var userId, get_user_bottle_detail;
+    var _userId6, this_month_item_detail;
     return _regeneratorRuntime().wrap(function _callee11$(_context11) {
       while (1) {
         switch (_context11.prev = _context11.next) {
           case 0:
             _context11.prev = 0;
-            userId = req.body.userId;
-            if (!userId) {
-              _context11.next = 7;
+            _userId6 = req.body.userId;
+            if (!_userId6) {
+              _context11.next = 9;
               break;
             }
-            get_user_bottle_detail = {
-              "empty_bottle_in_hand_1_litre": "0",
-              "empty_bottle_in_hand_0.5_litre": "30",
-              "empty_bottle_return_1_litre": "0",
-              "empty_bottle_return_0.5_litre": "30"
-            };
+            _context11.next = 5;
+            return (0, _db["default"])("empty_bottle_tracking").select("one_liter_in_hand as delivered_orders", "one_liter_in_return as remaining_orders", "half_liter_in_hand as additional_delivered_orders", "one_liter_in_return as additional_remaining_orders");
+          case 5:
+            this_month_item_detail = _context11.sent;
             res.status(_responseCode["default"].SUCCESS).json({
               status: true,
               this_month_item_detail: get_user_bottle_detail
             });
-            _context11.next = 8;
+            _context11.next = 10;
             break;
-          case 7:
+          case 9:
             return _context11.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
               message: "Bottle Not Found"
             }));
-          case 8:
-            _context11.next = 14;
-            break;
           case 10:
-            _context11.prev = 10;
+            _context11.next = 16;
+            break;
+          case 12:
+            _context11.prev = 12;
             _context11.t0 = _context11["catch"](0);
             console.log(_context11.t0);
             res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: "no user"
             });
-          case 14:
+          case 16:
           case "end":
             return _context11.stop();
         }
       }
-    }, _callee11, null, [[0, 10]]);
+    }, _callee11, null, [[0, 12]]);
   }));
   return function getEmptyBottle(_x21, _x22) {
     return _ref11.apply(this, arguments);
@@ -544,13 +542,13 @@ var getEmptyBottle = /*#__PURE__*/function () {
 exports.getEmptyBottle = getEmptyBottle;
 var userAddressChange = /*#__PURE__*/function () {
   var _ref12 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee12(req, res) {
-    var _req$body6, userId, title, address, landmark, type, address_id;
+    var _req$body6, _userId7, title, _address3, landmark, type, address_id;
     return _regeneratorRuntime().wrap(function _callee12$(_context12) {
       while (1) {
         switch (_context12.prev = _context12.next) {
           case 0:
             try {
-              _req$body6 = req.body, userId = _req$body6.userId, title = _req$body6.title, address = _req$body6.address, landmark = _req$body6.landmark, type = _req$body6.type, address_id = _req$body6.address_id; // await edit_address(userId, address_id, title, address, landmark, type);
+              _req$body6 = req.body, _userId7 = _req$body6.userId, title = _req$body6.title, _address3 = _req$body6.address, landmark = _req$body6.landmark, type = _req$body6.type, address_id = _req$body6.address_id; // await edit_address(userId, address_id, title, address, landmark, type);
               res.status(_responseCode["default"].SUCCESS).json({
                 status: true,
                 message: "updated successfully"
@@ -627,3 +625,110 @@ var getSingleCalendar = /*#__PURE__*/function () {
   };
 }();
 exports.getSingleCalendar = getSingleCalendar;
+var getBillList = /*#__PURE__*/function () {
+  var _ref14 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee14(req, res) {
+    var _userId8, user, get_bill;
+    return _regeneratorRuntime().wrap(function _callee14$(_context14) {
+      while (1) {
+        switch (_context14.prev = _context14.next) {
+          case 0:
+            _context14.prev = 0;
+            _userId8 = req.body.userId;
+            _context14.next = 4;
+            return (0, _user_details.get_user_bill)(_userId8);
+          case 4:
+            user = _context14.sent;
+            if (!(user.body.length === 0)) {
+              _context14.next = 7;
+              break;
+            }
+            return _context14.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
+              status: false,
+              message: "User Not Found"
+            }));
+          case 7:
+            get_bill = {};
+            user.body.map(function (data) {
+              get_bill.id = data.id;
+              get_bill.user_id = data.user_id;
+              get_bill.payment_id = data.id; // payment id set to id
+              // ? process.env.BASE_URL + data.image
+              // : null;
+              get_bill.items = data.items;
+              get_bill.bill_no = data.bill_no;
+              get_bill.bill_value = data.bill_value;
+              get_bill.status = data.status;
+            });
+            res.status(_responseCode["default"].SUCCESS).json({
+              status: true,
+              data: get_bill
+            });
+            _context14.next = 16;
+            break;
+          case 12:
+            _context14.prev = 12;
+            _context14.t0 = _context14["catch"](0);
+            console.log(_context14.t0);
+            res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
+              status: false,
+              message: "no user"
+            });
+          case 16:
+          case "end":
+            return _context14.stop();
+        }
+      }
+    }, _callee14, null, [[0, 12]]);
+  }));
+  return function getBillList(_x27, _x28) {
+    return _ref14.apply(this, arguments);
+  };
+}();
+exports.getBillList = getBillList;
+var getSingleBillList = /*#__PURE__*/function () {
+  var _ref15 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee15(req, res) {
+    var bill_id, get_single_bill_list;
+    return _regeneratorRuntime().wrap(function _callee15$(_context15) {
+      while (1) {
+        switch (_context15.prev = _context15.next) {
+          case 0:
+            _context15.prev = 0;
+            bill_id = req.body.bill_id;
+            if (bill_id) {
+              _context15.next = 4;
+              break;
+            }
+            return _context15.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
+              status: false,
+              message: "Cannot find bill list"
+            }));
+          case 4:
+            _context15.next = 6;
+            return (0, _user_details.get_single_bill)(userId);
+          case 6:
+            get_single_bill_list = _context15.sent;
+            res.status(200).json({
+              status: true,
+              data: address.body
+            });
+            _context15.next = 14;
+            break;
+          case 10:
+            _context15.prev = 10;
+            _context15.t0 = _context15["catch"](0);
+            console.log(_context15.t0);
+            res.status(500).json({
+              status: false
+            });
+          case 14:
+          case "end":
+            return _context15.stop();
+        }
+      }
+    }, _callee15, null, [[0, 10]]);
+  }));
+  return function getSingleBillList(_x29, _x30) {
+    return _ref15.apply(this, arguments);
+  };
+}();
+exports.getSingleBillList = getSingleBillList;

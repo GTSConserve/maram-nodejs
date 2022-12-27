@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.remove_order = exports.get_user = exports.get_address = exports.edit_address = exports.edit = exports.delete_user_address = exports.checkAddress = exports.change_plan = void 0;
+exports.remove_order = exports.get_user_bill = exports.get_user = exports.get_single_bill = exports.get_address = exports.edit_address = exports.edit = exports.delete_user_address = exports.checkAddress = exports.change_plan = void 0;
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 var _db = _interopRequireDefault(require("../../services/db.service"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -430,3 +430,61 @@ var checkAddress = /*#__PURE__*/function () {
   };
 }();
 exports.checkAddress = checkAddress;
+var get_user_bill = /*#__PURE__*/function () {
+  var _ref9 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9(userId) {
+    var getuser;
+    return _regeneratorRuntime().wrap(function _callee9$(_context9) {
+      while (1) {
+        switch (_context9.prev = _context9.next) {
+          case 0:
+            _context9.next = 2;
+            return _db["default"].select("id", "items", "bill_no", "bill_value", "status").from("bill_history").where({
+              user_id: userId
+            });
+          case 2:
+            getuser = _context9.sent;
+            console.log(getuser);
+            _context9.prev = 4;
+            return _context9.abrupt("return", {
+              status: _responseCode["default"].SUCCESS,
+              body: getuser
+            });
+          case 8:
+            _context9.prev = 8;
+            _context9.t0 = _context9["catch"](4);
+            console.log(_context9.t0);
+            return _context9.abrupt("return", {
+              status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
+              error: _context9.t0
+            });
+          case 12:
+          case "end":
+            return _context9.stop();
+        }
+      }
+    }, _callee9, null, [[4, 8]]);
+  }));
+  return function get_user_bill(_x19) {
+    return _ref9.apply(this, arguments);
+  };
+}();
+exports.get_user_bill = get_user_bill;
+var get_single_bill = /*#__PURE__*/function () {
+  var _ref10 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10() {
+    return _regeneratorRuntime().wrap(function _callee10$(_context10) {
+      while (1) {
+        switch (_context10.prev = _context10.next) {
+          case 0:
+            try {} catch (error) {}
+          case 1:
+          case "end":
+            return _context10.stop();
+        }
+      }
+    }, _callee10);
+  }));
+  return function get_single_bill() {
+    return _ref10.apply(this, arguments);
+  };
+}();
+exports.get_single_bill = get_single_bill;

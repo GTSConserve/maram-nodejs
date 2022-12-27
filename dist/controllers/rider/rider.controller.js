@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updeteRiderLocation = exports.updateStartTour = exports.updateRiderstatus = exports.updateEndtour = exports.ten = exports.riderDashboard = exports.orderStatusUpdate = exports.login = exports.getSingleorder = exports.getRiderdetails = exports.getAppControls = exports.cancelOrder = exports.OrderList = void 0;
+exports.updeteRiderLocation = exports.updateStartTour = exports.updateRiderstatus = exports.updateEndtour = exports.riderDashboard = exports.orderStatusUpdate = exports.login = exports.getSingleorder = exports.getRiderdetails = exports.getAppControls = exports.cancelOrder = exports.OrderList = exports.LocationCheck = void 0;
 var _express = _interopRequireDefault(require("express"));
 var _messages = _interopRequireDefault(require("../../constants/messages"));
 var _rider = require("../../models/rider/rider.model");
@@ -14,6 +14,7 @@ var _validator = require("../../services/validator.service");
 var _index = _interopRequireDefault(require("date-fns/locale/id/index"));
 var _jwt = require("../../services/jwt.service");
 var _bcrypt = _interopRequireDefault(require("bcrypt"));
+var _haversineDistance = _interopRequireDefault(require("haversine-distance"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
@@ -404,7 +405,7 @@ var updateEndtour = /*#__PURE__*/function () {
 exports.updateEndtour = updateEndtour;
 var getSingleorder = /*#__PURE__*/function () {
   var _ref8 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8(req, res) {
-    var _req$body5, order_id, delivery_partner_id, order_status, order, data, user, products, addons, i;
+    var _req$body5, order_id, delivery_partner_id, order_status, order, data, user, products, i, _i, addons, _i2;
     return _regeneratorRuntime().wrap(function _callee8$(_context8) {
       while (1) {
         switch (_context8.prev = _context8.next) {
@@ -424,9 +425,8 @@ var getSingleorder = /*#__PURE__*/function () {
             return (0, _rider.getsingleorder)(order_id, delivery_partner_id, order_status);
           case 6:
             order = _context8.sent;
-            console.log(order.query5);
             if (!(order.status = true)) {
-              _context8.next = 15;
+              _context8.next = 16;
               break;
             }
             data = {
@@ -449,24 +449,30 @@ var getSingleorder = /*#__PURE__*/function () {
               "user_latitude": order.query2[0].user_latitude,
               "user_longitude": order.query2[0].user_longitude
             };
-            products = [{
-              "product_id": order.query3[0].id,
-              "product_name": order.query3[0].product_name,
-              "variation": order.query3[0].unit_value + "" + order.query3[0].unit_type,
-              "quantity": order.query3[0].quantity
-            }, {
-              "product_id": order.query4[0].add_id,
-              "product_name": order.query4[0].product_name,
-              "variation": order.query4[0].unit_value + "" + order.query3[0].unit_type,
-              "quantity": order.query4[0].quantity
-            }];
+            products = [];
+            for (i = 0; i < order.query3.length; i++) {
+              products.push({
+                "product_id": order.query3[0].id,
+                "product_name": order.query3[0].product_name,
+                "variation": order.query3[0].unit_value + "" + order.query3[0].unit_type,
+                "quantity": order.query3[0].quantity
+              });
+            }
+            for (_i = 0; _i < order.query4.length; _i++) {
+              products.push({
+                "product_id": order.query4[0].add_id,
+                "product_name": order.query4[0].product_name,
+                "variation": order.query4[0].unit_value + "" + order.query3[0].unit_type,
+                "quantity": order.query4[0].quantity
+              });
+            }
             addons = [];
-            for (i = 0; i < order.data; i++) {
+            for (_i2 = 0; _i2 < order.data; _i2++) {
               addons.push({
-                "addon_id": order.query5[i].addon_id,
-                "addon_name": order.query5[i].product_name,
-                "variation": order.query5[i].unit_value + "" + order.query5[i].unit_type,
-                "quantity": order.query5[i].quantity
+                "addon_id": order.query5[_i2].addon_id,
+                "addon_name": order.query5[_i2].product_name,
+                "variation": order.query5[_i2].unit_value + "" + order.query5[_i2].unit_type,
+                "quantity": order.query5[_i2].quantity
               });
             }
             return _context8.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
@@ -476,23 +482,23 @@ var getSingleorder = /*#__PURE__*/function () {
               products: products,
               addons: addons
             }));
-          case 15:
-            _context8.next = 21;
+          case 16:
+            _context8.next = 22;
             break;
-          case 17:
-            _context8.prev = 17;
+          case 18:
+            _context8.prev = 18;
             _context8.t0 = _context8["catch"](0);
             console.log(_context8.t0);
             return _context8.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
-          case 21:
+          case 22:
           case "end":
             return _context8.stop();
         }
       }
-    }, _callee8, null, [[0, 17]]);
+    }, _callee8, null, [[0, 18]]);
   }));
   return function getSingleorder(_x15, _x16) {
     return _ref8.apply(this, arguments);
@@ -503,13 +509,13 @@ var getSingleorder = /*#__PURE__*/function () {
 exports.getSingleorder = getSingleorder;
 var orderStatusUpdate = /*#__PURE__*/function () {
   var _ref9 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9(req, res) {
-    var _req$body6, user_id, order_id, order_status, subscription_id, products, addons, orderstatus;
+    var _req$body6, user_id, delivery_partner_id, one_iltre_count, half_litre_count, order_id, order_status, products, addons, orderstatus;
     return _regeneratorRuntime().wrap(function _callee9$(_context9) {
       while (1) {
         switch (_context9.prev = _context9.next) {
           case 0:
             _context9.prev = 0;
-            _req$body6 = req.body, user_id = _req$body6.user_id, order_id = _req$body6.order_id, order_status = _req$body6.order_status, subscription_id = _req$body6.subscription_id, products = _req$body6.products, addons = _req$body6.addons;
+            _req$body6 = req.body, user_id = _req$body6.user_id, delivery_partner_id = _req$body6.delivery_partner_id, one_iltre_count = _req$body6.one_iltre_count, half_litre_count = _req$body6.half_litre_count, order_id = _req$body6.order_id, order_status = _req$body6.order_status, products = _req$body6.products, addons = _req$body6.addons;
             if (!(!user_id || !order_id || !order_status)) {
               _context9.next = 4;
               break;
@@ -520,25 +526,27 @@ var orderStatusUpdate = /*#__PURE__*/function () {
             }));
           case 4:
             _context9.next = 6;
-            return (0, _rider.statusupdate)(user_id, order_id, order_status, subscription_id, products, addons);
+            return (0, _rider.statusupdate)(user_id, delivery_partner_id, one_iltre_count, half_litre_count, order_id, order_status, products, addons);
           case 6:
             orderstatus = _context9.sent;
-            _context9.next = 13;
-            break;
-          case 9:
-            _context9.prev = 9;
+            return _context9.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
+              status: true,
+              orderstatus: orderstatus
+            }));
+          case 10:
+            _context9.prev = 10;
             _context9.t0 = _context9["catch"](0);
             console.log(_context9.t0);
             return _context9.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
-          case 13:
+          case 14:
           case "end":
             return _context9.stop();
         }
       }
-    }, _callee9, null, [[0, 9]]);
+    }, _callee9, null, [[0, 10]]);
   }));
   return function orderStatusUpdate(_x17, _x18) {
     return _ref9.apply(this, arguments);
@@ -615,7 +623,7 @@ var riderDashboard = /*#__PURE__*/function () {
 exports.riderDashboard = riderDashboard;
 var cancelOrder = /*#__PURE__*/function () {
   var _ref11 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11(req, res) {
-    var _req$body8, user_id, order_id, delivery_partner_id, order_status, reason, date, cancel;
+    var _req$body8, user_id, order_id, delivery_partner_id, order_status, reason, date, router, order;
     return _regeneratorRuntime().wrap(function _callee11$(_context11) {
       while (1) {
         switch (_context11.prev = _context11.next) {
@@ -632,26 +640,39 @@ var cancelOrder = /*#__PURE__*/function () {
             }));
           case 4:
             _context11.next = 6;
-            return (0, _rider.cancel_order)(user_id, order_id, delivery_partner_id, order_status, date);
+            return (0, _db["default"])('routes').select('id').where({
+              rider_id: delivery_partner_id
+            });
           case 6:
-            cancel = _context11.sent;
+            router = _context11.sent;
+            _context11.next = 9;
+            return (0, _db["default"])('daily_orders').update({
+              status: order_status
+            }).where({
+              user_id: user_id,
+              router_id: router[0].id,
+              date: date
+            });
+          case 9:
+            order = _context11.sent;
             return _context11.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
-              data: cancel
+              status: true,
+              message: "order cancelled by rider"
             }));
-          case 10:
-            _context11.prev = 10;
+          case 13:
+            _context11.prev = 13;
             _context11.t0 = _context11["catch"](0);
             console.log(_context11.t0);
             return _context11.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
-          case 14:
+          case 17:
           case "end":
             return _context11.stop();
         }
       }
-    }, _callee11, null, [[0, 10]]);
+    }, _callee11, null, [[0, 13]]);
   }));
   return function cancelOrder(_x21, _x22) {
     return _ref11.apply(this, arguments);
@@ -682,122 +703,118 @@ var OrderList = /*#__PURE__*/function () {
             return (0, _rider.order_list)(delivery_partner_id, status);
           case 6:
             order = _context12.sent;
-            console.log(order);
+            // console.log(order)
             query = {
               "tour_id": order.router[0].id,
               "tour_route": order.router[0].name,
               "total_orders": order.order.length,
+              "tour_status": order.order[0].status,
               "completed_orders": order.delivery.length
-            };
-            data = {
+            }; //  console.log(query)
+            data = [{
               "order_id": order.order[0].id,
               "milk_variation": order.order[0].total_qty + " " + order.query3[0].unit_type,
-              "addon_items": order.addon.length,
+              "addon_items_delivered": order.addon.length,
+              "addon_items_undelivered": order.addon1.length,
               "user_name": order.user[0].name,
               "customer_id": order.user[0].user_unique_id,
               "bottle_return": order.order1[0].total_collective_bottle,
               "order_status": order.order1[0].status
-            };
+            }]; //  const  = Object.keys(person);
             return _context12.abrupt("return", res.status(_responseCode["default"].SUCCESS).json(_objectSpread(_objectSpread({
               status: true
             }, query), {}, {
               data: data
             })));
-          case 13:
-            _context12.prev = 13;
+          case 12:
+            _context12.prev = 12;
             _context12.t0 = _context12["catch"](0);
             console.log(_context12.t0);
             return _context12.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
-          case 17:
+          case 16:
           case "end":
             return _context12.stop();
         }
       }
-    }, _callee12, null, [[0, 13]]);
+    }, _callee12, null, [[0, 12]]);
   }));
   return function OrderList(_x23, _x24) {
     return _ref12.apply(this, arguments);
   };
 }();
+
+// location check
 exports.OrderList = OrderList;
-var ten = /*#__PURE__*/function () {
+var LocationCheck = /*#__PURE__*/function () {
   var _ref13 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee13(req, res) {
-    var payload, user_name, password, checkPhoneNumber, query, userId, today;
+    var _req$body10, delivery_partner_id, order_id, location, point1, point2, haversine_m, haversine_km;
     return _regeneratorRuntime().wrap(function _callee13$(_context13) {
       while (1) {
         switch (_context13.prev = _context13.next) {
           case 0:
             _context13.prev = 0;
-            payload = (0, _validator.userValidator)(req.body);
-            user_name = payload.user_name, password = payload.password;
-            if (!payload) {
-              _context13.next = 16;
+            _req$body10 = req.body, delivery_partner_id = _req$body10.delivery_partner_id, order_id = _req$body10.order_id;
+            if (!(!delivery_partner_id || !order_id)) {
+              _context13.next = 4;
               break;
             }
-            _context13.next = 6;
-            return loginUser(password);
-          case 6:
-            checkPhoneNumber = _context13.sent;
-            userId = 0; // const otp = process.env.USER_OTP || Math.floor(1000 + Math.random() * 9000)
-            // const otp = '1234'
-            if (checkPhoneNumber.body.length) {
-              _context13.next = 13;
-              break;
-            }
-            today = format(new Date(), 'yyyy-MM-dd H:i:s');
-            _context13.next = 12;
-            return insertRider(payload);
-          case 12:
-            query = _context13.sent;
-          case 13:
-            // else {
-
-            //   userId = checkPhoneNumber.body[0].id
-            //   query = await updateUserOtp(payload, otp)
-            // }
-
-            // if (!userId) {
-            //   userId = query.body.body.insertId
-            // }
-
-            if (query.status === _responseCode["default"].SUCCESS) {
-              res.status(query.status).json({
-                status: true,
-                messages: "Failed...."
-              });
-            } else {
-              res.status(query.status).json({
-                status: false,
-                message: "pls check"
-              });
-            }
-            _context13.next = 17;
-            break;
-          case 16:
-            res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
+            return _context13.abrupt("return", res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
               status: false,
-              message: "error"
-            });
-          case 17:
-            _context13.next = 23;
+              message: "Mandatory field Is Missing"
+            }));
+          case 4:
+            _context13.next = 6;
+            return (0, _rider.locationcheck)(delivery_partner_id, order_id);
+          case 6:
+            location = _context13.sent;
+            point1 = {
+              lat: location.check[0].latitude,
+              lng: location.check[0].longitude
+            }; //Second point in your haversine calculation
+            point2 = {
+              lat: location.address[0].latitude,
+              lng: location.address[0].longitude
+            };
+            haversine_m = (0, _haversineDistance["default"])(point1, point2); //Results in meters (default)
+            haversine_km = haversine_m / 1000; //Results in kilometers
+            //  console.log("distance (in meters): " + haversine_m + "m");
+            //  console.log("distance (in kilometers): " + haversine_km + "km");
+            if (!(haversine_km <= 1000)) {
+              _context13.next = 15;
+              break;
+            }
+            return _context13.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
+              status: true,
+              message: "ok"
+            }));
+          case 15:
+            return _context13.abrupt("return", res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
+              status: false,
+              message: "out of range"
+            }));
+          case 16:
+            _context13.next = 22;
             break;
-          case 19:
-            _context13.prev = 19;
+          case 18:
+            _context13.prev = 18;
             _context13.t0 = _context13["catch"](0);
-            logger.error('Whooops! This broke with error: ', _context13.t0);
-            res.status(500).send('Error!');
-          case 23:
+            console.log(_context13.t0);
+            return _context13.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
+              status: false,
+              message: _messages["default"].SERVER_ERROR
+            }));
+          case 22:
           case "end":
             return _context13.stop();
         }
       }
-    }, _callee13, null, [[0, 19]]);
+    }, _callee13, null, [[0, 18]]);
   }));
-  return function ten(_x25, _x26) {
+  return function LocationCheck(_x25, _x26) {
     return _ref13.apply(this, arguments);
   };
 }();
-exports.ten = ten;
+exports.LocationCheck = LocationCheck;
