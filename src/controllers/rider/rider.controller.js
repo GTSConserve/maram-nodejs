@@ -213,16 +213,73 @@ export const getSingleorder = async (req,res) => {
        .status(responseCode.FAILURE.BAD_REQUEST)
        .json({ status: false, message: "Mandatory field Is Missing" });
       }
-      console.log(order_status)
-      const rider = await knex('routes').select("id as router_id")
-      .where({rider_id:delivery_partner_id});
+      // console.log(order_status)
+      // const rider = await knex('routes').select("id as router_id")
+      // .where({rider_id:delivery_partner_id});
 
-      const router_id = rider[0].router_id
-      console.log(rider)
+      // const router_id = rider[0].router_id
+      // console.log(rider)
 
-     const order = await getsingleorder (order_id,delivery_partner_id,order_status,router_id);
+     const order = await getsingleorder (user_id,order_id,delivery_partner_id,order_status)
 
-     return res.status(responseCode.SUCCESS).json({status: true,order })
+
+     console.log(order.query5)
+     if(order.status = true){
+      let data = {
+                "task_id":order.query1[0].id,
+                // "task_name": "Task 1",
+                "tour_status":order.query1[0].tour_status,
+                "order_status": order.query1[0].status,
+                "empty_bottle_count": order.daily[0].total_collective_bottle,
+                "total_litre":order.daily[0].total_qty + " " +order.query3[0].unit_value,
+                "total_addons_count":order.query5[0].order_id,
+                 "delivered_addons_count":order.query6.length
+      }
+
+      let user = {
+                 "user_id": order.query2[0].user_id,
+                 "user_name": order.query2[0].user_name,
+                 "customer_id": order.query2[0].customer_id,
+                 "user_mobile": order.query2[0].user_mobile ,
+                 "user_address": order.query2[0].user_address,
+                 "landmark": order.query2[0].landmark,
+                 "user_latitude": order.query2[0].user_latitude,
+                 "user_longitude": order.query2[0].user_longitude
+      }
+
+      let products = [
+        {
+   
+     "product_id": order.query3[0].id,
+     "product_name":order.query3[0].product_name,
+     "variation":order.query3[0].unit_value + "" +order.query3[0].unit_type,
+     "quantity": order.query3[0].quantity},
+     {
+
+     "product_id": order.query4[0].add_id,
+     "product_name":order.query4[0].product_name,
+     "variation":order.query4[0].unit_value + "" +order.query3[0].unit_type,
+     "quantity": order.query4[0].quantity,
+       }
+ 
+]
+
+      let addons =[];
+
+      for( let i=0;i<order.data;i++){
+         addons.push({
+          "addon_id": order.query5[i].addon_id,
+          "addon_name":order.query5[i].product_name,
+          "variation": order.query5[i].unit_value + "" +order.query5[i].unit_type,
+          "quantity": order.query5[i].quantity
+        })
+
+      }
+     
+
+     return res.status(responseCode.SUCCESS).json({status: true,data:data,user,products,addons})
+    
+  }
   }
   catch(error){
     console.log(error);
@@ -341,14 +398,14 @@ export const riderDashboard = async (req,res) => {
        }
        let data ={
         "order_id":order.order[0].id,
-        "milk_variation":order.order[0].total_qty +" "+ "liter",
+        "milk_variation":order.order[0].total_qty +" "+ order.query3[0].unit_type,
         "addon_items":order.addon.length,
         "user_name":order.user[0].name,
         "customer_id":order.user[0].user_unique_id,
         "bottle_return":order.order1[0].total_collective_bottle,
         "order_status":order.order1[0].status
        }
-       return res.status(responseCode.SUCCESS).json({status: true, query,data:data })
+       return res.status(responseCode.SUCCESS).json({status: true,data:query,data })
     }
     catch(error){
       console.log(error);

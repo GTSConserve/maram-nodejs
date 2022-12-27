@@ -270,6 +270,10 @@ export const singleSubscription = async (req, res) => {
       sub.data[i].date = [moment().format("YYYY-MM-DD")];
       sub.data[i].subscription_start_date = moment().format("YYYY-MM-DD");
       sub.query[i].date = [moment().format("YYYY-MM-DD")];
+      sub.query[i].product_name = sub.query[i].product_name
+      sub.query[i].image = process.env.IMAGE + sub.query[i].image;
+      sub.query[i].unit_value = sub.query[i].unit_value
+      sub.query[i].unit_type = sub.query[i].unit_type
 
       
 
@@ -286,16 +290,6 @@ export const singleSubscription = async (req, res) => {
       delete sub.data[i].unit_type;
 
     }
-
-
-    // const query = [{data: sub.data[0],additional_orders: sub.additional_orders[0]}]
-
-    // const bottle_tracker = {
-    //   "delivered_orders": 25,
-    //   "remaining_orders": 5,
-    //   "additional_delivered_orders": 5,
-    //   "additional_remaining_orders": 25
-    // }
 
     const response = {
       additional_orders: [sub.query[0]],

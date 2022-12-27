@@ -117,7 +117,6 @@ export const single_subscription = async (userId, sub_id) => {
         "sub.customized_days",
         "sub.subscription_status",
         "sub.quantity",
-        // "product.id",
         "products.name as product_name",
         "products.image",
         "products.price",
@@ -138,30 +137,39 @@ export const single_subscription = async (userId, sub_id) => {
         "sub.subscribe_type_id"
       )
       .join("user_address", "user_address.id", "=", "sub.user_address_id")
-      .where({ "sub.id": sub_id });
-      
-      // const query1 = await knex("additional_orders").select("date")
-      // console.log(query1[0].date)
-      // // .moment(query1[0].additional_orders.date).format('YYYY-MM-DD');
-        console.log(products)
-      const query = await knex("additional_orders")
-      .select(
-        "additional_orders.id",
-        "additional_orders.date",
-        "additional_orders.quantity",
-        "products.name as product_name",
-        "products.image",
-        "products.unit_value",
-        "unit_types.value as unit_type",
-        "additional_orders.date"
-        // "user_address.address",
+      .orWhere({ "sub.id": sub_id })
+      .orWhere({ "sub.user_id": userId });
+
+      const query = await knex('additional_orders').select(
+        'additional_orders.id',
+        'additional_orders.date',
+        'additional_orders.quantity',
+        'products.name as product_name',
+        'products.image',
+        'products.unit_value',
+        'unit_types.value as unit_type')
+        .join('products')
+        .join('unit_types','unit_types.id','=','products.unit_type_id')
+        .where({user_id:userId})
+        
+      // const query = await knex("additional_orders")
+      // .select(
+      //   "additional_orders.id",
+      //   "additional_orders.date",
+      //   "additional_orders.quantity",
+      //   "products.name as product_name",
+      //   "products.image",
+      //   "products.unit_value",
+      //   "unit_types.value as unit_type",
+      //   "additional_orders.date"
+      //   // "user_address.address",
     
-      )
-      .join("products", "products.id", "=", "additional_orders.id")
-      .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
-      // .join("user_address", "user_address.id", "=", "additional_orders.id")
+      // )
+      // .join("products", "products.id", "=", "additional_orders.id")
+      // .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
+      // // .join("user_address", "user_address.id", "=", "additional_orders.id")
       // .where({ "additional_orders.user_id": userId });
-        // console.log(query)
+        console.log(query)
 
         const this_month_item_detail = await knex("empty_bottle_tracking").select(
           "one_liter_in_hand as delivered_orders",
