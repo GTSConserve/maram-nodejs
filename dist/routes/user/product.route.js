@@ -13,10 +13,10 @@ var productRouter = _express["default"].Router({
   strict: true
 });
 productRouter.post("/get_categories", _authToken.nonMandatoryToken, _product.getCategories);
-productRouter.post("/get_products", _authToken.authenticateJWT, _authToken.nonMandatoryToken, _product.getProducts);
-productRouter.post("/search_products", _authToken.authenticateJWT, _authToken.nonMandatoryToken, _product.searchProducts);
-productRouter.get("/get_subscription_product", _authToken.nonMandatoryToken, _product.getSubscriptionProducts);
-productRouter.get("/get_add_on_product", _authToken.nonMandatoryToken, _product.getAddOnProducts);
+productRouter.post("/get_products", _authToken.nonMandatoryToken, _authToken.authenticateJWT, _product.getProducts);
+productRouter.post("/search_products", _authToken.nonMandatoryToken, _authToken.authenticateJWT, _product.searchProducts);
+productRouter.get("/get_subscription_product", _authToken.nonMandatoryToken, _authToken.authenticateJWT, _product.getSubscriptionProducts);
+productRouter.get("/get_add_on_product", _authToken.nonMandatoryToken, _authToken.authenticateJWT, _product.getAddOnProducts);
 productRouter.post("/get_single_product", _authToken.authenticateJWT, _authToken.nonMandatoryToken, _product.getSingleProduct);
 productRouter.post("/create_add_on_products", _authToken.authenticateJWT, _authToken.nonMandatoryToken, _product.addon_Order);
 productRouter.post("/remove_add_on_products", _authToken.authenticateJWT, _authToken.nonMandatoryToken, _product.removeAddOnOrder);

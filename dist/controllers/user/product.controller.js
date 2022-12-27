@@ -153,7 +153,7 @@ var getProducts = /*#__PURE__*/function () {
             }));
           case 10:
             _context3.next = 12;
-            return (0, _product.get_products)(category_id, product_type_id, userId);
+            return (0, _product.get_products)(category_id, product_type_id);
           case 12:
             product = _context3.sent;
             if (product.status) {
@@ -375,7 +375,9 @@ var searchProducts = /*#__PURE__*/function () {
             userId = user.user_id;
           case 10:
             _context7.next = 12;
-            return (0, _product.search_products)(product_type_id, search_keyword, userId);
+            return (0, _product.search_products)(product_type_id, search_keyword
+            // userId
+            );
           case 12:
             product = _context7.sent;
             if (product.status) {
