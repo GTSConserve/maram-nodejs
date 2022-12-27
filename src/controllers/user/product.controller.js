@@ -99,7 +99,7 @@ export const getProducts = async (req, res) => {
         .json({ status: false, message: messages.MANDATORY_ERROR });
     }
 
-    const product = await get_products(category_id, product_type_id, userId);
+    const product = await get_products(category_id, product_type_id);
 
     if (!product.status) {
       return res
@@ -218,7 +218,7 @@ export const searchProducts = async (req, res) => {
     const product = await search_products(
       product_type_id,
       search_keyword,
-      userId
+      // userId
     );
     if (!product.status) {
       return res
