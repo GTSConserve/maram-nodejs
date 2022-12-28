@@ -113,20 +113,16 @@ export const single_subscription = async (userId, sub_id) => {
     const products = await knex("subscribed_user_details AS sub")
       .select(
         "sub.id as subscription_id",
-        "sub.subscription_start_date",
         "sub.customized_days",
+        "sub.subscription_start_date",
         "sub.subscription_status",
         "sub.quantity",
         "products.name as product_name",
         "products.image",
-        "products.price",
         "products.unit_value",
         "unit_types.value as unit_type",
         "subscription_type.name as subscription_name",
-        "user_address.address",
-        "user_address.id as address_id",
-        "sub.date as date"
-      
+        "user_address.address"
       )
       .join("products", "products.id", "=", "sub.product_id")
       .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
@@ -137,51 +133,36 @@ export const single_subscription = async (userId, sub_id) => {
         "sub.subscribe_type_id"
       )
       .join("user_address", "user_address.id", "=", "sub.user_address_id")
-      .orWhere({ "sub.id": sub_id })
-      .orWhere({ "sub.user_id": userId });
+      .where({ "sub.user_id": userId, "sub.id": sub_id });
 
-      const query = await knex('additional_orders').select(
-        'additional_orders.id',
-        'additional_orders.date',
-        'additional_orders.quantity',
-        'products.name as product_name',
-        'products.image',
-        'products.unit_value',
-        'unit_types.value as unit_type')
-        .join('products')
-        .join('unit_types','unit_types.id','=','products.unit_type_id')
-        .where({user_id:userId})
-        
-      // const query = await knex("additional_orders")
-      // .select(
-      //   "additional_orders.id",
-      //   "additional_orders.date",
-      //   "additional_orders.quantity",
-      //   "products.name as product_name",
-      //   "products.image",
-      //   "products.unit_value",
-      //   "unit_types.value as unit_type",
-      //   "additional_orders.date"
-      //   // "user_address.address",
-    
-      // )
-      // .join("products", "products.id", "=", "additional_orders.id")
-      // .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
-      // // .join("user_address", "user_address.id", "=", "additional_orders.id")
-      // .where({ "additional_orders.user_id": userId });
-        console.log(query)
+      const query = await knex("subscribed_user_details AS sub").select(
+        "additional_orders.user_id as id",
+        "additional_orders.date ",
+        "additional_orders.quantity",
+        "additional_orders.status",
+        "products.name as product_name",
+        "products.image",
+        "products.unit_value",
+        "unit_types.value as unit_type",
+      )
+      .join("additional_orders","additional_orders.user_id","=","sub.user_id")
+      .join("products", "products.id", "=", "sub.product_id")
+      .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
+      .where({"sub.user_id": userId, "sub.id": sub_id })
+// console.log(query)
 
-        const this_month_item_detail = await knex("empty_bottle_tracking").select(
-          "one_liter_in_hand as delivered_orders",
-          "one_liter_in_return as remaining_orders",
-          "half_liter_in_hand as additional_delivered_orders",
-          "one_liter_in_return as additional_remaining_orders"
-        )
+      const this_month_item_detail = await knex("empty_bottle_tracking").select(
+        "one_liter_in_hand as delivered_orders",
+        "one_liter_in_return as remaining_orders",
+        "half_liter_in_hand as additional_delivered_orders",
+        "one_liter_in_return as additional_remaining_orders"
+      )
+
     if (products.length === 0) {
       return { status: false, message: "No Subscription Found" };
     }
 
-    return { status: true, data: products, query, this_month_item_detail};
+    return { status: true, data: products, query, this_month_item_detail  };
   } catch (error) {
     console.log(error);
     return { status: false, message: error };

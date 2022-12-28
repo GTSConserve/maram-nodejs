@@ -97,7 +97,7 @@ export const createAdditionalOrder = async (req, res) => {
         user_id: userId,
         subscription_id,
         quantity: qty,
-        date: data,
+        date: data, 
       });
     });
 
@@ -242,7 +242,6 @@ export const getAllSubscription = async (req, res) => {
 };
 
 export const singleSubscription = async (req, res) => {
-  // console.log(req,res)
   try {
     const { userId, subscription_id } = req.body;
 
@@ -254,7 +253,6 @@ export const singleSubscription = async (req, res) => {
 
     const sub = await single_subscription(userId, subscription_id);
 
-    console.log(sub.query)
     if (!sub.status) {
       return res
         .status(responseCode.FAILURE.DATA_NOT_FOUND)
@@ -263,19 +261,15 @@ export const singleSubscription = async (req, res) => {
 
     for (let i = 0; i < sub.data.length; i++) {
       sub.data[i].image = process.env.BASE_URL + sub.data[i].image;
+      sub.data[i].subscription_start_date = moment().format("YYYY-MM-DD");
       sub.data[i].customized_days = sub.data[i].customized_days; 
+      sub.data[i].address_id = sub.data[i].address_id; 
       sub.data[i].quantity = sub.data[i].quantity; 
       sub.data[i].price = sub.data[i].price; 
-      sub.data[i].address_id = sub.data[i].address_id; 
       sub.data[i].date = [moment().format("YYYY-MM-DD")];
-      sub.data[i].subscription_start_date = moment().format("YYYY-MM-DD");
-      sub.query[i].date = [moment().format("YYYY-MM-DD")];
-      sub.query[i].product_name = sub.query[i].product_name
+      sub.query[i].id = sub.query[i].id; 
       sub.query[i].image = process.env.IMAGE + sub.query[i].image;
-      sub.query[i].unit_value = sub.query[i].unit_value
-      sub.query[i].unit_type = sub.query[i].unit_type
-
-      
+      sub.query[i].date = [moment().format("YYYY-MM-DD")];
 
       if (sub.data[i].unit_value >= 500) {
         sub.data[i].unit =
@@ -288,7 +282,6 @@ export const singleSubscription = async (req, res) => {
       }
       delete sub.data[i].unit_value;
       delete sub.data[i].unit_type;
-
     }
 
     const response = {

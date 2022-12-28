@@ -223,7 +223,7 @@ export const getSingleorder = async (req,res) => {
      if(order.status = true){
       let data = {
                 "task_id":order.query1[0].id,
-                "task_name": "Task "+order.query2[0].user_id,
+                // "task_name": "Task "+order.query2[0].user_id,
                 "tour_status":order.query1[0].tour_status,
                 "order_status": order.query1[0].status,
                 "empty_bottle_count": order.daily[0].total_collective_bottle,
@@ -249,7 +249,8 @@ export const getSingleorder = async (req,res) => {
      "product_id": order.query3[0].id,
      "product_name":order.query3[0].product_name,
      "variation":order.query3[0].unit_value + "" +order.query3[0].unit_type,
-     "quantity": order.query3[0].quantity
+     "quantity": order.query3[0].quantity,
+     "subscription_delivered_status" :order.query5[i].status
     })}
     for( let i=0;i<order.query4.length;i++){
       products.push({
@@ -257,6 +258,7 @@ export const getSingleorder = async (req,res) => {
      "product_name":order.query4[0].product_name,
      "variation":order.query4[0].unit_value + "" +order.query3[0].unit_type,
      "quantity": order.query4[0].quantity,
+     "additional_delivered_status" :order.query4[i].status
        })}
 
 
@@ -307,11 +309,11 @@ export const orderStatusUpdate = async (req,res) => {
 
         const collect_bottle = await knex('daily_orders').update({total_collective_bottle:sum}).where({user_id:user_id,id:order_id})
 
-        const query3 =[];
+       let query3 =[];
 
         for(let i=0; i<product.length; i++){
-          const query3 = await knex('daily_orders')
-        .join("subscribed_user_details", "subscribed_user_details.id", "=", "daily_orders.subscription_id")
+          query3 = await knex('subscribed_user_details')
+        .join("additional_orders", "additional_orders.subscription_id", "=", "subscribed_user_details.id")
         .join("products", "products.id", "=", "subscribed_user_details.product_id")
         .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
         .select(
@@ -321,7 +323,8 @@ export const orderStatusUpdate = async (req,res) => {
           "products.unit_value as unit_value",
           "unit_types.value as unit_type",
           "products.price as price",
-          "subscribed_user_details.id as id"
+          // "additional_orders.quantity as quantity1",
+          "subscribed_user_details.id "
         ).where({"subscribed_user_details.id":product[i].subscription_id})
         }
 
@@ -337,6 +340,9 @@ export const orderStatusUpdate = async (req,res) => {
     .json({ status: false, message: messages.SERVER_ERROR });
   }
 }
+
+
+
 
 
 // rider dashboard
@@ -442,7 +448,7 @@ export const riderDashboard = async (req,res) => {
         "addon_items_undelivered":order.addon1.length,
         "user_name":order.user[0].name,
         "customer_id":order.user[0].user_unique_id,
-        "bottle_return":order.order1[0].total_collective_bottle,
+        "bottle_return":order.bottle[0].status,
         "order_status":order.order1[0].status
        }]
        
@@ -471,13 +477,15 @@ export const riderDashboard = async (req,res) => {
 
          const location = await locationcheck(delivery_partner_id,order_id);
 
+         console.log(location)
+
          var point1 = { lat: location.check[0].latitude, lng: location.check[0].longitude }
 
          //Second point in your haversine calculation
          var point2 = { lat: location.address[0].latitude, lng: location.address[0].longitude}
          
          var haversine_m = haversine(point1, point2); //Results in meters (default)
-         var haversine_km = haversine_m /1000; //Results in kilometers
+         var haversine_km = haversine_m /20000; //Results in kilometers
          
         //  console.log("distance (in meters): " + haversine_m + "m");
         //  console.log("distance (in kilometers): " + haversine_km + "km");

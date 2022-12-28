@@ -241,9 +241,11 @@ export const userLogin = async (password) => {
           "products.unit_value as unit_value",
           "unit_types.value as unit_type",
           "products.price as price",
-          "subscribed_user_details.id as id"
-        ).where({"subscribed_user_details.id":daily[0].subscription_id})
-        // console.log(query3)
+          "subscribed_user_details.id as id",
+          "subscribed_user_details.status as status",
+          "daily_orders.id"
+        ).where({"subscribed_user_details.id":daily[0].subscription_id,"daily_orders.id":order_id})
+        console.log(query3.length)
 
         const query4 = await knex('daily_orders')
         .join("additional_orders", "additional_orders.id", "=", "daily_orders.additional_order_id")
@@ -257,8 +259,10 @@ export const userLogin = async (password) => {
           "products.unit_value",
           "unit_types.value as unit_type",
           "products.price",
-          "additional_orders.id as add_id"
-        ).where({"additional_orders.id":daily[0].additional_order_id});
+          "additional_orders.id as add_id",
+          "additional_orders.status as status",
+          "daily_orders.id"
+        ).where({"additional_orders.id":daily[0].additional_order_id,"daily_orders.id":order_id});
         // console.log(query4)
 
 
@@ -276,10 +280,11 @@ export const userLogin = async (password) => {
           "products.price",
           "add_on_orders.id as order_id",
           "add_on_orders.id as addon_id",
-          "add_on_order_items.status as status"
+          "add_on_order_items.status as status",
+          "daily_orders.id"
         )
-        .where({"add_on_orders.id":daily[0].add_on_order_id})
-      console.log(query5.length)
+        .where({"add_on_orders.id":daily[0].add_on_order_id,"daily_orders.id":order_id})
+      console.log(query5)
 
 
       const query6 = await knex('add_on_order_items').select('id','add_on_order_id').where({"add_on_order_items.add_on_order_id":daily[0].add_on_order_id,status:"delivered"})
@@ -402,6 +407,8 @@ export const order_list = async (delivery_partner_id,status) =>{
       'user_id','total_qty')
       .where({router_id:router[0].id,status:status});
 
+      console.log(order)
+
     const delivery = await knex('daily_orders')
     .select('id')
     .where({router_id:router[0].id,status:status});
@@ -413,12 +420,15 @@ export const order_list = async (delivery_partner_id,status) =>{
       'add_on_order_id',
       'user_id','total_qty')
       .where({router_id:router[0].id,status:status});
-    // console.log(order1)
-
+    console.log(order1)
+  
     const addon = await knex('add_on_order_items')
     .select('id')
     .where({add_on_order_id:order1[0].add_on_order_id,status:"delivered"});
 
+    const bottle = await knex('empty_bottle_tracking').select('status');
+
+    
     const addon1 = await knex('add_on_order_items')
     .select('id')
     .where({add_on_order_id:order1[0].add_on_order_id,status:"undelivered"});
@@ -429,7 +439,7 @@ export const order_list = async (delivery_partner_id,status) =>{
     .where({id:order[0].user_id})
 
     // console.log(router,router1,order,delivery,addon)
-    return{status:true,router,order,delivery,addon,addon1,order1,user,query3};
+    return{status:true,router,order,delivery,addon,addon1,order1,user,query3,bottle};
   } catch (error) {
     console.log(error)
     return{ status: false, message: "No data found" };    
@@ -448,7 +458,7 @@ export const locationcheck =async(delivery_partner_id,order_id) => {
         'user_address.longitude')
         .where({'daily_orders.id':order_id});
 
-      // console.log(check,address)
+      console.log(address)
 
       return{status:true,check,address};
 
