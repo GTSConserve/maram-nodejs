@@ -516,7 +516,7 @@ var getSingleorder = /*#__PURE__*/function () {
 exports.getSingleorder = getSingleorder;
 var orderStatusUpdate = /*#__PURE__*/function () {
   var _ref9 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9(req, res) {
-    var _req$body6, user_id, delivery_partner_id, one_iltre_count, half_litre_count, order_id, order_status, product, addons, orderstatus, sum, collect_bottle, query4, i, query3;
+    var _req$body6, user_id, delivery_partner_id, one_iltre_count, half_litre_count, order_id, order_status, product, addons;
     return _regeneratorRuntime().wrap(function _callee9$(_context9) {
       while (1) {
         switch (_context9.prev = _context9.next) {
@@ -532,70 +532,24 @@ var orderStatusUpdate = /*#__PURE__*/function () {
               message: "Mandatory field Is Missing"
             }));
           case 4:
-            _context9.next = 6;
-            return (0, _rider.statusupdate)(user_id, delivery_partner_id, one_iltre_count, half_litre_count, order_id, order_status, product, addons);
-          case 6:
-            orderstatus = _context9.sent;
-            sum = one_iltre_count + half_litre_count; // console.log(sum)
-            _context9.next = 10;
-            return (0, _db["default"])('daily_orders').update({
-              total_collective_bottle: sum
-            }).where({
-              user_id: user_id,
-              id: order_id
-            });
-          case 10:
-            collect_bottle = _context9.sent;
-            query4 = []; //  for(let i=0; i<product.length; i++){
-            //   await knex('subscribed_user_details').select("subscribed_user_details.id ").where({"subscribed_user_details.id":product[i].subscription_id})
-            //   query4.push({id:product[i].subscription_id})
-            //   console.log(query4)
-            // }
-            i = 0;
-          case 13:
-            if (!(i < product.length)) {
-              _context9.next = 21;
-              break;
-            }
-            _context9.next = 16;
-            return (0, _db["default"])('subscribed_user_details').join("additional_orders", "additional_orders.subscription_id", "=", product[i].subscription_id).join("products", "products.id", "=", "subscribed_user_details.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id ", "products.name ", "subscribed_user_details.quantity ", "products.unit_value ", "unit_types.value ", "products.price ", "additional_orders.quantity ", "subscribed_user_details.id ").where({
-              "subscribed_user_details.id": product[i].subscription_id
-            });
-          case 16:
-            query3 = _context9.sent;
-            query4.push({
-              product_id: query3.products.id,
-              product_name: product_name,
-              sub_quantity: quantity,
-              products_unit_value: unit_value,
-              products_unit_type: unit_type,
-              product_price: price,
-              additional_quantity: quantity1,
-              id: _index["default"]
-            });
-          case 18:
-            i++;
-            _context9.next = 13;
-            break;
-          case 21:
-            console.log(query4);
             return _context9.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
-              status: true
+              status: true,
+              message: "Ok"
             }));
-          case 25:
-            _context9.prev = 25;
+          case 7:
+            _context9.prev = 7;
             _context9.t0 = _context9["catch"](0);
             console.log(_context9.t0);
             return _context9.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
-          case 29:
+          case 11:
           case "end":
             return _context9.stop();
         }
       }
-    }, _callee9, null, [[0, 25]]);
+    }, _callee9, null, [[0, 7]]);
   }));
   return function orderStatusUpdate(_x17, _x18) {
     return _ref9.apply(this, arguments);
@@ -652,7 +606,7 @@ var riderDashboard = /*#__PURE__*/function () {
             _context10.prev = 17;
             _context10.t0 = _context10["catch"](0);
             console.log(_context10.t0);
-            return _context10.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
+            return _context10.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
@@ -873,33 +827,58 @@ var LocationCheck = /*#__PURE__*/function () {
 exports.LocationCheck = LocationCheck;
 var homeDelivery = /*#__PURE__*/function () {
   var _ref14 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee14(req, res) {
-    var delivery_partner_id, home;
+    var _req$body11, delivery_partner_id, date, router;
     return _regeneratorRuntime().wrap(function _callee14$(_context14) {
       while (1) {
         switch (_context14.prev = _context14.next) {
           case 0:
             _context14.prev = 0;
-            delivery_partner_id = req.body.delivery_partner_id;
-            _context14.next = 4;
-            return (0, _rider.home_delivery)(delivery_partner_id);
+            _req$body11 = req.body, delivery_partner_id = _req$body11.delivery_partner_id, date = _req$body11.date;
+            if (!(!delivery_partner_id || !date)) {
+              _context14.next = 4;
+              break;
+            }
+            return _context14.abrupt("return", res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
+              status: false,
+              message: "Mandatory field Is Missing"
+            }));
           case 4:
-            home = _context14.sent;
-            _context14.next = 11;
+            // const home = await home_delivery(delivery_partner_id, date);
+            router = {
+              "tour_id": 1,
+              "route": "East Tambaram",
+              "total_orders": 15,
+              "completed_orders": 12,
+              "milk": {
+                "one liter_count": 30,
+                "half_liter_count": 30
+              },
+              "addons_count": 30,
+              "empty_bottle": {
+                "one litre_bottle": 12,
+                "half_litr_bottle": 10
+              }
+            };
+            res.status(_responseCode["default"].SUCCESS).json({
+              status: true,
+              data: router
+            });
+            _context14.next = 12;
             break;
-          case 7:
-            _context14.prev = 7;
+          case 8:
+            _context14.prev = 8;
             _context14.t0 = _context14["catch"](0);
             console.log(_context14.t0);
             return _context14.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
-          case 11:
+          case 12:
           case "end":
             return _context14.stop();
         }
       }
-    }, _callee14, null, [[0, 7]]);
+    }, _callee14, null, [[0, 8]]);
   }));
   return function homeDelivery(_x27, _x28) {
     return _ref14.apply(this, arguments);
