@@ -110,36 +110,45 @@ var getAddress = /*#__PURE__*/function () {
 exports.getAddress = getAddress;
 var editAddress = /*#__PURE__*/function () {
   var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(req, res) {
-    var _req$body, _userId3, title, _address2, landmark, type, address_id;
+    var _req$body, _userId3, address_id, title, _address2, landmark, type, alternate_mobile, latitude, longitude;
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.prev = 0;
-            _req$body = req.body, _userId3 = _req$body.userId, title = _req$body.title, _address2 = _req$body.address, landmark = _req$body.landmark, type = _req$body.type, address_id = _req$body.address_id;
-            _context3.next = 4;
-            return (0, _user_details.edit_address)(_userId3, address_id, title, _address2, landmark, type);
+            _req$body = req.body, _userId3 = _req$body.userId, address_id = _req$body.address_id, title = _req$body.title, _address2 = _req$body.address, landmark = _req$body.landmark, type = _req$body.type, alternate_mobile = _req$body.alternate_mobile, latitude = _req$body.latitude, longitude = _req$body.longitude;
+            if (!(!latitude && !longitude)) {
+              _context3.next = 4;
+              break;
+            }
+            return _context3.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
+              status: false,
+              message: _messages["default"].MANDATORY_ERROR
+            }));
           case 4:
+            _context3.next = 6;
+            return (0, _user_details.edit_address)(_userId3, address_id, title, _address2, landmark, type, alternate_mobile, latitude, longitude);
+          case 6:
             res.status(_responseCode["default"].SUCCESS).json({
               status: true,
               message: "updated successfully"
             });
-            _context3.next = 11;
+            _context3.next = 13;
             break;
-          case 7:
-            _context3.prev = 7;
+          case 9:
+            _context3.prev = 9;
             _context3.t0 = _context3["catch"](0);
             console.log(_context3.t0);
             res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
               status: false,
               error: _context3.t0
             });
-          case 11:
+          case 13:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3, null, [[0, 7]]);
+    }, _callee3, null, [[0, 9]]);
   }));
   return function editAddress(_x5, _x6) {
     return _ref3.apply(this, arguments);

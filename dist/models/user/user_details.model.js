@@ -66,7 +66,7 @@ var get_address = /*#__PURE__*/function () {
 }();
 exports.get_address = get_address;
 var edit_address = /*#__PURE__*/function () {
-  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(user_id, address_id, title, address, landmark, type) {
+  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(user_id, address_id, title, address, landmark, type, alternate_mobile, latitude, longitude) {
     var query, user;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) {
@@ -85,34 +85,43 @@ var edit_address = /*#__PURE__*/function () {
             if (type) {
               query.type = type;
             }
-            _context2.next = 7;
+            if (alternate_mobile) {
+              query.alternate_mobile = alternate_mobile;
+            }
+            if (latitude) {
+              query.latitude = latitude;
+            }
+            if (longitude) {
+              query.longitude = longitude;
+            }
+            _context2.next = 10;
             return (0, _db["default"])("user_address").update(query).where({
-              user_id: user_id,
-              id: address_id
+              user_id: user_id
             });
-          case 7:
+          case 10:
             user = _context2.sent;
-            _context2.prev = 8;
+            console.log(user);
+            _context2.prev = 12;
             return _context2.abrupt("return", {
               status: _responseCode["default"].SUCCESS,
               body: user
             });
-          case 12:
-            _context2.prev = 12;
-            _context2.t0 = _context2["catch"](8);
+          case 16:
+            _context2.prev = 16;
+            _context2.t0 = _context2["catch"](12);
             console.log(_context2.t0);
             return _context2.abrupt("return", {
               status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
               error: _context2.t0
             });
-          case 16:
+          case 20:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[8, 12]]);
+    }, _callee2, null, [[12, 16]]);
   }));
-  return function edit_address(_x2, _x3, _x4, _x5, _x6, _x7) {
+  return function edit_address(_x2, _x3, _x4, _x5, _x6, _x7, _x8, _x9, _x10) {
     return _ref2.apply(this, arguments);
   };
 }();
@@ -150,7 +159,7 @@ var get_user = /*#__PURE__*/function () {
       }
     }, _callee3, null, [[3, 7]]);
   }));
-  return function get_user(_x8) {
+  return function get_user(_x11) {
     return _ref3.apply(this, arguments);
   };
 }();
@@ -191,7 +200,7 @@ var delete_user_address = /*#__PURE__*/function () {
       }
     }, _callee4, null, [[3, 7]]);
   }));
-  return function delete_user_address(_x9, _x10) {
+  return function delete_user_address(_x12, _x13) {
     return _ref4.apply(this, arguments);
   };
 }();
@@ -229,7 +238,7 @@ var remove_order = /*#__PURE__*/function () {
       }
     }, _callee5, null, [[3, 7]]);
   }));
-  return function remove_order(_x11) {
+  return function remove_order(_x14) {
     return _ref5.apply(this, arguments);
   };
 }();
@@ -270,7 +279,7 @@ var edit = /*#__PURE__*/function () {
       }
     }, _callee6, null, [[3, 7]]);
   }));
-  return function edit(_x12, _x13, _x14) {
+  return function edit(_x15, _x16, _x17) {
     return _ref6.apply(this, arguments);
   };
 }();
@@ -387,7 +396,7 @@ var change_plan = /*#__PURE__*/function () {
       }
     }, _callee7, null, [[0, 37]]);
   }));
-  return function change_plan(_x15, _x16, _x17) {
+  return function change_plan(_x18, _x19, _x20) {
     return _ref7.apply(this, arguments);
   };
 }();
@@ -425,7 +434,7 @@ var checkAddress = /*#__PURE__*/function () {
       }
     }, _callee8, null, [[3, 7]]);
   }));
-  return function checkAddress(_x18) {
+  return function checkAddress(_x21) {
     return _ref8.apply(this, arguments);
   };
 }();
@@ -464,7 +473,7 @@ var get_user_bill = /*#__PURE__*/function () {
       }
     }, _callee9, null, [[4, 8]]);
   }));
-  return function get_user_bill(_x19) {
+  return function get_user_bill(_x22) {
     return _ref9.apply(this, arguments);
   };
 }();

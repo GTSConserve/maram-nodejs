@@ -4,8 +4,8 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updeteRiderLocation = exports.updateStartTour = exports.updateRiderstatus = exports.updateEndtour = exports.riderDashboard = exports.orderStatusUpdate = exports.login = exports.homeDelivery = exports.getSingleorder = exports.getRiderdetails = exports.getAppControls = exports.cancelOrder = exports.OrderList = exports.LocationCheck = void 0;
-var _express = _interopRequireDefault(require("express"));
+exports.updeteRiderLocation = exports.updateStartTour = exports.updateRiderstatus = exports.updateEndtour = exports.riderDashboard = exports.orderStatusUpdate = exports.logout = exports.login = exports.homeDelivery = exports.getSingleorder = exports.getRiderdetails = exports.getAppControls = exports.cancelOrder = exports.OrderList = exports.LocationCheck = void 0;
+var _express = _interopRequireWildcard(require("express"));
 var _messages = _interopRequireDefault(require("../../constants/messages"));
 var _rider = require("../../models/rider/rider.model");
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
@@ -16,6 +16,8 @@ var _jwt = require("../../services/jwt.service");
 var _bcrypt = _interopRequireDefault(require("bcrypt"));
 var _haversineDistance = _interopRequireDefault(require("haversine-distance"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -85,7 +87,7 @@ var getAppControls = /*#__PURE__*/function () {
 exports.getAppControls = getAppControls;
 var login = /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(req, res) {
-    var payload, user_name, password, checkPassword1, isPassword, query;
+    var payload, user_name, password, checkPassword1, isPassword, _query;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
@@ -405,7 +407,7 @@ var updateEndtour = /*#__PURE__*/function () {
 exports.updateEndtour = updateEndtour;
 var getSingleorder = /*#__PURE__*/function () {
   var _ref8 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8(req, res) {
-    var _req$body5, order_id, delivery_partner_id, order_status, order, data, user, products, i, _i, addons, _i2;
+    var _req$body5, order_id, delivery_partner_id, order_status, order, data, user, products, i, additional, _i, addons, _i2;
     return _regeneratorRuntime().wrap(function _callee8$(_context8) {
       while (1) {
         switch (_context8.prev = _context8.next) {
@@ -426,12 +428,12 @@ var getSingleorder = /*#__PURE__*/function () {
           case 6:
             order = _context8.sent;
             if (!(order.status = true)) {
-              _context8.next = 16;
+              _context8.next = 17;
               break;
             }
             data = {
               "task_id": order.query1[0].id,
-              // "task_name": "Task "+order.query2[0].user_id,
+              "task_name": "Task " + order.query2[0].user_id,
               "tour_status": order.query1[0].tour_status,
               "order_status": order.query1[0].status,
               "empty_bottle_count": order.daily[0].total_collective_bottle,
@@ -456,16 +458,17 @@ var getSingleorder = /*#__PURE__*/function () {
                 "product_name": order.query3[0].product_name,
                 "variation": order.query3[0].unit_value + "" + order.query3[0].unit_type,
                 "quantity": order.query3[0].quantity,
-                "subscription_delivered_status": order.query5[i].status
+                "delivered_status": order.query5[i].status
               });
             }
+            additional = [];
             for (_i = 0; _i < order.query4.length; _i++) {
-              products.push({
+              additional.push({
                 "product_id": order.query4[0].add_id,
                 "product_name": order.query4[0].product_name,
                 "variation": order.query4[0].unit_value + "" + order.query3[0].unit_type,
                 "quantity": order.query4[0].quantity,
-                "additional_delivered_status": order.query4[_i].status
+                "delivered_status": order.query4[_i].status
               });
             }
             addons = [];
@@ -475,7 +478,7 @@ var getSingleorder = /*#__PURE__*/function () {
                 "addon_name": order.query5[_i2].product_name,
                 "variation": order.query5[_i2].unit_value + "" + order.query5[_i2].unit_type,
                 "quantity": order.query5[_i2].quantity,
-                "addons_delivered_status": order.query5[_i2].status
+                "delivered_status": order.query5[_i2].status
               });
             }
             return _context8.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
@@ -483,25 +486,26 @@ var getSingleorder = /*#__PURE__*/function () {
               data: data,
               user: user,
               products: products,
+              additional: additional,
               addons: addons
             }));
-          case 16:
-            _context8.next = 22;
+          case 17:
+            _context8.next = 23;
             break;
-          case 18:
-            _context8.prev = 18;
+          case 19:
+            _context8.prev = 19;
             _context8.t0 = _context8["catch"](0);
             console.log(_context8.t0);
             return _context8.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
-          case 22:
+          case 23:
           case "end":
             return _context8.stop();
         }
       }
-    }, _callee8, null, [[0, 18]]);
+    }, _callee8, null, [[0, 19]]);
   }));
   return function getSingleorder(_x15, _x16) {
     return _ref8.apply(this, arguments);
@@ -512,7 +516,7 @@ var getSingleorder = /*#__PURE__*/function () {
 exports.getSingleorder = getSingleorder;
 var orderStatusUpdate = /*#__PURE__*/function () {
   var _ref9 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9(req, res) {
-    var _req$body6, user_id, delivery_partner_id, one_iltre_count, half_litre_count, order_id, order_status, product, addons, orderstatus, sum, collect_bottle, query3, i;
+    var _req$body6, user_id, delivery_partner_id, one_iltre_count, half_litre_count, order_id, order_status, product, addons, orderstatus, sum, collect_bottle, query4, i, query3;
     return _regeneratorRuntime().wrap(function _callee9$(_context9) {
       while (1) {
         switch (_context9.prev = _context9.next) {
@@ -542,44 +546,56 @@ var orderStatusUpdate = /*#__PURE__*/function () {
             });
           case 10:
             collect_bottle = _context9.sent;
-            query3 = [];
+            query4 = []; //  for(let i=0; i<product.length; i++){
+            //   await knex('subscribed_user_details').select("subscribed_user_details.id ").where({"subscribed_user_details.id":product[i].subscription_id})
+            //   query4.push({id:product[i].subscription_id})
+            //   console.log(query4)
+            // }
             i = 0;
           case 13:
             if (!(i < product.length)) {
-              _context9.next = 20;
+              _context9.next = 21;
               break;
             }
             _context9.next = 16;
-            return (0, _db["default"])('subscribed_user_details').join("additional_orders", "additional_orders.subscription_id", "=", "subscribed_user_details.id").join("products", "products.id", "=", "subscribed_user_details.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id as product_id", "products.name as product_name", "subscribed_user_details.quantity as quantity", "products.unit_value as unit_value", "unit_types.value as unit_type", "products.price as price",
-            // "additional_orders.quantity as quantity1",
-            "subscribed_user_details.id ").where({
+            return (0, _db["default"])('subscribed_user_details').join("additional_orders", "additional_orders.subscription_id", "=", product[i].subscription_id).join("products", "products.id", "=", "subscribed_user_details.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id ", "products.name ", "subscribed_user_details.quantity ", "products.unit_value ", "unit_types.value ", "products.price ", "additional_orders.quantity ", "subscribed_user_details.id ").where({
               "subscribed_user_details.id": product[i].subscription_id
             });
           case 16:
             query3 = _context9.sent;
-          case 17:
+            query4.push({
+              product_id: query3.products.id,
+              product_name: product_name,
+              sub_quantity: quantity,
+              products_unit_value: unit_value,
+              products_unit_type: unit_type,
+              product_price: price,
+              additional_quantity: quantity1,
+              id: _index["default"]
+            });
+          case 18:
             i++;
             _context9.next = 13;
             break;
-          case 20:
-            console.log(query3);
+          case 21:
+            console.log(query4);
             return _context9.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               status: true
             }));
-          case 24:
-            _context9.prev = 24;
+          case 25:
+            _context9.prev = 25;
             _context9.t0 = _context9["catch"](0);
             console.log(_context9.t0);
             return _context9.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
-          case 28:
+          case 29:
           case "end":
             return _context9.stop();
         }
       }
-    }, _callee9, null, [[0, 24]]);
+    }, _callee9, null, [[0, 25]]);
   }));
   return function orderStatusUpdate(_x17, _x18) {
     return _ref9.apply(this, arguments);
@@ -590,7 +606,7 @@ var orderStatusUpdate = /*#__PURE__*/function () {
 exports.orderStatusUpdate = orderStatusUpdate;
 var riderDashboard = /*#__PURE__*/function () {
   var _ref10 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10(req, res) {
-    var _req$body7, delivery_partner_id, date, total, bottle, sum, i, query;
+    var _req$body7, delivery_partner_id, date, total, bottle, sum, i, _query2;
     return _regeneratorRuntime().wrap(function _callee10$(_context10) {
       while (1) {
         switch (_context10.prev = _context10.next) {
@@ -621,16 +637,16 @@ var riderDashboard = /*#__PURE__*/function () {
             for (i = 0; i < bottle.length; i++) {
               sum += Number(bottle[i].total_collective_bottle);
             }
-            query = {
+            _query2 = {
               "total_orders": total.order.length,
               "delivered_orders": total.delivery.length,
               "undelivered_orders": total.pending.length + total.undelivered.length,
               "empty_bottle": sum
             };
-            console.log(query);
+            console.log(_query2);
             return _context10.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               status: true,
-              query: query
+              query: _query2
             }));
           case 17:
             _context10.prev = 17;
@@ -716,7 +732,7 @@ var cancelOrder = /*#__PURE__*/function () {
 exports.cancelOrder = cancelOrder;
 var OrderList = /*#__PURE__*/function () {
   var _ref12 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee12(req, res) {
-    var _req$body9, delivery_partner_id, status, order, query, data;
+    var _req$body9, delivery_partner_id, status, order, _query3, data;
     return _regeneratorRuntime().wrap(function _callee12$(_context12) {
       while (1) {
         switch (_context12.prev = _context12.next) {
@@ -737,7 +753,7 @@ var OrderList = /*#__PURE__*/function () {
           case 6:
             order = _context12.sent;
             // console.log(order)
-            query = {
+            _query3 = {
               "tour_id": order.router[0].id,
               "tour_route": order.router[0].name,
               "total_orders": order.order.length,
@@ -757,7 +773,7 @@ var OrderList = /*#__PURE__*/function () {
             }]; //  const  = Object.keys(person);
             return _context12.abrupt("return", res.status(_responseCode["default"].SUCCESS).json(_objectSpread(_objectSpread({
               status: true
-            }, query), {}, {
+            }, _query3), {}, {
               data: data
             })));
           case 12:
@@ -889,4 +905,58 @@ var homeDelivery = /*#__PURE__*/function () {
     return _ref14.apply(this, arguments);
   };
 }();
+
+// rider logout 
 exports.homeDelivery = homeDelivery;
+var logout = /*#__PURE__*/function () {
+  var _ref15 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee15(req, res) {
+    var delivery_partner_id, rider;
+    return _regeneratorRuntime().wrap(function _callee15$(_context15) {
+      while (1) {
+        switch (_context15.prev = _context15.next) {
+          case 0:
+            _context15.prev = 0;
+            delivery_partner_id = req.body.delivery_partner_id;
+            if (!delivery_partner_id) {
+              _context15.next = 10;
+              break;
+            }
+            _context15.next = 5;
+            return (0, _rider.logout_rider)(delivery_partner_id);
+          case 5:
+            rider = _context15.sent;
+            console.log(delivery_partner_id);
+            res.status(_responseCode["default"].SUCCESS).json({
+              status: true,
+              message: "Succesfully Logout.."
+            });
+            _context15.next = 11;
+            break;
+          case 10:
+            res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
+              status: false,
+              message: "Logout failed.."
+            });
+          case 11:
+            _context15.next = 17;
+            break;
+          case 13:
+            _context15.prev = 13;
+            _context15.t0 = _context15["catch"](0);
+            console.log(_context15.t0);
+            return _context15.abrupt("return", res.status(500).json({
+              status: false,
+              message: "Server Error"
+            }));
+          case 17:
+          case "end":
+            return _context15.stop();
+        }
+      }
+    }, _callee15, null, [[0, 13]]);
+  }));
+  return function logout(_x29, _x30) {
+    return _ref15.apply(this, arguments);
+  };
+}();
+exports.logout = logout;

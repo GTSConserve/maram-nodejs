@@ -14,6 +14,7 @@ var loginRouter = _express["default"].Router({
 });
 loginRouter.get("/app_controls", _rider.getAppControls);
 loginRouter.post("/login", _authToken.nonMandatoryToken, _rider.login);
+loginRouter.post("/log_out", _authToken.nonMandatoryToken, _rider.logout);
 // loginRouter.post("/rider_details",getRiderdetails)
 
 // loginRouter.post("/update_rider_status",updateRiderstatus);

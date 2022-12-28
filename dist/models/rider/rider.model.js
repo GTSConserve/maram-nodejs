@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.userLogin = exports.update_starttour = exports.update_riderstatus = exports.update_location = exports.update_endtour = exports.updateRiderToken = exports.statusupdate = exports.order_list = exports.locationcheck = exports.insertUser = exports.home_delivery = exports.getsingleorder = exports.get_riderdetails = exports.get_Appcontrol = exports.dashboard = exports.checkPassword = void 0;
+exports.userLogin = exports.update_starttour = exports.update_riderstatus = exports.update_location = exports.update_endtour = exports.updateRiderToken = exports.statusupdate = exports.order_list = exports.logout_rider = exports.locationcheck = exports.insertUser = exports.home_delivery = exports.getsingleorder = exports.get_riderdetails = exports.get_Appcontrol = exports.dashboard = exports.checkPassword = void 0;
 var _db = _interopRequireDefault(require("../../services/db.service"));
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 var _bcrypt = _interopRequireDefault(require("bcrypt"));
@@ -1013,4 +1013,45 @@ var home_delivery = /*#__PURE__*/function () {
     return _ref16.apply(this, arguments);
   };
 }();
+
+// rider logout
 exports.home_delivery = home_delivery;
+var logout_rider = /*#__PURE__*/function () {
+  var _ref17 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee17(delivery_partner_id) {
+    var query;
+    return _regeneratorRuntime().wrap(function _callee17$(_context17) {
+      while (1) {
+        switch (_context17.prev = _context17.next) {
+          case 0:
+            _context17.prev = 0;
+            _context17.next = 3;
+            return (0, _db["default"])("rider_details").update({
+              status: "0"
+            }).where({
+              id: delivery_partner_id
+            });
+          case 3:
+            query = _context17.sent;
+            return _context17.abrupt("return", {
+              status: _responseCode["default"].SUCCESS,
+              body: query
+            });
+          case 7:
+            _context17.prev = 7;
+            _context17.t0 = _context17["catch"](0);
+            return _context17.abrupt("return", {
+              status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
+              message: _context17.t0.message
+            });
+          case 10:
+          case "end":
+            return _context17.stop();
+        }
+      }
+    }, _callee17, null, [[0, 7]]);
+  }));
+  return function logout_rider(_x40) {
+    return _ref17.apply(this, arguments);
+  };
+}();
+exports.logout_rider = logout_rider;
