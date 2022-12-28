@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.userLogin = exports.update_starttour = exports.update_riderstatus = exports.update_location = exports.update_endtour = exports.updateRiderToken = exports.statusupdate = exports.order_list = exports.locationcheck = exports.insertUser = exports.getsingleorder = exports.get_riderdetails = exports.get_Appcontrol = exports.dashboard = exports.checkPassword = void 0;
+exports.userLogin = exports.update_starttour = exports.update_riderstatus = exports.update_location = exports.update_endtour = exports.updateRiderToken = exports.statusupdate = exports.order_list = exports.locationcheck = exports.insertUser = exports.home_delivery = exports.getsingleorder = exports.get_riderdetails = exports.get_Appcontrol = exports.dashboard = exports.checkPassword = void 0;
 var _db = _interopRequireDefault(require("../../services/db.service"));
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 var _bcrypt = _interopRequireDefault(require("bcrypt"));
@@ -532,7 +532,7 @@ var getsingleorder = /*#__PURE__*/function () {
           case 15:
             query4 = _context11.sent;
             _context11.next = 18;
-            return (0, _db["default"])('daily_orders').join("add_on_orders", "add_on_orders.id", "=", "daily_orders.add_on_order_id").join("add_on_order_items", "add_on_order_items.add_on_order_id", "=", "add_on_orders.id").join("products", "products.id", "=", "add_on_order_items.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id as product_id", "products.name as product_name", "add_on_order_items.quantity as quantity", "products.unit_value as unit_value", "unit_types.value as unit_type", "products.price", "add_on_orders.id as order_id", "add_on_orders.id as addon_id").where({
+            return (0, _db["default"])('daily_orders').join("add_on_orders", "add_on_orders.id", "=", "daily_orders.add_on_order_id").join("add_on_order_items", "add_on_order_items.add_on_order_id", "=", "add_on_orders.id").join("products", "products.id", "=", "add_on_order_items.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id as product_id", "products.name as product_name", "add_on_order_items.quantity as quantity", "products.unit_value as unit_value", "unit_types.value as unit_type", "products.price", "add_on_orders.id as order_id", "add_on_orders.id as addon_id", "add_on_order_items.status as status").where({
               "add_on_orders.id": daily[0].add_on_order_id
             });
           case 18:
@@ -579,8 +579,8 @@ var getsingleorder = /*#__PURE__*/function () {
 // oder status update
 exports.getsingleorder = getsingleorder;
 var statusupdate = /*#__PURE__*/function () {
-  var _ref12 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee12(user_id, delivery_partner_id, one_iltre_count, half_litre_count, order_id, order_status, products, addons) {
-    var update, i, subscription;
+  var _ref12 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee12(user_id, delivery_partner_id, one_iltre_count, half_litre_count, order_id, order_status, product, addons) {
+    var update, i, subscription, _i, _subscription, _i2, _subscription2, _i3, _subscription3;
     return _regeneratorRuntime().wrap(function _callee12$(_context12) {
       while (1) {
         switch (_context12.prev = _context12.next) {
@@ -597,13 +597,13 @@ var statusupdate = /*#__PURE__*/function () {
             });
           case 3:
             update = _context12.sent;
-            if (!products) {
-              _context12.next = 15;
+            if (!product) {
+              _context12.next = 23;
               break;
             }
             i = 0;
           case 6:
-            if (!(i < products.length)) {
+            if (!(i < product.length)) {
               _context12.next = 13;
               break;
             }
@@ -611,7 +611,7 @@ var statusupdate = /*#__PURE__*/function () {
             return (0, _db["default"])('subscribed_user_details').update({
               subscription_status: order_status
             }).where({
-              id: products[i].subscription_id
+              id: product[i].subscription_id
             });
           case 9:
             subscription = _context12.sent;
@@ -620,32 +620,100 @@ var statusupdate = /*#__PURE__*/function () {
             _context12.next = 6;
             break;
           case 13:
-            _context12.next = 16;
+            _i = 0;
+          case 14:
+            if (!(_i < product.length)) {
+              _context12.next = 21;
+              break;
+            }
+            _context12.next = 17;
+            return (0, _db["default"])('additional_orders').update({
+              status: order_status
+            }).where({
+              subscription_id: product[_i].subscription_id
+            });
+          case 17:
+            _subscription = _context12.sent;
+          case 18:
+            _i++;
+            _context12.next = 14;
             break;
-          case 15:
+          case 21:
+            _context12.next = 24;
+            break;
+          case 23:
             return _context12.abrupt("return", {
               status: false,
               message: "no subscription product"
             });
-          case 16:
-            return _context12.abrupt("return", {
-              status: true,
-              update: update
+          case 24:
+            if (!addons) {
+              _context12.next = 43;
+              break;
+            }
+            _i2 = 0;
+          case 26:
+            if (!(_i2 < addons.length)) {
+              _context12.next = 33;
+              break;
+            }
+            _context12.next = 29;
+            return (0, _db["default"])('add_on_orders').update({
+              status: order_status
+            }).where({
+              id: addons[_i2].id
             });
-          case 19:
-            _context12.prev = 19;
+          case 29:
+            _subscription2 = _context12.sent;
+          case 30:
+            _i2++;
+            _context12.next = 26;
+            break;
+          case 33:
+            _i3 = 0;
+          case 34:
+            if (!(_i3 < addons.length)) {
+              _context12.next = 41;
+              break;
+            }
+            _context12.next = 37;
+            return (0, _db["default"])('add_on_order_items').update({
+              status: order_status
+            }).where({
+              add_on_order_id: addons[_i3].id
+            });
+          case 37:
+            _subscription3 = _context12.sent;
+          case 38:
+            _i3++;
+            _context12.next = 34;
+            break;
+          case 41:
+            _context12.next = 44;
+            break;
+          case 43:
+            return _context12.abrupt("return", {
+              status: false,
+              message: "no addon product"
+            });
+          case 44:
+            return _context12.abrupt("return", {
+              status: true
+            });
+          case 47:
+            _context12.prev = 47;
             _context12.t0 = _context12["catch"](0);
             console.log(_context12.t0);
             return _context12.abrupt("return", {
               status: false,
               message: "Cannot Update the status"
             });
-          case 23:
+          case 51:
           case "end":
             return _context12.stop();
         }
       }
-    }, _callee12, null, [[0, 19]]);
+    }, _callee12, null, [[0, 47]]);
   }));
   return function statusupdate(_x25, _x26, _x27, _x28, _x29, _x30, _x31, _x32) {
     return _ref12.apply(this, arguments);
@@ -767,7 +835,8 @@ var order_list = /*#__PURE__*/function () {
             query3 = _context14.sent;
             _context14.next = 9;
             return (0, _db["default"])('daily_orders').select('id', 'total_collective_bottle', 'status', 'add_on_order_id', 'user_id', 'total_qty').where({
-              router_id: router[0].id
+              router_id: router[0].id,
+              status: status
             });
           case 9:
             order = _context14.sent;
@@ -882,4 +951,54 @@ var locationcheck = /*#__PURE__*/function () {
     return _ref15.apply(this, arguments);
   };
 }();
+
+// home delivery details 
 exports.locationcheck = locationcheck;
+var home_delivery = /*#__PURE__*/function () {
+  var _ref16 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee16(delivery_partner_id) {
+    var router, order, delivery;
+    return _regeneratorRuntime().wrap(function _callee16$(_context16) {
+      while (1) {
+        switch (_context16.prev = _context16.next) {
+          case 0:
+            _context16.prev = 0;
+            _context16.next = 3;
+            return (0, _db["default"])('routes').select('id', 'name').where({
+              rider_id: delivery_partner_id
+            });
+          case 3:
+            router = _context16.sent;
+            _context16.next = 6;
+            return (0, _db["default"])('daily_orders').select('id', 'total_collective_bottle', 'status', 'add_on_order_id', 'user_id', 'total_qty').where({
+              router_id: router[0].id
+            });
+          case 6:
+            order = _context16.sent;
+            _context16.next = 9;
+            return (0, _db["default"])('daily_orders').select('id').where({
+              router_id: router[0].id
+            });
+          case 9:
+            delivery = _context16.sent;
+            _context16.next = 16;
+            break;
+          case 12:
+            _context16.prev = 12;
+            _context16.t0 = _context16["catch"](0);
+            console.log(_context16.t0);
+            return _context16.abrupt("return", {
+              status: false,
+              message: "No data found"
+            });
+          case 16:
+          case "end":
+            return _context16.stop();
+        }
+      }
+    }, _callee16, null, [[0, 12]]);
+  }));
+  return function home_delivery(_x39) {
+    return _ref16.apply(this, arguments);
+  };
+}();
+exports.home_delivery = home_delivery;

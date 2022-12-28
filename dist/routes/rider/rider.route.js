@@ -23,5 +23,6 @@ riderRouter.post("/rider_dashboard", _rider.riderDashboard);
 riderRouter.post("/cancel_order", _rider.cancelOrder);
 riderRouter.post("/order_list", _rider.OrderList);
 riderRouter.post("/location_check", _rider.LocationCheck);
+riderRouter.post("/home_delivery_details", _rider.homeDelivery);
 var _default = riderRouter;
 exports["default"] = _default;
