@@ -491,3 +491,20 @@ export const home_delivery = async (delivery_partner_id) => {
     return{ status: false, message: "No data found" };  
   }
 }
+
+
+// rider logout
+export const logout_rider = async (delivery_partner_id) => {
+  try {
+    const query = await knex("rider_details")
+      .update({status: "0"})
+      .where({ id: delivery_partner_id });
+
+    return { status: responseCode.SUCCESS, body: query };
+  } catch (error) {
+    return {
+      status: responseCode.FAILURE.INTERNAL_SERVER_ERROR,
+      message: error.message,
+    };
+  }
+};

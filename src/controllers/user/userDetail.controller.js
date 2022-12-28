@@ -76,9 +76,17 @@ export const getAddress = async (req, res) => {
 
 export const editAddress = async (req, res) => {
   try {
-    const { userId, title, address, landmark, type, address_id } = req.body;
+    const { userId, address_id, title, address, landmark, type, alternate_mobile, latitude, longitude } = req.body;
 
-    await edit_address(userId, address_id, title, address, landmark, type);
+    if (!latitude && !longitude) {
+      return res
+        .status(responseCode.FAILURE.DATA_NOT_FOUND)
+        .json({ status: false, message: messages.MANDATORY_ERROR });
+    }
+
+    // console.log(userId, address_id, title, address, landmark, type, alternate_mobile, latitude, longitude)
+
+    await edit_address(userId, address_id, title, address, landmark, type, alternate_mobile, latitude, longitude);
 
     res
       .status(responseCode.SUCCESS)

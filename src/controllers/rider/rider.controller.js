@@ -1,6 +1,6 @@
-import express from 'express';
+import express, { query } from 'express';
 import messages from '../../constants/messages';
-import { get_Appcontrol, get_riderdetails, statusupdate, update_endtour, update_location, update_riderstatus, update_starttour, userLogin,getsingleorder, checkPassword, dashboard, cancel_order, order_list, locationcheck, home_delivery } from '../../models/rider/rider.model';
+import { get_Appcontrol, get_riderdetails, statusupdate, update_endtour, update_location, update_riderstatus, update_starttour, userLogin,getsingleorder, checkPassword, dashboard, cancel_order, order_list, locationcheck, home_delivery, logout_rider } from '../../models/rider/rider.model';
 import responseCode from '../../constants/responseCode';
 import knex from '../../services/db.service'
 import { userValidator } from '../../services/validator.service';
@@ -223,7 +223,7 @@ export const getSingleorder = async (req,res) => {
      if(order.status = true){
       let data = {
                 "task_id":order.query1[0].id,
-                // "task_name": "Task "+order.query2[0].user_id,
+                "task_name": "Task "+order.query2[0].user_id,
                 "tour_status":order.query1[0].tour_status,
                 "order_status": order.query1[0].status,
                 "empty_bottle_count": order.daily[0].total_collective_bottle,
@@ -250,15 +250,17 @@ export const getSingleorder = async (req,res) => {
      "product_name":order.query3[0].product_name,
      "variation":order.query3[0].unit_value + "" +order.query3[0].unit_type,
      "quantity": order.query3[0].quantity,
-     "subscription_delivered_status" :order.query5[i].status
+     "delivered_status" :order.query5[i].status
     })}
+
+    let additional = [];
     for( let i=0;i<order.query4.length;i++){
-      products.push({
+      additional.push({
      "product_id": order.query4[0].add_id,
      "product_name":order.query4[0].product_name,
      "variation":order.query4[0].unit_value + "" +order.query3[0].unit_type,
      "quantity": order.query4[0].quantity,
-     "additional_delivered_status" :order.query4[i].status
+     "delivered_status" :order.query4[i].status
        })}
 
 
@@ -270,13 +272,13 @@ export const getSingleorder = async (req,res) => {
           "addon_name":order.query5[i].product_name,
           "variation": order.query5[i].unit_value + "" +order.query5[i].unit_type,
           "quantity": order.query5[i].quantity,
-          "addons_delivered_status" :order.query5[i].status
+          "delivered_status" :order.query5[i].status
         })
 
       }
      
 
-     return res.status(responseCode.SUCCESS).json({status: true,data:data,user,products,addons})
+     return res.status(responseCode.SUCCESS).json({status: true,data:data,user,products,additional,addons})
     
   }
   }
@@ -309,26 +311,47 @@ export const orderStatusUpdate = async (req,res) => {
 
         const collect_bottle = await knex('daily_orders').update({total_collective_bottle:sum}).where({user_id:user_id,id:order_id})
 
-       let query3 =[];
+       let query4 = [];
+
+
+      //  for(let i=0; i<product.length; i++){
+      //   await knex('subscribed_user_details').select("subscribed_user_details.id ").where({"subscribed_user_details.id":product[i].subscription_id})
+
+      //   query4.push({id:product[i].subscription_id})
+
+      //   console.log(query4)
+      // }
 
         for(let i=0; i<product.length; i++){
-          query3 = await knex('subscribed_user_details')
-        .join("additional_orders", "additional_orders.subscription_id", "=", "subscribed_user_details.id")
+       const query3 =    await knex('subscribed_user_details')
+        .join("additional_orders", "additional_orders.subscription_id", "=", product[i].subscription_id)
         .join("products", "products.id", "=", "subscribed_user_details.product_id")
         .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
         .select(
-          "products.id as product_id",
-          "products.name as product_name",
-          "subscribed_user_details.quantity as quantity",
-          "products.unit_value as unit_value",
-          "unit_types.value as unit_type",
-          "products.price as price",
-          // "additional_orders.quantity as quantity1",
+          "products.id ",
+          "products.name ",
+          "subscribed_user_details.quantity ",
+          "products.unit_value ",
+          "unit_types.value ",
+          "products.price ",
+          "additional_orders.quantity ",
           "subscribed_user_details.id "
         ).where({"subscribed_user_details.id":product[i].subscription_id})
+
+        query4.push({
+          product_id: query3.products.id,
+          product_name: product_name,
+          sub_quantity: quantity,
+          products_unit_value: unit_value,
+          products_unit_type: unit_type,
+          product_price: price,
+          additional_quantity: quantity1,
+          id: id 
+        })
+
         }
 
-         console.log(query3)
+         console.log(query4)
 
 
         return res.status(responseCode.SUCCESS).json({status: true})
@@ -522,3 +545,27 @@ export const riderDashboard = async (req,res) => {
     }
   }
 
+  // rider logout 
+  export const logout = async (req, res) => {
+    try {
+      const {delivery_partner_id} = req.body;
+  
+      if (delivery_partner_id) {
+        const rider = await logout_rider(delivery_partner_id);
+  
+        console.log(delivery_partner_id);
+        res
+          .status(responseCode.SUCCESS)
+          .json({ status: true, message: "Succesfully Logout.." });
+      } else {
+        res
+          .status(responseCode.FAILURE.BAD_REQUEST)
+          .json({ status: false, message: "Logout failed.." });
+      }
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ status: false, message: "Server Error" });
+    }
+  };
+
+  
