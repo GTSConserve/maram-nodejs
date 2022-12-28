@@ -431,7 +431,7 @@ var getSingleorder = /*#__PURE__*/function () {
             }
             data = {
               "task_id": order.query1[0].id,
-              "task_name": "Task " + order.query2[0].user_id,
+              // "task_name": "Task "+order.query2[0].user_id,
               "tour_status": order.query1[0].tour_status,
               "order_status": order.query1[0].status,
               "empty_bottle_count": order.daily[0].total_collective_bottle,
@@ -455,7 +455,8 @@ var getSingleorder = /*#__PURE__*/function () {
                 "product_id": order.query3[0].id,
                 "product_name": order.query3[0].product_name,
                 "variation": order.query3[0].unit_value + "" + order.query3[0].unit_type,
-                "quantity": order.query3[0].quantity
+                "quantity": order.query3[0].quantity,
+                "subscription_delivered_status": order.query5[i].status
               });
             }
             for (_i = 0; _i < order.query4.length; _i++) {
@@ -463,7 +464,8 @@ var getSingleorder = /*#__PURE__*/function () {
                 "product_id": order.query4[0].add_id,
                 "product_name": order.query4[0].product_name,
                 "variation": order.query4[0].unit_value + "" + order.query3[0].unit_type,
-                "quantity": order.query4[0].quantity
+                "quantity": order.query4[0].quantity,
+                "additional_delivered_status": order.query4[_i].status
               });
             }
             addons = [];
@@ -510,7 +512,7 @@ var getSingleorder = /*#__PURE__*/function () {
 exports.getSingleorder = getSingleorder;
 var orderStatusUpdate = /*#__PURE__*/function () {
   var _ref9 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9(req, res) {
-    var _req$body6, user_id, delivery_partner_id, one_iltre_count, half_litre_count, order_id, order_status, product, addons, orderstatus, sum, collect_bottle, query3, i, _query;
+    var _req$body6, user_id, delivery_partner_id, one_iltre_count, half_litre_count, order_id, order_status, product, addons, orderstatus, sum, collect_bottle, query3, i;
     return _regeneratorRuntime().wrap(function _callee9$(_context9) {
       while (1) {
         switch (_context9.prev = _context9.next) {
@@ -548,11 +550,13 @@ var orderStatusUpdate = /*#__PURE__*/function () {
               break;
             }
             _context9.next = 16;
-            return (0, _db["default"])('daily_orders').join("subscribed_user_details", "subscribed_user_details.id", "=", "daily_orders.subscription_id").join("products", "products.id", "=", "subscribed_user_details.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id as product_id", "products.name as product_name", "subscribed_user_details.quantity as quantity", "products.unit_value as unit_value", "unit_types.value as unit_type", "products.price as price", "subscribed_user_details.id as id").where({
+            return (0, _db["default"])('subscribed_user_details').join("additional_orders", "additional_orders.subscription_id", "=", "subscribed_user_details.id").join("products", "products.id", "=", "subscribed_user_details.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id as product_id", "products.name as product_name", "subscribed_user_details.quantity as quantity", "products.unit_value as unit_value", "unit_types.value as unit_type", "products.price as price",
+            // "additional_orders.quantity as quantity1",
+            "subscribed_user_details.id ").where({
               "subscribed_user_details.id": product[i].subscription_id
             });
           case 16:
-            _query = _context9.sent;
+            query3 = _context9.sent;
           case 17:
             i++;
             _context9.next = 13;
@@ -748,7 +752,7 @@ var OrderList = /*#__PURE__*/function () {
               "addon_items_undelivered": order.addon1.length,
               "user_name": order.user[0].name,
               "customer_id": order.user[0].user_unique_id,
-              "bottle_return": order.order1[0].total_collective_bottle,
+              "bottle_return": order.bottle[0].status,
               "order_status": order.order1[0].status
             }]; //  const  = Object.keys(person);
             return _context12.abrupt("return", res.status(_responseCode["default"].SUCCESS).json(_objectSpread(_objectSpread({
@@ -800,6 +804,7 @@ var LocationCheck = /*#__PURE__*/function () {
             return (0, _rider.locationcheck)(delivery_partner_id, order_id);
           case 6:
             location = _context13.sent;
+            console.log(location);
             point1 = {
               lat: location.check[0].latitude,
               lng: location.check[0].longitude
@@ -809,39 +814,39 @@ var LocationCheck = /*#__PURE__*/function () {
               lng: location.address[0].longitude
             };
             haversine_m = (0, _haversineDistance["default"])(point1, point2); //Results in meters (default)
-            haversine_km = haversine_m / 1000; //Results in kilometers
+            haversine_km = haversine_m / 20000; //Results in kilometers
             //  console.log("distance (in meters): " + haversine_m + "m");
             //  console.log("distance (in kilometers): " + haversine_km + "km");
             if (!(haversine_km <= 1000)) {
-              _context13.next = 15;
+              _context13.next = 16;
               break;
             }
             return _context13.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               status: true,
               message: "ok"
             }));
-          case 15:
+          case 16:
             return _context13.abrupt("return", res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
               status: false,
               message: "out of range"
             }));
-          case 16:
-            _context13.next = 22;
+          case 17:
+            _context13.next = 23;
             break;
-          case 18:
-            _context13.prev = 18;
+          case 19:
+            _context13.prev = 19;
             _context13.t0 = _context13["catch"](0);
             console.log(_context13.t0);
             return _context13.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
-          case 22:
+          case 23:
           case "end":
             return _context13.stop();
         }
       }
-    }, _callee13, null, [[0, 18]]);
+    }, _callee13, null, [[0, 19]]);
   }));
   return function LocationCheck(_x25, _x26) {
     return _ref13.apply(this, arguments);

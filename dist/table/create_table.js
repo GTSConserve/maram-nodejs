@@ -717,7 +717,7 @@ var createTable = /*#__PURE__*/function () {
                   t.integer("half_liter_in_hand").nullable();
                   t.integer("one_liter_in_return").nullable();
                   t.integer("half_liter_in_return").nullable();
-                  // t.enu("status", ["0", "1"]).defaultTo("1");
+                  t.enu("status", ["0", "1"]).defaultTo("1  ");
                   t.timestamps(true, true);
                 });
               }
