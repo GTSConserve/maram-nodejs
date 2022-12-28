@@ -127,7 +127,7 @@ export const userLogin = async (password) => {
        }
     catch(error){
       console.log(error);
-      return { status: responseCode.FAILURE.INTERNAL_SERVER_ERROR, message: error.message };
+      return { status: responseCode.FAILURE.DATA_NOT_FOUND, message: error.message };
     }
   }
 
@@ -301,49 +301,49 @@ export const userLogin = async (password) => {
   }
 
   // oder status update
-  export const statusupdate = async (user_id,delivery_partner_id,one_iltre_count,half_litre_count,order_id,order_status,product,addons) => {
-    try {
-         const update = await knex('daily_orders')
-         .update({
-          status:order_status,
-          collected_one_liter_bottle:one_iltre_count ,
-          collected_half_liter_bottle:half_litre_count
-         }).where({user_id:user_id,id:order_id});
+  // export const statusupdate = async (user_id,delivery_partner_id,one_liter_count,half_liter_count,order_id,order_status,product,addons) => {
+  //   try {
+  //        const update = await knex('daily_orders')
+  //        .update({
+  //         status:order_status,
+  //         collected_one_liter_bottle:one_liter_count ,
+  //         collected_half_liter_bottle:half_liter_count
+  //        }).where({user_id:user_id,id:order_id});
 
 
          
-         if(product){
-         for(let i=0; i<product.length; i++){
-          const subscription = await knex('subscribed_user_details').update({subscription_status:order_status}).where({id:product[i].subscription_id})
-         }
-         for(let i=0; i<product.length; i++){
-          const subscription = await knex('additional_orders').update({status:order_status}).where({subscription_id:product[i].subscription_id})
-         }
-        }
-        else{
-          return{status:false,message:"no subscription product"}
-        }
-        if(addons){
-          for(let i=0; i<addons.length; i++){
-           const subscription = await knex('add_on_orders')
-           .update({status:order_status}).where({id:addons[i].id})
-          }
-          for(let i=0; i<addons.length; i++){
-            const subscription = await knex('add_on_order_items')
-            .update({status:order_status}).where({add_on_order_id:addons[i].id})
-           }
+  //        if(product){
+  //        for(let i=0; i<product.length; i++){
+  //         const subscription = await knex('subscribed_user_details').update({subscription_status:order_status}).where({id:product[i].subscription_id})
+  //        }
+  //        for(let i=0; i<product.length; i++){
+  //         const subscription_list = await knex('additional_orders').update({status:order_status}).where({subscription_id:product[i].subscription_id})
+  //        }
+  //       }
+  //       else{
+  //         return{status:false,message:"no subscription product"}
+  //       }
+  //       if(addons){
+  //         for(let i=0; i<addons.length; i++){
+  //          const add_on_subscription = await knex('add_on_orders')
+  //          .update({status:order_status}).where({id:addons[i].id})
+  //         }
+  //         for(let i=0; i<addons.length; i++){
+  //           const add_on_order_items_subscription = await knex('add_on_order_items')
+  //           .update({status:order_status}).where({add_on_order_id:addons[i].id})
+  //          }
 
-         }
-         else{
-           return{status:false,message:"no addon product"}
-         }
-        return{status:true}
+  //        }
+  //        else{
+  //          return{status:false,message:"no addon product"}
+  //        }
+  //       return{status:true}
       
-    } catch (error) {
-      console.log(error);
-      return{ status: false, message: "Cannot Update the status" };
-    }
-  }
+  //   } catch (error) {
+  //     console.log(error);
+  //     return{ status: false, message: "Cannot Update the status" };
+  //   }
+  // }
 
   // dashboard
   export const dashboard = async(delivery_partner_id,date) => {
@@ -471,26 +471,26 @@ export const locationcheck =async(delivery_partner_id,order_id) => {
 
 
 // home delivery details 
-export const home_delivery = async (delivery_partner_id) => {
-  try {
-    const router = await knex('routes').select('id','name').where({rider_id:delivery_partner_id});
+// export const home_delivery = async (delivery_partner_id) => {
+//   try {
+//     const router = await knex('routes').select('id','name').where({rider_id:delivery_partner_id});
 
-    const order = await knex('daily_orders').select(
-      'id',
-      'total_collective_bottle',
-      'status','add_on_order_id',
-      'user_id','total_qty')
-      .where({router_id:router[0].id});
+//     const order = await knex('daily_orders').select(
+//       'id',
+//       'total_collective_bottle',
+//       'status','add_on_order_id',
+//       'user_id','total_qty')
+//       .where({router_id:router[0].id});
 
-    const delivery = await knex('daily_orders')
-    .select('id')
-    .where({router_id:router[0].id});
+//     const delivery = await knex('daily_orders')
+//     .select('id')
+//     .where({router_id:router[0].id});
 
-  } catch (error) {
-    console.log(error)
-    return{ status: false, message: "No data found" };  
-  }
-}
+//   } catch (error) {
+//     console.log(error)
+//     return{ status: false, message: "No data found" };  
+//   }
+// }
 
 
 // rider logout

@@ -1,6 +1,6 @@
 import express, { query } from 'express';
 import messages from '../../constants/messages';
-import { get_Appcontrol, get_riderdetails, statusupdate, update_endtour, update_location, update_riderstatus, update_starttour, userLogin,getsingleorder, checkPassword, dashboard, cancel_order, order_list, locationcheck, home_delivery, logout_rider } from '../../models/rider/rider.model';
+import { get_Appcontrol, get_riderdetails, statusupdate, update_endtour, update_location, update_riderstatus, update_starttour, userLogin, getsingleorder, checkPassword, dashboard, cancel_order, order_list, locationcheck, home_delivery, logout_rider } from '../../models/rider/rider.model';
 import responseCode from '../../constants/responseCode';
 import knex from '../../services/db.service'
 import { userValidator } from '../../services/validator.service';
@@ -16,69 +16,69 @@ import haversine from "haversine-distance";
 
 //  rider app controls
 export const getAppControls = async (req, res) => {
-  try{
+  try {
 
     const settings = await get_Appcontrol()
 
     let appSettingData = {}
-    for (const settingData of settings.body){
-        appSettingData[settingData.key] = settingData.value;
-        
+    for (const settingData of settings.body) {
+      appSettingData[settingData.key] = settingData.value;
+
     }
-    res.status(200).json({ status: true,data:appSettingData,message:"ok"  }) 
-   
+    res.status(200).json({ status: true, data: appSettingData, message: "ok" })
+
     // res.status(200).json({ status: true,data: settings.body }) 
   }
   catch (error) {
     console.log(error);
-    res.status(500).json({ status: false,error }) 
+    res.status(500).json({ status: false, error })
   }
-  }
+}
 
 
 
 // rider login 
 export const login = async (req, res) => {
-  try{
-    
-    const payload = userValidator(req.body);
-    const { user_name, password} = payload;
+  try {
 
-    if (payload.status) {     
+    const payload = userValidator(req.body);
+    const { user_name, password } = payload;
+
+    if (payload.status) {
 
       const checkPassword1 = await knex
-      .select("id","password")
-      .from("rider_details")
-      .where({user_name,status:"1" });
+        .select("id", "password")
+        .from("rider_details")
+        .where({ user_name, status: "1" });
       console.log(checkPassword1[0].password);
 
-      const isPassword = await bcrypt.compare(password,checkPassword1[0].password);
+      const isPassword = await bcrypt.compare(password, checkPassword1[0].password);
       console.log(isPassword);
 
       console.log(checkPassword1);
-     let query;
+      let query;
 
-         if (isPassword) {
-          res
-              .status(responseCode.SUCCESS)
-              .json({ status: true, delivery_partner_id: checkPassword1[0].id, message: "Rider Login Successfully" });
-          }
-  
-        else {
-          res
-            .status(responseCode.FAILURE.BAD_REQUEST)
-            .json({ status: false, message: "password mismatch" });
-        }
+      if (isPassword) {
+        res
+          .status(responseCode.SUCCESS)
+          .json({ status: true, delivery_partner_id: checkPassword1[0].id, message: "Rider Login Successfully" });
       }
-  
+
+      else {
+        res
+          .status(responseCode.FAILURE.BAD_REQUEST)
+          .json({ status: false, message: "password mismatch" });
+      }
     }
+
+  }
 
   catch (error) {
     console.error('Whooops! This broke with error: ', error)
-    res.status(500).json({message:"user_id and password not matching"})
+    res.status(500).json({ message: "user_id and password not matching" })
   }
-  }
-  
+}
+
 
 //  get single rider details
 export const getRiderdetails = async (req, res) => {
@@ -95,7 +95,7 @@ export const getRiderdetails = async (req, res) => {
 
     return res
       .status(responseCode.SUCCESS)
-      .json({  data: delivery_partner.body[0],status: true,message:"ok" });
+      .json({ data: delivery_partner.body[0], status: true, message: "ok" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ status: false });
@@ -104,24 +104,24 @@ export const getRiderdetails = async (req, res) => {
 
 
 // update single rider status
-export const updateRiderstatus = async (req,res) => {
-  try{
-       const { delivery_partner_id,status} = req.body;
+export const updateRiderstatus = async (req, res) => {
+  try {
+    const { delivery_partner_id, status } = req.body;
 
-       if (!delivery_partner_id || !status) {
-       return res
+    if (!delivery_partner_id || !status) {
+      return res
         .status(responseCode.FAILURE.BAD_REQUEST)
         .json({ status: false, message: "Mandatory field Is Missing" });
     }
-       const riderstatus = await update_riderstatus(delivery_partner_id,status)
-       if(riderstatus.status){
-        return res.status(responseCode.SUCCESS).json(riderstatus)
-      }else{
-        return res.status(responseCode.FAILURE.DATA_NOT_FOUND).json(riderstatus)
-  
-      }
+    const riderstatus = await update_riderstatus(delivery_partner_id, status)
+    if (riderstatus.status) {
+      return res.status(responseCode.SUCCESS).json(riderstatus)
+    } else {
+      return res.status(responseCode.FAILURE.DATA_NOT_FOUND).json(riderstatus)
+
+    }
   }
-  catch(error){
+  catch (error) {
     console.log(error);
     res.status(500).json({ status: false });
   }
@@ -129,19 +129,19 @@ export const updateRiderstatus = async (req,res) => {
 
 
 // update single rider location 
-export const updeteRiderLocation = async (req,res) =>{
-  try{
-       const {delivery_partner_id,latitude,longitude} = req.body;
+export const updeteRiderLocation = async (req, res) => {
+  try {
+    const { delivery_partner_id, latitude, longitude } = req.body;
 
-       if (!delivery_partner_id || !latitude || !longitude) {
-        return res
-         .status(responseCode.FAILURE.BAD_REQUEST)
-         .json({ status: false, message: "Mandatory field Is Missing" });
-      }
-       const location = await update_location(delivery_partner_id,latitude,longitude);
-       return res.status(responseCode.SUCCESS).json({status: true,message:"ok" })
+    if (!delivery_partner_id || !latitude || !longitude) {
+      return res
+        .status(responseCode.FAILURE.BAD_REQUEST)
+        .json({ status: false, message: "Mandatory field Is Missing" });
+    }
+    const location = await update_location(delivery_partner_id, latitude, longitude);
+    return res.status(responseCode.SUCCESS).json({ status: true, message: "ok" })
   }
-  catch(error){
+  catch (error) {
     console.log(error);
     res.status(500).json({ status: false });
   }
@@ -149,24 +149,24 @@ export const updeteRiderLocation = async (req,res) =>{
 
 
 // update starttour 
-export const updateStartTour = async (req,res)=>{
+export const updateStartTour = async (req, res) => {
   try {
-       const {delivery_partner_id,tour_id,tour_status} = req.body;
+    const { delivery_partner_id, tour_id, tour_status } = req.body;
 
-       if (!delivery_partner_id || !tour_id || !tour_status) {
-        return res
-         .status(responseCode.FAILURE.BAD_REQUEST)
-         .json({ status: false, message: "Mandatory field Is Missing" });
-      }
+    if (!delivery_partner_id || !tour_id || !tour_status) {
+      return res
+        .status(responseCode.FAILURE.BAD_REQUEST)
+        .json({ status: false, message: "Mandatory field Is Missing" });
+    }
 
-       const starttour = await update_starttour(delivery_partner_id,tour_id,tour_status);
-       if(starttour.status){
-        return res.status(responseCode.SUCCESS).json(starttour)
-      }else{
-        return res.status(responseCode.FAILURE.DATA_NOT_FOUND).json(starttour)
-  
-       }
-    
+    const starttour = await update_starttour(delivery_partner_id, tour_id, tour_status);
+    if (starttour.status) {
+      return res.status(responseCode.SUCCESS).json(starttour)
+    } else {
+      return res.status(responseCode.FAILURE.DATA_NOT_FOUND).json(starttour)
+
+    }
+
   } catch (error) {
     console.log(error);
     return res
@@ -177,190 +177,187 @@ export const updateStartTour = async (req,res)=>{
 
 
 // update endtour
-export const updateEndtour = async (req,res) => {
-  try{
-    const {delivery_partner_id,tour_id,tour_status} = req.body;
+export const updateEndtour = async (req, res) => {
+  try {
+    const { delivery_partner_id, tour_id, tour_status } = req.body;
 
     if (!delivery_partner_id || !tour_id || !tour_status) {
       return res
-       .status(responseCode.FAILURE.BAD_REQUEST)
-       .json({ status: false, message: "Mandatory field Is Missing" });
+        .status(responseCode.FAILURE.BAD_REQUEST)
+        .json({ status: false, message: "Mandatory field Is Missing" });
     }
 
-    const endtour = await update_endtour(delivery_partner_id,tour_id,tour_status)
-    if(endtour.status){
+    const endtour = await update_endtour(delivery_partner_id, tour_id, tour_status)
+    if (endtour.status) {
       return res.status(responseCode.SUCCESS).json(endtour);
     }
-    else{
+    else {
       return res.status(responseCode.FAILURE.DATA_NOT_FOUND).json(endtour);
     }
 
   }
-  catch(error){
+  catch (error) {
     console.log(error);
     return res.status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
-    .json({ status: false, message: messages.SERVER_ERROR });
+      .json({ status: false, message: messages.SERVER_ERROR });
   }
 }
 
 
 // get single order 
-export const getSingleorder = async (req,res) => {
-  try{
-      const {order_id,delivery_partner_id,order_status} = req.body;
+export const getSingleorder = async (req, res) => {
+  try {
+    const { order_id, delivery_partner_id, order_status } = req.body;
 
-      if(!order_id  ){
-        return res
-       .status(responseCode.FAILURE.BAD_REQUEST)
-       .json({ status: false, message: "Mandatory field Is Missing" });
-      }
-      // console.log(order_status)
+    if (!order_id) {
+      return res
+        .status(responseCode.FAILURE.BAD_REQUEST)
+        .json({ status: false, message: "Mandatory field Is Missing" });
+    }
+    // console.log(order_status)
 
-     const order = await getsingleorder (order_id,delivery_partner_id,order_status)
+    const order = await getsingleorder(order_id, delivery_partner_id, order_status)
 
 
     //  console.log(order.query5)
-     if(order.status = true){
+    if (order.status = true) {
       let data = {
-                "task_id":order.query1[0].id,
-                "task_name": "Task "+order.query2[0].user_id,
-                "tour_status":order.query1[0].tour_status,
-                "order_status": order.query1[0].status,
-                "empty_bottle_count": order.daily[0].total_collective_bottle,
-                "total_litre":order.daily[0].total_qty + " " +order.query3[0].unit_type,
-                "total_addons_count":order.query5[0].order_id,
-                 "delivered_addons_count":order.query6.length
+        "task_id": order.query1[0].id,
+        "task_name": "Task " + order.query2[0].user_id,
+        "tour_status": order.query1[0].tour_status,
+        "order_status": order.query1[0].status,
+        "empty_bottle_count": order.daily[0].total_collective_bottle,
+        "total_litre": order.daily[0].total_qty + " " + order.query3[0].unit_type,
+        "total_addons_count": order.query5[0].order_id,
+        "delivered_addons_count": order.query6.length
       }
 
       let user = {
-                 "user_id": order.query2[0].user_id,
-                 "user_name": order.query2[0].user_name,
-                 "customer_id": order.query2[0].customer_id,
-                 "user_mobile": order.query2[0].user_mobile ,
-                 "user_address": order.query2[0].user_address,
-                 "landmark": order.query2[0].landmark,
-                 "user_latitude": order.query2[0].user_latitude,
-                 "user_longitude": order.query2[0].user_longitude
+        "user_id": order.query2[0].user_id,
+        "user_name": order.query2[0].user_name,
+        "customer_id": order.query2[0].customer_id,
+        "user_mobile": order.query2[0].user_mobile,
+        "user_address": order.query2[0].user_address,
+        "landmark": order.query2[0].landmark,
+        "user_latitude": order.query2[0].user_latitude,
+        "user_longitude": order.query2[0].user_longitude
       }
 
       let products = [];
-      for( let i=0;i<order.query3.length;i++){
-   products.push({
-     "product_id": order.query3[0].id,
-     "product_name":order.query3[0].product_name,
-     "variation":order.query3[0].unit_value + "" +order.query3[0].unit_type,
-     "quantity": order.query3[0].quantity,
-     "delivered_status" :order.query5[i].status
-    })}
+      for (let i = 0; i < order.query3.length; i++) {
+        products.push({
+          "product_id": order.query3[0].id,
+          "product_name": order.query3[0].product_name,
+          "variation": order.query3[0].unit_value + "" + order.query3[0].unit_type,
+          "quantity": order.query3[0].quantity,
+          "delivered_status": order.query5[i].status
+        })
+      }
 
-    let additional = [];
-    for( let i=0;i<order.query4.length;i++){
-      additional.push({
-     "product_id": order.query4[0].add_id,
-     "product_name":order.query4[0].product_name,
-     "variation":order.query4[0].unit_value + "" +order.query3[0].unit_type,
-     "quantity": order.query4[0].quantity,
-     "delivered_status" :order.query4[i].status
-       })}
+      let additional = [];
+      for (let i = 0; i < order.query4.length; i++) {
+        additional.push({
+          "product_id": order.query4[0].add_id,
+          "product_name": order.query4[0].product_name,
+          "variation": order.query4[0].unit_value + "" + order.query3[0].unit_type,
+          "quantity": order.query4[0].quantity,
+          "delivered_status": order.query4[i].status
+        })
+      }
 
 
-      let addons =[];
+      let addons = [];
 
-      for( let i=0;i<order.data;i++){
-         addons.push({
+      for (let i = 0; i < order.data; i++) {
+        addons.push({
           "addon_id": order.query5[i].addon_id,
-          "addon_name":order.query5[i].product_name,
-          "variation": order.query5[i].unit_value + "" +order.query5[i].unit_type,
+          "addon_name": order.query5[i].product_name,
+          "variation": order.query5[i].unit_value + "" + order.query5[i].unit_type,
           "quantity": order.query5[i].quantity,
-          "delivered_status" :order.query5[i].status
+          "delivered_status": order.query5[i].status
         })
 
       }
-     
 
-     return res.status(responseCode.SUCCESS).json({status: true,data:data,user,products,additional,addons})
-    
+
+      return res.status(responseCode.SUCCESS).json({ status: true, data: data, user, products, additional, addons })
+
+    }
   }
-  }
-  catch(error){
+  catch (error) {
     console.log(error);
     return res.status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
-    .json({ status: false, message: messages.SERVER_ERROR });
+      .json({ status: false, message: messages.SERVER_ERROR });
   }
-  }
-  
+}
+
 
 
 
 
 // order_status_update
-export const orderStatusUpdate = async (req,res) => {
+export const orderStatusUpdate = async (req, res) => {
   try {
-        const {user_id,delivery_partner_id,one_iltre_count,half_litre_count,order_id,order_status,product,addons} = req.body;
-        if(!user_id || !order_id || !order_status){
-          return res
-          .status(responseCode.FAILURE.BAD_REQUEST)
-          .json({ status: false, message: "Mandatory field Is Missing" });
-         }
+    const { user_id, delivery_partner_id, one_iltre_count, half_litre_count, order_id, order_status, product, addons } = req.body;
+    if (!user_id || !order_id || !order_status) {
+      return res
+        .status(responseCode.FAILURE.BAD_REQUEST)
+        .json({ status: false, message: "Mandatory field Is Missing" });
+    }
 
-        const orderstatus = await statusupdate(user_id,delivery_partner_id,one_iltre_count,half_litre_count,order_id,order_status,product,addons);
+    // const orderstatus = await statusupdate(user_id, delivery_partner_id, one_iltre_count, half_litre_count, order_id, order_status, product, addons);
 
-        let sum = one_iltre_count + half_litre_count;
+    // let sum = one_iltre_count + half_litre_count;
 
-        // console.log(sum)
+    // // console.log(sum)
 
-        const collect_bottle = await knex('daily_orders').update({total_collective_bottle:sum}).where({user_id:user_id,id:order_id})
+    // const collect_bottle = await knex('daily_orders').update({ total_collective_bottle: sum }).where({ user_id: user_id, id: order_id })
 
-       let query4 = [];
-
-
-      //  for(let i=0; i<product.length; i++){
-      //   await knex('subscribed_user_details').select("subscribed_user_details.id ").where({"subscribed_user_details.id":product[i].subscription_id})
-
-      //   query4.push({id:product[i].subscription_id})
-
-      //   console.log(query4)
-      // }
-
-        for(let i=0; i<product.length; i++){
-       const query3 =    await knex('subscribed_user_details')
-        .join("additional_orders", "additional_orders.subscription_id", "=", product[i].subscription_id)
-        .join("products", "products.id", "=", "subscribed_user_details.product_id")
-        .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
-        .select(
-          "products.id ",
-          "products.name ",
-          "subscribed_user_details.quantity ",
-          "products.unit_value ",
-          "unit_types.value ",
-          "products.price ",
-          "additional_orders.quantity ",
-          "subscribed_user_details.id "
-        ).where({"subscribed_user_details.id":product[i].subscription_id})
-
-        query4.push({
-          product_id: query3.products.id,
-          product_name: product_name,
-          sub_quantity: quantity,
-          products_unit_value: unit_value,
-          products_unit_type: unit_type,
-          product_price: price,
-          additional_quantity: quantity1,
-          id: id 
-        })
-
-        }
-
-         console.log(query4)
+    // let query4 = [];
 
 
-        return res.status(responseCode.SUCCESS).json({status: true})
+    // for (let i = 0; i < product.length; i++) {
+    //   await knex('products').select("unit_value ").where({ "products.id": product[i].id })
 
-        }
-   catch (error) {
+    //   query4.push({ unit_value })
+
+    //   console.log(query4)
+    // }
+
+    //   for(let i=0; i<product.length; i++){
+    //  const query3 =    await knex('products')
+    //   // .join("additional_orders", "additional_orders.subscription_id", "=", product[i].subscription_id)
+    //   // .join("products", "products.id", "=", "subscribed_user_details.product_id")
+    //   .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
+    //   .select(
+    //     // "products.id ",
+    //     // "products.name ",
+    //     "products.unit_value "
+    //   ).where({"products.id ":product[i].id})
+
+    //   query4.push({
+    //     // product_id: query3.products.id,
+    //     // product_name: product_name,
+    //     // sub_quantity: quantity,
+    //     products_unit_value:query3.products.unit_value,
+    //     // products_unit_type: unit_type,
+    //     // product_price: price,
+    //     // additional_quantity: quantity1,
+    //     // id: id 
+    //   })
+
+    //   }
+
+    // console.log(query4)
+
+
+    return res.status(responseCode.SUCCESS).json({ status: true, message: "Ok" })
+
+  }
+  catch (error) {
     console.log(error);
     return res.status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
-    .json({ status: false, message: messages.SERVER_ERROR });
+      .json({ status: false, message: messages.SERVER_ERROR });
   }
 }
 
@@ -369,190 +366,216 @@ export const orderStatusUpdate = async (req,res) => {
 
 
 // rider dashboard
-export const riderDashboard = async (req,res) => {
-  try{
-    const {delivery_partner_id,date} = req.body;
+export const riderDashboard = async (req, res) => {
+  try {
+    const { delivery_partner_id, date } = req.body;
 
-    if(!delivery_partner_id || !date){
+    if (!delivery_partner_id || !date) {
       return res
-      .status(responseCode.FAILURE.BAD_REQUEST)
-      .json({ status: false, message: "Mandatory field Is Missing" });
-     }
-
-
-    const total = await dashboard(delivery_partner_id,date);
-    // console.log(total);
-
-    const bottle = await knex('daily_orders').select('total_collective_bottle').where({router_id:total.data,date:date})
-    
-    let sum=0;
-    for(let i=0; i<bottle.length; i++){
-     sum+=Number(bottle[i].total_collective_bottle)
-      }
-
-
-      let query ={
-       "total_orders":total.order.length,
-       "delivered_orders":total.delivery.length,
-       "undelivered_orders":total.pending.length+total.undelivered.length,
-       "empty_bottle":sum
-      }
-      console.log(query)
-      return res.status(responseCode.SUCCESS).json({status: true, query })
-    }
-  
-  catch(error){
-    console.log(error);
-    return res.status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
-    .json({ status: false, message: messages.SERVER_ERROR });
-  }
-  }
-
-
-  // rider cancel order 
-  export const cancelOrder = async (req,res) => {
-    try{
-      const {user_id,order_id,delivery_partner_id,order_status,reason,date}= req.body;
-
-      if(!delivery_partner_id || !order_status || !date){
-        return res
         .status(responseCode.FAILURE.BAD_REQUEST)
         .json({ status: false, message: "Mandatory field Is Missing" });
-       }
+    }
 
-       const router = await knex('routes').select('id').where({rider_id:delivery_partner_id});
 
-       const order = await knex('daily_orders').update({status:order_status}).where({user_id:user_id,router_id:router[0].id,date:date});
-       
-       return res.status(responseCode.SUCCESS).json({status:true,message:"order cancelled by rider"});
+    const total = await dashboard(delivery_partner_id, date);
+    // console.log(total);
+
+    const bottle = await knex('daily_orders').select('total_collective_bottle').where({ router_id: total.data, date: date })
+
+    let sum = 0;
+    for (let i = 0; i < bottle.length; i++) {
+      sum += Number(bottle[i].total_collective_bottle)
+    }
+
+
+    let query = {
+      "total_orders": total.order.length,
+      "delivered_orders": total.delivery.length,
+      "undelivered_orders": total.pending.length + total.undelivered.length,
+      "empty_bottle": sum
+    }
+    console.log(query)
+    return res.status(responseCode.SUCCESS).json({ status: true, query })
+  }
+
+  catch (error) {
+    console.log(error);
+    return res.status(responseCode.FAILURE.DATA_NOT_FOUND)
+      .json({ status: false, message: messages.SERVER_ERROR });
+  }
+}
+
+
+// rider cancel order 
+export const cancelOrder = async (req, res) => {
+  try {
+    const { user_id, order_id, delivery_partner_id, order_status, reason, date } = req.body;
+
+    if (!delivery_partner_id || !order_status || !date) {
+      return res
+        .status(responseCode.FAILURE.BAD_REQUEST)
+        .json({ status: false, message: "Mandatory field Is Missing" });
+    }
+
+    const router = await knex('routes').select('id').where({ rider_id: delivery_partner_id });
+
+    const order = await knex('daily_orders').update({ status: order_status }).where({ user_id: user_id, router_id: router[0].id, date: date });
+
+    return res.status(responseCode.SUCCESS).json({ status: true, message: "order cancelled by rider" });
     // if(cancel.status=true){
     //   const reason1 = await knex('daily_orders').insert({reason:reason})
     // }
 
-      // return res.status(responseCode.SUCCESS).json({data:cancel.status})
+    // return res.status(responseCode.SUCCESS).json({data:cancel.status})
 
 
-    }
-    catch(error){
-      console.log(error)
-      return res.status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
-     .json({ status: false, message: messages.SERVER_ERROR });
-    }
   }
+  catch (error) {
+    console.log(error)
+    return res.status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
+      .json({ status: false, message: messages.SERVER_ERROR });
+  }
+}
 
 
-  // order list 
-  export const OrderList = async (req,res) => {
-    try{
-      const {delivery_partner_id,status} = req.body;
+// order list 
+export const OrderList = async (req, res) => {
+  try {
+    const { delivery_partner_id, status } = req.body;
 
-      if(!delivery_partner_id){
-        return res
+    if (!delivery_partner_id) {
+      return res
         .status(responseCode.FAILURE.BAD_REQUEST)
         .json({ status: false, message: "Mandatory field Is Missing" });
-       }
-
-      const order = await order_list(delivery_partner_id,status)
-      // console.log(order)
-      let query ={
-        "tour_id":order.router[0].id,
-        "tour_route":order.router[0].name,
-        "total_orders":order.order.length,
-        "tour_status":order.order[0].status,
-        "completed_orders":order.delivery.length       
-       }
-
-      //  console.log(query)
-       let data =[{
-        "order_id":order.order[0].id,
-        "order_string": "Task "+order.order[0].user_id,
-        "milk_variation":order.order[0].total_qty +" "+ order.query3[0].unit_type,
-        "addon_items_delivered":order.addon.length,
-        "addon_items_undelivered":order.addon1.length,
-        "user_name":order.user[0].name,
-        "customer_id":order.user[0].user_unique_id,
-        "bottle_return":order.bottle[0].status,
-        "order_status":order.order1[0].status
-       }]
-       
-      //  const  = Object.keys(person);
-
-       return res.status(responseCode.SUCCESS).json({status: true, ...query,data })
     }
-    catch(error){
-      console.log(error);
-      return res.status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
-     .json({ status: false, message: messages.SERVER_ERROR });
+
+    const order = await order_list(delivery_partner_id, status)
+    // console.log(order)
+    let query = {
+      "tour_id": order.router[0].id,
+      "tour_route": order.router[0].name,
+      "total_orders": order.order.length,
+      "tour_status": order.order[0].status,
+      "completed_orders": order.delivery.length
     }
+
+    //  console.log(query)
+    let data = [{
+      "order_id": order.order[0].id,
+      "order_string": "Task " + order.order[0].user_id,
+      "milk_variation": order.order[0].total_qty + " " + order.query3[0].unit_type,
+      "addon_items_delivered": order.addon.length,
+      "addon_items_undelivered": order.addon1.length,
+      "user_name": order.user[0].name,
+      "customer_id": order.user[0].user_unique_id,
+      "bottle_return": order.bottle[0].status,
+      "order_status": order.order1[0].status
+    }]
+
+    //  const  = Object.keys(person);
+
+    return res.status(responseCode.SUCCESS).json({ status: true, ...query, data })
   }
-
-
-  // location check
-  export const LocationCheck = async(req,res) => {
-    try {
-         const{delivery_partner_id,order_id} = req.body;
-
-         if(!delivery_partner_id || !order_id ){
-          return res
-          .status(responseCode.FAILURE.BAD_REQUEST)
-          .json({ status: false, message: "Mandatory field Is Missing" });
-         }
-
-         const location = await locationcheck(delivery_partner_id,order_id);
-
-         console.log(location)
-
-         var point1 = { lat: location.check[0].latitude, lng: location.check[0].longitude }
-
-         //Second point in your haversine calculation
-         var point2 = { lat: location.address[0].latitude, lng: location.address[0].longitude}
-         
-         var haversine_m = haversine(point1, point2); //Results in meters (default)
-         var haversine_km = haversine_m /20000; //Results in kilometers
-         
-        //  console.log("distance (in meters): " + haversine_m + "m");
-        //  console.log("distance (in kilometers): " + haversine_km + "km");
-
-         if(haversine_km<=1000){
-          return res.status(responseCode.SUCCESS).json({status: true,message:"ok" })
-         }
-         else{
-          return res.status(responseCode.FAILURE.BAD_REQUEST).json({status: false,message:"out of range" })
-
-         }
-         
-
-    } catch (error) {
-      console.log(error);
-      return res.status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
-     .json({ status: false, message: messages.SERVER_ERROR });
-    }
+  catch (error) {
+    console.log(error);
+    return res.status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
+      .json({ status: false, message: messages.SERVER_ERROR });
   }
+}
 
 
-  // home delivery details 
-  export const homeDelivery = async (req,res) => {
-    try{
-      const {delivery_partner_id} = req.body;
+// location check
+export const LocationCheck = async (req, res) => {
+  try {
+    const { delivery_partner_id, order_id } = req.body;
 
-      const home = await home_delivery(delivery_partner_id);
+    if (!delivery_partner_id || !order_id) {
+      return res
+        .status(responseCode.FAILURE.BAD_REQUEST)
+        .json({ status: false, message: "Mandatory field Is Missing" });
+    }
+
+    const location = await locationcheck(delivery_partner_id, order_id);
+
+    console.log(location)
+
+    var point1 = { lat: location.check[0].latitude, lng: location.check[0].longitude }
+
+    //Second point in your haversine calculation
+    var point2 = { lat: location.address[0].latitude, lng: location.address[0].longitude }
+
+    var haversine_m = haversine(point1, point2); //Results in meters (default)
+    var haversine_km = haversine_m / 20000; //Results in kilometers
+
+    //  console.log("distance (in meters): " + haversine_m + "m");
+    //  console.log("distance (in kilometers): " + haversine_km + "km");
+
+    if (haversine_km <= 1000) {
+      return res.status(responseCode.SUCCESS).json({ status: true, message: "ok" })
+    }
+    else {
+      return res.status(responseCode.FAILURE.BAD_REQUEST).json({ status: false, message: "out of range" })
 
     }
-    catch(error){
+
+
+  } catch (error) {
+    console.log(error);
+    return res.status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
+      .json({ status: false, message: messages.SERVER_ERROR });
+  }
+}
+
+
+// home delivery details 
+export const homeDelivery = async (req, res) => {
+  try {
+    const { delivery_partner_id, date } = req.body;
+
+
+    if (!delivery_partner_id || !date) {
+      return res
+        .status(responseCode.FAILURE.BAD_REQUEST)
+        .json({ status: false, message: "Mandatory field Is Missing" });
+    }
+
+    // const home = await home_delivery(delivery_partner_id, date);
+
+    const router = {
+
+      "tour_id": 1,
+      "route": "East Tambaram",
+      "total_orders": 15,
+      "completed_orders": 12,
+      "milk": {
+        "one liter_count": 30,
+        "half_liter_count": 30
+      },
+      "addons_count": 30,
+      "empty_bottle": {
+        "one litre_bottle": 12,
+        "half_litr_bottle": 10
+      }
+    }
+    res
+    .status(responseCode.SUCCESS)
+    .json({ status: true, data: router });
+  }
+    catch (error) {
       console.log(error);
       return res.status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
-     .json({ status: false, message: messages.SERVER_ERROR });
+        .json({ status: false, message: messages.SERVER_ERROR });
     }
   }
 
   // rider logout 
   export const logout = async (req, res) => {
     try {
-      const {delivery_partner_id} = req.body;
-  
+      const { delivery_partner_id } = req.body;
+
       if (delivery_partner_id) {
         const rider = await logout_rider(delivery_partner_id);
-  
+
         console.log(delivery_partner_id);
         res
           .status(responseCode.SUCCESS)
@@ -568,4 +591,4 @@ export const riderDashboard = async (req,res) => {
     }
   };
 
-  
+
