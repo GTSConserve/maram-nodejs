@@ -1,6 +1,6 @@
 import express from 'express';
 import messages from '../../constants/messages';
-import { get_Appcontrol, get_riderdetails, statusupdate, update_endtour, update_location, update_riderstatus, update_starttour, userLogin,getsingleorder, checkPassword, dashboard, cancel_order, order_list, locationcheck } from '../../models/rider/rider.model';
+import { get_Appcontrol, get_riderdetails, statusupdate, update_endtour, update_location, update_riderstatus, update_starttour, userLogin,getsingleorder, checkPassword, dashboard, cancel_order, order_list, locationcheck, home_delivery } from '../../models/rider/rider.model';
 import responseCode from '../../constants/responseCode';
 import knex from '../../services/db.service'
 import { userValidator } from '../../services/validator.service';
@@ -223,11 +223,11 @@ export const getSingleorder = async (req,res) => {
      if(order.status = true){
       let data = {
                 "task_id":order.query1[0].id,
-                // "task_name": "Task 1",
+                "task_name": "Task "+order.query2[0].user_id,
                 "tour_status":order.query1[0].tour_status,
                 "order_status": order.query1[0].status,
                 "empty_bottle_count": order.daily[0].total_collective_bottle,
-                "total_litre":order.daily[0].total_qty + " " +order.query3[0].unit_value,
+                "total_litre":order.daily[0].total_qty + " " +order.query3[0].unit_type,
                 "total_addons_count":order.query5[0].order_id,
                  "delivered_addons_count":order.query6.length
       }
@@ -267,7 +267,8 @@ export const getSingleorder = async (req,res) => {
           "addon_id": order.query5[i].addon_id,
           "addon_name":order.query5[i].product_name,
           "variation": order.query5[i].unit_value + "" +order.query5[i].unit_type,
-          "quantity": order.query5[i].quantity
+          "quantity": order.query5[i].quantity,
+          "addons_delivered_status" :order.query5[i].status
         })
 
       }
@@ -291,17 +292,43 @@ export const getSingleorder = async (req,res) => {
 // order_status_update
 export const orderStatusUpdate = async (req,res) => {
   try {
-        const {user_id,delivery_partner_id,one_iltre_count,half_litre_count,order_id,order_status,products,addons} = req.body;
+        const {user_id,delivery_partner_id,one_iltre_count,half_litre_count,order_id,order_status,product,addons} = req.body;
         if(!user_id || !order_id || !order_status){
           return res
           .status(responseCode.FAILURE.BAD_REQUEST)
           .json({ status: false, message: "Mandatory field Is Missing" });
          }
 
-        const orderstatus = await statusupdate(user_id,delivery_partner_id,one_iltre_count,half_litre_count,order_id,order_status,products,addons);
+        const orderstatus = await statusupdate(user_id,delivery_partner_id,one_iltre_count,half_litre_count,order_id,order_status,product,addons);
+
+        let sum = one_iltre_count + half_litre_count;
+
+        // console.log(sum)
+
+        const collect_bottle = await knex('daily_orders').update({total_collective_bottle:sum}).where({user_id:user_id,id:order_id})
+
+        const query3 =[];
+
+        for(let i=0; i<product.length; i++){
+          const query3 = await knex('daily_orders')
+        .join("subscribed_user_details", "subscribed_user_details.id", "=", "daily_orders.subscription_id")
+        .join("products", "products.id", "=", "subscribed_user_details.product_id")
+        .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
+        .select(
+          "products.id as product_id",
+          "products.name as product_name",
+          "subscribed_user_details.quantity as quantity",
+          "products.unit_value as unit_value",
+          "unit_types.value as unit_type",
+          "products.price as price",
+          "subscribed_user_details.id as id"
+        ).where({"subscribed_user_details.id":product[i].subscription_id})
+        }
+
+         console.log(query3)
 
 
-        return res.status(responseCode.SUCCESS).json({status: true,orderstatus})
+        return res.status(responseCode.SUCCESS).json({status: true})
 
         }
    catch (error) {
@@ -409,6 +436,7 @@ export const riderDashboard = async (req,res) => {
       //  console.log(query)
        let data =[{
         "order_id":order.order[0].id,
+        "order_string": "Task "+order.order[0].user_id,
         "milk_variation":order.order[0].total_qty +" "+ order.query3[0].unit_type,
         "addon_items_delivered":order.addon.length,
         "addon_items_undelivered":order.addon1.length,
@@ -464,6 +492,22 @@ export const riderDashboard = async (req,res) => {
          
 
     } catch (error) {
+      console.log(error);
+      return res.status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
+     .json({ status: false, message: messages.SERVER_ERROR });
+    }
+  }
+
+
+  // home delivery details 
+  export const homeDelivery = async (req,res) => {
+    try{
+      const {delivery_partner_id} = req.body;
+
+      const home = await home_delivery(delivery_partner_id);
+
+    }
+    catch(error){
       console.log(error);
       return res.status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
      .json({ status: false, message: messages.SERVER_ERROR });

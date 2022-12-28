@@ -275,7 +275,8 @@ export const userLogin = async (password) => {
           "unit_types.value as unit_type",
           "products.price",
           "add_on_orders.id as order_id",
-          "add_on_orders.id as addon_id"
+          "add_on_orders.id as addon_id",
+          "add_on_order_items.status as status"
         )
         .where({"add_on_orders.id":daily[0].add_on_order_id})
       console.log(query5.length)
@@ -295,7 +296,7 @@ export const userLogin = async (password) => {
   }
 
   // oder status update
-  export const statusupdate = async (user_id,delivery_partner_id,one_iltre_count,half_litre_count,order_id,order_status,products,addons) => {
+  export const statusupdate = async (user_id,delivery_partner_id,one_iltre_count,half_litre_count,order_id,order_status,product,addons) => {
     try {
          const update = await knex('daily_orders')
          .update({
@@ -303,21 +304,35 @@ export const userLogin = async (password) => {
           collected_one_liter_bottle:one_iltre_count ,
           collected_half_liter_bottle:half_litre_count
          }).where({user_id:user_id,id:order_id});
+
+
          
-         if(products){
-         for(let i=0; i<products.length; i++){
-          const subscription = await knex('subscribed_user_details').update({subscription_status:order_status}).where({id:products[i].subscription_id})
+         if(product){
+         for(let i=0; i<product.length; i++){
+          const subscription = await knex('subscribed_user_details').update({subscription_status:order_status}).where({id:product[i].subscription_id})
+         }
+         for(let i=0; i<product.length; i++){
+          const subscription = await knex('additional_orders').update({status:order_status}).where({subscription_id:product[i].subscription_id})
          }
         }
         else{
           return{status:false,message:"no subscription product"}
         }
+        if(addons){
+          for(let i=0; i<addons.length; i++){
+           const subscription = await knex('add_on_orders')
+           .update({status:order_status}).where({id:addons[i].id})
+          }
+          for(let i=0; i<addons.length; i++){
+            const subscription = await knex('add_on_order_items')
+            .update({status:order_status}).where({add_on_order_id:addons[i].id})
+           }
 
-
-
-
-
-         return{status:true,update}
+         }
+         else{
+           return{status:false,message:"no addon product"}
+         }
+        return{status:true}
       
     } catch (error) {
       console.log(error);
@@ -385,7 +400,7 @@ export const order_list = async (delivery_partner_id,status) =>{
       'total_collective_bottle',
       'status','add_on_order_id',
       'user_id','total_qty')
-      .where({router_id:router[0].id});
+      .where({router_id:router[0].id,status:status});
 
     const delivery = await knex('daily_orders')
     .select('id')
@@ -443,3 +458,26 @@ export const locationcheck =async(delivery_partner_id,order_id) => {
     return{ status: false, message: "No data found" };  
   }
 } 
+
+
+// home delivery details 
+export const home_delivery = async (delivery_partner_id) => {
+  try {
+    const router = await knex('routes').select('id','name').where({rider_id:delivery_partner_id});
+
+    const order = await knex('daily_orders').select(
+      'id',
+      'total_collective_bottle',
+      'status','add_on_order_id',
+      'user_id','total_qty')
+      .where({router_id:router[0].id});
+
+    const delivery = await knex('daily_orders')
+    .select('id')
+    .where({router_id:router[0].id});
+
+  } catch (error) {
+    console.log(error)
+    return{ status: false, message: "No data found" };  
+  }
+}
