@@ -82,7 +82,7 @@ export const edit_address = async (
 
   const user = await knex("user_address")
     .update(query)
-    .where({ user_id: user_id });
+    .where({ user_id: user_id , id : address_id });
     console.log(user)
   try {
     return { status: responseCode.SUCCESS, body: user };
