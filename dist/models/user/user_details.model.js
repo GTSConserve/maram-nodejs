@@ -96,7 +96,8 @@ var edit_address = /*#__PURE__*/function () {
             }
             _context2.next = 10;
             return (0, _db["default"])("user_address").update(query).where({
-              user_id: user_id
+              user_id: user_id,
+              id: address_id
             });
           case 10:
             user = _context2.sent;
