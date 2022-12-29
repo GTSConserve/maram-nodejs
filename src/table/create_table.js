@@ -112,6 +112,14 @@ export const createTable = async (req, res) => {
           t.enu("online_status", ["online", "offline", "squeeze"]).defaultTo(
             "online"
           );
+          t.integer("total_one_liter", 255);
+          t.integer("total_half_liter", 255);
+          t.integer("one_liter_in_hand", 255);
+          t.integer("half_liter_in_hand", 255);
+          t.integer("one_liter_in_return", 255);
+          t.integer("half_liter_in_return", 255);
+          t.integer("today_one_liter", 255);
+          t.integer("today_half_liter", 255);
           t.string("device", 255).nullable();
           t.string("longitude", 255).nullable();
           t.string("latitude", 255).nullable();
@@ -581,7 +589,7 @@ export const createTable = async (req, res) => {
           t.enu("status", ["pending", "delivered", "undelivered"]).defaultTo(
             "pending"
           );
-          t.string("quantity", 255).nullable();
+          t.integer("quantity", 255).nullable();
           t.integer("price").nullable();
 
           t.timestamps(true, true);
@@ -663,11 +671,11 @@ export const createTable = async (req, res) => {
           t.integer("total_given_bottle").nullable();
           t.integer("total_collective_bottle").nullable();
 
-          t.enu("status", ["pending", "delivered", "undelivered","cancelled"]).defaultTo(
+          t.enu("status", ["pending", "started", "completed","delivered", "undelivered","cancelled"]).defaultTo(
             "pending"
           );
-          t.enu("tour_status", ["0","1", "2",]).defaultTo(
-            "0"
+          t.enu("tour_status", ['pending', 'started', 'completed']).defaultTo(
+            "pending"
           );
           t.timestamps(true, true);
         });
@@ -977,6 +985,38 @@ export const createTable = async (req, res) => {
             t.integer("one_liter_in_return").nullable();
             t.integer("half_liter_in_return").nullable();
             t.enu("status", ["0", "1"]).defaultTo("1  ");
+            t.timestamps(true, true);
+          });
+        }
+      });
+
+      // payment_gateways table
+      await knex.schema.hasTable("payment_type").then(function (exists) {
+        if (!exists) {
+          return knex.schema.createTable("payment_type", function (t) {
+            t.increments("id").primary().unsigned().notNullable();
+            t.string("image", 2048).nullable();
+            t.integer("user_id").unsigned().notNullable();
+            t.foreign("user_id").references("id").inTable("users");
+            t.string("gatewayname", 255).nullable();
+            t.string("displayname", 255).nullable();
+            t.enu("status", ["0", "1"]).defaultTo("1");
+            t.timestamps(true, true);
+          });
+        }
+      });
+
+      // payment_gateways table
+      await knex.schema.hasTable("payment_gateways").then(function (exists) {
+        if (!exists) {
+          return knex.schema.createTable("payment_gateways", function (t) {
+            t.increments("id").primary().unsigned().notNullable();
+            t.string("image", 2048).nullable();
+            t.integer("user_id").unsigned().notNullable();
+            t.foreign("user_id").references("id").inTable("users");
+            t.string("gatewayname", 255).nullable();
+            t.string("displayname", 255).nullable();
+            t.enu("status", ["0", "1"]).defaultTo("1");
             t.timestamps(true, true);
           });
         }

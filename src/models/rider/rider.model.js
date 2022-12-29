@@ -209,9 +209,9 @@ export const userLogin = async (password) => {
         const query1 =  await knex("daily_orders")
         .select(
           "id",
-          // "daily_orders.task_name",
           "tour_status",
           "status ",
+          // "daily_orders.task_name",
         )
         .where({"daily_orders.id":daily[0].id})
         

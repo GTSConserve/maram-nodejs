@@ -239,10 +239,37 @@ export const get_user_bill = async (userId) => {
   }
 };
 
-export const get_single_bill = async () => {
+export const get_single_bill = async (bill_id,userId) => {
   try {
-    
+    const getSingleList = await knex.select("id","bill_value",)
+      .from("bill_history").where({user_id: bill_id})
+
+    const sub_products = await knex("subscribed_user_details as sub").select(
+      "sub.quantity",
+      "sub.product_id",
+      "products.price",
+      "unit_types.name",
+      "unit_types.id"
+    )
+    .join("products","products.id","=","sub.user_id")
+    .join("unit_types","unit_types.id","=","unit_type_id")
+    .where({ user_id: bill_id })
+
+    const add_on_products = await knex("add_on_order_items as add").select(
+      "add.quantity",
+      "add.product_id",
+      "add.total_price",
+      "unit_types.name",
+      "unit_types.id"
+    )
+    .join("unit_types","unit_types.id","=","add.id")
+    // .join("add_on_order_items","add.user_id","=","add.product_id")
+    .where({ user_id: bill_id })
+
+    // console.log(sub_products)
+      return { status: responseCode.SUCCESS, body: getSingleList, sub_products, add_on_products };
   } catch (error) {
-    
+    console.log(error);
+    return { status: responseCode.FAILURE.INTERNAL_SERVER_ERROR, error };
   }
 }

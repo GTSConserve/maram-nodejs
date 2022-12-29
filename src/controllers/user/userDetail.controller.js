@@ -43,7 +43,7 @@ export const addUserAddress = async (req, res) => {
         })
         .where({ user_id: payload.user_id });
 
-     return res
+      return res
         .status(responseCode.SUCCESS)
 
         .json({ status: true, message: "address added successfully" });
@@ -294,17 +294,26 @@ export const getEmptyBottle = async (req, res) => {
 
     if (userId) {
 
-      const this_month_item_detail = await knex("empty_bottle_tracking").select(
+      const this_month_item_detail = await knex("users").select(
           "one_liter_in_hand as delivered_orders",
-          "one_liter_in_return as remaining_orders",
           "half_liter_in_hand as additional_delivered_orders",
+          "one_liter_in_return as remaining_orders",
           "one_liter_in_return as additional_remaining_orders"
         )
+        let empty_bottle_in_hand= {
+                 one_liter : this_month_item_detail[0].delivered_orders,
+                 half_liter : this_month_item_detail[0].additional_delivered_orders
+        }
+      let empty_bottle_in_return = {
+                 one_liter : this_month_item_detail[0].remaining_orders,
+                 half_liter : this_month_item_detail[0].additional_remaining_orders
+                }
+   
 
       res
         .status(responseCode.SUCCESS)
-        .json({ status: true, this_month_item_detail: get_user_bottle_detail });
-    }
+        .json({ status: true,empty_bottle_in_hand,empty_bottle_in_return });
+      }
     else {
       return res
         .status(responseCode.FAILURE.DATA_NOT_FOUND)
@@ -340,40 +349,71 @@ export const getSingleCalendar = async (req, res) => {
   try {
     const { date } = req.body;
 
-    const single_calendar_data = 
-      {
-        "subscription_products": [
-          {
-            "subscription_id": 1,
-            "product_name": "Farm Fresh Natural Milk",
-            "product_image": "https://i.pinimg.com/originals/e1/e3/e6/e1e3e608910263114b0f03560bdcd966.jpg",
-            "product_variation": 1,
-            "product_price": 130,
-            "product_quantity": 2,
-            "subcription_status": "1",
-            "subcription_mode": "Daily Order",
-          },
-        ],
-        "addons_products": [
-          {
-            "product_id": 1,
-            "product_name": "Farm Fresh Natural Milk",
-            "product_image": "https://i.pinimg.com/originals/e1/e3/e6/e1e3e608910263114b0f03560bdcd966.jpg",
-            "product_variation": "1 liter",
-            "product_price": 130,
-            "product_quantity": 2,
-            "remove_status": 0
-          },
-        ],
+    const single_calendar_data =
+    {
+      "subscription_products": [
+        {
+          "subscription_id": 1,
+          "product_name": "Farm Fresh Natural Milk",
+          "product_image": "https://i.pinimg.com/originals/e1/e3/e6/e1e3e608910263114b0f03560bdcd966.jpg",
+          "product_variation": 1,
+          "product_price": 130,
+          "product_quantity": 2,
+          "subcription_status": "1",
+          "subcription_mode": "Daily Order",
+        },
+      ],
+      "addons_products": [
+        {
+          "product_id": 1,
+          "product_name": "Farm Fresh Natural Milk",
+          "product_image": "https://i.pinimg.com/originals/e1/e3/e6/e1e3e608910263114b0f03560bdcd966.jpg",
+          "product_variation": "1 liter",
+          "product_price": 130,
+          "product_quantity": 2,
+          "remove_status": 0
+        },
+      ],
 
-      }
-    
+    }
+
 
     // await edit_address(userId, address_id, title, address, landmark, type);
 
     res
       .status(responseCode.SUCCESS)
-      .json({ status: true, data:single_calendar_data});
+      .json({ status: true, data: single_calendar_data });
+  } catch (error) {
+    console.log(error);
+
+    res.status(responseCode.FAILURE.BAD_REQUEST).json({ status: false, error });
+  }
+};
+
+export const getOverallCalendar = async (req, res) => {
+  try {
+    // const { date } = req.body;
+
+    const overall_calendar_data = [
+      {
+        "date": "01/01/2022",
+        "products": {
+          "subscription": {
+            "1-liter": 1,
+            "0.5-liter": 0,
+            "packed-milk": 0
+          },
+          "addons-products": 0,
+          "is_delivered": 1
+        }
+      }
+    ]
+
+    // await edit_address(userId, address_id, title, address, landmark, type);
+
+    res
+      .status(responseCode.SUCCESS)
+      .json({ status: true, data: overall_calendar_data });
   } catch (error) {
     console.log(error);
 
@@ -402,8 +442,8 @@ export const getBillList = async (req, res) => {
       // : null;
       get_bill.items = data.items;
       get_bill.bill_no = data.bill_no
-      get_bill.bill_value = data.bill_value; 
-      get_bill.status = data.status; 
+      get_bill.bill_value = data.bill_value;
+      get_bill.status = data.status;
     });
 
     res
@@ -428,13 +468,60 @@ export const getSingleBillList = async (req, res) => {
         .json({ status: false, message: "Cannot find bill list" });
     }
 
-    const get_single_bill_list = await get_single_bill(userId);
+    // const list = await get_single_bill(bill_id);
+    const data =
+    {
+      "bill_id": "7",
+      "payment_id": "7",
+      "month": "Jan 2022",
+      "order_string": "Bill No#MA3948F3J492",
+      "bill_value": 1085,
+      "payment_status": 0,
+      "sub_total": 0,
+      "discount": 0,
+      "subscription_products": [
+        {
+          "no_quantity": 1,
+          "product_id": 664,
+          "product_total": 1252,
+          "recipe_price": 1242,
+          "variation_name": "1 Litre",
+          "variation_id": 183,
+          "no_of_days": 40
+        }
+      ],
+      "addons_products": [
+        {
+          "no_quantity": 1,
+          "product_id": 664,
+          "product_total": 1252,
+          "recipe_price": 1242,
+          "variation_name": "1 Litre",
+          "variation_id": 183
+        }
+      ],
+      "user": {
+        "address_id": 183,
+        "address": "221, M.K.K.Nagar, Kamban Nagar, Thiruvalluvar Nagar, Pudukkottai, Tamil Nadu 622003, India\n",
+        "landmark": ""
+      }
 
-    res.status(200).json({ status: true, data: address.body });
+
+    }
+
+    // if (!list) {
+    //   return res
+    //     .status(responseCode.FAILURE.DATA_NOT_FOUND)
+    //     .json({ status: false, message: sub.message });
+    // }
+
+    res.status(200).json({ status: true, data: data });
   } catch (error) {
     console.log(error);
 
     res.status(500).json({ status: false });
   }
 };
+
+
 

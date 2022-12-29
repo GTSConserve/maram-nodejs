@@ -14,7 +14,8 @@ import {
   userAddressChange,
   getSingleCalendar,
   getBillList,
-  getSingleBillList
+  getSingleBillList,
+  getOverallCalendar
 } from "../../controllers/user/userDetail.controller";
 import multer from "multer";
 
@@ -51,12 +52,13 @@ userRouter.get("/get_empty_bottle", authenticateJWT, getEmptyBottle);
 
 // get bill history api
 userRouter.post("/get_bill_list", authenticateJWT, getBillList);
-// userRouter.post("/get_single_bill_list", authenticateJWT, getSingleBillList);
+userRouter.post("/get_single_bill_list", authenticateJWT, getSingleBillList);
 
 // empty bottle tracking api for static
 
 userRouter.post("/user_address_change", authenticateJWT, userAddressChange);
 userRouter.post("/single_calendar", authenticateJWT, getSingleCalendar);
+userRouter.post("/over_all_calendar", authenticateJWT, getOverallCalendar);
 
 
 export default userRouter;
