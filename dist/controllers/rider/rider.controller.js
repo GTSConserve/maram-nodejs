@@ -206,42 +206,43 @@ var updateRiderstatus = /*#__PURE__*/function () {
           case 0:
             _context4.prev = 0;
             _req$body = req.body, delivery_partner_id = _req$body.delivery_partner_id, status = _req$body.status;
-            if (!(!delivery_partner_id || !status)) {
-              _context4.next = 4;
+            console.log(status);
+            if (delivery_partner_id) {
+              _context4.next = 5;
               break;
             }
             return _context4.abrupt("return", res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
               status: false,
               message: "Mandatory field Is Missing"
             }));
-          case 4:
-            _context4.next = 6;
+          case 5:
+            _context4.next = 7;
             return (0, _rider.update_riderstatus)(delivery_partner_id, status);
-          case 6:
+          case 7:
             riderstatus = _context4.sent;
             if (!riderstatus.status) {
-              _context4.next = 11;
+              _context4.next = 12;
               break;
             }
             return _context4.abrupt("return", res.status(_responseCode["default"].SUCCESS).json(riderstatus));
-          case 11:
-            return _context4.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json(riderstatus));
           case 12:
-            _context4.next = 18;
+            return _context4.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json(riderstatus));
+          case 13:
+            _context4.next = 19;
             break;
-          case 14:
-            _context4.prev = 14;
+          case 15:
+            _context4.prev = 15;
             _context4.t0 = _context4["catch"](0);
             console.log(_context4.t0);
             res.status(500).json({
               status: false
             });
-          case 18:
+          case 19:
           case "end":
             return _context4.stop();
         }
       }
-    }, _callee4, null, [[0, 14]]);
+    }, _callee4, null, [[0, 15]]);
   }));
   return function updateRiderstatus(_x7, _x8) {
     return _ref4.apply(this, arguments);
@@ -516,40 +517,80 @@ var getSingleorder = /*#__PURE__*/function () {
 exports.getSingleorder = getSingleorder;
 var orderStatusUpdate = /*#__PURE__*/function () {
   var _ref9 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9(req, res) {
-    var _req$body6, user_id, delivery_partner_id, one_iltre_count, half_litre_count, order_id, order_status, product, addons;
+    var orderstatus, _req$body6, user_id, delivery_partner_id, one_iltre_count, half_litre_count, order_id, order_status, product, addons, sum;
     return _regeneratorRuntime().wrap(function _callee9$(_context9) {
       while (1) {
         switch (_context9.prev = _context9.next) {
           case 0:
             _context9.prev = 0;
+            _context9.next = 3;
+            return (0, _rider.statusupdate)(user_id, delivery_partner_id, one_liter_count, half_liter_count, order_id, order_status, product, addons);
+          case 3:
+            orderstatus = _context9.sent;
             _req$body6 = req.body, user_id = _req$body6.user_id, delivery_partner_id = _req$body6.delivery_partner_id, one_iltre_count = _req$body6.one_iltre_count, half_litre_count = _req$body6.half_litre_count, order_id = _req$body6.order_id, order_status = _req$body6.order_status, product = _req$body6.product, addons = _req$body6.addons;
             if (!(!user_id || !order_id || !order_status)) {
-              _context9.next = 4;
+              _context9.next = 7;
               break;
             }
             return _context9.abrupt("return", res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
               status: false,
               message: "Mandatory field Is Missing"
             }));
-          case 4:
+          case 7:
+            sum = one_liter_count + half_liter_count; // const orderstatus = await statusupdate(user_id, delivery_partner_id, one_iltre_count, half_litre_count, order_id, order_status, product, addons);
+            // let sum = one_iltre_count + half_litre_count;
+            // // console.log(sum)
+            // const collect_bottle = await knex('daily_orders').update({ total_collective_bottle: sum }).where({ user_id: user_id, id: order_id })
+            //  let query4 = [];
+            //  for(let i=0; i<product.length; i++){
+            //   await knex('products').select("unit_value ").where({"products.id":product[i].id})
+            //   query4.push({unit_value})
+            //   console.log(query4)
+            // let query4 = [];
+            // for (let i = 0; i < product.length; i++) {
+            //   await knex('products').select("unit_value ").where({ "products.id": product[i].id })
+            //   query4.push({ unit_value })
+            //   console.log(query4)
+            // }
+            //   for(let i=0; i<product.length; i++){
+            //  const query3 =    await knex('products')
+            //   // .join("additional_orders", "additional_orders.subscription_id", "=", product[i].subscription_id)
+            //   // .join("products", "products.id", "=", "subscribed_user_details.product_id")
+            //   .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
+            //   .select(
+            //     // "products.id ",
+            //     // "products.name ",
+            //     "products.unit_value "
+            //   ).where({"products.id ":product[i].id})
+            //   query4.push({
+            //     // product_id: query3.products.id,
+            //     // product_name: product_name,
+            //     // sub_quantity: quantity,
+            //     products_unit_value:query3.products.unit_value,
+            //     // products_unit_type: unit_type,
+            //     // product_price: price,
+            //     // additional_quantity: quantity1,
+            //     // id: id 
+            //   })
+            //   }
             return _context9.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               status: true,
               message: "Ok"
             }));
-          case 7:
-            _context9.prev = 7;
+          case 11:
+            _context9.prev = 11;
             _context9.t0 = _context9["catch"](0);
             console.log(_context9.t0);
             return _context9.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
-          case 11:
+          case 15:
           case "end":
             return _context9.stop();
         }
       }
-    }, _callee9, null, [[0, 7]]);
+    }, _callee9, null, [[0, 11]]);
   }));
   return function orderStatusUpdate(_x17, _x18) {
     return _ref9.apply(this, arguments);
