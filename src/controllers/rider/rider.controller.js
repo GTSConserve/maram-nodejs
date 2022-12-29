@@ -108,8 +108,12 @@ export const updateRiderstatus = async (req, res) => {
   try {
     const { delivery_partner_id, status } = req.body;
 
-    if (!delivery_partner_id || !status) {
-      return res
+
+       console.log(status)
+
+       if (!delivery_partner_id) {
+       return res
+
         .status(responseCode.FAILURE.BAD_REQUEST)
         .json({ status: false, message: "Mandatory field Is Missing" });
     }
@@ -298,20 +302,38 @@ export const getSingleorder = async (req, res) => {
 // order_status_update
 export const orderStatusUpdate = async (req, res) => {
   try {
+
+
+        const orderstatus = await statusupdate(user_id,delivery_partner_id,one_liter_count,half_liter_count,order_id,order_status,product,addons);
+
+        
+
     const { user_id, delivery_partner_id, one_iltre_count, half_litre_count, order_id, order_status, product, addons } = req.body;
     if (!user_id || !order_id || !order_status) {
       return res
         .status(responseCode.FAILURE.BAD_REQUEST)
         .json({ status: false, message: "Mandatory field Is Missing" });
     }
-
+    let sum = one_liter_count + half_liter_count;
     // const orderstatus = await statusupdate(user_id, delivery_partner_id, one_iltre_count, half_litre_count, order_id, order_status, product, addons);
 
     // let sum = one_iltre_count + half_litre_count;
 
+
     // // console.log(sum)
 
     // const collect_bottle = await knex('daily_orders').update({ total_collective_bottle: sum }).where({ user_id: user_id, id: order_id })
+
+
+      //  let query4 = [];
+
+
+      //  for(let i=0; i<product.length; i++){
+      //   await knex('products').select("unit_value ").where({"products.id":product[i].id})
+
+      //   query4.push({unit_value})
+
+      //   console.log(query4)
 
     // let query4 = [];
 
@@ -323,6 +345,7 @@ export const orderStatusUpdate = async (req, res) => {
 
     //   console.log(query4)
     // }
+
 
     //   for(let i=0; i<product.length; i++){
     //  const query3 =    await knex('products')
@@ -348,7 +371,7 @@ export const orderStatusUpdate = async (req, res) => {
 
     //   }
 
-    // console.log(query4)
+
 
 
     return res.status(responseCode.SUCCESS).json({ status: true, message: "Ok" })
