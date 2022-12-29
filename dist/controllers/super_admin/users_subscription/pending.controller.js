@@ -1,6 +1,5 @@
 "use strict";
 
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -9,6 +8,7 @@ var _db = _interopRequireDefault(require("../../../services/db.service"));
 var _helper = require("../../../utils/helper.util");
 var _moment = _interopRequireDefault(require("moment"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
@@ -264,7 +264,7 @@ var cancelPendingList = /*#__PURE__*/function () {
 exports.cancelPendingList = cancelPendingList;
 var getNewUsers = /*#__PURE__*/function () {
   var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(req, res) {
-    var loading, searchKeyword, data_length, data_length_2, search_data_length, search_data_2_length, branches, both_data, _yield$getPageNumber, startingLimit, page, resultsPerPage, numberOfPages, iterator, endingLink, results, is_search, data, i, search_query, add_on_order_query, get_user_products_query, _i2, j;
+    var loading, searchKeyword, data_length, data_length_2, search_data_length, search_data_2_length, branches, both_data, _yield$getPageNumber, startingLimit, page, resultsPerPage, numberOfPages, iterator, endingLink, results, is_search, data, subscription_users, add_on_users, i, search_query, add_on_order_query, get_user_products_query, _i2, j, view_add_on_products, _i3, _j, duplicate_add_on_products, j_index_id, _i4, _j2;
     return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
@@ -337,10 +337,9 @@ var getNewUsers = /*#__PURE__*/function () {
             } else {
               both_data = [].concat(_toConsumableArray(data_length), _toConsumableArray(data_length_2));
             }
-            console.log(both_data);
-            _context4.next = 38;
+            _context4.next = 37;
             return (0, _helper.getPageNumber)(req, res, both_data, "users_subscription/get_new_users");
-          case 38:
+          case 37:
             _yield$getPageNumber = _context4.sent;
             startingLimit = _yield$getPageNumber.startingLimit;
             page = _yield$getPageNumber.page;
@@ -350,71 +349,153 @@ var getNewUsers = /*#__PURE__*/function () {
             endingLink = _yield$getPageNumber.endingLink;
             is_search = false;
             data = [];
+            subscription_users = [];
+            add_on_users = [];
             if (!(data_length !== 0)) {
-              _context4.next = 60;
+              _context4.next = 61;
               break;
             }
             if (!searchKeyword) {
-              _context4.next = 55;
+              _context4.next = 56;
               break;
             }
-            _context4.next = 51;
+            _context4.next = 52;
             return _db["default"].raw("SELECT sub.id , sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n        user_address.address,user_address.id as user_address_id ,user_address.landmark,products.name as product_name,products.price,products.unit_value,products.image,\n        unit_types.value,categories.name as category_name\n        FROM subscribed_user_details AS sub \n        JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id \n        JOIN users ON users.id = sub.user_id \n        JOIN user_address ON user_address.id = sub.user_address_id\n        JOIN products ON products.id = sub.product_id\n        JOIN unit_types ON unit_types.id = products.unit_type_id\n        JOIN categories ON categories.id = products.category_id\n        WHERE sub.subscription_status = \"pending\" \n        AND users.user_unique_id LIKE '%".concat(searchKeyword, "%'"));
-          case 51:
+          case 52:
             results = _context4.sent;
             is_search = true;
-            _context4.next = 58;
+            _context4.next = 59;
             break;
-          case 55:
-            _context4.next = 57;
+          case 56:
+            _context4.next = 58;
             return _db["default"].raw("SELECT sub.id ,sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n        user_address.address,user_address.id as user_address_id ,user_address.landmark,products.name as product_name,products.price,products.unit_value,products.image,\n        unit_types.value,categories.name as category_name\n        FROM subscribed_user_details AS sub \n        JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id \n        JOIN users ON users.id = sub.user_id \n        JOIN user_address ON user_address.id = sub.user_address_id\n        JOIN products ON products.id = sub.product_id\n        JOIN unit_types ON unit_types.id = products.unit_type_id\n        JOIN categories ON categories.id = products.category_id\n        WHERE sub.subscription_status = \"pending\" ");
-          case 57:
-            results = _context4.sent;
           case 58:
-            data = results[0];
-            for (i = 0; i < data.length; i++) {
-              data[i].start_date = data[i].start_date.toString().slice(4, 16);
-              data[i].image = process.env.BASE_URL + data[i].image;
+            results = _context4.sent;
+          case 59:
+            subscription_users = results[0];
+            for (i = 0; i < subscription_users.length; i++) {
+              subscription_users[i].start_date = (0, _moment["default"])(subscription_users[i].start_date).format("YYYY-MM-DD");
+              subscription_users[i].image = process.env.BASE_URL + subscription_users[i].image;
             }
-          case 60:
+          case 61:
             if (searchKeyword) {
               search_query = "AND  users.user_unique_id LIKE '%".concat(searchKeyword, "%'");
             }
-            _context4.next = 63;
+            _context4.next = 64;
             return _db["default"].raw("SELECT adds.id,adds.user_id ,adds.delivery_date,adds.sub_total,\n    users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n      user_address.address,user_address.id as user_address_id ,user_address.landmark\n      FROM add_on_orders as adds \n      JOIN users ON users.id = adds.user_id \n      JOIN user_address ON user_address.id = adds.address_id\n      WHERE adds.branch_id IS NULL AND adds.status = \"pending\" ".concat(searchKeyword ? search_query : ""));
-          case 63:
+          case 64:
             add_on_order_query = _context4.sent;
             if (!(add_on_order_query[0].length !== 0)) {
-              _context4.next = 78;
+              _context4.next = 80;
               break;
             }
             _i2 = 0;
-          case 66:
+          case 67:
             if (!(_i2 < add_on_order_query[0].length)) {
-              _context4.next = 78;
+              _context4.next = 80;
               break;
             }
-            _context4.next = 69;
+            _context4.next = 70;
             return (0, _db["default"])("add_on_order_items as adds").select("adds.add_on_order_id", "adds.quantity", "adds.price", "adds.total_price", "products.name as product_name", "products.image", "products.unit_value", "unit_types.value").join("products", "products.id", "=", "adds.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").where({
               "adds.add_on_order_id": add_on_order_query[0][_i2].id
             });
-          case 69:
+          case 70:
             get_user_products_query = _context4.sent;
             for (j = 0; j < get_user_products_query.length; j++) {
               get_user_products_query[j].image = process.env.BASE_URL + get_user_products_query[j].image;
             }
             add_on_order_query[0][_i2].is_add_on = true;
+            add_on_order_query[0][_i2].add_on_order_id = add_on_order_query[0][_i2].id;
             add_on_order_query[0][_i2].add_on_products = get_user_products_query;
-            add_on_order_query[0][_i2].delivery_date = add_on_order_query[0][_i2].delivery_date.toString().slice(4, 16);
-            data.push(add_on_order_query[0][_i2]);
-          case 75:
+            add_on_order_query[0][_i2].delivery_date = (0, _moment["default"])(add_on_order_query[0][_i2].delivery_date).format("YYYY-MM-DD");
+            add_on_users.push(add_on_order_query[0][_i2]);
+          case 77:
             _i2++;
-            _context4.next = 66;
+            _context4.next = 67;
             break;
-          case 78:
+          case 80:
+            // console.log(data);
+            // check that new user did the sub and add on at same time (like if he did the add on while pending the subscription)
+            view_add_on_products = [];
+            for (_i3 = 0; _i3 < subscription_users.length; _i3++) {
+              for (_j = 0; _j < add_on_users.length; _j++) {
+                if (add_on_users[_j].user_address_id == subscription_users[_i3].user_address_id) {
+                  add_on_users[_j].is_subscription_pending = true;
+                  subscription_users[_i3].is_add_on_pending = true;
+                  view_add_on_products.push({
+                    add_on_order_id: add_on_users[_j].add_on_order_id,
+                    delivery_date: add_on_users[_j].delivery_date,
+                    sub_total: add_on_users[_j].sub_total,
+                    add_on_products: add_on_users[_j].add_on_products
+                  });
+                }
+              }
+              subscription_users[_i3].add_on_details = view_add_on_products;
+              view_add_on_products = [];
+            }
+            // console.log(add_on_users, "some");
+            //  console.log(subscription_users)
+            //  console.log(subscription_users[0])
+
+            // if new user did the two add on orders
+            duplicate_add_on_products = [];
+            for (_i4 = 0; _i4 < add_on_users.length; _i4++) {
+              if (add_on_users[_i4].is_subscription_pending != true) {
+                for (_j2 = _i4 + 1; _j2 < add_on_users.length; _j2++) {
+                  if (add_on_users[_i4].user_address_id == add_on_users[_j2].user_address_id) {
+                    add_on_users[_i4].is_add_on_duplicate = true;
+                    add_on_users[_j2].is_add_on_duplicate = true;
+                    // duplicate_add_on_products.push({
+                    //   add_on_order_id: add_on_users[i].add_on_order_id,
+                    //   delivery_date: add_on_users[i].delivery_date,
+                    //   sub_total: add_on_users[i].sub_total,
+                    //   add_on_products: add_on_users[i].add_on_products,
+                    // });
+                    // duplicate_add_on_products.push({
+                    //   add_on_order_id: add_on_users[j].add_on_order_id,
+                    //   delivery_date: add_on_users[j].delivery_date,
+                    //   sub_total: add_on_users[j].sub_total,
+                    //   add_on_products: add_on_users[j].add_on_products,
+                    // });
+
+                    add_on_users[_i4].add_on_duplicate_details = [{
+                      add_on_order_id: add_on_users[_j2].add_on_order_id,
+                      delivery_date: add_on_users[_j2].delivery_date,
+                      sub_total: add_on_users[_j2].sub_total,
+                      add_on_products: add_on_users[_j2].add_on_products
+                    }, {
+                      add_on_order_id: add_on_users[_i4].add_on_order_id,
+                      delivery_date: add_on_users[_i4].delivery_date,
+                      sub_total: add_on_users[_i4].sub_total,
+                      add_on_products: add_on_users[_i4].add_on_products
+                    }];
+                    add_on_users[_j2].add_on_duplicate_details = [{
+                      add_on_order_id: add_on_users[_j2].add_on_order_id,
+                      delivery_date: add_on_users[_j2].delivery_date,
+                      sub_total: add_on_users[_j2].sub_total,
+                      add_on_products: add_on_users[_j2].add_on_products
+                    }, {
+                      add_on_order_id: add_on_users[_i4].add_on_order_id,
+                      delivery_date: add_on_users[_i4].delivery_date,
+                      sub_total: add_on_users[_i4].sub_total,
+                      add_on_products: add_on_users[_i4].add_on_products
+                    }];
+                  }
+                }
+                // console.log(add_on_users[i])
+                // add_on_users[i].add_on_duplicate_details = duplicate_add_on_products;
+              }
+              // duplicate_add_on_products = [];
+            }
+
+            console.log(add_on_users);
+            // console.log(add_on_users[3]);
+
             loading = false;
             res.render("super_admin/users_subscription/pending", {
               data: data,
+              subscription_users: subscription_users,
+              add_on_users: add_on_users,
               page: page,
               iterator: iterator,
               endingLink: endingLink,
@@ -424,19 +505,19 @@ var getNewUsers = /*#__PURE__*/function () {
               loading: loading,
               branches: branches
             });
-            _context4.next = 86;
+            _context4.next = 93;
             break;
-          case 82:
-            _context4.prev = 82;
+          case 89:
+            _context4.prev = 89;
             _context4.t0 = _context4["catch"](0);
             console.log(_context4.t0);
             res.redirect("/home");
-          case 86:
+          case 93:
           case "end":
             return _context4.stop();
         }
       }
-    }, _callee4, null, [[0, 82]]);
+    }, _callee4, null, [[0, 89]]);
   }));
   return function getNewUsers(_x7, _x8) {
     return _ref4.apply(this, arguments);
@@ -612,15 +693,15 @@ var getAllUsers = /*#__PURE__*/function () {
             //     `SELECT sub.id , sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,
             //     user_address.address,user_address.landmark,products.name as product_name,products.price,products.unit_value,
             //     unit_types.value,categories.name as category_name,admin_users.first_name as first_name
-            //     FROM subscribed_user_details AS sub 
-            //     JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id 
-            //     JOIN users ON users.id = sub.user_id 
+            //     FROM subscribed_user_details AS sub
+            //     JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id
+            //     JOIN users ON users.id = sub.user_id
             //     JOIN user_address ON user_address.id = sub.user_address_id
             //     JOIN products ON products.id = sub.product_id
             //     JOIN unit_types ON unit_types.id = products.unit_type_id
             //     JOIN categories ON categories.id = products.category_id
             //     JOIN admin_users ON admin_users.user_group_id = subscription_type.id
-            //     WHERE sub.subscription_status = "subscribed" 
+            //     WHERE sub.subscription_status = "subscribed"
             //     AND admin_users.first_name LIKE '%${searchKeyword}%' LIMIT ${startingLimit},${resultsPerPage}`
             //   );
             //   is_search = true;
@@ -630,9 +711,9 @@ var getAllUsers = /*#__PURE__*/function () {
             //     `SELECT sub.id ,sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,
             //     user_address.address,user_address.landmark,products.name as product_name,products.price,products.unit_value,
             //     unit_types.value,categories.name as category_name,admin_users.first_name as first_name,user_address_subscribe_branch.user_id,products.unit_value as product_unit,products.price as product_price
-            //     FROM subscribed_user_details AS sub 
-            //     JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id 
-            //     JOIN users ON users.id = sub.user_id 
+            //     FROM subscribed_user_details AS sub
+            //     JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id
+            //     JOIN users ON users.id = sub.user_id
             //     JOIN user_address ON user_address.id = sub.user_address_id
             //     JOIN products ON products.id = sub.product_id
             //     JOIN unit_types ON unit_types.id = products.unit_type_id
@@ -646,8 +727,8 @@ var getAllUsers = /*#__PURE__*/function () {
             //     `SELECT sub.id ,sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,
             //     user_address.address,user_address.landmark,products.name as product_name,products.price,products.unit_value,
             //     unit_types.value,categories.name as category_name,admin_users.first_name as first_name,user_address_subscribe_branch.user_id,products.unit_value as product_unit,products.price as product_price
-            //     FROM subscribed_user_details AS sub 
-            //     JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id 
+            //     FROM subscribed_user_details AS sub
+            //     JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id
             //     JOIN users ON users.id = sub.user_id
             //     JOIN user_address ON user_address.user_id = sub.user_address_id
             //     JOIN products ON products.product_type_id = sub.user_id
@@ -708,7 +789,7 @@ var getAllUsers = /*#__PURE__*/function () {
 exports.getAllUsers = getAllUsers;
 var getSingleUser = /*#__PURE__*/function () {
   var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(req, res) {
-    var user_address_id, admin_id, get_user_query, user, get_subscription_products, is_subscription_active, i, add_on_order_query, add_on, is_add_on_active, get_user_products_query, _i3, j;
+    var user_address_id, admin_id, get_user_query, user, get_subscription_products, is_subscription_active, i, add_on_order_query, add_on, is_add_on_active, get_user_products_query, _i5, j;
     return _regeneratorRuntime().wrap(function _callee6$(_context6) {
       while (1) {
         switch (_context6.prev = _context6.next) {
@@ -756,28 +837,28 @@ var getSingleUser = /*#__PURE__*/function () {
               _context6.next = 33;
               break;
             }
-            _i3 = 0;
+            _i5 = 0;
           case 22:
-            if (!(_i3 < add_on.length)) {
+            if (!(_i5 < add_on.length)) {
               _context6.next = 33;
               break;
             }
-            if (add_on_order_query[_i3].status == "pending") {
+            if (add_on_order_query[_i5].status == "pending") {
               is_add_on_active = 1;
             }
             _context6.next = 26;
             return (0, _db["default"])("add_on_order_items as adds").select("adds.add_on_order_id", "adds.quantity", "adds.price", "adds.total_price", "adds.status", "products.name as product_name", "products.image", "products.unit_value", "unit_types.value").join("products", "products.id", "=", "adds.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").where({
-              "adds.add_on_order_id": add_on[_i3].id
+              "adds.add_on_order_id": add_on[_i5].id
             });
           case 26:
             get_user_products_query = _context6.sent;
             for (j = 0; j < get_user_products_query.length; j++) {
               get_user_products_query[j].image = process.env.BASE_URL + get_user_products_query[j].image;
             }
-            add_on[_i3].add_on_products = get_user_products_query;
-            add_on[_i3].delivery_date = (0, _moment["default"])(add_on[_i3].delivery_date).format("YYYY-MM-DD");
+            add_on[_i5].add_on_products = get_user_products_query;
+            add_on[_i5].delivery_date = (0, _moment["default"])(add_on[_i5].delivery_date).format("YYYY-MM-DD");
           case 30:
-            _i3++;
+            _i5++;
             _context6.next = 22;
             break;
           case 33:
@@ -809,31 +890,60 @@ var getSingleUser = /*#__PURE__*/function () {
 exports.getSingleUser = getSingleUser;
 var updatePendingList = /*#__PURE__*/function () {
   var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7(req, res) {
-    var _req$body, sub_id, branch_id, address_id, add_on_id;
+    var _req$body, sub_id, branch_id, address_id, add_on_id, add_on_order_id, i;
     return _regeneratorRuntime().wrap(function _callee7$(_context7) {
       while (1) {
         switch (_context7.prev = _context7.next) {
           case 0:
             _context7.prev = 0;
-            _req$body = req.body, sub_id = _req$body.sub_id, branch_id = _req$body.branch_id, address_id = _req$body.address_id, add_on_id = _req$body.add_on_id;
-            console.log(address_id);
-            console.log(add_on_id);
-            if (!add_on_id) {
-              _context7.next = 9;
+            _req$body = req.body, sub_id = _req$body.sub_id, branch_id = _req$body.branch_id, address_id = _req$body.address_id, add_on_id = _req$body.add_on_id; // console.log(address_id);
+            // console.log(add_on_id);
+            add_on_order_id = req.body.add_on_order_id;
+            console.log(add_on_order_id, "add", _typeof(add_on_order_id));
+            console.log(sub_id, "sub");
+            console.log(address_id, "address");
+            if (!add_on_order_id) {
+              _context7.next = 19;
               break;
             }
-            _context7.next = 7;
+            if (!(typeof add_on_order_id == "string")) {
+              _context7.next = 12;
+              break;
+            }
+            _context7.next = 10;
             return (0, _db["default"])("add_on_orders").update({
               branch_id: branch_id,
               status: "assigned"
             }).where({
-              id: add_on_id
+              id: add_on_order_id
             });
-          case 7:
-            _context7.next = 11;
+          case 10:
+            _context7.next = 19;
             break;
-          case 9:
-            _context7.next = 11;
+          case 12:
+            i = 0;
+          case 13:
+            if (!(i < add_on_order_id.length)) {
+              _context7.next = 19;
+              break;
+            }
+            _context7.next = 16;
+            return (0, _db["default"])("add_on_orders").update({
+              branch_id: branch_id,
+              status: "assigned"
+            }).where({
+              id: add_on_order_id[i]
+            });
+          case 16:
+            i++;
+            _context7.next = 13;
+            break;
+          case 19:
+            if (!sub_id) {
+              _context7.next = 22;
+              break;
+            }
+            _context7.next = 22;
             return (0, _db["default"])("subscribed_user_details").update({
               branch_id: branch_id,
               subscription_status: "assigned",
@@ -841,29 +951,29 @@ var updatePendingList = /*#__PURE__*/function () {
             }).where({
               id: sub_id
             });
-          case 11:
-            _context7.next = 13;
+          case 22:
+            _context7.next = 24;
             return (0, _db["default"])("user_address").update({
               branch_id: branch_id
             }).where({
               id: address_id
             });
-          case 13:
+          case 24:
             req.flash("success", "Subscription Moved To Branch");
             res.redirect("/super_admin/users_subscription/get_new_users");
-            _context7.next = 21;
+            _context7.next = 32;
             break;
-          case 17:
-            _context7.prev = 17;
+          case 28:
+            _context7.prev = 28;
             _context7.t0 = _context7["catch"](0);
             console.log(_context7.t0);
             res.redirect("/home");
-          case 21:
+          case 32:
           case "end":
             return _context7.stop();
         }
       }
-    }, _callee7, null, [[0, 17]]);
+    }, _callee7, null, [[0, 28]]);
   }));
   return function updatePendingList(_x13, _x14) {
     return _ref7.apply(this, arguments);

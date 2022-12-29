@@ -850,12 +850,13 @@ var homeDelivery = /*#__PURE__*/function () {
               "total_orders": 15,
               "completed_orders": 12,
               "milk": {
-                "one liter_count": 30,
-                "half_liter_count": 30
+                "one_liter_count": 30,
+                "half_liter_count": 30,
+                "half_liter_pouch": 10
               },
               "addons_count": 30,
               "empty_bottle": {
-                "one litre_bottle": 12,
+                "one_litre_bottle": 12,
                 "half_litr_bottle": 10
               }
             };
