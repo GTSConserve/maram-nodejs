@@ -2,9 +2,7 @@ import knex from "../../../services/db.service";
 import { getPageNumber } from "../../../utils/helper.util";
 import moment from "moment";
 
-
-
-export const createUsers = async (req,res) => {
+export const createUsers = async (req, res) => {
   try {
     const { data } = req.body;
     console.log(req.body);
@@ -24,7 +22,6 @@ export const createUsers = async (req,res) => {
 
     const user = await knex("users").insert(user_query);
 
-
     const address = await knex("user_address").insert({
       user_id: user[0],
       branch_id: data.branch_id,
@@ -33,7 +30,9 @@ export const createUsers = async (req,res) => {
       landmark: data.address_landmark ? data.address_landmark : null,
       latitude: data.latitude,
       longitude: data.longitude,
-      alternate_mobile : data.alternate_mobile_number ? data.alternate_mobile_number : null
+      alternate_mobile: data.alternate_mobile_number
+        ? data.alternate_mobile_number
+        : null,
     });
 
     if (data.sub_product) {
@@ -50,7 +49,6 @@ export const createUsers = async (req,res) => {
         subscription_status: "assigned",
       };
 
-
       if (data.your_plan == 3) {
         let weekdays = await knex("weekdays").select("id", "name");
         let store_weekdays = [];
@@ -64,8 +62,7 @@ export const createUsers = async (req,res) => {
         sub_product_query.customized_days = JSON.stringify(store_weekdays);
       }
 
-      await knex("subscribed_user_details").insert(sub_product_query)
-
+      await knex("subscribed_user_details").insert(sub_product_query);
     }
 
     if (data.add_on.length !== 0) {
@@ -101,25 +98,20 @@ export const createUsers = async (req,res) => {
       await knex("add_on_orders").update({ sub_total }).where({ id: order_id });
     }
 
-
-
-    req.flash("success","Success Fully Added")
-    res.redirect("/home?is_user_added=2")
+    req.flash("success", "Success Fully Added");
+    res.redirect("/home?is_user_added=2");
     // return { status: true };
   } catch (error) {
     console.log(error);
     res.redirect("/home?is_user_added=1");
   }
-}
+};
 
-
-export const getCreateUsers = async (req,res) => {
+export const getCreateUsers = async (req, res) => {
   try {
-  
-
     const branch_admin = await knex("admin_users")
       .select("id", "first_name")
-      .where({ status: "1", user_group_id: 2});
+      .where({ status: "1", user_group_id: 2 });
 
     const get_subscription_products = await knex("products")
       .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
@@ -132,7 +124,7 @@ export const getCreateUsers = async (req,res) => {
       )
       .where({
         "products.product_type_id": 1,
-        "products.status": "1"
+        "products.status": "1",
       });
     const add_on_products = await knex("products")
       .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
@@ -145,10 +137,12 @@ export const getCreateUsers = async (req,res) => {
       )
       .where({
         "products.product_type_id": 2,
-        "products.status": "1"
+        "products.status": "1",
       });
 
-    const get_plan = await knex("subscription_type").select("name", "id").where({status : "1"});
+    const get_plan = await knex("subscription_type")
+      .select("name", "id")
+      .where({ status: "1" });
 
     res.render("super_admin/users/add_user", {
       get_subscription_products,
@@ -160,8 +154,7 @@ export const getCreateUsers = async (req,res) => {
     console.log(error);
     res.redirect("/home");
   }
-}
-
+};
 
 export const cancelPendingList = async (req, res) => {
   try {
@@ -202,9 +195,8 @@ export const getNewUsers = async (req, res) => {
           WHERE adds.branch_id IS NULL AND adds.status = "pending" AND  users.user_unique_id LIKE '%${searchKeyword}%'`
       );
 
-
       data_length = search_data_length[0];
-        data_length_2 = search_data_2_length[0]
+      data_length_2 = search_data_2_length[0];
       if (data_length.length === 0 && data_length_2.length === 0) {
         loading = false;
         req.query.searchKeyword = "";
@@ -223,7 +215,7 @@ export const getNewUsers = async (req, res) => {
 
     const branches = await knex("admin_users")
       .select("first_name", "id", "location")
-      .where({ user_group_id: "2"  , status : "1"});
+      .where({ user_group_id: "2", status: "1" });
 
     if (data_length.length === 0 && data_length_2.length === 0) {
       loading = false;
@@ -234,17 +226,14 @@ export const getNewUsers = async (req, res) => {
       });
     }
 
-    let both_data = []
-    if(data_length.length === 0 && data_length_2.length !==0 ){
-      both_data = data_length_2
-    }else if(data_length.length !== 0 && data_length_2.length ===0){
-      both_data = data_length
-
-    }else{
-      both_data = [...data_length,...data_length_2]
+    let both_data = [];
+    if (data_length.length === 0 && data_length_2.length !== 0) {
+      both_data = data_length_2;
+    } else if (data_length.length !== 0 && data_length_2.length === 0) {
+      both_data = data_length;
+    } else {
+      both_data = [...data_length, ...data_length_2];
     }
-
-    console.log(both_data)
 
     let {
       startingLimit,
@@ -258,11 +247,15 @@ export const getNewUsers = async (req, res) => {
       res,
       both_data,
       "users_subscription/get_new_users"
-      );
-      
-      let results;
-      let is_search = false;
-      let data = [];
+    );
+
+    let results;
+    let is_search = false;
+    let data = [];
+
+    let subscription_users = [];
+    let add_on_users = [];
+
     if (data_length !== 0) {
       if (searchKeyword) {
         results = await knex.raw(
@@ -295,15 +288,18 @@ export const getNewUsers = async (req, res) => {
         WHERE sub.subscription_status = "pending" `
         );
       }
-      data = results[0];
-      for (let i = 0; i < data.length; i++) {
-        data[i].start_date = data[i].start_date.toString().slice(4, 16);
-        data[i].image = process.env.BASE_URL + data[i].image;
+      subscription_users = results[0];
+      for (let i = 0; i < subscription_users.length; i++) {
+        subscription_users[i].start_date = moment(
+          subscription_users[i].start_date
+        ).format("YYYY-MM-DD");
+        subscription_users[i].image =
+          process.env.BASE_URL + subscription_users[i].image;
       }
     }
-    let search_query
-    if(searchKeyword  ){
-      search_query = `AND  users.user_unique_id LIKE '%${searchKeyword}%'`
+    let search_query;
+    if (searchKeyword) {
+      search_query = `AND  users.user_unique_id LIKE '%${searchKeyword}%'`;
     }
 
     const add_on_order_query =
@@ -313,7 +309,9 @@ export const getNewUsers = async (req, res) => {
       FROM add_on_orders as adds 
       JOIN users ON users.id = adds.user_id 
       JOIN user_address ON user_address.id = adds.address_id
-      WHERE adds.branch_id IS NULL AND adds.status = "pending" ${searchKeyword ? search_query : ""}`);
+      WHERE adds.branch_id IS NULL AND adds.status = "pending" ${
+        searchKeyword ? search_query : ""
+      }`);
 
     // console.log(add_on_order_query[0]);
 
@@ -340,26 +338,113 @@ export const getNewUsers = async (req, res) => {
             process.env.BASE_URL + get_user_products_query[j].image;
         }
         add_on_order_query[0][i].is_add_on = true;
+        add_on_order_query[0][i].add_on_order_id = add_on_order_query[0][i].id;
         add_on_order_query[0][i].add_on_products = get_user_products_query;
-        add_on_order_query[0][i].delivery_date = add_on_order_query[0][
-          i
-        ].delivery_date
-          .toString()
-          .slice(4, 16);
-        data.push(add_on_order_query[0][i]);
+        add_on_order_query[0][i].delivery_date = moment(
+          add_on_order_query[0][i].delivery_date
+        ).format("YYYY-MM-DD");
+
+        add_on_users.push(add_on_order_query[0][i]);
       }
       // console.log(get_user_products_query)
     }
 
+    // console.log(data);
 
+    // check that new user did the sub and add on at same time (like if he did the add on while pending the subscription)
+    let view_add_on_products = [];
+    for (let i = 0; i < subscription_users.length; i++) {
+      for (let j = 0; j < add_on_users.length; j++) {
+        if (
+          add_on_users[j].user_address_id ==
+          subscription_users[i].user_address_id
+        ) {
+          add_on_users[j].is_subscription_pending = true;
+          subscription_users[i].is_add_on_pending = true;
+          view_add_on_products.push({
+            add_on_order_id: add_on_users[j].add_on_order_id,
+            delivery_date: add_on_users[j].delivery_date,
+            sub_total: add_on_users[j].sub_total,
+            add_on_products: add_on_users[j].add_on_products,
+          });
+        }
+      }
+      subscription_users[i].add_on_details = view_add_on_products;
+      view_add_on_products = [];
+    }
+    // console.log(add_on_users, "some");
+    //  console.log(subscription_users)
+    //  console.log(subscription_users[0])
+
+    // if new user did the two add on orders
+    let duplicate_add_on_products = [];
+    let j_index_id;
+    for (let i = 0; i < add_on_users.length; i++) {
+      if (add_on_users[i].is_subscription_pending != true) {
+        for (let j = i + 1; j < add_on_users.length; j++) {
+          if (
+            add_on_users[i].user_address_id == add_on_users[j].user_address_id
+          ) {
+            add_on_users[i].is_add_on_duplicate = true;
+            add_on_users[j].is_add_on_duplicate = true;
+            // duplicate_add_on_products.push({
+            //   add_on_order_id: add_on_users[i].add_on_order_id,
+            //   delivery_date: add_on_users[i].delivery_date,
+            //   sub_total: add_on_users[i].sub_total,
+            //   add_on_products: add_on_users[i].add_on_products,
+            // });
+            // duplicate_add_on_products.push({
+            //   add_on_order_id: add_on_users[j].add_on_order_id,
+            //   delivery_date: add_on_users[j].delivery_date,
+            //   sub_total: add_on_users[j].sub_total,
+            //   add_on_products: add_on_users[j].add_on_products,
+            // });
+           
+            add_on_users[i].add_on_duplicate_details =[{
+              add_on_order_id: add_on_users[j].add_on_order_id,
+              delivery_date: add_on_users[j].delivery_date,
+              sub_total: add_on_users[j].sub_total,
+              add_on_products: add_on_users[j].add_on_products,
+            },{
+              add_on_order_id: add_on_users[i].add_on_order_id,
+              delivery_date: add_on_users[i].delivery_date,
+              sub_total: add_on_users[i].sub_total,
+              add_on_products: add_on_users[i].add_on_products,
+            }]
+          
+            add_on_users[j].add_on_duplicate_details =[{
+              add_on_order_id: add_on_users[j].add_on_order_id,
+              delivery_date: add_on_users[j].delivery_date,
+              sub_total: add_on_users[j].sub_total,
+              add_on_products: add_on_users[j].add_on_products,
+            },{
+              add_on_order_id: add_on_users[i].add_on_order_id,
+              delivery_date: add_on_users[i].delivery_date,
+              sub_total: add_on_users[i].sub_total,
+              add_on_products: add_on_users[i].add_on_products,
+            }]
+          
+          
+          }
+        }
+        // console.log(add_on_users[i])
+        // add_on_users[i].add_on_duplicate_details = duplicate_add_on_products;
+      }
+      // duplicate_add_on_products = [];
+    }
+
+    console.log(add_on_users);
+    // console.log(add_on_users[3]);
 
     loading = false;
     res.render("super_admin/users_subscription/pending", {
       data: data,
+      subscription_users,
+      add_on_users,
       page,
       iterator,
       endingLink,
-      numberOfPages :1,
+      numberOfPages: 1,
       is_search,
       searchKeyword,
       loading,
@@ -373,7 +458,6 @@ export const getNewUsers = async (req, res) => {
 
 export const getAllUsers = async (req, res) => {
   try {
-
     const { admin_id } = req.body;
     let loading = true;
     const { searchKeyword } = req.query;
@@ -398,15 +482,12 @@ export const getAllUsers = async (req, res) => {
         return res.redirect("/super_admin/users_subscription/get_all_users");
       }
     } else {
-      data_length = await knex("user_address")
-        .select("id")
-        // .where({ branch_id: admin_id });
+      data_length = await knex("user_address").select("id");
+      // .where({ branch_id: admin_id });
     }
     const branch = await knex("admin_users")
       .select("first_name", "id")
-      .where({ status: "1"  , user_group_id : "2"});
-
-
+      .where({ status: "1", user_group_id: "2" });
 
     const routes = await knex("users")
       .select("name", "id")
@@ -418,7 +499,7 @@ export const getAllUsers = async (req, res) => {
         data: data_length,
         searchKeyword,
         routes,
-        branch
+        branch,
       });
     }
 
@@ -429,7 +510,12 @@ export const getAllUsers = async (req, res) => {
       numberOfPages,
       iterator,
       endingLink,
-    } = await getPageNumber(req, res, data_length, "users_subscription/get_all_users");
+    } = await getPageNumber(
+      req,
+      res,
+      data_length,
+      "users_subscription/get_all_users"
+    );
 
     let results;
 
@@ -473,10 +559,8 @@ export const getAllUsers = async (req, res) => {
       searchKeyword,
       loading,
       routes,
-      branch
+      branch,
     });
-
-
 
     // let loading = true;
     // const { searchKeyword } = req.query;
@@ -540,15 +624,15 @@ export const getAllUsers = async (req, res) => {
     //     `SELECT sub.id , sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,
     //     user_address.address,user_address.landmark,products.name as product_name,products.price,products.unit_value,
     //     unit_types.value,categories.name as category_name,admin_users.first_name as first_name
-    //     FROM subscribed_user_details AS sub 
-    //     JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id 
-    //     JOIN users ON users.id = sub.user_id 
+    //     FROM subscribed_user_details AS sub
+    //     JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id
+    //     JOIN users ON users.id = sub.user_id
     //     JOIN user_address ON user_address.id = sub.user_address_id
     //     JOIN products ON products.id = sub.product_id
     //     JOIN unit_types ON unit_types.id = products.unit_type_id
     //     JOIN categories ON categories.id = products.category_id
     //     JOIN admin_users ON admin_users.user_group_id = subscription_type.id
-    //     WHERE sub.subscription_status = "subscribed" 
+    //     WHERE sub.subscription_status = "subscribed"
     //     AND admin_users.first_name LIKE '%${searchKeyword}%' LIMIT ${startingLimit},${resultsPerPage}`
     //   );
     //   is_search = true;
@@ -558,9 +642,9 @@ export const getAllUsers = async (req, res) => {
     //     `SELECT sub.id ,sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,
     //     user_address.address,user_address.landmark,products.name as product_name,products.price,products.unit_value,
     //     unit_types.value,categories.name as category_name,admin_users.first_name as first_name,user_address_subscribe_branch.user_id,products.unit_value as product_unit,products.price as product_price
-    //     FROM subscribed_user_details AS sub 
-    //     JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id 
-    //     JOIN users ON users.id = sub.user_id 
+    //     FROM subscribed_user_details AS sub
+    //     JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id
+    //     JOIN users ON users.id = sub.user_id
     //     JOIN user_address ON user_address.id = sub.user_address_id
     //     JOIN products ON products.id = sub.product_id
     //     JOIN unit_types ON unit_types.id = products.unit_type_id
@@ -574,8 +658,8 @@ export const getAllUsers = async (req, res) => {
     //     `SELECT sub.id ,sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,
     //     user_address.address,user_address.landmark,products.name as product_name,products.price,products.unit_value,
     //     unit_types.value,categories.name as category_name,admin_users.first_name as first_name,user_address_subscribe_branch.user_id,products.unit_value as product_unit,products.price as product_price
-    //     FROM subscribed_user_details AS sub 
-    //     JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id 
+    //     FROM subscribed_user_details AS sub
+    //     JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id
     //     JOIN users ON users.id = sub.user_id
     //     JOIN user_address ON user_address.user_id = sub.user_address_id
     //     JOIN products ON products.product_type_id = sub.user_id
@@ -621,12 +705,10 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
-
-export const getSingleUser = async (req,res) => {
+export const getSingleUser = async (req, res) => {
   try {
     const { user_address_id } = req.query;
     const { admin_id } = req.body;
-
 
     const get_user_query =
       await knex.raw(`SELECT user_address.id as user_address_id,
@@ -693,8 +775,6 @@ export const getSingleUser = async (req,res) => {
       }
     }
 
-
-
     const add_on_order_query =
       await knex.raw(`SELECT adds.id,adds.user_id ,adds.delivery_date,adds.sub_total,adds.status
       FROM add_on_orders as adds 
@@ -749,20 +829,35 @@ export const getSingleUser = async (req,res) => {
     console.log(error);
     return res.redirect("/home");
   }
-}
-
-
+};
 
 export const updatePendingList = async (req, res) => {
   try {
     const { sub_id, branch_id, address_id, add_on_id } = req.body;
-    console.log(address_id);
-    console.log(add_on_id);
-    if (add_on_id) {
-      await knex("add_on_orders")
-        .update({ branch_id  , status : "assigned"})
-        .where({ id: add_on_id });
-    } else {
+    // console.log(address_id);
+    // console.log(add_on_id);
+
+    const { add_on_order_id } = req.body;
+
+    console.log(add_on_order_id, "add", typeof add_on_order_id);
+    console.log(sub_id, "sub");
+    console.log(address_id, "address");
+
+    if (add_on_order_id) {
+      if (typeof add_on_order_id == "string") {
+        await knex("add_on_orders")
+          .update({ branch_id, status: "assigned" })
+          .where({ id: add_on_order_id });
+      } else {
+        for (let i = 0; i < add_on_order_id.length; i++) {
+          await knex("add_on_orders")
+            .update({ branch_id, status: "assigned" })
+            .where({ id: add_on_order_id[i] });
+        }
+      }
+    }
+
+    if (sub_id) {
       await knex("subscribed_user_details")
         .update({
           branch_id,

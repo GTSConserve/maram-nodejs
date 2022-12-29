@@ -165,14 +165,7 @@
                         <div class="form-row mb-4">
                             <div class="col-12">
                                 <label>Choose a Branch</label>
-                                <select wire:model="countryid" class="form-control" name="city_id" required>
-                                    <option value="<%=user.branch_id ? user.branch_id : ""%>"><%=user.branch_name ? user.branch_name  : "Choose a Branch" %></option>
-                                    <% for(branch of branch){ %>
-                                        
-                                        <option  value="<%=branch.id %>"><%=branch.first_name %></option>
-                                        <% } %>
-                                        
-                                    </select>
+                                
                               
                             </div>
                             <div class="col-12 mt-3">
