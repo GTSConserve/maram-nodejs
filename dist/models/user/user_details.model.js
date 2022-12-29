@@ -480,20 +480,55 @@ var get_user_bill = /*#__PURE__*/function () {
 }();
 exports.get_user_bill = get_user_bill;
 var get_single_bill = /*#__PURE__*/function () {
-  var _ref10 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10() {
+  var _ref10 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10(bill_id, userId) {
+    var getSingleList, sub_products, add_on_products;
     return _regeneratorRuntime().wrap(function _callee10$(_context10) {
       while (1) {
         switch (_context10.prev = _context10.next) {
           case 0:
-            try {} catch (error) {}
-          case 1:
+            _context10.prev = 0;
+            _context10.next = 3;
+            return _db["default"].select("id", "bill_value").from("bill_history").where({
+              user_id: bill_id
+            });
+          case 3:
+            getSingleList = _context10.sent;
+            _context10.next = 6;
+            return (0, _db["default"])("subscribed_user_details as sub").select("sub.quantity", "sub.product_id", "products.price", "unit_types.name", "unit_types.id").join("products", "products.id", "=", "sub.user_id").join("unit_types", "unit_types.id", "=", "unit_type_id").where({
+              user_id: bill_id
+            });
+          case 6:
+            sub_products = _context10.sent;
+            _context10.next = 9;
+            return (0, _db["default"])("add_on_order_items as add").select("add.quantity", "add.product_id", "add.total_price", "unit_types.name", "unit_types.id").join("unit_types", "unit_types.id", "=", "add.id")
+            // .join("add_on_order_items","add.user_id","=","add.product_id")
+            .where({
+              user_id: bill_id
+            });
+          case 9:
+            add_on_products = _context10.sent;
+            return _context10.abrupt("return", {
+              status: _responseCode["default"].SUCCESS,
+              body: getSingleList,
+              sub_products: sub_products,
+              add_on_products: add_on_products
+            });
+          case 13:
+            _context10.prev = 13;
+            _context10.t0 = _context10["catch"](0);
+            console.log(_context10.t0);
+            return _context10.abrupt("return", {
+              status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
+              error: _context10.t0
+            });
+          case 17:
           case "end":
             return _context10.stop();
         }
       }
-    }, _callee10);
+    }, _callee10, null, [[0, 13]]);
   }));
-  return function get_single_bill() {
+  return function get_single_bill(_x23, _x24) {
     return _ref10.apply(this, arguments);
   };
 }();

@@ -109,6 +109,14 @@ var createTable = /*#__PURE__*/function () {
                   t.timestamp("email_verified_at").nullable();
                   t.timestamp("registration_date").defaultTo(_db["default"].fn.now());
                   t.enu("online_status", ["online", "offline", "squeeze"]).defaultTo("online");
+                  t.integer("total_one_liter", 255);
+                  t.integer("total_half_liter", 255);
+                  t.integer("one_liter_in_hand", 255);
+                  t.integer("half_liter_in_hand", 255);
+                  t.integer("one_liter_in_return", 255);
+                  t.integer("half_liter_in_return", 255);
+                  t.integer("today_one_liter", 255);
+                  t.integer("today_half_liter", 255);
                   t.string("device", 255).nullable();
                   t.string("longitude", 255).nullable();
                   t.string("latitude", 255).nullable();
@@ -476,7 +484,7 @@ var createTable = /*#__PURE__*/function () {
                   t.foreign("user_id").references("id").inTable("users");
                   t.date("date").nullable();
                   t.enu("status", ["pending", "delivered", "undelivered"]).defaultTo("pending");
-                  t.string("quantity", 255).nullable();
+                  t.integer("quantity", 255).nullable();
                   t.integer("price").nullable();
                   t.timestamps(true, true);
                 });
@@ -535,8 +543,8 @@ var createTable = /*#__PURE__*/function () {
                   t.integer("collected_half_liter_bottle").unsigned().nullable();
                   t.integer("total_given_bottle").nullable();
                   t.integer("total_collective_bottle").nullable();
-                  t.enu("status", ["pending", "delivered", "undelivered", "cancelled"]).defaultTo("pending");
-                  t.enu("tour_status", ["0", "1", "2"]).defaultTo("0");
+                  t.enu("status", ["pending", "started", "completed", "delivered", "undelivered", "cancelled"]).defaultTo("pending");
+                  t.enu("tour_status", ['pending', 'started', 'completed']).defaultTo("pending");
                   t.timestamps(true, true);
                 });
               }
@@ -723,12 +731,44 @@ var createTable = /*#__PURE__*/function () {
               }
             });
           case 73:
+            _context.next = 75;
+            return _db["default"].schema.hasTable("payment_type").then(function (exists) {
+              if (!exists) {
+                return _db["default"].schema.createTable("payment_type", function (t) {
+                  t.increments("id").primary().unsigned().notNullable();
+                  t.string("image", 2048).nullable();
+                  t.integer("user_id").unsigned().notNullable();
+                  t.foreign("user_id").references("id").inTable("users");
+                  t.string("gatewayname", 255).nullable();
+                  t.string("displayname", 255).nullable();
+                  t.enu("status", ["0", "1"]).defaultTo("1");
+                  t.timestamps(true, true);
+                });
+              }
+            });
+          case 75:
+            _context.next = 77;
+            return _db["default"].schema.hasTable("payment_gateways").then(function (exists) {
+              if (!exists) {
+                return _db["default"].schema.createTable("payment_gateways", function (t) {
+                  t.increments("id").primary().unsigned().notNullable();
+                  t.string("image", 2048).nullable();
+                  t.integer("user_id").unsigned().notNullable();
+                  t.foreign("user_id").references("id").inTable("users");
+                  t.string("gatewayname", 255).nullable();
+                  t.string("displayname", 255).nullable();
+                  t.enu("status", ["0", "1"]).defaultTo("1");
+                  t.timestamps(true, true);
+                });
+              }
+            });
+          case 77:
             return _context.abrupt("return", res.status(200).json({
               status: true,
               message: "table successfully created"
             }));
-          case 76:
-            _context.prev = 76;
+          case 80:
+            _context.prev = 80;
             _context.t0 = _context["catch"](0);
             console.log(_context.t0);
             return _context.abrupt("return", res.status(500).json({
@@ -736,12 +776,12 @@ var createTable = /*#__PURE__*/function () {
               message: "Error at creating tables",
               error: _context.t0
             }));
-          case 80:
+          case 84:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 76]]);
+    }, _callee, null, [[0, 80]]);
   }));
   return function createTable(_x, _x2) {
     return _ref.apply(this, arguments);

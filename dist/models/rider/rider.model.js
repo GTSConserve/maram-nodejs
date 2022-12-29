@@ -507,9 +507,9 @@ var getsingleorder = /*#__PURE__*/function () {
           case 3:
             daily = _context11.sent;
             _context11.next = 6;
-            return (0, _db["default"])("daily_orders").select("id",
+            return (0, _db["default"])("daily_orders").select("id", "tour_status", "status "
             // "daily_orders.task_name",
-            "tour_status", "status ").where({
+            ).where({
               "daily_orders.id": daily[0].id
             });
           case 6:

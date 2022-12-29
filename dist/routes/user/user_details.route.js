@@ -33,11 +33,12 @@ userRouter.get("/get_empty_bottle", _authToken.authenticateJWT, _userDetail.getE
 
 // get bill history api
 userRouter.post("/get_bill_list", _authToken.authenticateJWT, _userDetail.getBillList);
-// userRouter.post("/get_single_bill_list", authenticateJWT, getSingleBillList);
+userRouter.post("/get_single_bill_list", _authToken.authenticateJWT, _userDetail.getSingleBillList);
 
 // empty bottle tracking api for static
 
 userRouter.post("/user_address_change", _authToken.authenticateJWT, _userDetail.userAddressChange);
 userRouter.post("/single_calendar", _authToken.authenticateJWT, _userDetail.getSingleCalendar);
+userRouter.post("/over_all_calendar", _authToken.authenticateJWT, _userDetail.getOverallCalendar);
 var _default = userRouter;
 exports["default"] = _default;

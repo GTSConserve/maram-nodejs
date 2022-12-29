@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.userAddressChange = exports.updateUser = exports.getUser = exports.getSingleCalendar = exports.getSingleBillList = exports.getEmptyBottle = exports.getBillList = exports.getAddress = exports.editAddress = exports.deleteUseraddress = exports.checkDeliveryAddress = exports.changePlan = exports.addUserAddress = exports.RemoveOrder = exports.Edit = void 0;
+exports.userAddressChange = exports.updateUser = exports.getUser = exports.getSingleCalendar = exports.getSingleBillList = exports.getOverallCalendar = exports.getEmptyBottle = exports.getBillList = exports.getAddress = exports.editAddress = exports.deleteUseraddress = exports.checkDeliveryAddress = exports.changePlan = exports.addUserAddress = exports.RemoveOrder = exports.Edit = void 0;
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 var _jwt = require("../../services/jwt.service");
 var _validator = require("../../services/validator.service");
@@ -17,21 +17,21 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 var addUserAddress = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(req, res) {
-    var payload, _userId;
+    var payload, userId;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             _context.prev = 0;
             payload = (0, _validator.userAddressValidator)(req.body);
-            _userId = req.body.userId;
+            userId = req.body.userId;
             if (!payload.status) {
               _context.next = 7;
               break;
             }
             _context.next = 6;
             return (0, _db["default"])("user_address").insert({
-              user_id: _userId,
+              user_id: userId,
               address: payload.address,
               landmark: payload.landmark,
               title: payload.title,
@@ -72,20 +72,20 @@ var addUserAddress = /*#__PURE__*/function () {
 exports.addUserAddress = addUserAddress;
 var getAddress = /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(req, res) {
-    var _userId2, _address;
+    var userId, address;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
             _context2.prev = 0;
-            _userId2 = req.body.userId;
+            userId = req.body.userId;
             _context2.next = 4;
-            return (0, _user_details.get_address)(_userId2);
+            return (0, _user_details.get_address)(userId);
           case 4:
-            _address = _context2.sent;
+            address = _context2.sent;
             res.status(200).json({
               status: true,
-              data: _address.body
+              data: address.body
             });
             _context2.next = 12;
             break;
@@ -110,13 +110,13 @@ var getAddress = /*#__PURE__*/function () {
 exports.getAddress = getAddress;
 var editAddress = /*#__PURE__*/function () {
   var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(req, res) {
-    var _req$body, _userId3, address_id, title, _address2, landmark, type, alternate_mobile, latitude, longitude;
+    var _req$body, userId, address_id, title, address, landmark, type, alternate_mobile, latitude, longitude;
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.prev = 0;
-            _req$body = req.body, _userId3 = _req$body.userId, address_id = _req$body.address_id, title = _req$body.title, _address2 = _req$body.address, landmark = _req$body.landmark, type = _req$body.type, alternate_mobile = _req$body.alternate_mobile, latitude = _req$body.latitude, longitude = _req$body.longitude;
+            _req$body = req.body, userId = _req$body.userId, address_id = _req$body.address_id, title = _req$body.title, address = _req$body.address, landmark = _req$body.landmark, type = _req$body.type, alternate_mobile = _req$body.alternate_mobile, latitude = _req$body.latitude, longitude = _req$body.longitude;
             if (!(!latitude && !longitude)) {
               _context3.next = 4;
               break;
@@ -127,7 +127,7 @@ var editAddress = /*#__PURE__*/function () {
             }));
           case 4:
             _context3.next = 6;
-            return (0, _user_details.edit_address)(_userId3, address_id, title, _address2, landmark, type, alternate_mobile, latitude, longitude);
+            return (0, _user_details.edit_address)(userId, address_id, title, address, landmark, type, alternate_mobile, latitude, longitude);
           case 6:
             res.status(_responseCode["default"].SUCCESS).json({
               status: true,
@@ -157,15 +157,15 @@ var editAddress = /*#__PURE__*/function () {
 exports.editAddress = editAddress;
 var getUser = /*#__PURE__*/function () {
   var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(req, res) {
-    var _userId4, user, get_user_detail;
+    var userId, user, get_user_detail;
     return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
             _context4.prev = 0;
-            _userId4 = req.body.userId;
+            userId = req.body.userId;
             _context4.next = 4;
-            return (0, _user_details.get_user)(_userId4);
+            return (0, _user_details.get_user)(userId);
           case 4:
             user = _context4.sent;
             if (!(user.body.length === 0)) {
@@ -280,13 +280,13 @@ var updateUser = /*#__PURE__*/function () {
 exports.updateUser = updateUser;
 var deleteUseraddress = /*#__PURE__*/function () {
   var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(req, res) {
-    var _req$body3, _userId5, address_id, addresses;
+    var _req$body3, userId, address_id, addresses;
     return _regeneratorRuntime().wrap(function _callee6$(_context6) {
       while (1) {
         switch (_context6.prev = _context6.next) {
           case 0:
             _context6.prev = 0;
-            _req$body3 = req.body, _userId5 = _req$body3.userId, address_id = _req$body3.address_id;
+            _req$body3 = req.body, userId = _req$body3.userId, address_id = _req$body3.address_id;
             if (address_id) {
               _context6.next = 4;
               break;
@@ -297,7 +297,7 @@ var deleteUseraddress = /*#__PURE__*/function () {
             }));
           case 4:
             _context6.next = 6;
-            return (0, _user_details.delete_user_address)(address_id, _userId5);
+            return (0, _user_details.delete_user_address)(address_id, userId);
           case 6:
             addresses = _context6.sent;
             res.status(_responseCode["default"].SUCCESS).json({
@@ -500,49 +500,58 @@ var checkDeliveryAddress = /*#__PURE__*/function () {
 exports.checkDeliveryAddress = checkDeliveryAddress;
 var getEmptyBottle = /*#__PURE__*/function () {
   var _ref11 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11(req, res) {
-    var _userId6, this_month_item_detail;
+    var userId, this_month_item_detail, empty_bottle_in_hand, empty_bottle_in_return;
     return _regeneratorRuntime().wrap(function _callee11$(_context11) {
       while (1) {
         switch (_context11.prev = _context11.next) {
           case 0:
             _context11.prev = 0;
-            _userId6 = req.body.userId;
-            if (!_userId6) {
-              _context11.next = 9;
+            userId = req.body.userId;
+            if (!userId) {
+              _context11.next = 11;
               break;
             }
             _context11.next = 5;
-            return (0, _db["default"])("empty_bottle_tracking").select("one_liter_in_hand as delivered_orders", "one_liter_in_return as remaining_orders", "half_liter_in_hand as additional_delivered_orders", "one_liter_in_return as additional_remaining_orders");
+            return (0, _db["default"])("users").select("one_liter_in_hand as delivered_orders", "half_liter_in_hand as additional_delivered_orders", "one_liter_in_return as remaining_orders", "one_liter_in_return as additional_remaining_orders");
           case 5:
             this_month_item_detail = _context11.sent;
+            empty_bottle_in_hand = {
+              one_liter: this_month_item_detail[0].delivered_orders,
+              half_liter: this_month_item_detail[0].additional_delivered_orders
+            };
+            empty_bottle_in_return = {
+              one_liter: this_month_item_detail[0].remaining_orders,
+              half_liter: this_month_item_detail[0].additional_remaining_orders
+            };
             res.status(_responseCode["default"].SUCCESS).json({
               status: true,
-              this_month_item_detail: get_user_bottle_detail
+              empty_bottle_in_hand: empty_bottle_in_hand,
+              empty_bottle_in_return: empty_bottle_in_return
             });
-            _context11.next = 10;
+            _context11.next = 12;
             break;
-          case 9:
+          case 11:
             return _context11.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
               message: "Bottle Not Found"
             }));
-          case 10:
-            _context11.next = 16;
-            break;
           case 12:
-            _context11.prev = 12;
+            _context11.next = 18;
+            break;
+          case 14:
+            _context11.prev = 14;
             _context11.t0 = _context11["catch"](0);
             console.log(_context11.t0);
             res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: "no user"
             });
-          case 16:
+          case 18:
           case "end":
             return _context11.stop();
         }
       }
-    }, _callee11, null, [[0, 12]]);
+    }, _callee11, null, [[0, 14]]);
   }));
   return function getEmptyBottle(_x21, _x22) {
     return _ref11.apply(this, arguments);
@@ -551,13 +560,13 @@ var getEmptyBottle = /*#__PURE__*/function () {
 exports.getEmptyBottle = getEmptyBottle;
 var userAddressChange = /*#__PURE__*/function () {
   var _ref12 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee12(req, res) {
-    var _req$body6, _userId7, title, _address3, landmark, type, address_id;
+    var _req$body6, userId, title, address, landmark, type, address_id;
     return _regeneratorRuntime().wrap(function _callee12$(_context12) {
       while (1) {
         switch (_context12.prev = _context12.next) {
           case 0:
             try {
-              _req$body6 = req.body, _userId7 = _req$body6.userId, title = _req$body6.title, _address3 = _req$body6.address, landmark = _req$body6.landmark, type = _req$body6.type, address_id = _req$body6.address_id; // await edit_address(userId, address_id, title, address, landmark, type);
+              _req$body6 = req.body, userId = _req$body6.userId, title = _req$body6.title, address = _req$body6.address, landmark = _req$body6.landmark, type = _req$body6.type, address_id = _req$body6.address_id; // await edit_address(userId, address_id, title, address, landmark, type);
               res.status(_responseCode["default"].SUCCESS).json({
                 status: true,
                 message: "updated successfully"
@@ -634,24 +643,68 @@ var getSingleCalendar = /*#__PURE__*/function () {
   };
 }();
 exports.getSingleCalendar = getSingleCalendar;
-var getBillList = /*#__PURE__*/function () {
+var getOverallCalendar = /*#__PURE__*/function () {
   var _ref14 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee14(req, res) {
-    var _userId8, user, get_bill;
+    var overall_calendar_data;
     return _regeneratorRuntime().wrap(function _callee14$(_context14) {
       while (1) {
         switch (_context14.prev = _context14.next) {
           case 0:
-            _context14.prev = 0;
-            _userId8 = req.body.userId;
-            _context14.next = 4;
-            return (0, _user_details.get_user_bill)(_userId8);
+            try {
+              // const { date } = req.body;
+              overall_calendar_data = [{
+                "date": "01/01/2022",
+                "products": {
+                  "subscription": {
+                    "1-liter": 1,
+                    "0.5-liter": 0,
+                    "packed-milk": 0
+                  },
+                  "addons-products": 0,
+                  "is_delivered": 1
+                }
+              }]; // await edit_address(userId, address_id, title, address, landmark, type);
+              res.status(_responseCode["default"].SUCCESS).json({
+                status: true,
+                data: overall_calendar_data
+              });
+            } catch (error) {
+              console.log(error);
+              res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
+                status: false,
+                error: error
+              });
+            }
+          case 1:
+          case "end":
+            return _context14.stop();
+        }
+      }
+    }, _callee14);
+  }));
+  return function getOverallCalendar(_x27, _x28) {
+    return _ref14.apply(this, arguments);
+  };
+}();
+exports.getOverallCalendar = getOverallCalendar;
+var getBillList = /*#__PURE__*/function () {
+  var _ref15 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee15(req, res) {
+    var userId, user, get_bill;
+    return _regeneratorRuntime().wrap(function _callee15$(_context15) {
+      while (1) {
+        switch (_context15.prev = _context15.next) {
+          case 0:
+            _context15.prev = 0;
+            userId = req.body.userId;
+            _context15.next = 4;
+            return (0, _user_details.get_user_bill)(userId);
           case 4:
-            user = _context14.sent;
+            user = _context15.sent;
             if (!(user.body.length === 0)) {
-              _context14.next = 7;
+              _context15.next = 7;
               break;
             }
-            return _context14.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
+            return _context15.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
               message: "User Not Found"
             }));
@@ -672,72 +725,105 @@ var getBillList = /*#__PURE__*/function () {
               status: true,
               data: get_bill
             });
-            _context14.next = 16;
+            _context15.next = 16;
             break;
           case 12:
-            _context14.prev = 12;
-            _context14.t0 = _context14["catch"](0);
-            console.log(_context14.t0);
+            _context15.prev = 12;
+            _context15.t0 = _context15["catch"](0);
+            console.log(_context15.t0);
             res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: "no user"
             });
           case 16:
           case "end":
-            return _context14.stop();
+            return _context15.stop();
         }
       }
-    }, _callee14, null, [[0, 12]]);
+    }, _callee15, null, [[0, 12]]);
   }));
-  return function getBillList(_x27, _x28) {
-    return _ref14.apply(this, arguments);
+  return function getBillList(_x29, _x30) {
+    return _ref15.apply(this, arguments);
   };
 }();
 exports.getBillList = getBillList;
 var getSingleBillList = /*#__PURE__*/function () {
-  var _ref15 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee15(req, res) {
-    var bill_id, get_single_bill_list;
-    return _regeneratorRuntime().wrap(function _callee15$(_context15) {
+  var _ref16 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee16(req, res) {
+    var bill_id, data;
+    return _regeneratorRuntime().wrap(function _callee16$(_context16) {
       while (1) {
-        switch (_context15.prev = _context15.next) {
+        switch (_context16.prev = _context16.next) {
           case 0:
-            _context15.prev = 0;
+            _context16.prev = 0;
             bill_id = req.body.bill_id;
             if (bill_id) {
-              _context15.next = 4;
+              _context16.next = 4;
               break;
             }
-            return _context15.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
+            return _context16.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
               message: "Cannot find bill list"
             }));
           case 4:
-            _context15.next = 6;
-            return (0, _user_details.get_single_bill)(userId);
-          case 6:
-            get_single_bill_list = _context15.sent;
+            // const list = await get_single_bill(bill_id);
+            data = {
+              "bill_id": "7",
+              "payment_id": "7",
+              "month": "Jan 2022",
+              "order_string": "Bill No#MA3948F3J492",
+              "bill_value": 1085,
+              "payment_status": 0,
+              "sub_total": 0,
+              "discount": 0,
+              "subscription_products": [{
+                "no_quantity": 1,
+                "product_id": 664,
+                "product_total": 1252,
+                "recipe_price": 1242,
+                "variation_name": "1 Litre",
+                "variation_id": 183,
+                "no_of_days": 40
+              }],
+              "addons_products": [{
+                "no_quantity": 1,
+                "product_id": 664,
+                "product_total": 1252,
+                "recipe_price": 1242,
+                "variation_name": "1 Litre",
+                "variation_id": 183
+              }],
+              "user": {
+                "address_id": 183,
+                "address": "221, M.K.K.Nagar, Kamban Nagar, Thiruvalluvar Nagar, Pudukkottai, Tamil Nadu 622003, India\n",
+                "landmark": ""
+              }
+            }; // if (!list) {
+            //   return res
+            //     .status(responseCode.FAILURE.DATA_NOT_FOUND)
+            //     .json({ status: false, message: sub.message });
+            // }
             res.status(200).json({
               status: true,
-              data: address.body
+              data: data
             });
-            _context15.next = 14;
+            _context16.next = 12;
             break;
-          case 10:
-            _context15.prev = 10;
-            _context15.t0 = _context15["catch"](0);
-            console.log(_context15.t0);
+          case 8:
+            _context16.prev = 8;
+            _context16.t0 = _context16["catch"](0);
+            console.log(_context16.t0);
             res.status(500).json({
               status: false
             });
-          case 14:
+          case 12:
           case "end":
-            return _context15.stop();
+            return _context16.stop();
         }
       }
-    }, _callee15, null, [[0, 10]]);
+    }, _callee16, null, [[0, 8]]);
   }));
-  return function getSingleBillList(_x29, _x30) {
-    return _ref15.apply(this, arguments);
+  return function getSingleBillList(_x31, _x32) {
+    return _ref16.apply(this, arguments);
   };
 }();
 exports.getSingleBillList = getSingleBillList;
