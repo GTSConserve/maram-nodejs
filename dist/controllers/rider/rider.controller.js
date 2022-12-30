@@ -757,7 +757,7 @@ var OrderList = /*#__PURE__*/function () {
           case 6:
             order = _context12.sent;
             return _context12.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
-              order: order
+              data: order
             }));
           case 10:
             _context12.prev = 10;
