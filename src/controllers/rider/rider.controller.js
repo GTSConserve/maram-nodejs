@@ -108,10 +108,7 @@ export const getRiderdetails = async (req, res) => {
 export const updateRiderstatus = async (req, res) => {
   try {
     const { delivery_partner_id, status } = req.body;
-
-
-    console.log(status)
-
+    
     if (!delivery_partner_id) {
       return res
 
