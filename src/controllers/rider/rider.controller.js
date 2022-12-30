@@ -337,10 +337,10 @@ export const orderStatusUpdate = async (req, res) => {
       .where({ user_id: user_id, id: order_id })
 
     const collect_bottle1 = await knex('users')
-      .update({ one_liter_in_return: one_liter_count, half_liter_in_return: half_liter_count })
+      .update({ one_liter_in_return: one_liter_count, half_liter_in_return: half_liter_count,bottle_status:"0" })
       .where({ id: user_id })
 
-    return res.status(responseCode.SUCCESS).json({ status: true, message: "Ok" })
+    return res.status(responseCode.SUCCESS).json({  data:orderstatus })
 
   }
 
@@ -442,30 +442,10 @@ export const OrderList = async (req, res) => {
 
     const order = await order_list(delivery_partner_id, status)
     // console.log(order)
-    let query = {
-      "tour_id": order.router[0].id,
-      "tour_route": order.router[0].name,
-      "total_orders": order.order.length,
-      "tour_status": order.order[0].tour_status,
-      "completed_orders": order.delivery.length
-    }
-
-    //  console.log(query)
-    let data = [{
-      "order_id": order.order[0].id,
-      "order_string": "Task " + order.order[0].user_id,
-      "milk_variation": order.order[0].total_qty + " " + order.query3[0].unit_type,
-      "addon_items_delivered": order.addon.length,
-      "addon_items_undelivered": order.addon1.length,
-      "user_name": order.user[0].name,
-      "customer_id": order.user[0].user_unique_id,
-      "bottle_return": order.bottle[0].status,
-      "order_status": order.order[0].status
-    }]
-
+    
     //  const  = Object.keys(person);
 
-    return res.status(responseCode.SUCCESS).json({ status: true, ...query, data })
+    return res.status(responseCode.SUCCESS).json({ order })
   }
   catch (error) {
     console.log(error);

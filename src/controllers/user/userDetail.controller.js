@@ -393,119 +393,11 @@ export const getSingleCalendar = async (req, res) => {
 
 export const getOverallCalendar = async (req, res) => {
   try {
-    // const { date } = req.body;
+    const { date } = req.body;
 
     const overall_calendar_data = [
       {
-        "date": "01-01-2023",
-        "products": {
-          "subscription": {
-            "1-liter": 1,
-            "0.5-liter": 0,
-            "packed-milk": 0
-          },
-          "addons-products": 0,
-          "is_delivered": 0
-        }
-      },
-      {
-        "date": "02-01-2023",
-        "products": {
-          "subscription": {
-            "1-liter": 1,
-            "0.5-liter": 0,
-            "packed-milk": 0
-          },
-          "addons-products": 0,
-          "is_delivered": 0
-        }
-      },
-      {
-        "date": "03-01-2023",
-        "products": {
-          "subscription": {
-            "1-liter": 1,
-            "0.5-liter": 0,
-            "packed-milk": 0
-          },
-          "addons-products": 0,
-          "is_delivered": 0
-        }
-      },
-      {
-        "date": "04-01-2023",
-        "products": {
-          "subscription": {
-            "1-liter": 1,
-            "0.5-liter": 0,
-            "packed-milk": 0
-          },
-          "addons-products": 0,
-          "is_delivered": 0
-        }
-      },
-      {
-        "date": "05-01-2023",
-        "products": {
-          "subscription": {
-            "1-liter": 1,
-            "0.5-liter": 0,
-            "packed-milk": 0
-          },
-          "addons-products": 0,
-          "is_delivered": 0
-        }
-      },
-      {
-        "date": "06-01-2023",
-        "products": {
-          "subscription": {
-            "1-liter": 1,
-            "0.5-liter": 0,
-            "packed-milk": 0
-          },
-          "addons-products": 0,
-          "is_delivered": 0
-        }
-      },
-      {
-        "date": "07-01-2023",
-        "products": {
-          "subscription": {
-            "1-liter": 1,
-            "0.5-liter": 0,
-            "packed-milk": 0
-          },
-          "addons-products": 0,
-          "is_delivered": 0
-        }
-      },
-      {
-        "date": "08-01-2023",
-        "products": {
-          "subscription": {
-            "1-liter": 1,
-            "0.5-liter": 0,
-            "packed-milk": 0
-          },
-          "addons-products": 0,
-          "is_delivered": 0
-        }
-      },
-      {
-        "date": "09-01-2023",
-        "products": {
-          "subscription": {
-            "1-liter": 1,
-            "0.5-liter": 0,
-            "packed-milk": 0
-          },
-          "addons-products": 0,
-          "is_delivered": 0
-        }
-      },
-      {
-        "date": "10-01-2023",
+        "date": date,
         "products": {
           "subscription": {
             "1-liter": 1,
@@ -557,7 +449,7 @@ export const getBillList = async (req, res) => {
 
     res
       .status(responseCode.SUCCESS)
-      .json({ status: true, data: get_bill });
+      .json({ status: true, data: [get_bill] });
   } catch (error) {
     console.log(error);
 
