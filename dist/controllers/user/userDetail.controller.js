@@ -661,7 +661,106 @@ var getOverallCalendar = /*#__PURE__*/function () {
                     "packed-milk": 0
                   },
                   "addons-products": 0,
-                  "is_delivered": 1
+                  "is_delivered": 0
+                }
+              }, {
+                "date": "02-01-2023",
+                "products": {
+                  "subscription": {
+                    "1-liter": 1,
+                    "0.5-liter": 0,
+                    "packed-milk": 0
+                  },
+                  "addons-products": 0,
+                  "is_delivered": 0
+                }
+              }, {
+                "date": "03-01-2023",
+                "products": {
+                  "subscription": {
+                    "1-liter": 1,
+                    "0.5-liter": 0,
+                    "packed-milk": 0
+                  },
+                  "addons-products": 0,
+                  "is_delivered": 0
+                }
+              }, {
+                "date": "04-01-2023",
+                "products": {
+                  "subscription": {
+                    "1-liter": 1,
+                    "0.5-liter": 0,
+                    "packed-milk": 0
+                  },
+                  "addons-products": 0,
+                  "is_delivered": 0
+                }
+              }, {
+                "date": "05-01-2023",
+                "products": {
+                  "subscription": {
+                    "1-liter": 1,
+                    "0.5-liter": 0,
+                    "packed-milk": 0
+                  },
+                  "addons-products": 0,
+                  "is_delivered": 0
+                }
+              }, {
+                "date": "06-01-2023",
+                "products": {
+                  "subscription": {
+                    "1-liter": 1,
+                    "0.5-liter": 0,
+                    "packed-milk": 0
+                  },
+                  "addons-products": 0,
+                  "is_delivered": 0
+                }
+              }, {
+                "date": "07-01-2023",
+                "products": {
+                  "subscription": {
+                    "1-liter": 1,
+                    "0.5-liter": 0,
+                    "packed-milk": 0
+                  },
+                  "addons-products": 0,
+                  "is_delivered": 0
+                }
+              }, {
+                "date": "08-01-2023",
+                "products": {
+                  "subscription": {
+                    "1-liter": 1,
+                    "0.5-liter": 0,
+                    "packed-milk": 0
+                  },
+                  "addons-products": 0,
+                  "is_delivered": 0
+                }
+              }, {
+                "date": "09-01-2023",
+                "products": {
+                  "subscription": {
+                    "1-liter": 1,
+                    "0.5-liter": 0,
+                    "packed-milk": 0
+                  },
+                  "addons-products": 0,
+                  "is_delivered": 0
+                }
+              }, {
+                "date": "10-01-2023",
+                "products": {
+                  "subscription": {
+                    "1-liter": 1,
+                    "0.5-liter": 0,
+                    "packed-milk": 0
+                  },
+                  "addons-products": 0,
+                  "is_delivered": 0
                 }
               }]; // await edit_address(userId, address_id, title, address, landmark, type);
               res.status(_responseCode["default"].SUCCESS).json({
