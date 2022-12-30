@@ -279,6 +279,7 @@ var addon_order = /*#__PURE__*/function () {
             query = {};
             if (check_user_is_branch[0].branch_id != null) {
               query.branch_id = check_user_is_branch[0].branch_id;
+              query.status = "branch_pending";
             }
             query.sub_total = sub_total;
             _context5.next = 29;

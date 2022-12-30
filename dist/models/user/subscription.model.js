@@ -40,7 +40,7 @@ var new_subscription = /*#__PURE__*/function () {
             for (i = 0; i < customized_days.length; i++) {
               for (j = 0; j < weekdays.length; j++) {
                 if (weekdays[j].id == customized_days[i]) {
-                  store_weekdays.push(weekdays[j].id);
+                  store_weekdays.push(weekdays[j].name);
                 }
               }
             }

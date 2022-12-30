@@ -334,7 +334,7 @@ var updateStartTour = /*#__PURE__*/function () {
             return (0, _db["default"])("daily_orders").update({
               tour_status: "started"
             }).where({
-              router_id: route.id
+              router_id: route[0].id
             });
           case 13:
             status = _context6.sent;
@@ -779,7 +779,7 @@ var OrderList = /*#__PURE__*/function () {
               "user_name": order.user[0].name,
               "customer_id": order.user[0].user_unique_id,
               "bottle_return": order.bottle[0].status,
-              "order_status": order.order1[0].status
+              "order_status": order.order[0].status
             }]; //  const  = Object.keys(person);
             return _context12.abrupt("return", res.status(_responseCode["default"].SUCCESS).json(_objectSpread(_objectSpread({
               status: true
@@ -834,15 +834,13 @@ var LocationCheck = /*#__PURE__*/function () {
             point1 = {
               lat: location.check[0].latitude,
               lng: location.check[0].longitude
-            }; //Second point in your haversine calculation
+            };
             point2 = {
               lat: location.address[0].latitude,
               lng: location.address[0].longitude
             };
             haversine_m = (0, _haversineDistance["default"])(point1, point2); //Results in meters (default)
             haversine_km = haversine_m / 20000; //Results in kilometers
-            //  console.log("distance (in meters): " + haversine_m + "m");
-            //  console.log("distance (in kilometers): " + haversine_km + "km");
             if (!(haversine_km <= 1000)) {
               _context13.next = 16;
               break;

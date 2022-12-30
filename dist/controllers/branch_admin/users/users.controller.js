@@ -186,7 +186,7 @@ var getSingleUser = /*#__PURE__*/function () {
               _context2.next = 34;
               break;
             }
-            if (add_on_order_query[_i].status == "pending") {
+            if (add_on[_i].status == "pending") {
               is_add_on_active = 1;
             }
             _context2.next = 27;

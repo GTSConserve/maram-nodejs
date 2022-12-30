@@ -653,7 +653,7 @@ var getOverallCalendar = /*#__PURE__*/function () {
             try {
               // const { date } = req.body;
               overall_calendar_data = [{
-                "date": "01/01/2022",
+                "date": "01-01-2023",
                 "products": {
                   "subscription": {
                     "1-liter": 1,
@@ -767,9 +767,9 @@ var getSingleBillList = /*#__PURE__*/function () {
           case 4:
             // const list = await get_single_bill(bill_id);
             data = {
-              "bill_id": "7",
-              "payment_id": "7",
-              "month": "Jan 2022",
+              "bill_id": "1",
+              "payment_id": "1",
+              "month": "Jan 2023",
               "order_string": "Bill No#MA3948F3J492",
               "bill_value": 1085,
               "payment_status": 0,

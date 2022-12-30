@@ -16,9 +16,7 @@ var subscriptionRouter = _express["default"].Router({
 subscriptionRouter.get('/get_new_users', _pending.getNewUsers);
 subscriptionRouter.get('/get_exist_users', _pending.getExistUsers);
 subscriptionRouter.post('/subscribed', _pending.updateSubscribed);
-
-// subscriptionRouter.post('/subscribed_exist_user',updateSubscribedExistUser)
-
+subscriptionRouter.post('/subscribed_exist_user', _pending.updateSubscribedExistUser);
 subscriptionRouter.post('/cancel', _pending.updateCancel);
 subscriptionRouter.get('/subscribed', _subscribed.getSubscription);
 subscriptionRouter.get('/cancelled', _cancelled.getCancelled);

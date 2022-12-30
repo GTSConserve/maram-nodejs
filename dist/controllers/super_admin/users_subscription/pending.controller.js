@@ -264,7 +264,7 @@ var cancelPendingList = /*#__PURE__*/function () {
 exports.cancelPendingList = cancelPendingList;
 var getNewUsers = /*#__PURE__*/function () {
   var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(req, res) {
-    var loading, searchKeyword, data_length, data_length_2, search_data_length, search_data_2_length, branches, both_data, _yield$getPageNumber, startingLimit, page, resultsPerPage, numberOfPages, iterator, endingLink, results, is_search, data, subscription_users, add_on_users, i, search_query, add_on_order_query, get_user_products_query, _i2, j, view_add_on_products, _i3, _j, duplicate_add_on_products, j_index_id, _i4, _j2;
+    var loading, searchKeyword, data_length, data_length_2, search_data_length, search_data_2_length, branches, both_data, _yield$getPageNumber, startingLimit, page, resultsPerPage, numberOfPages, iterator, endingLink, results, is_search, data, subscription_users, add_on_users, i, search_query, add_on_order_query, get_user_products_query, _i2, j, view_add_on_products, _i3, _j, _i4, _j2;
     return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
@@ -324,7 +324,8 @@ var getNewUsers = /*#__PURE__*/function () {
             }
             loading = false;
             return _context4.abrupt("return", res.render("super_admin/users_subscription/pending", {
-              data: data_length,
+              subscription_users: data_length,
+              add_on_users: data_length_2,
               searchKeyword: searchKeyword,
               branches: branches
             }));
@@ -438,59 +439,38 @@ var getNewUsers = /*#__PURE__*/function () {
             //  console.log(subscription_users[0])
 
             // if new user did the two add on orders
-            duplicate_add_on_products = [];
+
             for (_i4 = 0; _i4 < add_on_users.length; _i4++) {
               if (add_on_users[_i4].is_subscription_pending != true) {
-                for (_j2 = _i4 + 1; _j2 < add_on_users.length; _j2++) {
-                  if (add_on_users[_i4].user_address_id == add_on_users[_j2].user_address_id) {
+                for (_j2 = 0; _j2 < add_on_users.length; _j2++) {
+                  if (add_on_users[_i4].user_address_id == add_on_users[_j2].user_address_id && add_on_users[_i4].id != add_on_users[_j2].id) {
                     add_on_users[_i4].is_add_on_duplicate = true;
                     add_on_users[_j2].is_add_on_duplicate = true;
-                    // duplicate_add_on_products.push({
-                    //   add_on_order_id: add_on_users[i].add_on_order_id,
-                    //   delivery_date: add_on_users[i].delivery_date,
-                    //   sub_total: add_on_users[i].sub_total,
-                    //   add_on_products: add_on_users[i].add_on_products,
-                    // });
-                    // duplicate_add_on_products.push({
-                    //   add_on_order_id: add_on_users[j].add_on_order_id,
-                    //   delivery_date: add_on_users[j].delivery_date,
-                    //   sub_total: add_on_users[j].sub_total,
-                    //   add_on_products: add_on_users[j].add_on_products,
-                    // });
-
-                    add_on_users[_i4].add_on_duplicate_details = [{
-                      add_on_order_id: add_on_users[_j2].add_on_order_id,
-                      delivery_date: add_on_users[_j2].delivery_date,
-                      sub_total: add_on_users[_j2].sub_total,
-                      add_on_products: add_on_users[_j2].add_on_products
-                    }, {
-                      add_on_order_id: add_on_users[_i4].add_on_order_id,
-                      delivery_date: add_on_users[_i4].delivery_date,
-                      sub_total: add_on_users[_i4].sub_total,
-                      add_on_products: add_on_users[_i4].add_on_products
-                    }];
-                    add_on_users[_j2].add_on_duplicate_details = [{
-                      add_on_order_id: add_on_users[_j2].add_on_order_id,
-                      delivery_date: add_on_users[_j2].delivery_date,
-                      sub_total: add_on_users[_j2].sub_total,
-                      add_on_products: add_on_users[_j2].add_on_products
-                    }, {
-                      add_on_order_id: add_on_users[_i4].add_on_order_id,
-                      delivery_date: add_on_users[_i4].delivery_date,
-                      sub_total: add_on_users[_i4].sub_total,
-                      add_on_products: add_on_users[_i4].add_on_products
-                    }];
+                    if (add_on_users[_j2].add_on_duplicate_details) {
+                      add_on_users[_j2].add_on_duplicate_details.push({
+                        add_on_order_id: add_on_users[_i4].add_on_order_id,
+                        delivery_date: add_on_users[_i4].delivery_date,
+                        sub_total: add_on_users[_i4].sub_total,
+                        add_on_products: add_on_users[_i4].add_on_products
+                      });
+                    } else {
+                      add_on_users[_j2].add_on_duplicate_details = [{
+                        add_on_order_id: add_on_users[_j2].add_on_order_id,
+                        delivery_date: add_on_users[_j2].delivery_date,
+                        sub_total: add_on_users[_j2].sub_total,
+                        add_on_products: add_on_users[_j2].add_on_products
+                      }, {
+                        add_on_order_id: add_on_users[_i4].add_on_order_id,
+                        delivery_date: add_on_users[_i4].delivery_date,
+                        sub_total: add_on_users[_i4].sub_total,
+                        add_on_products: add_on_users[_i4].add_on_products
+                      }];
+                    }
                   }
                 }
-                // console.log(add_on_users[i])
-                // add_on_users[i].add_on_duplicate_details = duplicate_add_on_products;
               }
-              // duplicate_add_on_products = [];
             }
-
             console.log(add_on_users);
-            // console.log(add_on_users[3]);
-
             loading = false;
             res.render("super_admin/users_subscription/pending", {
               data: data,
@@ -505,19 +485,19 @@ var getNewUsers = /*#__PURE__*/function () {
               loading: loading,
               branches: branches
             });
-            _context4.next = 93;
+            _context4.next = 92;
             break;
-          case 89:
-            _context4.prev = 89;
+          case 88:
+            _context4.prev = 88;
             _context4.t0 = _context4["catch"](0);
             console.log(_context4.t0);
             res.redirect("/home");
-          case 93:
+          case 92:
           case "end":
             return _context4.stop();
         }
       }
-    }, _callee4, null, [[0, 89]]);
+    }, _callee4, null, [[0, 88]]);
   }));
   return function getNewUsers(_x7, _x8) {
     return _ref4.apply(this, arguments);
@@ -832,36 +812,37 @@ var getSingleUser = /*#__PURE__*/function () {
             add_on_order_query = _context6.sent;
             // console.log(add_on_order_query[0]);
             add_on = add_on_order_query[0];
+            console.log(add_on);
             is_add_on_active = 0;
             if (!(add_on.length !== 0)) {
-              _context6.next = 33;
+              _context6.next = 34;
               break;
             }
             _i5 = 0;
-          case 22:
+          case 23:
             if (!(_i5 < add_on.length)) {
-              _context6.next = 33;
+              _context6.next = 34;
               break;
             }
-            if (add_on_order_query[_i5].status == "pending") {
+            if (add_on[_i5].status == "pending") {
               is_add_on_active = 1;
             }
-            _context6.next = 26;
+            _context6.next = 27;
             return (0, _db["default"])("add_on_order_items as adds").select("adds.add_on_order_id", "adds.quantity", "adds.price", "adds.total_price", "adds.status", "products.name as product_name", "products.image", "products.unit_value", "unit_types.value").join("products", "products.id", "=", "adds.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").where({
               "adds.add_on_order_id": add_on[_i5].id
             });
-          case 26:
+          case 27:
             get_user_products_query = _context6.sent;
             for (j = 0; j < get_user_products_query.length; j++) {
               get_user_products_query[j].image = process.env.BASE_URL + get_user_products_query[j].image;
             }
             add_on[_i5].add_on_products = get_user_products_query;
             add_on[_i5].delivery_date = (0, _moment["default"])(add_on[_i5].delivery_date).format("YYYY-MM-DD");
-          case 30:
+          case 31:
             _i5++;
-            _context6.next = 22;
+            _context6.next = 23;
             break;
-          case 33:
+          case 34:
             res.render("super_admin/users/user_detail", {
               user: user,
               sub_products: get_subscription_products,
@@ -869,19 +850,19 @@ var getSingleUser = /*#__PURE__*/function () {
               is_add_on_active: is_add_on_active,
               is_subscription_active: is_subscription_active
             });
-            _context6.next = 40;
+            _context6.next = 41;
             break;
-          case 36:
-            _context6.prev = 36;
+          case 37:
+            _context6.prev = 37;
             _context6.t0 = _context6["catch"](0);
             console.log(_context6.t0);
             return _context6.abrupt("return", res.redirect("/home"));
-          case 40:
+          case 41:
           case "end":
             return _context6.stop();
         }
       }
-    }, _callee6, null, [[0, 36]]);
+    }, _callee6, null, [[0, 37]]);
   }));
   return function getSingleUser(_x11, _x12) {
     return _ref6.apply(this, arguments);

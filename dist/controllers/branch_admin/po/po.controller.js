@@ -92,9 +92,16 @@ var getPoForm = /*#__PURE__*/function () {
             });
           case 15:
             daily_orders = _context2.sent;
-            _context2.next = 18;
+            if (!(daily_orders.length === 0)) {
+              _context2.next = 19;
+              break;
+            }
+            req.flash("error", "No Tommorow Customers Found");
+            return _context2.abrupt("return", res.redirect("/home"));
+          case 19:
+            _context2.next = 21;
             return (0, _po.getBothProducts)(daily_orders);
-          case 18:
+          case 21:
             _yield$getBothProduct = _context2.sent;
             add_on_products = _yield$getBothProduct.add_on_products;
             subscription_products = _yield$getBothProduct.subscription_products;
@@ -110,19 +117,19 @@ var getPoForm = /*#__PURE__*/function () {
               today_date: today_date,
               excess_add_on_products: excess_add_on_products
             });
-            _context2.next = 29;
+            _context2.next = 32;
             break;
-          case 25:
-            _context2.prev = 25;
+          case 28:
+            _context2.prev = 28;
             _context2.t0 = _context2["catch"](0);
             console.log(_context2.t0);
             res.redirect("/home");
-          case 29:
+          case 32:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[0, 25]]);
+    }, _callee2, null, [[0, 28]]);
   }));
   return function getPoForm(_x3, _x4) {
     return _ref2.apply(this, arguments);

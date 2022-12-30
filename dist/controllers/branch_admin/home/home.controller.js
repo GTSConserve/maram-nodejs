@@ -261,7 +261,7 @@ var updateDailyTask = /*#__PURE__*/function () {
                       case 14:
                         _context2.next = 16;
                         return (0, _db["default"])("subscribed_user_details").update({
-                          date: date.format("YYYY-MM-DD HH:mm:ss")
+                          date: (0, _moment["default"])(date).format("YYYY-MM-DD HH:mm:ss")
                         }).where({
                           id: data.subscription_id
                         });
