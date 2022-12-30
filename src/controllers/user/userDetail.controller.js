@@ -395,7 +395,7 @@ export const getOverallCalendar = async (req, res) => {
   try {
     const { date } = req.body;
 
-    const overall_calendar_data = [
+    const overall_calendar_data = 
       {
         "date": date,
         "products": {
@@ -408,7 +408,7 @@ export const getOverallCalendar = async (req, res) => {
           "is_delivered": 0
         }
       }
-    ]
+    
 
     // await edit_address(userId, address_id, title, address, landmark, type);
 

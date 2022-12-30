@@ -600,14 +600,11 @@ export const order_list = async (delivery_partner_id,status) =>{
       "tour_status": order[0].tour_status,
       "completed_orders": delivery.length
     }
-
-    const add_on_count = await knex('add_on_order_items').where({id:order[0].user_id})
-    console.log(add_on_count[0].status)
+    console.log(query)
+    // const add_on_count = await knex('add_on_order_items').where({id:order[0].user_id})
+    // console.log(add_on_count[0].status)
     
 
-    // if (add_on_count[0].status == "delivered") {
-      
-    // }
 
      for(let i=0; i<order1.length;i++){
     
@@ -627,7 +624,7 @@ export const order_list = async (delivery_partner_id,status) =>{
   }
   
   
-    return{status:true,data:query,data};
+    return{status:true,...query,data:data};
   } catch (error) {
     console.log(error)
     return{ status: false, message: "No data found" };    
