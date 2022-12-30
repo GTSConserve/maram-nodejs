@@ -50,6 +50,8 @@ export const updateDailyTask = async (req, res) => {
         status: "new_order",
       });
 
+
+
     if (
       tommorow_subscription_orders.length === 0 &&
       tommorow_add_on_orders.length === 0
@@ -225,7 +227,7 @@ export const updateDailyTask = async (req, res) => {
 
         // update the date in sub user details and insert the data ro daily orders
         await knex("subscribed_user_details")
-          .update({ date: date.format("YYYY-MM-DD HH:mm:ss") })
+          .update({ date: moment(date).format("YYYY-MM-DD HH:mm:ss") })
           .where({ id: data.subscription_id });
       }
 

@@ -154,6 +154,7 @@ export const addon_order = async (
 
     if (check_user_is_branch[0].branch_id != null) {
       query.branch_id = check_user_is_branch[0].branch_id;
+      query.status = "branch_pending";
     }
     query.sub_total = sub_total;
 

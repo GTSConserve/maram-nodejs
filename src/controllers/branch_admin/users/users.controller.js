@@ -186,7 +186,7 @@ export const getSingleUser = async (req, res) => {
     let get_user_products_query;
     if (add_on.length !== 0) {
       for (let i = 0; i < add_on.length; i++) {
-        if (add_on_order_query[i].status == "pending") {
+        if (add_on[i].status == "pending") {
           is_add_on_active = 1;
         }
 

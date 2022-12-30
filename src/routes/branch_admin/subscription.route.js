@@ -18,8 +18,8 @@ subscriptionRouter.get('/get_new_users',getNewUsers)
 subscriptionRouter.get('/get_exist_users',getExistUsers)
 
 subscriptionRouter.post('/subscribed',updateSubscribed)
+subscriptionRouter.post('/subscribed_exist_user',updateSubscribedExistUser)
 
-// subscriptionRouter.post('/subscribed_exist_user',updateSubscribedExistUser)
 
 subscriptionRouter.post('/cancel',updateCancel)
 

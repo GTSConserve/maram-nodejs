@@ -29,7 +29,7 @@ export const new_subscription = async (
       for (let i = 0; i < customized_days.length; i++) {
         for (let j = 0; j < weekdays.length; j++) {
           if (weekdays[j].id == customized_days[i]) {
-            store_weekdays.push(weekdays[j].id);
+            store_weekdays.push(weekdays[j].name);
           }
         }
       }

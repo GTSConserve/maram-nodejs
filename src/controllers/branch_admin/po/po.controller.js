@@ -61,7 +61,10 @@ export const getPoForm = async (req, res) => {
 
     // if no daily orders length === 0  then return to home
 
-
+    if (daily_orders.length === 0) {
+      req.flash("error", "No Tommorow Customers Found");
+      return res.redirect("/home");
+    }
 
     const { add_on_products, subscription_products, excess_add_on_products } =
       await getBothProducts(daily_orders);

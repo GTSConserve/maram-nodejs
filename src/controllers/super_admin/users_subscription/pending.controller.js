@@ -220,7 +220,8 @@ export const getNewUsers = async (req, res) => {
     if (data_length.length === 0 && data_length_2.length === 0) {
       loading = false;
       return res.render("super_admin/users_subscription/pending", {
-        data: data_length,
+        subscription_users: data_length,
+        add_on_users: data_length_2,
         searchKeyword,
         branches,
       });
@@ -377,64 +378,48 @@ export const getNewUsers = async (req, res) => {
     //  console.log(subscription_users[0])
 
     // if new user did the two add on orders
-    let duplicate_add_on_products = [];
-    let j_index_id;
+ 
     for (let i = 0; i < add_on_users.length; i++) {
       if (add_on_users[i].is_subscription_pending != true) {
-        for (let j = i + 1; j < add_on_users.length; j++) {
+        for (let j = 0; j < add_on_users.length; j++) {
           if (
-            add_on_users[i].user_address_id == add_on_users[j].user_address_id
+            add_on_users[i].user_address_id ==
+              add_on_users[j].user_address_id &&
+            add_on_users[i].id != add_on_users[j].id
           ) {
             add_on_users[i].is_add_on_duplicate = true;
             add_on_users[j].is_add_on_duplicate = true;
-            // duplicate_add_on_products.push({
-            //   add_on_order_id: add_on_users[i].add_on_order_id,
-            //   delivery_date: add_on_users[i].delivery_date,
-            //   sub_total: add_on_users[i].sub_total,
-            //   add_on_products: add_on_users[i].add_on_products,
-            // });
-            // duplicate_add_on_products.push({
-            //   add_on_order_id: add_on_users[j].add_on_order_id,
-            //   delivery_date: add_on_users[j].delivery_date,
-            //   sub_total: add_on_users[j].sub_total,
-            //   add_on_products: add_on_users[j].add_on_products,
-            // });
-           
-            add_on_users[i].add_on_duplicate_details =[{
-              add_on_order_id: add_on_users[j].add_on_order_id,
-              delivery_date: add_on_users[j].delivery_date,
-              sub_total: add_on_users[j].sub_total,
-              add_on_products: add_on_users[j].add_on_products,
-            },{
-              add_on_order_id: add_on_users[i].add_on_order_id,
-              delivery_date: add_on_users[i].delivery_date,
-              sub_total: add_on_users[i].sub_total,
-              add_on_products: add_on_users[i].add_on_products,
-            }]
-          
-            add_on_users[j].add_on_duplicate_details =[{
-              add_on_order_id: add_on_users[j].add_on_order_id,
-              delivery_date: add_on_users[j].delivery_date,
-              sub_total: add_on_users[j].sub_total,
-              add_on_products: add_on_users[j].add_on_products,
-            },{
-              add_on_order_id: add_on_users[i].add_on_order_id,
-              delivery_date: add_on_users[i].delivery_date,
-              sub_total: add_on_users[i].sub_total,
-              add_on_products: add_on_users[i].add_on_products,
-            }]
-          
-          
+
+            if (add_on_users[j].add_on_duplicate_details) {
+
+              add_on_users[j].add_on_duplicate_details.push({
+                add_on_order_id: add_on_users[i].add_on_order_id,
+                delivery_date: add_on_users[i].delivery_date,
+                sub_total: add_on_users[i].sub_total,
+                add_on_products: add_on_users[i].add_on_products,
+              });
+            } else {
+        
+              add_on_users[j].add_on_duplicate_details = [
+                {
+                  add_on_order_id: add_on_users[j].add_on_order_id,
+                  delivery_date: add_on_users[j].delivery_date,
+                  sub_total: add_on_users[j].sub_total,
+                  add_on_products: add_on_users[j].add_on_products,
+                },
+                {
+                  add_on_order_id: add_on_users[i].add_on_order_id,
+                  delivery_date: add_on_users[i].delivery_date,
+                  sub_total: add_on_users[i].sub_total,
+                  add_on_products: add_on_users[i].add_on_products,
+                },
+              ];
+            }
           }
         }
-        // console.log(add_on_users[i])
-        // add_on_users[i].add_on_duplicate_details = duplicate_add_on_products;
       }
-      // duplicate_add_on_products = [];
     }
-
     console.log(add_on_users);
-    // console.log(add_on_users[3]);
 
     loading = false;
     res.render("super_admin/users_subscription/pending", {
@@ -782,12 +767,13 @@ export const getSingleUser = async (req, res) => {
 
     // console.log(add_on_order_query[0]);
     let add_on = add_on_order_query[0];
+    console.log(add_on)
 
     let is_add_on_active = 0;
     let get_user_products_query;
     if (add_on.length !== 0) {
       for (let i = 0; i < add_on.length; i++) {
-        if (add_on_order_query[i].status == "pending") {
+        if (add_on[i].status == "pending") {
           is_add_on_active = 1;
         }
 

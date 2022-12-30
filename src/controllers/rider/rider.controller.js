@@ -168,7 +168,7 @@ export const updateStartTour = async (req, res) => {
     if (starttour.status) {
       const route = await knex('routes').select('id').where({ rider_id: delivery_partner_id });
 
-      const status = await knex("daily_orders").update({ tour_status: "started" }).where({ router_id: route.id })
+      const status = await knex("daily_orders").update({ tour_status: "started" }).where({ router_id: route[0].id })
       console.log(status)
       return res.status(responseCode.SUCCESS).json(starttour)
     } else {
@@ -490,16 +490,13 @@ export const LocationCheck = async (req, res) => {
 
     console.log(location)
 
-    var point1 = { lat: location.check[0].latitude, lng: location.check[0].longitude }
+    let point1 = { lat: location.check[0].latitude, lng: location.check[0].longitude }
 
-    //Second point in your haversine calculation
-    var point2 = { lat: location.address[0].latitude, lng: location.address[0].longitude }
+    let point2 = { lat: location.address[0].latitude, lng: location.address[0].longitude }
 
-    var haversine_m = haversine(point1, point2); //Results in meters (default)
-    var haversine_km = haversine_m / 20000; //Results in kilometers
+    let haversine_m = haversine(point1, point2); //Results in meters (default)
+    let haversine_km = haversine_m / 20000; //Results in kilometers
 
-    //  console.log("distance (in meters): " + haversine_m + "m");
-    //  console.log("distance (in kilometers): " + haversine_km + "km");
 
     if (haversine_km <= 1000) {
       return res.status(responseCode.SUCCESS).json({ status: true, message: "ok" })
