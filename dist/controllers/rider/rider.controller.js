@@ -201,43 +201,42 @@ var updateRiderstatus = /*#__PURE__*/function () {
           case 0:
             _context4.prev = 0;
             _req$body = req.body, delivery_partner_id = _req$body.delivery_partner_id, status = _req$body.status;
-            console.log(status);
             if (delivery_partner_id) {
-              _context4.next = 5;
+              _context4.next = 4;
               break;
             }
             return _context4.abrupt("return", res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
               status: false,
               message: "Mandatory field Is Missing"
             }));
-          case 5:
-            _context4.next = 7;
+          case 4:
+            _context4.next = 6;
             return (0, _rider.update_riderstatus)(delivery_partner_id, status);
-          case 7:
+          case 6:
             riderstatus = _context4.sent;
             if (!riderstatus.status) {
-              _context4.next = 12;
+              _context4.next = 11;
               break;
             }
             return _context4.abrupt("return", res.status(_responseCode["default"].SUCCESS).json(riderstatus));
-          case 12:
+          case 11:
             return _context4.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json(riderstatus));
-          case 13:
-            _context4.next = 19;
+          case 12:
+            _context4.next = 18;
             break;
-          case 15:
-            _context4.prev = 15;
+          case 14:
+            _context4.prev = 14;
             _context4.t0 = _context4["catch"](0);
             console.log(_context4.t0);
             res.status(500).json({
               status: false
             });
-          case 19:
+          case 18:
           case "end":
             return _context4.stop();
         }
       }
-    }, _callee4, null, [[0, 15]]);
+    }, _callee4, null, [[0, 14]]);
   }));
   return function updateRiderstatus(_x7, _x8) {
     return _ref4.apply(this, arguments);

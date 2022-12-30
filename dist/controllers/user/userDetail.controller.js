@@ -777,6 +777,7 @@ var getSingleBillList = /*#__PURE__*/function () {
               "discount": 0,
               "subscription_products": [{
                 "no_quantity": 1,
+                "product_name": "Milk",
                 "product_id": 664,
                 "product_total": 1252,
                 "recipe_price": 1242,
@@ -786,6 +787,7 @@ var getSingleBillList = /*#__PURE__*/function () {
               }],
               "addons_products": [{
                 "no_quantity": 1,
+                "product_name": "Vegetables",
                 "product_id": 664,
                 "product_total": 1252,
                 "recipe_price": 1242,

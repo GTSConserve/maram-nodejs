@@ -296,46 +296,32 @@ var update_riderstatus = /*#__PURE__*/function () {
         switch (_context7.prev = _context7.next) {
           case 0:
             _context7.prev = 0;
-            console.log(status);
-            if (!status) {
-              _context7.next = 10;
-              break;
-            }
-            _context7.next = 5;
+            _context7.next = 3;
             return (0, _db["default"])("rider_details").update({
-              status: status
+              "rider_details.status": status
             }).where({
               id: delivery_partner_id
             });
-          case 5:
+          case 3:
             update = _context7.sent;
-            console.log(update);
             return _context7.abrupt("return", {
               status: true,
               message: "SuccessFully Updated"
             });
-          case 10:
-            return _context7.abrupt("return", {
-              status: false,
-              message: "cannot updated"
-            });
-          case 11:
-            _context7.next = 17;
-            break;
-          case 13:
-            _context7.prev = 13;
+          case 7:
+            _context7.prev = 7;
             _context7.t0 = _context7["catch"](0);
             console.log(_context7.t0);
             return _context7.abrupt("return", {
               status: false,
               message: "Cannot Update the status"
             });
-          case 17:
+          case 11:
           case "end":
             return _context7.stop();
         }
       }
-    }, _callee7, null, [[0, 13]]);
+    }, _callee7, null, [[0, 7]]);
   }));
   return function update_riderstatus(_x10, _x11) {
     return _ref7.apply(this, arguments);
@@ -1133,7 +1119,7 @@ var home_delivery = /*#__PURE__*/function () {
 exports.home_delivery = home_delivery;
 var order_list = /*#__PURE__*/function () {
   var _ref15 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee15(delivery_partner_id, status) {
-    var router, query3, order, delivery, order1, data3, data, addon, bottle, user, addon1, addon2, i, query, _i4;
+    var router, query3, order, delivery, order1, data3, data, addon, bottle, user, addon1, addon2, i, query, add_on_count, _i4;
     return _regeneratorRuntime().wrap(function _callee15$(_context15) {
       while (1) {
         switch (_context15.prev = _context15.next) {
@@ -1145,34 +1131,33 @@ var order_list = /*#__PURE__*/function () {
             });
           case 3:
             router = _context15.sent;
-            console.log(router);
-            _context15.next = 7;
+            _context15.next = 6;
             return (0, _db["default"])('daily_orders').join("subscribed_user_details", "subscribed_user_details.id", "=", "daily_orders.subscription_id").join("products", "products.id", "=", "subscribed_user_details.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("daily_orders.router_id", "products.unit_value as unit_value", "unit_types.value as unit_type").where({
               "daily_orders.router_id": router[0].id
             });
-          case 7:
+          case 6:
             query3 = _context15.sent;
-            _context15.next = 10;
+            _context15.next = 9;
             return (0, _db["default"])('daily_orders').select('id', 'total_collective_bottle', 'status', 'add_on_order_id', 'user_id', 'total_qty', 'tour_status').where({
               router_id: router[0].id
             });
-          case 10:
+          case 9:
             order = _context15.sent;
-            _context15.next = 13;
+            _context15.next = 12;
             return (0, _db["default"])('daily_orders').select('id').where({
               router_id: router[0].id,
               status: status
             });
-          case 13:
+          case 12:
             delivery = _context15.sent;
-            _context15.next = 16;
+            _context15.next = 15;
             return (0, _db["default"])('daily_orders').join("users", "users.id", "=", "daily_orders.user_id").select('daily_orders.id', 'daily_orders.total_collective_bottle', 'daily_orders.status', 'daily_orders.add_on_order_id', 'daily_orders.user_id', 'daily_orders.total_qty', 'daily_orders.tour_status', 'users.name', 'users.user_unique_id', 'users.bottle_status', "daily_orders.router_id").where({
               "daily_orders.router_id": router[0].id,
               "daily_orders.status": status
             });
-          case 16:
+          case 15:
             order1 = _context15.sent;
-            console.log(order1);
+            //  console.log(order1)
             data3 = [];
             data = [];
             addon = [];
@@ -1181,41 +1166,40 @@ var order_list = /*#__PURE__*/function () {
             addon1 = [];
             addon2 = [];
             i = 0;
-          case 26:
+          case 24:
             if (!(i < order.length)) {
-              _context15.next = 34;
+              _context15.next = 32;
               break;
             }
-            _context15.next = 29;
+            _context15.next = 27;
             return (0, _db["default"])('add_on_order_items').select('id').where({
               status: "delivered",
               user_id: order[i].user_id
             });
-          case 29:
+          case 27:
             addon = _context15.sent;
             addon2.push(addon[0]);
-          case 31:
+          case 29:
             i++;
-            _context15.next = 26;
+            _context15.next = 24;
             break;
-          case 34:
-            _context15.next = 36;
+          case 32:
+            _context15.next = 34;
             return (0, _db["default"])('empty_bottle_tracking').select('status');
-          case 36:
+          case 34:
             bottle = _context15.sent;
-            console.log(addon2);
-            _context15.next = 40;
+            _context15.next = 37;
             return (0, _db["default"])('add_on_order_items').select('id').where({
               add_on_order_id: order[0].add_on_order_id,
               status: "undelivered"
             });
-          case 40:
+          case 37:
             addon1 = _context15.sent;
-            _context15.next = 43;
+            _context15.next = 40;
             return (0, _db["default"])('users').select('name', 'user_unique_id').where({
               id: order[0].user_id
             });
-          case 43:
+          case 40:
             user = _context15.sent;
             query = {
               "tour_id": router[0].id,
@@ -1223,15 +1207,28 @@ var order_list = /*#__PURE__*/function () {
               "total_orders": order.length,
               "tour_status": order[0].tour_status,
               "completed_orders": delivery.length
-            }; // const add_on_count = await knex('add_on_order_items').count({status: "delivered" })
-            // console.log(add_on_count)
+            };
+            _context15.next = 44;
+            return (0, _db["default"])('add_on_order_items').where({
+              id: order[0].user_id
+            });
+          case 44:
+            add_on_count = _context15.sent;
+            console.log(add_on_count[0].status);
+
+            // if (add_on_count[0].status == "delivered") {
+
+            // }
+
             for (_i4 = 0; _i4 < order1.length; _i4++) {
               data.push({
                 "order_id": order1[_i4].id,
                 "order_string": "Task " + order1[_i4].user_id,
                 "milk_variation": order1[_i4].total_qty + " " + query3[0].unit_type,
-                // "addon_items_delivered": addon2[i].length,
-                // "addon_items_undelivered": addon2[i].length,
+                "addon_items_delivered": 2,
+                "addon_items_undelivered": 1,
+                // "addon_items_delivered": add_on_count[0].status,
+                // "addon_items_undelivered": add_on_count[0].status,
                 "user_name": order1[_i4].name,
                 "customer_id": order1[_i4].user_unique_id,
                 "bottle_return": order1[0].bottle_status,
@@ -1242,20 +1239,20 @@ var order_list = /*#__PURE__*/function () {
               status: true,
               data: query
             }, "data", data));
-          case 49:
-            _context15.prev = 49;
+          case 50:
+            _context15.prev = 50;
             _context15.t0 = _context15["catch"](0);
             console.log(_context15.t0);
             return _context15.abrupt("return", {
               status: false,
               message: "No data found"
             });
-          case 53:
+          case 54:
           case "end":
             return _context15.stop();
         }
       }
-    }, _callee15, null, [[0, 49]]);
+    }, _callee15, null, [[0, 50]]);
   }));
   return function order_list(_x37, _x38) {
     return _ref15.apply(this, arguments);
