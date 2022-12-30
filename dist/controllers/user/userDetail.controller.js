@@ -689,7 +689,7 @@ var getOverallCalendar = /*#__PURE__*/function () {
 exports.getOverallCalendar = getOverallCalendar;
 var getBillList = /*#__PURE__*/function () {
   var _ref15 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee15(req, res) {
-    var userId, user, get_bill;
+    var userId, user;
     return _regeneratorRuntime().wrap(function _callee15$(_context15) {
       while (1) {
         switch (_context15.prev = _context15.next) {
@@ -709,38 +709,39 @@ var getBillList = /*#__PURE__*/function () {
               message: "User Not Found"
             }));
           case 7:
-            get_bill = {};
-            user.body.map(function (data) {
-              get_bill.id = data.id;
-              get_bill.user_id = data.user_id;
-              get_bill.payment_id = data.id; // payment id set to id
-              // ? process.env.BASE_URL + data.image
-              // : null;
-              get_bill.items = data.items;
-              get_bill.bill_no = data.bill_no;
-              get_bill.bill_value = data.bill_value;
-              get_bill.status = data.status;
-            });
+            // let get_bill = {};
+            // user.body.map((data) => {
+            //   get_bill.id = data.id;
+            //   get_bill.user_id = data.user_id;
+            //   get_bill.payment_id = data.id // payment id set to id
+            //   // ? process.env.BASE_URL + data.image
+            //   // : null;
+            //   get_bill.items = data.items;
+            //   get_bill.bill_no = data.bill_no
+            //   get_bill.bill_value = data.bill_value;
+            //   get_bill.status = data.status;
+            // });
+
             res.status(_responseCode["default"].SUCCESS).json({
               status: true,
-              data: [get_bill]
+              data: user.body
             });
-            _context15.next = 16;
+            _context15.next = 14;
             break;
-          case 12:
-            _context15.prev = 12;
+          case 10:
+            _context15.prev = 10;
             _context15.t0 = _context15["catch"](0);
             console.log(_context15.t0);
             res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: "no user"
             });
-          case 16:
+          case 14:
           case "end":
             return _context15.stop();
         }
       }
-    }, _callee15, null, [[0, 12]]);
+    }, _callee15, null, [[0, 10]]);
   }));
   return function getBillList(_x29, _x30) {
     return _ref15.apply(this, arguments);
@@ -772,7 +773,7 @@ var getSingleBillList = /*#__PURE__*/function () {
               "month": "Jan 2023",
               "order_string": "Bill No#MA3948F3J492",
               "bill_value": 1085,
-              "payment_status": 0,
+              "payment_status": "0",
               "sub_total": 0,
               "discount": 0,
               "subscription_products": [{
