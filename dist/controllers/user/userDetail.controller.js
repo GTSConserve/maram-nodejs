@@ -645,114 +645,15 @@ var getSingleCalendar = /*#__PURE__*/function () {
 exports.getSingleCalendar = getSingleCalendar;
 var getOverallCalendar = /*#__PURE__*/function () {
   var _ref14 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee14(req, res) {
-    var overall_calendar_data;
+    var date, overall_calendar_data;
     return _regeneratorRuntime().wrap(function _callee14$(_context14) {
       while (1) {
         switch (_context14.prev = _context14.next) {
           case 0:
             try {
-              // const { date } = req.body;
+              date = req.body.date;
               overall_calendar_data = [{
-                "date": "01-01-2023",
-                "products": {
-                  "subscription": {
-                    "1-liter": 1,
-                    "0.5-liter": 0,
-                    "packed-milk": 0
-                  },
-                  "addons-products": 0,
-                  "is_delivered": 0
-                }
-              }, {
-                "date": "02-01-2023",
-                "products": {
-                  "subscription": {
-                    "1-liter": 1,
-                    "0.5-liter": 0,
-                    "packed-milk": 0
-                  },
-                  "addons-products": 0,
-                  "is_delivered": 0
-                }
-              }, {
-                "date": "03-01-2023",
-                "products": {
-                  "subscription": {
-                    "1-liter": 1,
-                    "0.5-liter": 0,
-                    "packed-milk": 0
-                  },
-                  "addons-products": 0,
-                  "is_delivered": 0
-                }
-              }, {
-                "date": "04-01-2023",
-                "products": {
-                  "subscription": {
-                    "1-liter": 1,
-                    "0.5-liter": 0,
-                    "packed-milk": 0
-                  },
-                  "addons-products": 0,
-                  "is_delivered": 0
-                }
-              }, {
-                "date": "05-01-2023",
-                "products": {
-                  "subscription": {
-                    "1-liter": 1,
-                    "0.5-liter": 0,
-                    "packed-milk": 0
-                  },
-                  "addons-products": 0,
-                  "is_delivered": 0
-                }
-              }, {
-                "date": "06-01-2023",
-                "products": {
-                  "subscription": {
-                    "1-liter": 1,
-                    "0.5-liter": 0,
-                    "packed-milk": 0
-                  },
-                  "addons-products": 0,
-                  "is_delivered": 0
-                }
-              }, {
-                "date": "07-01-2023",
-                "products": {
-                  "subscription": {
-                    "1-liter": 1,
-                    "0.5-liter": 0,
-                    "packed-milk": 0
-                  },
-                  "addons-products": 0,
-                  "is_delivered": 0
-                }
-              }, {
-                "date": "08-01-2023",
-                "products": {
-                  "subscription": {
-                    "1-liter": 1,
-                    "0.5-liter": 0,
-                    "packed-milk": 0
-                  },
-                  "addons-products": 0,
-                  "is_delivered": 0
-                }
-              }, {
-                "date": "09-01-2023",
-                "products": {
-                  "subscription": {
-                    "1-liter": 1,
-                    "0.5-liter": 0,
-                    "packed-milk": 0
-                  },
-                  "addons-products": 0,
-                  "is_delivered": 0
-                }
-              }, {
-                "date": "10-01-2023",
+                "date": date,
                 "products": {
                   "subscription": {
                     "1-liter": 1,
@@ -822,7 +723,7 @@ var getBillList = /*#__PURE__*/function () {
             });
             res.status(_responseCode["default"].SUCCESS).json({
               status: true,
-              data: get_bill
+              data: [get_bill]
             });
             _context15.next = 16;
             break;

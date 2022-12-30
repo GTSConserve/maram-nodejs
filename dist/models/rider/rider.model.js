@@ -9,6 +9,9 @@ var _db = _interopRequireDefault(require("../../services/db.service"));
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 var _bcrypt = _interopRequireDefault(require("bcrypt"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, defineProperty = Object.defineProperty || function (obj, key, desc) { obj[key] = desc.value; }, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return defineProperty(generator, "_invoke", { value: makeInvokeMethod(innerFn, self, context) }), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; defineProperty(this, "_invoke", { value: function value(method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); } }); } function makeInvokeMethod(innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return doneResult(); } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; } function maybeInvokeDelegate(delegate, context) { var methodName = context.method, method = delegate.iterator[methodName]; if (undefined === method) return context.delegate = null, "throw" === methodName && delegate.iterator["return"] && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method) || "return" !== methodName && (context.method = "throw", context.arg = new TypeError("The iterator does not provide a '" + methodName + "' method")), ContinueSentinel; var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) { if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; } return next.value = undefined, next.done = !0, next; }; return next.next = next; } } return { next: doneResult }; } function doneResult() { return { value: undefined, done: !0 }; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, defineProperty(Gp, "constructor", { value: GeneratorFunctionPrototype, configurable: !0 }), defineProperty(GeneratorFunctionPrototype, "constructor", { value: GeneratorFunction, configurable: !0 }), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (val) { var object = Object(val), keys = []; for (var key in object) { keys.push(key); } return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) { "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); } }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, "catch": function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -295,7 +298,7 @@ var update_riderstatus = /*#__PURE__*/function () {
             _context7.prev = 0;
             console.log(status);
             if (!status) {
-              _context7.next = 9;
+              _context7.next = 10;
               break;
             }
             _context7.next = 5;
@@ -306,32 +309,33 @@ var update_riderstatus = /*#__PURE__*/function () {
             });
           case 5:
             update = _context7.sent;
+            console.log(update);
             return _context7.abrupt("return", {
               status: true,
               message: "SuccessFully Updated"
             });
-          case 9:
+          case 10:
             return _context7.abrupt("return", {
               status: false,
               message: "cannot updated"
             });
-          case 10:
-            _context7.next = 16;
+          case 11:
+            _context7.next = 17;
             break;
-          case 12:
-            _context7.prev = 12;
+          case 13:
+            _context7.prev = 13;
             _context7.t0 = _context7["catch"](0);
             console.log(_context7.t0);
             return _context7.abrupt("return", {
               status: false,
               message: "Cannot Update the status"
             });
-          case 16:
+          case 17:
           case "end":
             return _context7.stop();
         }
       }
-    }, _callee7, null, [[0, 12]]);
+    }, _callee7, null, [[0, 13]]);
   }));
   return function update_riderstatus(_x10, _x11) {
     return _ref7.apply(this, arguments);
@@ -585,364 +589,384 @@ var getsingleorder = /*#__PURE__*/function () {
 exports.getsingleorder = getsingleorder;
 var statusupdate = /*#__PURE__*/function () {
   var _ref12 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee12(user_id, delivery_partner_id, one_liter_count, half_liter_count, order_id, order_status, product, addons, additional_orders) {
-    var update, bottle_entry, bottle_entry1, i, subscription, one, j, entry, total_one_liter, sum_total, sum, return1, given_bottle, sum1, _entry, total_half_liter1, _sum_total, _sum, _return, _given_bottle, _sum2, _j, additional_order, one1, _j2, _entry2, _total_one_liter, _sum_total2, _sum3, _return2, _given_bottle2, _sum4, _entry3, _total_half_liter, _sum_total3, _sum5, _return3, _given_bottle3, _sum6, _i, add_on_orders, _i2, add_on_order_items;
+    var update1, update, bottle_entry, bottle_entry1, i, subscription, one, j, entry, total_one_liter, sum_total, sum, return1, given_bottle, sum1, _entry, total_half_liter1, _sum_total, _sum, _return, _given_bottle, _sum2, _j, additional_order, one1, _j2, _entry2, _total_one_liter, _sum_total2, _sum3, _return2, _given_bottle2, _sum4, _entry3, _total_half_liter, _sum_total3, _sum5, _return3, _given_bottle3, _sum6, _i, add_on_orders, _i2, add_on_order_items;
     return _regeneratorRuntime().wrap(function _callee12$(_context12) {
       while (1) {
         switch (_context12.prev = _context12.next) {
           case 0:
             _context12.prev = 0;
             _context12.next = 3;
+            return (0, _db["default"])('daily_orders').select("tour_status").where({
+              user_id: user_id,
+              id: order_id
+            });
+          case 3:
+            update1 = _context12.sent;
+            if (!(update1[0].tour_status == "started")) {
+              _context12.next = 157;
+              break;
+            }
+            _context12.next = 7;
             return (0, _db["default"])('daily_orders').update({
               status: order_status
             }).where({
               user_id: user_id,
               id: order_id
             });
-          case 3:
+          case 7:
             update = _context12.sent;
             bottle_entry = [];
             bottle_entry1 = [];
             if (!product) {
-              _context12.next = 151;
+              _context12.next = 155;
               break;
             }
             i = 0;
-          case 8:
+          case 12:
             if (!(i < product.length)) {
-              _context12.next = 19;
+              _context12.next = 23;
               break;
             }
-            _context12.next = 11;
+            _context12.next = 15;
             return (0, _db["default"])('subscribed_user_details').update({
               subscription_status: order_status
             }).where({
               id: product[i].subscription_id
             });
-          case 11:
+          case 15:
             subscription = _context12.sent;
-            _context12.next = 14;
+            _context12.next = 18;
             return (0, _db["default"])('subscribed_user_details').select("subscribed_user_details.id", "products.unit_value ", "subscribed_user_details.quantity").join("products", "products.id", "=", "subscribed_user_details.product_id").where({
               "subscribed_user_details.id": product[i].subscription_id
             });
-          case 14:
+          case 18:
             one = _context12.sent;
             bottle_entry.push(one[0]);
-          case 16:
-            i++;
-            _context12.next = 8;
-            break;
-          case 19:
-            j = 0;
           case 20:
+            i++;
+            _context12.next = 12;
+            break;
+          case 23:
+            j = 0;
+          case 24:
             if (!(j < bottle_entry.length)) {
-              _context12.next = 67;
+              _context12.next = 71;
               break;
             }
             if (!(bottle_entry[j].unit_value == 1000)) {
-              _context12.next = 44;
+              _context12.next = 48;
               break;
             }
-            _context12.next = 24;
+            _context12.next = 28;
             return (0, _db["default"])('users').update({
               today_one_liter: bottle_entry[j].quantity
             }).where({
               id: user_id
             });
-          case 24:
+          case 28:
             entry = _context12.sent;
-            _context12.next = 27;
+            _context12.next = 31;
             return (0, _db["default"])('users').select('total_one_liter').where({
               id: user_id
             });
-          case 27:
+          case 31:
             total_one_liter = _context12.sent;
             console.log(total_one_liter);
             sum_total = 0;
             sum_total += Number(total_one_liter[0].total_one_liter + bottle_entry[j].quantity);
-            _context12.next = 33;
+            _context12.next = 37;
             return (0, _db["default"])('users').update({
               total_one_liter: sum_total
             }).where({
               id: user_id
             });
-          case 33:
+          case 37:
             sum = _context12.sent;
-            _context12.next = 36;
+            _context12.next = 40;
             return (0, _db["default"])('users').select('total_one_liter').where({
               id: user_id
             });
-          case 36:
+          case 40:
             return1 = _context12.sent;
             given_bottle = return1[0].total_one_liter - one_liter_count;
-            _context12.next = 40;
+            _context12.next = 44;
             return (0, _db["default"])('users').update({
               one_liter_in_hand: given_bottle
             }).where({
               id: user_id
             });
-          case 40:
+          case 44:
             sum1 = _context12.sent;
             console.log(given_bottle);
-            _context12.next = 64;
+            _context12.next = 68;
             break;
-          case 44:
+          case 48:
             if (!(bottle_entry[j].unit_value == 500)) {
-              _context12.next = 64;
+              _context12.next = 68;
               break;
             }
-            _context12.next = 47;
+            _context12.next = 51;
             return (0, _db["default"])('users').update({
               today_half_liter: bottle_entry[j].quantity
             }).where({
               id: user_id
             });
-          case 47:
+          case 51:
             _entry = _context12.sent;
-            _context12.next = 50;
+            _context12.next = 54;
             return (0, _db["default"])('users').select('total_half_liter').where({
               id: user_id
             });
-          case 50:
+          case 54:
             total_half_liter1 = _context12.sent;
             // console.log(total_one_liter);
             _sum_total = 0;
             _sum_total += Number(total_half_liter1[0].total_half_liter + bottle_entry[j].quantity);
-            _context12.next = 55;
+            _context12.next = 59;
             return (0, _db["default"])('users').update({
               total_half_liter: _sum_total
             }).where({
               id: user_id
             });
-          case 55:
+          case 59:
             _sum = _context12.sent;
-            _context12.next = 58;
+            _context12.next = 62;
             return (0, _db["default"])('users').select('total_half_liter').where({
               id: user_id
             });
-          case 58:
+          case 62:
             _return = _context12.sent;
             _given_bottle = _return[0].total_half_liter - half_liter_count;
-            _context12.next = 62;
+            _context12.next = 66;
             return (0, _db["default"])('users').update({
               half_liter_in_hand: _given_bottle
             }).where({
               id: user_id
             });
-          case 62:
+          case 66:
             _sum2 = _context12.sent;
             console.log(_given_bottle);
-          case 64:
+          case 68:
             j++;
-            _context12.next = 20;
+            _context12.next = 24;
             break;
-          case 67:
+          case 71:
             if (!(additional_orders.length !== 0)) {
-              _context12.next = 150;
+              _context12.next = 154;
               break;
             }
             _j = 0;
-          case 69:
+          case 73:
             if (!(_j < additional_orders.length)) {
-              _context12.next = 80;
+              _context12.next = 84;
               break;
             }
-            _context12.next = 72;
+            _context12.next = 76;
             return (0, _db["default"])('additional_orders').update({
               status: order_status
             }).where({
               id: additional_orders[_j].additional_order_id,
               subscription_id: additional_orders[_j].subscription_id
             });
-          case 72:
+          case 76:
             additional_order = _context12.sent;
-            _context12.next = 75;
+            _context12.next = 79;
             return (0, _db["default"])('subscribed_user_details').select("products.unit_value ", "additional_orders.quantity", "subscribed_user_details.id").join("additional_orders", "additional_orders.subscription_id", "=", "subscribed_user_details.id").join("products", "products.id", "=", "subscribed_user_details.product_id").where({
               "additional_orders.id": additional_orders[_j].additional_order_id,
               "subscribed_user_details.id": additional_orders[_j].subscription_id
             });
-          case 75:
+          case 79:
             one1 = _context12.sent;
             bottle_entry1.push(one1[0]);
-          case 77:
+          case 81:
             _j++;
-            _context12.next = 69;
+            _context12.next = 73;
             break;
-          case 80:
+          case 84:
             console.log(bottle_entry1);
             _j2 = 0;
-          case 82:
+          case 86:
             if (!(_j2 < bottle_entry1.length)) {
-              _context12.next = 150;
+              _context12.next = 154;
               break;
             }
             if (!(bottle_entry1[_j2].unit_value == 1000)) {
-              _context12.next = 107;
+              _context12.next = 111;
               break;
             }
-            _context12.next = 86;
+            _context12.next = 90;
             return (0, _db["default"])('users').update({
               today_one_liter: bottle_entry1[_j2].quantity
             }).where({
               id: user_id
             });
-          case 86:
+          case 90:
             _entry2 = _context12.sent;
-            _context12.next = 89;
+            _context12.next = 93;
             return (0, _db["default"])('users').select('total_one_liter').where({
               id: user_id
             });
-          case 89:
+          case 93:
             _total_one_liter = _context12.sent;
             console.log(_total_one_liter);
             _sum_total2 = 0;
             _sum_total2 += Number(_total_one_liter[0].total_one_liter) + Number(bottle_entry1[_j2].quantity);
             console.log(_sum_total2);
-            _context12.next = 96;
+            _context12.next = 100;
             return (0, _db["default"])('users').update({
               total_one_liter: _sum_total2
             }).where({
               id: user_id
             });
-          case 96:
+          case 100:
             _sum3 = _context12.sent;
-            _context12.next = 99;
+            _context12.next = 103;
             return (0, _db["default"])('users').select('total_one_liter').where({
               id: user_id
             });
-          case 99:
+          case 103:
             _return2 = _context12.sent;
             _given_bottle2 = _return2[0].total_one_liter - one_liter_count;
-            _context12.next = 103;
+            _context12.next = 107;
             return (0, _db["default"])('users').update({
               one_liter_in_hand: _given_bottle2
             }).where({
               id: user_id
             });
-          case 103:
+          case 107:
             _sum4 = _context12.sent;
             console.log(_given_bottle2);
-            _context12.next = 130;
+            _context12.next = 134;
             break;
-          case 107:
+          case 111:
             if (!(bottle_entry1[_j2].unit_value == 500)) {
-              _context12.next = 129;
+              _context12.next = 133;
               break;
             }
-            _context12.next = 110;
+            _context12.next = 114;
             return (0, _db["default"])('users').update({
               today_half_liter: bottle_entry1[_j2].quantity
             }).where({
               id: user_id
             });
-          case 110:
+          case 114:
             _entry3 = _context12.sent;
-            _context12.next = 113;
+            _context12.next = 117;
             return (0, _db["default"])('users').select('total_half_liter').where({
               id: user_id
             });
-          case 113:
+          case 117:
             _total_half_liter = _context12.sent;
             // console.log(total_one_liter);
             _sum_total3 = 0;
             _sum_total3 += Number(_total_half_liter[0].total_half_liter + bottle_entry[_j2].quantity);
-            _context12.next = 118;
+            _context12.next = 122;
             return (0, _db["default"])('users').update({
               total_half_liter: _sum_total3
             }).where({
               id: user_id
             });
-          case 118:
+          case 122:
             _sum5 = _context12.sent;
-            _context12.next = 121;
+            _context12.next = 125;
             return (0, _db["default"])('users').select('total_half_liter').where({
               id: user_id
             });
-          case 121:
+          case 125:
             _return3 = _context12.sent;
             _given_bottle3 = _return3[0].total_half_liter - half_liter_count;
-            _context12.next = 125;
+            _context12.next = 129;
             return (0, _db["default"])('users').update({
               half_liter_in_hand: _given_bottle3
             }).where({
               id: user_id
             });
-          case 125:
+          case 129:
             _sum6 = _context12.sent;
             console.log(_given_bottle3);
-            _context12.next = 130;
+            _context12.next = 134;
             break;
-          case 129:
+          case 133:
             return _context12.abrupt("return", {
               status: false,
               message: "no additional_orders product"
             });
-          case 130:
+          case 134:
             if (!addons) {
-              _context12.next = 147;
+              _context12.next = 151;
               break;
             }
             _i = 0;
-          case 132:
+          case 136:
             if (!(_i < addons.length)) {
-              _context12.next = 139;
+              _context12.next = 143;
               break;
             }
-            _context12.next = 135;
+            _context12.next = 139;
             return (0, _db["default"])('add_on_orders').update({
               status: order_status
             }).where({
               id: addons[_i].id
             });
-          case 135:
-            add_on_orders = _context12.sent;
-          case 136:
-            _i++;
-            _context12.next = 132;
-            break;
           case 139:
-            _i2 = 0;
+            add_on_orders = _context12.sent;
           case 140:
+            _i++;
+            _context12.next = 136;
+            break;
+          case 143:
+            _i2 = 0;
+          case 144:
             if (!(_i2 < addons.length)) {
-              _context12.next = 147;
+              _context12.next = 151;
               break;
             }
-            _context12.next = 143;
+            _context12.next = 147;
             return (0, _db["default"])('add_on_order_items').update({
               status: order_status
             }).where({
               add_on_order_id: addons[_i2].id
             });
-          case 143:
-            add_on_order_items = _context12.sent;
-          case 144:
-            _i2++;
-            _context12.next = 140;
-            break;
           case 147:
-            _j2++;
-            _context12.next = 82;
+            add_on_order_items = _context12.sent;
+          case 148:
+            _i2++;
+            _context12.next = 144;
             break;
-          case 150:
-            return _context12.abrupt("return", {
-              status: true
-            });
           case 151:
-            _context12.next = 157;
+            _j2++;
+            _context12.next = 86;
             break;
-          case 153:
-            _context12.prev = 153;
+          case 154:
+            return _context12.abrupt("return", {
+              status: true,
+              message: "ok"
+            });
+          case 155:
+            _context12.next = 158;
+            break;
+          case 157:
+            return _context12.abrupt("return", {
+              status: false,
+              message: "tour cannot started"
+            });
+          case 158:
+            _context12.next = 164;
+            break;
+          case 160:
+            _context12.prev = 160;
             _context12.t0 = _context12["catch"](0);
             console.log(_context12.t0);
             return _context12.abrupt("return", {
               status: false,
               message: "No data found"
             });
-          case 157:
+          case 164:
           case "end":
             return _context12.stop();
         }
       }
-    }, _callee12, null, [[0, 153]]);
+    }, _callee12, null, [[0, 160]]);
   }));
   return function statusupdate(_x25, _x26, _x27, _x28, _x29, _x30, _x31, _x32, _x33) {
     return _ref12.apply(this, arguments);
@@ -1109,7 +1133,7 @@ var home_delivery = /*#__PURE__*/function () {
 exports.home_delivery = home_delivery;
 var order_list = /*#__PURE__*/function () {
   var _ref15 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee15(delivery_partner_id, status) {
-    var router, query3, order, delivery, order1, data, i, _addon, _bottle, _addon2, _user;
+    var router, query3, order, delivery, order1, data3, data, addon, bottle, user, addon1, addon2, i, query, _i4;
     return _regeneratorRuntime().wrap(function _callee15$(_context15) {
       while (1) {
         switch (_context15.prev = _context15.next) {
@@ -1121,107 +1145,117 @@ var order_list = /*#__PURE__*/function () {
             });
           case 3:
             router = _context15.sent;
-            _context15.next = 6;
+            console.log(router);
+            _context15.next = 7;
             return (0, _db["default"])('daily_orders').join("subscribed_user_details", "subscribed_user_details.id", "=", "daily_orders.subscription_id").join("products", "products.id", "=", "subscribed_user_details.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("daily_orders.router_id", "products.unit_value as unit_value", "unit_types.value as unit_type").where({
               "daily_orders.router_id": router[0].id
             });
-          case 6:
+          case 7:
             query3 = _context15.sent;
-            _context15.next = 9;
+            _context15.next = 10;
             return (0, _db["default"])('daily_orders').select('id', 'total_collective_bottle', 'status', 'add_on_order_id', 'user_id', 'total_qty', 'tour_status').where({
               router_id: router[0].id
             });
-          case 9:
+          case 10:
             order = _context15.sent;
-            _context15.next = 12;
+            _context15.next = 13;
             return (0, _db["default"])('daily_orders').select('id').where({
               router_id: router[0].id,
               status: status
             });
-          case 12:
+          case 13:
             delivery = _context15.sent;
-            _context15.next = 15;
-            return (0, _db["default"])('daily_orders').select('id', 'total_collective_bottle', 'status', 'add_on_order_id', 'user_id', 'total_qty', 'tour_status').where({
-              router_id: router[0].id,
-              status: status
+            _context15.next = 16;
+            return (0, _db["default"])('daily_orders').join("users", "users.id", "=", "daily_orders.user_id").select('daily_orders.id', 'daily_orders.total_collective_bottle', 'daily_orders.status', 'daily_orders.add_on_order_id', 'daily_orders.user_id', 'daily_orders.total_qty', 'daily_orders.tour_status', 'users.name', 'users.user_unique_id', 'users.bottle_status', "daily_orders.router_id").where({
+              "daily_orders.router_id": router[0].id,
+              "daily_orders.status": status
             });
-          case 15:
+          case 16:
             order1 = _context15.sent;
             console.log(order1);
+            data3 = [];
             data = [];
+            addon = [];
+            bottle = [];
+            user = [];
+            addon1 = [];
+            addon2 = [];
             i = 0;
-          case 19:
-            if (!(i < order1.length)) {
-              _context15.next = 36;
+          case 26:
+            if (!(i < order.length)) {
+              _context15.next = 34;
               break;
             }
-            _context15.next = 22;
+            _context15.next = 29;
             return (0, _db["default"])('add_on_order_items').select('id').where({
-              add_on_order_id: order[0].add_on_order_id,
-              status: "delivered"
+              status: "delivered",
+              user_id: order[i].user_id
             });
-          case 22:
-            _addon = _context15.sent;
-            _context15.next = 25;
+          case 29:
+            addon = _context15.sent;
+            addon2.push(addon[0]);
+          case 31:
+            i++;
+            _context15.next = 26;
+            break;
+          case 34:
+            _context15.next = 36;
             return (0, _db["default"])('empty_bottle_tracking').select('status');
-          case 25:
-            _bottle = _context15.sent;
-            _context15.next = 28;
+          case 36:
+            bottle = _context15.sent;
+            console.log(addon2);
+            _context15.next = 40;
             return (0, _db["default"])('add_on_order_items').select('id').where({
               add_on_order_id: order[0].add_on_order_id,
               status: "undelivered"
             });
-          case 28:
-            _addon2 = _context15.sent;
-            _context15.next = 31;
+          case 40:
+            addon1 = _context15.sent;
+            _context15.next = 43;
             return (0, _db["default"])('users').select('name', 'user_unique_id').where({
               id: order[0].user_id
             });
-          case 31:
-            _user = _context15.sent;
-            data.push({
-              "order_id": order1[i].id,
-              "order_string": "Task " + order1[i].user_id,
-              "milk_variation": order1[i].total_qty + " " + query3[0].unit_type,
-              "addon_items_delivered": _addon.length,
-              "addon_items_undelivered": _addon2.length,
-              "user_name": _user[0].name,
-              "customer_id": _user[0].user_unique_id,
-              "bottle_return": _bottle[0].status,
-              "order_status": order[0].status
-            });
-          case 33:
-            i++;
-            _context15.next = 19;
-            break;
-          case 36:
-            console.log(data);
-            // console.log(router,router1,order,delivery,addon)
-            return _context15.abrupt("return", {
+          case 43:
+            user = _context15.sent;
+            query = {
+              "tour_id": router[0].id,
+              "tour_route": router[0].name,
+              "total_orders": order.length,
+              "tour_status": order[0].tour_status,
+              "completed_orders": delivery.length
+            }; // const add_on_count = await knex('add_on_order_items').count({status: "delivered" })
+            // console.log(add_on_count)
+            for (_i4 = 0; _i4 < order1.length; _i4++) {
+              data.push({
+                "order_id": order1[_i4].id,
+                "order_string": "Task " + order1[_i4].user_id,
+                "milk_variation": order1[_i4].total_qty + " " + query3[0].unit_type,
+                // "addon_items_delivered": addon2[i].length,
+                // "addon_items_undelivered": addon2[i].length,
+                "user_name": order1[_i4].name,
+                "customer_id": order1[_i4].user_unique_id,
+                "bottle_return": order1[0].bottle_status,
+                "order_status": order1[_i4].status
+              });
+            }
+            return _context15.abrupt("return", _defineProperty({
               status: true,
-              router: router,
-              order: order,
-              delivery: delivery,
-              addon: addon,
-              addon1: addon1,
-              user: user,
-              query3: query3,
-              bottle: bottle
-            });
-          case 40:
-            _context15.prev = 40;
+              data: query
+            }, "data", data));
+          case 49:
+            _context15.prev = 49;
             _context15.t0 = _context15["catch"](0);
             console.log(_context15.t0);
             return _context15.abrupt("return", {
               status: false,
               message: "No data found"
             });
-          case 44:
+          case 53:
           case "end":
             return _context15.stop();
         }
       }
-    }, _callee15, null, [[0, 40]]);
+    }, _callee15, null, [[0, 49]]);
   }));
   return function order_list(_x37, _x38) {
     return _ref15.apply(this, arguments);
@@ -1231,7 +1265,7 @@ var order_list = /*#__PURE__*/function () {
 // location check 
 exports.order_list = order_list;
 var locationcheck = /*#__PURE__*/function () {
-  var _ref16 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee16(delivery_partner_id, order_id) {
+  var _ref17 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee16(delivery_partner_id, order_id) {
     var check, address;
     return _regeneratorRuntime().wrap(function _callee16$(_context16) {
       while (1) {
@@ -1272,7 +1306,7 @@ var locationcheck = /*#__PURE__*/function () {
     }, _callee16, null, [[0, 11]]);
   }));
   return function locationcheck(_x39, _x40) {
-    return _ref16.apply(this, arguments);
+    return _ref17.apply(this, arguments);
   };
 }();
 
@@ -1301,7 +1335,7 @@ var locationcheck = /*#__PURE__*/function () {
 // rider logout
 exports.locationcheck = locationcheck;
 var logout_rider = /*#__PURE__*/function () {
-  var _ref17 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee17(delivery_partner_id) {
+  var _ref18 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee17(delivery_partner_id) {
     var query;
     return _regeneratorRuntime().wrap(function _callee17$(_context17) {
       while (1) {
@@ -1335,7 +1369,7 @@ var logout_rider = /*#__PURE__*/function () {
     }, _callee17, null, [[0, 7]]);
   }));
   return function logout_rider(_x41) {
-    return _ref17.apply(this, arguments);
+    return _ref18.apply(this, arguments);
   };
 }();
 exports.logout_rider = logout_rider;

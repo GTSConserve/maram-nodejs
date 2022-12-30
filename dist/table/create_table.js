@@ -149,7 +149,7 @@ var createTable = /*#__PURE__*/function () {
                   t.string("address", 255).nullable();
                   t.enu("online_status", ["0", "1"]).defaultTo("1");
                   t.enu("tour_status", ["0", "1", "2"]).defaultTo("0");
-                  t.enu("status", ["0", "1"]).defaultTo("1");
+                  t.enu("status", ["0", "1", "2"]).defaultTo("1");
                   t.timestamps(true, true);
                 });
               }
@@ -568,7 +568,7 @@ var createTable = /*#__PURE__*/function () {
                   t.integer("total_amount").unsigned().notNullable();
                   t.date("date").notNullable();
                   t.integer("bill_value", 255).unsigned().notNullable();
-                  t.enu("status", ["0", "1"]).defaultTo("1");
+                  t.enu("status", ["0", "1", "2"]).defaultTo("1");
                   t.timestamps(true, true);
                 });
               }
