@@ -12,6 +12,9 @@
         <a href="/branch_admin/user/branch_user"  style="cursor: pointer;" class="badge badge-info p-2"> Go Back </a>
     </div>
     
+  
+
+
     <div class="row invoice  layout-spacing layout-top-spacing">
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
             
@@ -74,24 +77,215 @@
                                                                 margin: 0; 
                                                             }
                                                             </style>
+
+<!-- <div class="form-group mb-0">
+    <input id="rangeCalendarFlatpickr" class="form-control flatpickr flatpickr-input active" onchange="checkHandlersss()" type="text" placeholder="Select Date..">
+</div>
+
+<script>
+
+    const get = document.getElementById('rangeCalendarFlatpickr')
+
+
+    
+
+    var f3 = flatpickr(get, {
+    mode: "multiple"
+});
+
+    function checkHandlersss(){
+        console.log(get.value)
+        console.log(get.value.split(","))
+    }
+    console.log(f3)
+
+</script> -->
+
+
+<div class="col-lg-12 col-12 layout-spacing">
+    <div class="statbox widget box box-shadow">
+        <div class="widget-content widget-content-area pill-justify-right">
+            
+            <ul class="nav nav-tabs mb-3 mt-3 justify-content-start" id="justify-right-pills-tab" role="tablist" style="font-weight: 900;">
+                <li class="nav-item">
+                    <a class="nav-link active" id="justify-right-pills-home-tab" data-toggle="pill" href="#justify-right-pills-home" role="tab" aria-controls="justify-right-pills-home" aria-selected="true">Subscription</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="justify-right-pills-contact-tab" data-toggle="pill" href="#justify-right-pills-contact" role="tab" aria-controls="justify-right-pills-contact" aria-selected="false">Add On</a>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="justify-right-pills-tabContent">
+                <div class="tab-pane fade show active" id="justify-right-pills-home" role="tabpanel" aria-labelledby="justify-right-pills-home-tab">
+                                     
+                    <div class="inv--product-table-section">
+                        <h6 class="ml-2 pb-2" style="font-weight: 900;">Subscription Products : 
+                            <% if(sub_products.length !== 0){ %>
+                                <% if(is_subscription_active == 1){ %>
+                            <span class="badge badge-info"> Live </span>
+                                <% }else{ %>
+                                    <span class="badge badge-info"> InActive </span>
+                                <% } %> 
+                            <% } %> 
+                        </h6>
+                        <span style="cursor: pointer;"  data-toggle="modal" data-target="#modalSubscription" class="badge badge-info float-right m-2">  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> </span>
+                        
+                        <div class="modal fade" id="modalSubscription"  tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalCenterTitle">Add Subscription Product</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                        </button>
+                                    </div>
+                                    <form id="subscriptionForm">
+                                        <div class="modal-body">
+                                            <!-- <h4 class="modal-heading mb-4 mt-2">Are You Sure?</h4> -->
+                                            <div class="form-row mb-4">
+                                                <div class="form-group col-md-4">
+                                                    <label>Product</label>
+                                                    <select wire:model="countryid" class="form-control"  name="sub_product" >
+                                                        <option value="" selected ><%=get_subscription_products .length !==0 ? "Select Product" : "No Product Found" %>  </option>
+                                                        <% for(product of get_subscription_products){ %>
                                                             
-                                            <div class="inv--product-table-section">
-                                                <h6 class="ml-2 pb-2" style="font-weight: 900;">Subscription Products : 
-                                                    <% if(sub_products.length !== 0){ %>
-                                                        <% if(is_subscription_active == 1){ %>
-                                                    <span class="badge badge-info"> Live </span>
-                                                        <% }else{ %>
-                                                            <span class="badge badge-info"> InActive </span>
-                                                        <% } %> 
-                                                    <% } %> 
-                                                </h6>
-                                                <span style="cursor: pointer;"  data-toggle="modal" data-target="#modalSubscription" class="badge badge-primary float-right p-2 m-2">  New Subscription Product </span>
-                                                
-                                                <div class="modal fade" id="modalSubscription"  tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                                                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                                            <option value="<%=product.id %>"><%=product.name %>  / <%= product.unit_value %>-<%= product.unit_type %>    </option>
+                                                            <% } %>
+                                                            
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label for="sub_qty">Qty</label>
+                                                        <input type="number"  class="form-control" name="sub_qty" id="sub_qty" placeholder="qty">
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label for="start_date">Start Date</label>
+                                                        <input type="date"   class="form-control"   min=<%=   new Date().toISOString().split('T')[0]%>   id="start_date" name="sub_start_date">
+                                                    </div>
+                                                </div>
+                                                <input type="hidden"  name="user_address_id" value="<%= user.user_address_id %>">
+                                                <div class="form-row mb-4">
+                                                    <div class="form-group col-md-4">
+                                                        <label>Choose Your Plan</label>
+                                                        <select onchange="checkHandler(this)"  wire:model="countryid" class="form-control" name="your_plan" >
+                                                            <option value="" selected >Choose Your plan </option>
+                                                            <% for(plan of get_plan){ %>
+                                                                
+                                                                <option  value="<%=plan.id %>"><%=plan.name %>  </option>
+                                                                <% } %>
+                                                            </select>
+                                                        </div>
+                                                       
+                                                        <div class="form-group col-md-4 pl-3 " id="custom_days">
+                                                         
+                                                            
+                                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-dark" data-dismiss="modal" type="button"> <i class="flaticon-cancel-12"></i> Discard</button>
+                                        <button  class="btn btn-primary" type="submit">Add</button>
+                                    </div>
+                                </div>
+                            </form>
+                            </div>
+                        </div>
+</div>
+
+
+
+
+
+                        <script>
+                            function checkHandler(event){
+                                console.log(event)
+                                if(event.value == 3){
+                                    document.getElementById("custom_days").innerHTML = ` <label for="delivery_days">Choose Your Custome Days</label>
+                                    <div class="row">
+                                        <div class="col-5">
+                            <div class="custom-control custom-checkbox checkbox-info">
+                                <input type="checkbox" name="custom_days" value="1" class="custom-control-input" id="hChkbox">
+                                <label class="custom-control-label" for="hChkbox">Sun</label>
+                            </div>
+                            <div class="custom-control custom-checkbox checkbox-info">
+                                <input type="checkbox" name="custom_days" value="2" class="custom-control-input" id="hChkbox2">
+                                <label class="custom-control-label" for="hChkbox2">Mon</label>
+                            </div>
+                            <div class="custom-control custom-checkbox checkbox-info">
+                                <input type="checkbox" name="custom_days" value="3" class="custom-control-input" id="hChkbox3">
+                                <label class="custom-control-label" for="hChkbox3">Tue</label>
+                            </div>
+                            <div class="custom-control custom-checkbox checkbox-info">
+                                <input type="checkbox" name="custom_days" value="4" class="custom-control-input" id="hChkbox4">
+                                <label class="custom-control-label" for="hChkbox4">Wed</label>
+                            </div>
+                            </div>
+                            <div class="col-5">
+                            <div class="custom-control custom-checkbox checkbox-info">
+                                <input type="checkbox" name="custom_days" value="5" class="custom-control-input" id="hChkbox5">
+                                <label class="custom-control-label" for="hChkbox5">Thu</label>
+                            </div>
+                            <div class="custom-control custom-checkbox checkbox-info">
+                                <input type="checkbox" name="custom_days" value="6" class="custom-control-input" id="hChkbox6">
+                                <label class="custom-control-label" for="hChkbox6">Fri</label>
+                            </div>
+                            <div class="custom-control custom-checkbox checkbox-info">
+                                <input type="checkbox" name="custom_days" value="7" class="custom-control-input" id="hChkbox7">
+                                <label class="custom-control-label" for="hChkbox7">Sat</label>
+                            </div>
+                            </div>
+                            `
+                                }else{
+                                    document.getElementById("custom_days").innerHTML = ``
+                                }
+                            }
+                        </script>
+
+
+                        <% if(sub_products.length === 0){ %>
+                            <h6 class="pl-5">No Subscription Product Found</h6>
+                            <% }else{ %>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead class="">
+                                            <tr>
+                                                <!-- <th class="checkbox-column dt-no-sorting"> Choose</th> -->
+                                                <th scope="col" >id</th>
+                                                <th scope="col" >Name</th>
+                                                <th scope="col">Unit</th>
+                                                <th class="text-right" scope="col">Price</th>
+                                                <th class="text-right" scope="col">Qty</th>
+                                                <th class="text-right" scope="col">Start Date</th>
+                                                <th class="text-right" scope="col">Subscription Type</th>
+                                                <th class="text-right" scope="col">Status</th>
+                                                <th class="text-right" scope="col">Action</th>
+                                            </tr>
+                                        </thead>  
+                                        <tbody>
+                                            
+                                            
+                                            <% for(sub_product of sub_products){ %>
+                                                <tr>
+                                                    
+                                                    <td name="name"><%= sub_product.sub_id %></td>
+                                                    <td name="name"><%= sub_product.product_name %></td>
+                                                    <td><%= sub_product.unit_value %> <%= sub_product.value %></td> 
+                                                    <td class="text-right"><%= sub_product.price %></td>
+                                                    <td class="text-right"><%= sub_product.quantity %></td>
+                                                    <td class="text-right"><%= sub_product.start_date %> </td>
+                                                    <td class="text-right"><%= sub_product.sub_name %> </td>
+                                                    <td class="text-right"><%= sub_product.subscription_status %> </td>
+                                                    <td class="text-right">
+                                                        <span  data-toggle="modal" data-target="#additionalSubscription<%= sub_product.sub_id  %>" ><img style="width:35px; " src="/assets/img/additional_order_icon.png"></span>
+                                                    </td>
+                                                </tr>
+
+
+
+                                                <div class="modal fade" id="additionalSubscription<%= sub_product.sub_id  %>"  tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered " role="document">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
-                                                                <h5 class="modal-title" id="exampleModalCenterTitle">Add Subscription Product</h5>
+                                                                <h5 class="modal-title" id="exampleModalCenterTitle">Additional Orders</h5>
                                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                                     <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                                                                 </button>
@@ -99,18 +293,56 @@
                                                             <form id="subscriptionForm">
                                                                 <div class="modal-body">
                                                                     <!-- <h4 class="modal-heading mb-4 mt-2">Are You Sure?</h4> -->
-                                                                    <div class="form-row mb-4">
-                                                                        <div class="form-group col-md-4">
-                                                                            <label>Product</label>
-                                                                            <select wire:model="countryid" class="form-control"  name="sub_product" >
-                                                                                <option value="" selected ><%=get_subscription_products .length !==0 ? "Select Product" : "No Product Found" %>  </option>
-                                                                                <% for(product of get_subscription_products){ %>
-                                                                                    
-                                                                                    <option value="<%=product.id %>"><%=product.name %>  / <%= product.unit_value %>-<%= product.unit_type %>    </option>
-                                                                                    <% } %>
-                                                                                    
-                                                                                </select>
+
+
+                                                                    <% if(sub_product.additional_orders != undefined){ %> 
+                                                                        <div class="form-row mb-4">
+                                                                        
+                                                                            <div class="form-group col-md-4">
+                                                                                <label for="sub_qty">Qty</label>
+                                                                                <p><%= sub_product.additional_orders.qty %> </p>
                                                                             </div>
+
+                                                                            <div class="col-6">
+                                                                                <input id="rangeCalendarFlatpickrs" class="form-control flatpickr flatpickr-input active" 
+                                                                                onchange="checkHandlersss(this)" type="text" placeholder="Select Date.." 
+                                                                                value="<%= sub_product.additional_orders.dates %> ">
+                                                                            </div>
+                                                                            
+                                                                            <script>
+                                                                            
+                                                                                const gets = document.getElementById('rangeCalendarFlatpickrs')
+                                                                      
+                                                                                
+                                                                                
+                                                                                
+                                                                            
+                                                                                var f3 = flatpickr(gets, {
+                                                                                mode: "multiple" ,
+                                                                                static : true ,
+                                                                                enable : gets.value.split(","),
+                                                                                defaultDate : gets.value.split(",")
+                                                                            });
+                                                                            
+                                                                                // function checkHandlersss(){
+                                                                                //     console.log(gets.value)
+                                                                                //     console.log(gets.value.split(","))
+                                                                                // }
+                                                                                // console.log(f3)
+                                                                            
+                                                                            </script>
+
+                                                                            <!-- <div class="form-group col-md-4">
+                                                                                <label for="start_date">Start Date</label>
+                                                                                <input type="date"   class="form-control"   min=<%=   new Date().toISOString().split('T')[0]%>   id="start_date" name="sub_start_date">
+                                                                            </div> -->
+                                                                        </div>
+                                                                        <% }else{ %> 
+                                                                            1111111
+                                                                        <% } %> 
+
+                                                                    <!-- <div class="form-row mb-4">
+                                                                        
                                                                             <div class="form-group col-md-4">
                                                                                 <label for="sub_qty">Qty</label>
                                                                                 <input type="number"  class="form-control" name="sub_qty" id="sub_qty" placeholder="qty">
@@ -119,25 +351,8 @@
                                                                                 <label for="start_date">Start Date</label>
                                                                                 <input type="date"   class="form-control"   min=<%=   new Date().toISOString().split('T')[0]%>   id="start_date" name="sub_start_date">
                                                                             </div>
-                                                                        </div>
+                                                                        </div> -->
                                                                         <input type="hidden"  name="user_address_id" value="<%= user.user_address_id %>">
-                                                                        <div class="form-row mb-4">
-                                                                            <div class="form-group col-md-4">
-                                                                                <label>Choose Your Plan</label>
-                                                                                <select onchange="checkHandler(this)"  wire:model="countryid" class="form-control" name="your_plan" >
-                                                                                    <option value="" selected >Choose Your plan </option>
-                                                                                    <% for(plan of get_plan){ %>
-                                                                                        
-                                                                                        <option  value="<%=plan.id %>"><%=plan.name %>  </option>
-                                                                                        <% } %>
-                                                                                    </select>
-                                                                                </div>
-                                                                               
-                                                                                <div class="form-group col-md-4 pl-3 " id="custom_days">
-                                                                                 
-                                                                                    
-                                                                                </div>
-                                                            </div>
                                                             <div class="modal-footer">
                                                                 <button class="btn btn-dark" data-dismiss="modal" type="button"> <i class="flaticon-cancel-12"></i> Discard</button>
                                                                 <button  class="btn btn-primary" type="submit">Add</button>
@@ -146,336 +361,279 @@
                                                     </form>
                                                     </div>
                                                 </div>
-</div>
-
-                                                <script>
-                                                    function checkHandler(event){
-                                                        console.log(event)
-                                                        if(event.value == 3){
-                                                            document.getElementById("custom_days").innerHTML = ` <label for="delivery_days">Choose Your Custome Days</label>
-                                                            <div class="row">
-                                                                <div class="col-5">
-                                                    <div class="custom-control custom-checkbox checkbox-info">
-                                                        <input type="checkbox" name="custom_days" value="1" class="custom-control-input" id="hChkbox">
-                                                        <label class="custom-control-label" for="hChkbox">Sun</label>
-                                                    </div>
-                                                    <div class="custom-control custom-checkbox checkbox-info">
-                                                        <input type="checkbox" name="custom_days" value="2" class="custom-control-input" id="hChkbox2">
-                                                        <label class="custom-control-label" for="hChkbox2">Mon</label>
-                                                    </div>
-                                                    <div class="custom-control custom-checkbox checkbox-info">
-                                                        <input type="checkbox" name="custom_days" value="3" class="custom-control-input" id="hChkbox3">
-                                                        <label class="custom-control-label" for="hChkbox3">Tue</label>
-                                                    </div>
-                                                    <div class="custom-control custom-checkbox checkbox-info">
-                                                        <input type="checkbox" name="custom_days" value="4" class="custom-control-input" id="hChkbox4">
-                                                        <label class="custom-control-label" for="hChkbox4">Wed</label>
-                                                    </div>
-                                                    </div>
-                                                    <div class="col-5">
-                                                    <div class="custom-control custom-checkbox checkbox-info">
-                                                        <input type="checkbox" name="custom_days" value="5" class="custom-control-input" id="hChkbox5">
-                                                        <label class="custom-control-label" for="hChkbox5">Thu</label>
-                                                    </div>
-                                                    <div class="custom-control custom-checkbox checkbox-info">
-                                                        <input type="checkbox" name="custom_days" value="6" class="custom-control-input" id="hChkbox6">
-                                                        <label class="custom-control-label" for="hChkbox6">Fri</label>
-                                                    </div>
-                                                    <div class="custom-control custom-checkbox checkbox-info">
-                                                        <input type="checkbox" name="custom_days" value="7" class="custom-control-input" id="hChkbox7">
-                                                        <label class="custom-control-label" for="hChkbox7">Sat</label>
-                                                    </div>
-                                                    </div>
-                                                    `
-                                                        }else{
-                                                            document.getElementById("custom_days").innerHTML = ``
-                                                        }
-                                                    }
-                                                </script>
+                                                </div>
 
 
-                                                <% if(sub_products.length === 0){ %>
-                                                    <h6 class="pl-5">No Subscription Product Found</h6>
-                                                    <% }else{ %>
-                                                        <div class="table-responsive">
-                                                            <table class="table">
-                                                                <thead class="">
-                                                                    <tr>
-                                                                        <!-- <th class="checkbox-column dt-no-sorting"> Choose</th> -->
-                                                                        <th scope="col" >id</th>
-                                                                        <th scope="col" >Name</th>
-                                                                        <th scope="col">Unit</th>
-                                                                        <th class="text-right" scope="col">Price</th>
-                                                                        <th class="text-right" scope="col">Qty</th>
-                                                                        <th class="text-right" scope="col">Start Date</th>
-                                                                        <th class="text-right" scope="col">Subscription Type</th>
-                                                                        <th class="text-right" scope="col">Status</th>
-                                                                    </tr>
-                                                                </thead>  
-                                                                <tbody>
-                                                                    
-                                                                    
-                                                                    <% for(sub_product of sub_products){ %>
-                                                                        <tr>
-                                                                            
-                                                                            <td name="name"><%= sub_product.sub_id %></td>
-                                                                            <td name="name"><%= sub_product.product_name %></td>
-                                                                            <td><%= sub_product.unit_value %> <%= sub_product.value %></td> 
-                                                                            <td class="text-right"><%= sub_product.price %></td>
-                                                                            <td class="text-right"><%= sub_product.quantity %></td>
-                                                                            <td class="text-right"><%= sub_product.start_date %> </td>
-                                                                            <td class="text-right"><%= sub_product.sub_name %> </td>
-                                                                            <td class="text-right"><%= sub_product.subscription_status %> </td>
-                                                                        </tr>
-                                                                        <% }  %> 
-                                                                        
-                                                                        
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
-                                                            <% } %>   
-                                                        </div>
-                                                        
-                                                        
 
-                                            <div class="inv--product-table-section">
-                                                <h6 class="ml-2 pb-2" style="font-weight: 900;">Add On Products : 
-                                                    <% if(add_on.length !== 0){ %>
-                                                        <% if(is_add_on_active == 1){ %>
-                                                    <span class="badge badge-info"> Live </span>
-                                                        <% }else{ %>
-                                                            <span class="badge badge-info"> InActive </span>
-                                                        <% } %> 
-                                                    <% } %> 
+
+                                                <% }  %> 
                                                 
-                                                </h6>
-                                                <span style="cursor: pointer;"  data-toggle="modal" data-target="#modalAddon" class="badge badge-primary float-right p-2 m-2">  New Add On Product </span>
+                                                
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <% } %>   
+                                </div>
+                    
+                                                 </div>
+                                        
+        
+            
+               
+            <div class="tab-pane fade" id="justify-right-pills-contact" role="tabpanel" aria-labelledby="justify-right-pills-contact-tab">
+                
+                <div class="inv--product-table-section">
+                    <h6 class="ml-2 pb-2" style="font-weight: 900;">Add On Products : 
+                        <% if(add_on.length !== 0){ %>
+                            <% if(is_add_on_active == 1){ %>
+                        <span class="badge badge-info"> Live </span>
+                            <% }else{ %>
+                                <span class="badge badge-info"> InActive </span>
+                            <% } %> 
+                        <% } %> 
+                    
+                    </h6>
+                    <span style="cursor: pointer;"  data-toggle="modal" data-target="#modalAddon" class="badge badge-info float-right m-2"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> </span>
 
-                                                <div class="modal fade" id="modalAddon" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                                                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title" id="exampleModalCenterTitle">New Add On Product</h5>
-                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                  <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                                                                </button>
-                                                            </div>
-                                                            <form id="addOnForm">
-                                                            <div class="modal-body">
-                                                                <!-- <h4 class="modal-heading mb-4 mt-2">Are You Sure?</h4> -->
-                                                                <div class="form-row mb-4" >
-                                                                    <div class="form-group col-md-4">
-                                                                        <label for="delivery_date">Delivery Date</label>
-                                                                        <input type="date" min=<%=   new Date().toISOString().split('T')[0]%> class="form-control"  minlength="3" id="delivery_date" name="add_on_delivery_date" placeholder="Name">
-                                                                    </div>
-                                                                    <div class="col-8"></div>
-                                                                    <div class="form-group col-md-6">
-                                                                        <label>Product</label>
-                                                                        <select wire:model="countryid" class="form-control" name="add_on_products" >
-                                                                            <option value="" selected >Select Product </option>
-                                                                            <% for(product of add_on_products){ %>
+                    <div class="modal fade" id="modalAddon" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalCenterTitle">New Add On Product</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                    </button>
+                                </div>
+                                <form id="addOnForm">
+                                <div class="modal-body">
+                                    <!-- <h4 class="modal-heading mb-4 mt-2">Are You Sure?</h4> -->
+                                    <div class="form-row mb-4" >
+                                        <div class="form-group col-md-4">
+                                            <label for="delivery_date">Delivery Date</label>
+                                            <input type="date" min=<%=   new Date().toISOString().split('T')[0]%> class="form-control"  minlength="3" id="delivery_date" name="add_on_delivery_date" placeholder="Name">
+                                        </div>
+                                        <div class="col-8"></div>
+                                        <div class="form-group col-md-6">
+                                            <label>Product</label>
+                                            <select wire:model="countryid" class="form-control" name="add_on_products" >
+                                                <option value="" selected >Select Product </option>
+                                                <% for(product of add_on_products){ %>
+
+                                                    <option value="<%=product.id %>"><%=product.name %>  / <%= product.unit_value %>-<%= product.unit_type %>    </option>
+                                                <% } %>
+
+                                            </select>
+                                        </div>
+                                        <input type="hidden" name="user_address_id" value="<%= user.user_address_id %>">
+                                        <div class="form-group col-md-3">
+                                            <label for="add_on_qty">Qty</label>
+                                            <input type="number" class="form-control" id="add_on_qty" name="add_on_qty" placeholder="qty">
+                                        </div>
+                                        <div class="form-group col-md-2">
+                                            
+                                           <button type="button" onclick="addProducts()" class="btn btn-info" style="margin-top: 32px;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
+                                        </div>
+                                        <span class="col-12 " id="add_on">
+
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-dark" data-dismiss="modal" type="button"> <i class="flaticon-cancel-12"></i> Discard</button>
+                                    <button  class="btn btn-primary" type="submit">Proceed</button>
+                                </div>
+                            </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <script>
+                        function addProducts() {
+                            const get_length = document.getElementById("add_on")
+                            const count = document.getElementsByTagName('span').length;
+                         
+                            const node = document.createElement("span");
+                            node.className="form-row"
+                            node.id = `remove${count}`
+                            node.innerHTML=   `
+                           
+                                <div class="form-group col-6">
+                                    <label>Product</label>
+                                    <select wire:model="countryid" class="form-control" name="add_on_products" >
+                                        <option value="" selected >Select Product </option>
+                                        <% for(product of add_on_products){ %>
+
+                                            <option value="<%=product.id %>"><%=product.name %>  / <%= product.unit_value %>-<%= product.unit_type %>    </option>
+                                        <% } %>
+
+                                    </select>
+                                </div>
+                                <div class="form-group col-3">
+                                    <label for="add_on_qty${count}">Qty</label>
+                                    <input type="number" class="form-control" id="add_on_qty" name="add_on_qty" placeholder="qty">
+                                </div>
+                                <div class="form-group col-2">
+                                    
+                                    <button type="button" onclick="removeProduct(this)" name="${count}" class="btn btn-danger" style="margin-top: 32px;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg></button>
+                                 </div>
+                                 
                         
-                                                                                <option value="<%=product.id %>"><%=product.name %>  / <%= product.unit_value %>-<%= product.unit_type %>    </option>
-                                                                            <% } %>
-                        
-                                                                        </select>
-                                                                    </div>
-                                                                    <input type="hidden" name="user_address_id" value="<%= user.user_address_id %>">
-                                                                    <div class="form-group col-md-3">
-                                                                        <label for="add_on_qty">Qty</label>
-                                                                        <input type="number" class="form-control" id="add_on_qty" name="add_on_qty" placeholder="qty">
-                                                                    </div>
-                                                                    <div class="form-group col-md-2">
-                                                                        
-                                                                       <button type="button" onclick="addProducts()" class="btn btn-info" style="margin-top: 32px;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
-                                                                    </div>
-                                                                    <span class="col-12 " id="add_on">
+                                `
+                            // const textnode = document.createTextNode("Water");
+
+                            console.log(get_length.length)
+                            document.getElementById("add_on").appendChild(node)
+                        //  ;
+                        }
+
+
+                        function removeProduct(event){
+                            document.getElementById(`remove${event.name}`).remove();
+                        }
+
+                    </script>
+
+
+                    <% if(add_on.length === 0){ %>
+                        <h6 class="pl-5">No Add On Product Found</h6>
+                        <% }else{ %>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead class="">
+                                <tr>
+                                    <!-- <th class="checkbox-column dt-no-sorting"> Choose</th> -->
+                                    <th scope="col" >Id</th>
+                                    <th scope="col">delivery date</th>
+                                    <th class="text-right" scope="col">total Products</th>
+                                    <th class="text-right" scope="col">Sub total</th>
+                                    <th class="text-right" scope="col">status</th>
+                                    <th class="text-right" scope="col">action</th>
+                                </tr>
+                            </thead>  
+                            <tbody>
+
+
+
+                                <% for(add_on_products of add_on){ %>
+                                    
+                                    <tr>
+
+                                        <td><%= add_on_products.id %></td>
+                                        <td><%= add_on_products.delivery_date %></td> 
+                                        <td class="text-right"><%= add_on_products.add_on_products.length %></td>
+                                        <td class="text-right"><%= add_on_products.sub_total %></td>
+                                        <td class="text-right"><%= add_on_products.status %></td>
+                                       
+                                        <td class="text-right">   <button class="btn mb-2 btn-md  btn-secondary" data-toggle="modal"
+                                            data-target="#view<%=add_on_products.id %>">View</button></td>
+                                    </tr>
+                                    
+                              
+                     
+
+
+
+
+                <!-- view -->
+                <div wire:ignore.self="" class="modal fade" id="view<%=add_on_products.id %>" tabindex="-1"
+                    aria-labelledby="addCategoryTitle"  style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document" > 
+                        <div class="modal-content" >
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalCenterTitle">Product Details</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                        height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                        class="feather feather-x">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </button>
+                            </div>
     
-                                                                    </span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button class="btn btn-dark" data-dismiss="modal" type="button"> <i class="flaticon-cancel-12"></i> Discard</button>
-                                                                <button  class="btn btn-primary" type="submit">Proceed</button>
-                                                            </div>
-                                                        </form>
-                                                        </div>
-                                                    </div>
+                            <div class="modal-body" >
+                               
+
+                              
+                                <!-- <div class="col-4" ></div> -->
+                                <div class="col-4" style="font-weight: 600;font-size: 16px; ">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            Delivery Date :<span style="color: rgb(77, 76, 76);"> <%= add_on_products.delivery_date %> </span>
+                                        </div>
+                                        <div class="col-12">
+                                            Sub Total : <span style="color: rgb(77, 76, 76);"><%= add_on_products.sub_total %></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+
+                                    <% for(add_ons of add_on_products.add_on_products){ %>
+                                        
+                                        <div style="border-width:0 ;" class="card component-card_4 col-6 text-center">
+                                            <div class="card-body ">
+                                                <div class="user-profile ">
+                                                    <img style="width: 117px;height: 117px;" src="<%= add_ons.image %> " class="" alt="...">
                                                 </div>
-
-                                                <script>
-                                                    function addProducts() {
-                                                        const get_length = document.getElementById("add_on")
-                                                        const count = document.getElementsByTagName('span').length;
-                                                     
-                                                        const node = document.createElement("span");
-                                                        node.className="form-row"
-                                                        node.id = `remove${count}`
-                                                        node.innerHTML=   `
-                                                       
-                                                            <div class="form-group col-6">
-                                                                <label>Product</label>
-                                                                <select wire:model="countryid" class="form-control" name="add_on_products" >
-                                                                    <option value="" selected >Select Product </option>
-                                                                    <% for(product of add_on_products){ %>
-                
-                                                                        <option value="<%=product.id %>"><%=product.name %>  / <%= product.unit_value %>-<%= product.unit_type %>    </option>
-                                                                    <% } %>
-                
-                                                                </select>
-                                                            </div>
-                                                            <div class="form-group col-3">
-                                                                <label for="add_on_qty${count}">Qty</label>
-                                                                <input type="number" class="form-control" id="add_on_qty" name="add_on_qty" placeholder="qty">
-                                                            </div>
-                                                            <div class="form-group col-2">
-                                                                
-                                                                <button type="button" onclick="removeProduct(this)" name="${count}" class="btn btn-danger" style="margin-top: 32px;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg></button>
-                                                             </div>
-                                                             
-                                                    
-                                                            `
-                                                        // const textnode = document.createTextNode("Water");
-
-                                                        console.log(get_length.length)
-                                                        document.getElementById("add_on").appendChild(node)
-                                                    //  ;
-                                                    }
-
-
-                                                    function removeProduct(event){
-                                                        document.getElementById(`remove${event.name}`).remove();
-                                                    }
-
-                                                </script>
-
-
-                                                <% if(add_on.length === 0){ %>
-                                                    <h6 class="pl-5">No Add On Product Found</h6>
-                                                    <% }else{ %>
-                                                <div class="table-responsive">
-                                                    <table class="table">
-                                                        <thead class="">
-                                                            <tr>
-                                                                <!-- <th class="checkbox-column dt-no-sorting"> Choose</th> -->
-                                                                <th scope="col" >Id</th>
-                                                                <th scope="col">delivery date</th>
-                                                                <th class="text-right" scope="col">total Products</th>
-                                                                <th class="text-right" scope="col">Sub total</th>
-                                                                <th class="text-right" scope="col">status</th>
-                                                                <th class="text-right" scope="col">action</th>
-                                                            </tr>
-                                                        </thead>  
-                                                        <tbody>
-
-
-
-                                                            <% for(add_on_products of add_on){ %>
-                                                                
-                                                                <tr>
-
-                                                                    <td><%= add_on_products.id %></td>
-                                                                    <td><%= add_on_products.delivery_date %></td> 
-                                                                    <td class="text-right"><%= add_on_products.add_on_products.length %></td>
-                                                                    <td class="text-right"><%= add_on_products.sub_total %></td>
-                                                                    <td class="text-right"><%= add_on_products.status %></td>
-                                                                   
-                                                                    <td class="text-right">   <button class="btn mb-2 btn-md  btn-secondary" data-toggle="modal"
-                                                                        data-target="#view<%=add_on_products.id %>">View</button></td>
-                                                                </tr>
-                                                                
-                                                          
-                                                 
-
-
-
-
-                                            <!-- view -->
-                                            <div wire:ignore.self="" class="modal fade" id="view<%=add_on_products.id %>" tabindex="-1"
-                                                aria-labelledby="addCategoryTitle"  style="display: none;" aria-hidden="true">
-                                                <div class="modal-dialog modal-dialog-centered modal-lg" role="document" > 
-                                                    <div class="modal-content" >
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="exampleModalCenterTitle">Product Details</h5>
-                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-                                                                    height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                                    class="feather feather-x">
-                                                                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                                                                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                                                                </svg>
-                                                            </button>
-                                                        </div>
-                                
-                                                        <div class="modal-body" >
-                                                           
-
-                                                          
-                                                            <!-- <div class="col-4" ></div> -->
-                                                            <div class="col-4" style="font-weight: 600;font-size: 16px; ">
-                                                                <div class="row">
-                                                                    <div class="col-12">
-                                                                        Delivery Date :<span style="color: rgb(77, 76, 76);"> <%= add_on_products.delivery_date %> </span>
-                                                                    </div>
-                                                                    <div class="col-12">
-                                                                        Sub Total : <span style="color: rgb(77, 76, 76);"><%= add_on_products.sub_total %></span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row">
-
-                                                                <% for(add_ons of add_on_products.add_on_products){ %>
-                                                                    
-                                                                    <div style="border-width:0 ;" class="card component-card_4 col-6 text-center">
-                                                                        <div class="card-body ">
-                                                                            <div class="user-profile ">
-                                                                                <img style="width: 117px;height: 117px;" src="<%= add_ons.image %> " class="" alt="...">
-                                                                            </div>
-                                                                            <div class="user-info ">
-                                                                                <h5 class="card-user_name pt-2"> <%= add_ons.product_name %> </h5>
-                                                                                <p class="card-user_occupation"> <%=add_ons.unit_value %> <%=add_ons.value %> / Qty : <%=add_ons.quantity %></p>
-                                                                                <p class="card-user_occupation">Price : ₹<%=add_ons.price %></p>
-                                                                                <p class="card-user_occupation">Total Price : ₹<%=add_ons.total_price %></p>
-                                                                                <p class="card-user_occupation">Status : <%=add_ons.status %></p>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    
-                                                                    <% } %> 
-                                                                </div>
-                                                              </div>
-                                                                </div>
-                                                            </div>
-                                                                
-                                                        </div>
+                                                <div class="user-info ">
+                                                    <h5 class="card-user_name pt-2"> <%= add_ons.product_name %> </h5>
+                                                    <p class="card-user_occupation"> <%=add_ons.unit_value %> <%=add_ons.value %> / Qty : <%=add_ons.quantity %></p>
+                                                    <p class="card-user_occupation">Price : ₹<%=add_ons.price %></p>
+                                                    <p class="card-user_occupation">Total Price : ₹<%=add_ons.total_price %></p>
+                                                    <p class="card-user_occupation">Status : <%=add_ons.status %></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <% } %> 
+                                    </div>
+                                  </div>
+                                    </div>
+                                </div>
+                                    
+                            </div>
 <!--                                                                 
-                                                                <div class="modal-footer">
-                                                                    
-                                                                    <button type="button" name="id" value="<%=add_on_products.id %>" class="btn btn-danger" id="addmodalClose" data-dismiss="modal"><i
-                                                                        class="flaticon-cancel-12"></i>Discard</button>
-                                                                        
-                                                                </div> -->
-                                                       
-                                                                <% }  %> 
-                                                                <% }  %> 
-                                                    </div>
-                                                </div>
+                                    <div class="modal-footer">
+                                        
+                                        <button type="button" name="id" value="<%=add_on_products.id %>" class="btn btn-danger" id="addmodalClose" data-dismiss="modal"><i
+                                            class="flaticon-cancel-12"></i>Discard</button>
+                                            
+                                    </div> -->
+                           
+                                    <% }  %> 
+                                    <% }  %> 
+                        </div>
+                    </div>
+                            </div>
+            
+            
+            
+            
+               
+                
+               
+             </div>
+            </div>
+        </div>
+    </div>
+                                          
+                                                        
+                                                        
+
                                             </div>
                                             </div>
-                                        </tbody>
-                                    </table>
                                 </div>
                             </div>
                        
 
                                             <div class="inv--note">
 
-                                                <div class="row mt-4">
+                                                <!-- <div class="row mt-4">
                                                     <div class="col-sm-12 col-12 order-sm-0 order-1">
                                                         <p>Note: Thank you for doing Business with us.</p>
                                                     </div>
-                                                </div>
+                                                </div> -->
 
                                             </div>
 
@@ -490,49 +648,10 @@
                         </div>
 
                     </div>
-                    <!-- <div class="col-xl-3">
-
-                        <div class="invoice-actions-btn">
-
-                            <div class="invoice-action-btn">
-
-                            -->
-                     
-
-                                <!-- <div class="row">
-                                  
-                                     <div class="col-xl-12 col-md-3 col-sm-6">
-                                        <a href="javascript:void(0);" class="btn btn-secondary btn-print  action-print">Print</a>
-                                    </div> 
-                                     <div class="col-xl-12 col-md-3 col-sm-6">
-                                        <a href="javascript:void(0);" class="btn btn-info btn-download">Download</a>
-                                    </div>  -->
-                                    <!-- <div class="col-xl-12 col-md-3 col-sm-6">
-                                        <a href="apps_invoice-edit.html" class="btn btn-dark btn-edit">Edit</a>
-                                    </div> --> 
-                                </div> 
-                            </div>
-                            
-                        </div>
-                        
-                    </div> -->
-
-                    
-                    </div>
 
 
                     
-                </form>
-
-                </div>
-                
-                
-            </div>
-
-        </div>
-    </div>
-    
-</div>
+               
 
 <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">

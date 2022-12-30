@@ -474,24 +474,41 @@ var createTable = /*#__PURE__*/function () {
             });
           case 49:
             _context.next = 51;
-            return _db["default"].schema.hasTable("additional_orders").then(function (exists) {
+            return _db["default"].schema.hasTable("additional_orders_parent").then(function (exists) {
               if (!exists) {
-                return _db["default"].schema.createTable("additional_orders", function (t) {
+                return _db["default"].schema.createTable("additional_orders_parent", function (t) {
                   t.increments("id").primary();
                   t.integer("subscription_id").unsigned().nullable();
                   t.foreign("subscription_id").references("id").inTable("subscribed_user_details");
                   t.integer("user_id").unsigned().notNullable();
                   t.foreign("user_id").references("id").inTable("users");
-                  t.date("date").nullable();
-                  t.enu("status", ["pending", "delivered", "undelivered"]).defaultTo("pending");
-                  t.integer("quantity", 255).nullable();
-                  t.integer("price").nullable();
+                  t.integer("month").nullable();
                   t.timestamps(true, true);
                 });
               }
             });
           case 51:
             _context.next = 53;
+            return _db["default"].schema.hasTable("additional_orders").then(function (exists) {
+              if (!exists) {
+                return _db["default"].schema.createTable("additional_orders", function (t) {
+                  t.increments("id").primary();
+                  t.integer("additional_orders_parent_id").unsigned().nullable();
+                  t.foreign("additional_orders_parent_id").references("id").inTable("additional_orders_parent");
+                  t.integer("subscription_id").unsigned().nullable();
+                  t.foreign("subscription_id").references("id").inTable("subscribed_user_details");
+                  t.integer("user_id").unsigned().notNullable();
+                  t.foreign("user_id").references("id").inTable("users");
+                  t.date("date").nullable();
+                  t.enu("status", ["pending", "delivered", "undelivered", "cancelled"]).defaultTo("pending");
+                  t.integer("quantity", 255).nullable();
+                  t.integer("price").nullable();
+                  t.timestamps(true, true);
+                });
+              }
+            });
+          case 53:
+            _context.next = 55;
             return _db["default"].schema.hasTable("pause_dates").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("pause_dates", function (t) {
@@ -505,8 +522,8 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 53:
-            _context.next = 55;
+          case 55:
+            _context.next = 57;
             return _db["default"].schema.hasTable("daily_orders").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("daily_orders", function (t) {
@@ -549,8 +566,8 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 55:
-            _context.next = 57;
+          case 57:
+            _context.next = 59;
             return _db["default"].schema.hasTable("bill_history").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("bill_history", function (t) {
@@ -573,8 +590,8 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 57:
-            _context.next = 59;
+          case 59:
+            _context.next = 61;
             return _db["default"].schema.hasTable("monthly_paused_dates").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("monthly_paused_dates", function (t) {
@@ -588,8 +605,8 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 59:
-            _context.next = 61;
+          case 61:
+            _context.next = 63;
             return _db["default"].schema.hasTable("price_change").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("price_change", function (t) {
@@ -603,8 +620,8 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 61:
-            _context.next = 63;
+          case 63:
+            _context.next = 65;
             return _db["default"].schema.hasTable("monthly_bill").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("monthly_bill", function (t) {
@@ -623,8 +640,8 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 63:
-            _context.next = 65;
+          case 65:
+            _context.next = 67;
             return _db["default"].schema.hasTable("user_address_subscribe_branch").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("user_address_subscribe_branch", function (t) {
@@ -652,8 +669,8 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 65:
-            _context.next = 67;
+          case 67:
+            _context.next = 69;
             return _db["default"].schema.hasTable("branch_purchase_order").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("branch_purchase_order", function (t) {
@@ -667,8 +684,8 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 67:
-            _context.next = 69;
+          case 69:
+            _context.next = 71;
             return _db["default"].schema.hasTable("branch_purchase_order_items").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("branch_purchase_order_items", function (t) {
@@ -693,8 +710,8 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 69:
-            _context.next = 71;
+          case 71:
+            _context.next = 73;
             return _db["default"].schema.hasTable("subscription_users_change_plan").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("subscription_users_change_plan", function (t) {
@@ -711,8 +728,8 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 71:
-            _context.next = 73;
+          case 73:
+            _context.next = 75;
             return _db["default"].schema.hasTable("empty_bottle_tracking").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("empty_bottle_tracking", function (t) {
@@ -730,8 +747,8 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 73:
-            _context.next = 75;
+          case 75:
+            _context.next = 77;
             return _db["default"].schema.hasTable("payment_type").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("payment_type", function (t) {
@@ -746,8 +763,8 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 75:
-            _context.next = 77;
+          case 77:
+            _context.next = 79;
             return _db["default"].schema.hasTable("payment_gateways").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("payment_gateways", function (t) {
@@ -762,13 +779,13 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 77:
+          case 79:
             return _context.abrupt("return", res.status(200).json({
               status: true,
               message: "table successfully created"
             }));
-          case 80:
-            _context.prev = 80;
+          case 82:
+            _context.prev = 82;
             _context.t0 = _context["catch"](0);
             console.log(_context.t0);
             return _context.abrupt("return", res.status(500).json({
@@ -776,12 +793,12 @@ var createTable = /*#__PURE__*/function () {
               message: "Error at creating tables",
               error: _context.t0
             }));
-          case 84:
+          case 86:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 80]]);
+    }, _callee, null, [[0, 82]]);
   }));
   return function createTable(_x, _x2) {
     return _ref.apply(this, arguments);

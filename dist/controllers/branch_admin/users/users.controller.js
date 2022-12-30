@@ -132,7 +132,7 @@ var getusers = /*#__PURE__*/function () {
 exports.getusers = getusers;
 var getSingleUser = /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(req, res) {
-    var user_address_id, admin_id, get_user_query, user, get_subscription_products, is_subscription_active, i, add_on_order_query, add_on, is_add_on_active, get_user_products_query, _i, j, get_plan, sub_product_id, _i2, add_subscription_products, add_on_products;
+    var user_address_id, admin_id, get_user_query, user, get_subscription_products, current_month, is_subscription_active, i, additional_orders_parent_id, additional_orders, additional_orders_query, orders, dates, _i, add_on_order_query, add_on, is_add_on_active, get_user_products_query, _i2, j, get_plan, sub_product_id, _i3, add_subscription_products, add_on_products;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
@@ -140,97 +140,146 @@ var getSingleUser = /*#__PURE__*/function () {
             _context2.prev = 0;
             user_address_id = req.query.user_address_id;
             admin_id = req.body.admin_id;
-            console.log(user_address_id, admin_id);
-            _context2.next = 6;
+            _context2.next = 5;
             return _db["default"].raw("SELECT user_address.id as user_address_id,\n      user_address.address,user_address.user_id as user_id, \n      users.name as user_name,users.user_unique_id,users.mobile_number,\n      routes.name as route_name\n      FROM user_address \n      JOIN users ON users.id = user_address.user_id \n      LEFT JOIN routes ON routes.id = user_address.router_id\n      WHERE user_address.id = ".concat(user_address_id, " AND user_address.branch_id = ").concat(admin_id));
-          case 6:
+          case 5:
             get_user_query = _context2.sent;
             if (!(get_user_query[0].length === 0)) {
-              _context2.next = 10;
+              _context2.next = 9;
               break;
             }
             req.flash("error", "User Not Found");
             return _context2.abrupt("return", res.redirect("/home"));
-          case 10:
+          case 9:
             user = get_user_query[0][0]; // console.log(user);
-            _context2.next = 13;
+            _context2.next = 12;
             return (0, _db["default"])("subscribed_user_details as sub").select("sub.id as sub_id", "sub.user_id", "sub.start_date", "sub.customized_days", "sub.quantity", "sub.subscription_status", "products.name as product_name", "products.unit_value", "products.id as product_id", "products.price", "unit_types.value", "subscription_type.name as sub_name").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("subscription_type", "subscription_type.id", "=", "sub.subscribe_type_id").where({
               "sub.user_id": user.user_id,
               "sub.user_address_id": user_address_id
             });
-          case 13:
+          case 12:
             get_subscription_products = _context2.sent;
+            current_month = (0, _moment["default"])().format("M");
             is_subscription_active = 0;
-            if (get_subscription_products.length !== 0) {
-              for (i = 0; i < get_subscription_products.length; i++) {
-                if (get_subscription_products[i].subscription_status == "subscribed") {
-                  is_subscription_active = 1;
-                }
-                get_subscription_products[i].start_date = (0, _moment["default"])(get_subscription_products[i].start_date).format("YYYY-MM-DD");
-              }
+            if (!(get_subscription_products.length !== 0)) {
+              _context2.next = 32;
+              break;
             }
-            _context2.next = 18;
+            i = 0;
+          case 17:
+            if (!(i < get_subscription_products.length)) {
+              _context2.next = 32;
+              break;
+            }
+            _context2.next = 20;
+            return (0, _db["default"])("additional_orders_parent").select("id").where({
+              subscription_id: get_subscription_products[i].sub_id,
+              month: current_month
+            });
+          case 20:
+            additional_orders_parent_id = _context2.sent;
+            if (!(additional_orders_parent_id.length !== 0)) {
+              _context2.next = 27;
+              break;
+            }
+            additional_orders = {};
+            _context2.next = 25;
+            return (0, _db["default"])("additional_orders").select("date", "status", "quantity").where({
+              additional_orders_parent_id: additional_orders_parent_id[0].id
+            });
+          case 25:
+            additional_orders_query = _context2.sent;
+            if (additional_orders_query.length !== 0) {
+              additional_orders.additional_orders_parent_id = additional_orders_parent_id[0].id;
+              additional_orders.qty = additional_orders_query[0].quantity;
+              orders = [];
+              dates = [];
+              for (_i = 0; _i < additional_orders_query.length; _i++) {
+                orders.push({
+                  date: (0, _moment["default"])(additional_orders_query[_i].date).format("YYYY-MM-DD"),
+                  qty: additional_orders_query[_i].quantity,
+                  status: additional_orders_query[_i].status
+                });
+                dates.push((0, _moment["default"])(additional_orders_query[_i].date).format("YYYY-MM-DD"));
+              }
+              additional_orders.dates = dates;
+              additional_orders.order_details = orders;
+              orders = [];
+              get_subscription_products[i].additional_orders = additional_orders;
+            }
+          case 27:
+            if (get_subscription_products[i].subscription_status == "subscribed") {
+              is_subscription_active = 1;
+            }
+            get_subscription_products[i].start_date = (0, _moment["default"])(get_subscription_products[i].start_date).format("YYYY-MM-DD");
+          case 29:
+            i++;
+            _context2.next = 17;
+            break;
+          case 32:
+            _context2.next = 34;
             return _db["default"].raw("SELECT adds.id,adds.user_id ,adds.delivery_date,adds.sub_total,adds.status\n      FROM add_on_orders as adds \n      WHERE adds.user_id = ".concat(user.user_id, " AND adds.address_id = ").concat(user_address_id));
-          case 18:
+          case 34:
             add_on_order_query = _context2.sent;
             // console.log(add_on_order_query[0]);
             add_on = add_on_order_query[0];
             is_add_on_active = 0;
             if (!(add_on.length !== 0)) {
-              _context2.next = 34;
+              _context2.next = 50;
               break;
             }
-            _i = 0;
-          case 23:
-            if (!(_i < add_on.length)) {
-              _context2.next = 34;
+            _i2 = 0;
+          case 39:
+            if (!(_i2 < add_on.length)) {
+              _context2.next = 50;
               break;
             }
-            if (add_on[_i].status == "pending") {
+            if (add_on[_i2].status == "pending" || add_on[_i2].status == "new_order" || add_on[_i2].status == "order_placed") {
               is_add_on_active = 1;
             }
-            _context2.next = 27;
+            _context2.next = 43;
             return (0, _db["default"])("add_on_order_items as adds").select("adds.add_on_order_id", "adds.quantity", "adds.price", "adds.total_price", "adds.status", "products.name as product_name", "products.image", "products.unit_value", "unit_types.value").join("products", "products.id", "=", "adds.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").where({
-              "adds.add_on_order_id": add_on[_i].id
+              "adds.add_on_order_id": add_on[_i2].id
             });
-          case 27:
+          case 43:
             get_user_products_query = _context2.sent;
             for (j = 0; j < get_user_products_query.length; j++) {
               get_user_products_query[j].image = process.env.BASE_URL + get_user_products_query[j].image;
             }
-            add_on[_i].add_on_products = get_user_products_query;
-            add_on[_i].delivery_date = (0, _moment["default"])(add_on[_i].delivery_date).format("YYYY-MM-DD");
-          case 31:
-            _i++;
-            _context2.next = 23;
+            add_on[_i2].add_on_products = get_user_products_query;
+            add_on[_i2].delivery_date = (0, _moment["default"])(add_on[_i2].delivery_date).format("YYYY-MM-DD");
+          case 47:
+            _i2++;
+            _context2.next = 39;
             break;
-          case 34:
-            _context2.next = 36;
+          case 50:
+            _context2.next = 52;
             return (0, _db["default"])("subscription_type").select("name", "id").where({
               status: "1"
             });
-          case 36:
+          case 52:
             get_plan = _context2.sent;
             sub_product_id = [];
             if (get_subscription_products.length !== 0) {
-              for (_i2 = 0; _i2 < get_subscription_products.length; _i2++) {
-                sub_product_id.push(get_subscription_products[_i2].product_id);
+              for (_i3 = 0; _i3 < get_subscription_products.length; _i3++) {
+                sub_product_id.push(get_subscription_products[_i3].product_id);
               }
             }
-            _context2.next = 41;
+            _context2.next = 57;
             return (0, _db["default"])("products").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id", "products.name", "products.unit_value", "unit_types.value as unit_type", "products.price").where({
               "products.product_type_id": 1,
               "products.status": "1"
             }).whereNotIn("products.id", sub_product_id);
-          case 41:
+          case 57:
             add_subscription_products = _context2.sent;
-            _context2.next = 44;
+            _context2.next = 60;
             return (0, _db["default"])("products").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id", "products.name", "products.unit_value", "unit_types.value as unit_type", "products.price").where({
               "products.product_type_id": 2,
               "products.status": "1"
             });
-          case 44:
+          case 60:
             add_on_products = _context2.sent;
+            console.log(get_subscription_products[0].additional_orders);
             res.render("branch_admin/users/user_detail", {
               user: user,
               sub_products: get_subscription_products,
@@ -241,19 +290,19 @@ var getSingleUser = /*#__PURE__*/function () {
               get_subscription_products: add_subscription_products,
               add_on_products: add_on_products
             });
-            _context2.next = 52;
+            _context2.next = 69;
             break;
-          case 48:
-            _context2.prev = 48;
+          case 65:
+            _context2.prev = 65;
             _context2.t0 = _context2["catch"](0);
             console.log(_context2.t0);
             return _context2.abrupt("return", res.redirect("/home"));
-          case 52:
+          case 69:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[0, 48]]);
+    }, _callee2, null, [[0, 65]]);
   }));
   return function getSingleUser(_x3, _x4) {
     return _ref2.apply(this, arguments);
@@ -323,7 +372,7 @@ var getAddUser = /*#__PURE__*/function () {
 exports.getAddUser = getAddUser;
 var createUser = /*#__PURE__*/function () {
   var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(req, res) {
-    var _req$body, data, admin_id, user_query, get_all_users, users_length, user, address, sub_product_query, weekdays, store_weekdays, i, j, order, order_id, sub_total, _i3, product_price, users, arr_users, get_users;
+    var _req$body, data, admin_id, user_query, get_all_users, users_length, user, address, sub_product_query, weekdays, store_weekdays, i, j, order, order_id, sub_total, _i4, product_price, users, arr_users, get_users;
     return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
@@ -417,15 +466,15 @@ var createUser = /*#__PURE__*/function () {
             order = _context4.sent;
             order_id = order[0];
             sub_total = 0;
-            _i3 = 0;
+            _i4 = 0;
           case 37:
-            if (!(_i3 < data.add_on.length)) {
+            if (!(_i4 < data.add_on.length)) {
               _context4.next = 47;
               break;
             }
             _context4.next = 40;
             return (0, _db["default"])("products").select("price").where({
-              id: data.add_on[_i3].product_id
+              id: data.add_on[_i4].product_id
             });
           case 40:
             product_price = _context4.sent;
@@ -433,15 +482,15 @@ var createUser = /*#__PURE__*/function () {
             return (0, _db["default"])("add_on_order_items").insert({
               add_on_order_id: order_id,
               user_id: user[0],
-              product_id: data.add_on[_i3].product_id,
-              quantity: data.add_on[_i3].qty,
+              product_id: data.add_on[_i4].product_id,
+              quantity: data.add_on[_i4].qty,
               price: product_price[0].price,
-              total_price: product_price[0].price * data.add_on[_i3].qty
+              total_price: product_price[0].price * data.add_on[_i4].qty
             });
           case 43:
-            sub_total = sub_total + product_price[0].price * data.add_on[_i3].qty;
+            sub_total = sub_total + product_price[0].price * data.add_on[_i4].qty;
           case 44:
-            _i3++;
+            _i4++;
             _context4.next = 37;
             break;
           case 47:
@@ -524,7 +573,7 @@ var newSubscription = /*#__PURE__*/function () {
             _req$body2 = req.body, data = _req$body2.data, user_address_id = _req$body2.user_address_id;
             _context5.next = 4;
             return (0, _db["default"])("user_address").select("user_id", "branch_id", "router_id").where({
-              "id": user_address_id
+              id: user_address_id
             });
           case 4:
             user_query = _context5.sent;
@@ -596,7 +645,7 @@ var newAddOn = /*#__PURE__*/function () {
             _req$body3 = req.body, data = _req$body3.data, user_address_id = _req$body3.user_address_id;
             _context6.next = 4;
             return (0, _db["default"])("user_address").select("user_id", "branch_id", "router_id").where({
-              "id": user_address_id
+              id: user_address_id
             });
           case 4:
             user_query = _context6.sent;

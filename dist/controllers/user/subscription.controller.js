@@ -21,14 +21,14 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 var removeAdditionalOrder = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(req, res) {
-    var _req$body, userId, subscription_id, additional_order_id;
+    var _req$body, userId, subscription_id;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             _context.prev = 0;
-            _req$body = req.body, userId = _req$body.userId, subscription_id = _req$body.subscription_id, additional_order_id = _req$body.additional_order_id;
-            if (!(!subscription_id || !additional_order_id)) {
+            _req$body = req.body, userId = _req$body.userId, subscription_id = _req$body.subscription_id;
+            if (subscription_id) {
               _context.next = 4;
               break;
             }
@@ -38,12 +38,13 @@ var removeAdditionalOrder = /*#__PURE__*/function () {
             }));
           case 4:
             _context.next = 6;
-            return (0, _db["default"])("additional_orders").where({
+            return (0, _db["default"])("additional_orders").update({
+              status: "cancelled"
+            }).where({
               subscription_id: subscription_id,
               status: "pending",
-              user_id: userId,
-              id: additional_order_id
-            }).del();
+              user_id: userId
+            });
           case 6:
             res.status(_responseCode["default"].SUCCESS).json({
               status: true,
@@ -73,14 +74,14 @@ var removeAdditionalOrder = /*#__PURE__*/function () {
 exports.removeAdditionalOrder = removeAdditionalOrder;
 var editAdditionalOrder = /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(req, res) {
-    var _req$body2, userId, subscription_id, dates, qty, additional_order_id;
+    var _req$body2, userId, subscription_id, dates, qty, current_month, addditional_parent_id;
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.prev = 0;
-            _req$body2 = req.body, userId = _req$body2.userId, subscription_id = _req$body2.subscription_id, dates = _req$body2.dates, qty = _req$body2.qty, additional_order_id = _req$body2.additional_order_id;
-            if (!(!subscription_id || dates.length === 0 || !qty || !additional_order_id)) {
+            _req$body2 = req.body, userId = _req$body2.userId, subscription_id = _req$body2.subscription_id, dates = _req$body2.dates, qty = _req$body2.qty;
+            if (!(!subscription_id || dates.length === 0 || !qty)) {
               _context3.next = 4;
               break;
             }
@@ -89,13 +90,22 @@ var editAdditionalOrder = /*#__PURE__*/function () {
               message: _messages["default"].MANDATORY_ERROR
             }));
           case 4:
-            _context3.next = 6;
+            current_month = (0, _moment["default"])().format("M");
+            _context3.next = 7;
+            return (0, _db["default"])("additional_orders_parent").select("id").where({
+              subscription_id: subscription_id,
+              user_id: userId,
+              month: current_month
+            });
+          case 7:
+            addditional_parent_id = _context3.sent;
+            _context3.next = 10;
             return (0, _db["default"])("additional_orders").where({
               subscription_id: subscription_id,
               status: "pending",
               user_id: userId
             }).del();
-          case 6:
+          case 10:
             dates.map( /*#__PURE__*/function () {
               var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(data) {
                 return _regeneratorRuntime().wrap(function _callee2$(_context2) {
@@ -104,6 +114,7 @@ var editAdditionalOrder = /*#__PURE__*/function () {
                       case 0:
                         _context2.next = 2;
                         return (0, _db["default"])("additional_orders").insert({
+                          additional_orders_parent_id: addditional_parent_id[0].id,
                           user_id: userId,
                           subscription_id: subscription_id,
                           quantity: qty,
@@ -124,22 +135,22 @@ var editAdditionalOrder = /*#__PURE__*/function () {
               status: true,
               message: "SuccessFully Updated"
             });
-            _context3.next = 14;
+            _context3.next = 18;
             break;
-          case 10:
-            _context3.prev = 10;
+          case 14:
+            _context3.prev = 14;
             _context3.t0 = _context3["catch"](0);
             console.log(_context3.t0);
             res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             });
-          case 14:
+          case 18:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3, null, [[0, 10]]);
+    }, _callee3, null, [[0, 14]]);
   }));
   return function editAdditionalOrder(_x3, _x4) {
     return _ref2.apply(this, arguments);
@@ -148,7 +159,7 @@ var editAdditionalOrder = /*#__PURE__*/function () {
 exports.editAdditionalOrder = editAdditionalOrder;
 var createAdditionalOrder = /*#__PURE__*/function () {
   var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(req, res) {
-    var _req$body3, userId, subscription_id, qty, dates;
+    var _req$body3, userId, subscription_id, qty, dates, current_month, addditional_parent_id;
     return _regeneratorRuntime().wrap(function _callee5$(_context5) {
       while (1) {
         switch (_context5.prev = _context5.next) {
@@ -164,6 +175,15 @@ var createAdditionalOrder = /*#__PURE__*/function () {
               message: _messages["default"].MANDATORY_ERROR
             }));
           case 4:
+            current_month = (0, _moment["default"])().format("M");
+            _context5.next = 7;
+            return (0, _db["default"])("additional_orders_parent").insert({
+              subscription_id: subscription_id,
+              user_id: userId,
+              month: current_month
+            });
+          case 7:
+            addditional_parent_id = _context5.sent;
             dates.map( /*#__PURE__*/function () {
               var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(data) {
                 return _regeneratorRuntime().wrap(function _callee4$(_context4) {
@@ -172,6 +192,7 @@ var createAdditionalOrder = /*#__PURE__*/function () {
                       case 0:
                         _context4.next = 2;
                         return (0, _db["default"])("additional_orders").insert({
+                          additional_orders_parent_id: addditional_parent_id[0],
                           user_id: userId,
                           subscription_id: subscription_id,
                           quantity: qty,
@@ -192,20 +213,20 @@ var createAdditionalOrder = /*#__PURE__*/function () {
               status: true,
               message: "Additional Order Added SuccessFully"
             }));
-          case 8:
-            _context5.prev = 8;
+          case 12:
+            _context5.prev = 12;
             _context5.t0 = _context5["catch"](0);
             console.log(_context5.t0);
             res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             });
-          case 12:
+          case 16:
           case "end":
             return _context5.stop();
         }
       }
-    }, _callee5, null, [[0, 8]]);
+    }, _callee5, null, [[0, 12]]);
   }));
   return function createAdditionalOrder(_x6, _x7) {
     return _ref4.apply(this, arguments);
@@ -575,7 +596,7 @@ var Remove_Subscription = /*#__PURE__*/function () {
   };
 }();
 
-// change  subscription quantity 
+// change  subscription quantity
 exports.Remove_Subscription = Remove_Subscription;
 var changeQuantity = /*#__PURE__*/function () {
   var _ref12 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee12(req, res) {
