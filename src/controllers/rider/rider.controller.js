@@ -460,7 +460,7 @@ export const OrderList = async (req, res) => {
       "user_name": order.user[0].name,
       "customer_id": order.user[0].user_unique_id,
       "bottle_return": order.bottle[0].status,
-      "order_status": order.order1[0].status
+      "order_status": order.order[0].status
     }]
 
     //  const  = Object.keys(person);

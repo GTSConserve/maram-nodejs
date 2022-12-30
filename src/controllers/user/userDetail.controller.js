@@ -294,6 +294,7 @@ export const getEmptyBottle = async (req, res) => {
 
     if (userId) {
 
+
       const this_month_item_detail = await knex("users").select(
           "one_liter_in_hand as delivered_orders",
           "half_liter_in_hand as additional_delivered_orders",
