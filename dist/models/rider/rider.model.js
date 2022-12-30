@@ -9,6 +9,8 @@ var _db = _interopRequireDefault(require("../../services/db.service"));
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 var _bcrypt = _interopRequireDefault(require("bcrypt"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
@@ -1119,7 +1121,7 @@ var home_delivery = /*#__PURE__*/function () {
 exports.home_delivery = home_delivery;
 var order_list = /*#__PURE__*/function () {
   var _ref15 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee15(delivery_partner_id, status) {
-    var router, query3, order, delivery, order1, data3, data, addon, bottle, user, addon1, addon2, i, query, add_on_count, _i4;
+    var router, query3, order, delivery, order1, data3, data, addon, bottle, user, addon1, addon2, i, query, _i4;
     return _regeneratorRuntime().wrap(function _callee15$(_context15) {
       while (1) {
         switch (_context15.prev = _context15.next) {
@@ -1208,17 +1210,9 @@ var order_list = /*#__PURE__*/function () {
               "tour_status": order[0].tour_status,
               "completed_orders": delivery.length
             };
-            _context15.next = 44;
-            return (0, _db["default"])('add_on_order_items').where({
-              id: order[0].user_id
-            });
-          case 44:
-            add_on_count = _context15.sent;
-            console.log(add_on_count[0].status);
-
-            // if (add_on_count[0].status == "delivered") {
-
-            // }
+            console.log(query);
+            // const add_on_count = await knex('add_on_order_items').where({id:order[0].user_id})
+            // console.log(add_on_count[0].status)
 
             for (_i4 = 0; _i4 < order1.length; _i4++) {
               data.push({
@@ -1235,24 +1229,25 @@ var order_list = /*#__PURE__*/function () {
                 "order_status": order1[_i4].status
               });
             }
-            return _context15.abrupt("return", _defineProperty({
-              status: true,
-              data: query
-            }, "data", data));
-          case 50:
-            _context15.prev = 50;
+            return _context15.abrupt("return", _objectSpread(_objectSpread({
+              status: true
+            }, query), {}, {
+              data: data
+            }));
+          case 47:
+            _context15.prev = 47;
             _context15.t0 = _context15["catch"](0);
             console.log(_context15.t0);
             return _context15.abrupt("return", {
               status: false,
               message: "No data found"
             });
-          case 54:
+          case 51:
           case "end":
             return _context15.stop();
         }
       }
-    }, _callee15, null, [[0, 50]]);
+    }, _callee15, null, [[0, 47]]);
   }));
   return function order_list(_x37, _x38) {
     return _ref15.apply(this, arguments);
@@ -1262,7 +1257,7 @@ var order_list = /*#__PURE__*/function () {
 // location check 
 exports.order_list = order_list;
 var locationcheck = /*#__PURE__*/function () {
-  var _ref17 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee16(delivery_partner_id, order_id) {
+  var _ref16 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee16(delivery_partner_id, order_id) {
     var check, address;
     return _regeneratorRuntime().wrap(function _callee16$(_context16) {
       while (1) {
@@ -1303,7 +1298,7 @@ var locationcheck = /*#__PURE__*/function () {
     }, _callee16, null, [[0, 11]]);
   }));
   return function locationcheck(_x39, _x40) {
-    return _ref17.apply(this, arguments);
+    return _ref16.apply(this, arguments);
   };
 }();
 
@@ -1332,7 +1327,7 @@ var locationcheck = /*#__PURE__*/function () {
 // rider logout
 exports.locationcheck = locationcheck;
 var logout_rider = /*#__PURE__*/function () {
-  var _ref18 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee17(delivery_partner_id) {
+  var _ref17 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee17(delivery_partner_id) {
     var query;
     return _regeneratorRuntime().wrap(function _callee17$(_context17) {
       while (1) {
@@ -1366,7 +1361,7 @@ var logout_rider = /*#__PURE__*/function () {
     }, _callee17, null, [[0, 7]]);
   }));
   return function logout_rider(_x41) {
-    return _ref18.apply(this, arguments);
+    return _ref17.apply(this, arguments);
   };
 }();
 exports.logout_rider = logout_rider;

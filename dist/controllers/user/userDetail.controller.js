@@ -652,7 +652,7 @@ var getOverallCalendar = /*#__PURE__*/function () {
           case 0:
             try {
               date = req.body.date;
-              overall_calendar_data = [{
+              overall_calendar_data = {
                 "date": date,
                 "products": {
                   "subscription": {
@@ -663,7 +663,7 @@ var getOverallCalendar = /*#__PURE__*/function () {
                   "addons-products": 0,
                   "is_delivered": 0
                 }
-              }]; // await edit_address(userId, address_id, title, address, landmark, type);
+              }; // await edit_address(userId, address_id, title, address, landmark, type);
               res.status(_responseCode["default"].SUCCESS).json({
                 status: true,
                 data: overall_calendar_data
