@@ -442,7 +442,7 @@ export const OrderList = async (req, res) => {
     
     //  const  = Object.keys(person);
 
-    return res.status(responseCode.SUCCESS).json({ data: order })
+    return res.status(responseCode.SUCCESS).json({ ...order })
   }
   catch (error) {
     console.log(error);

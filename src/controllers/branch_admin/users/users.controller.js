@@ -105,7 +105,6 @@ export const getSingleUser = async (req, res) => {
   try {
     const { user_address_id } = req.query;
     const { admin_id } = req.body;
-    console.log(user_address_id, admin_id);
 
     const get_user_query =
       await knex.raw(`SELECT user_address.id as user_address_id,
@@ -157,11 +156,57 @@ export const getSingleUser = async (req, res) => {
         "sub.user_address_id": user_address_id,
       });
 
-
-
+    const current_month = moment().format("M");
+    
     let is_subscription_active = 0;
     if (get_subscription_products.length !== 0) {
       for (let i = 0; i < get_subscription_products.length; i++) {
+        const additional_orders_parent_id = await knex(
+          "additional_orders_parent"
+          )
+          .select("id")
+          .where({
+            subscription_id: get_subscription_products[i].sub_id,
+            month: current_month,
+          });
+          
+          if (additional_orders_parent_id.length !== 0) {
+          let additional_orders = {};
+          const additional_orders_query = await knex("additional_orders")
+            .select("date", "status", "quantity")
+            .where({
+              additional_orders_parent_id: additional_orders_parent_id[0].id,
+            });
+
+          if (additional_orders_query.length !== 0) {
+            additional_orders.additional_orders_parent_id =
+              additional_orders_parent_id[0].id;
+            additional_orders.qty = additional_orders_query[0].quantity;
+            let orders = [];
+            let dates = [];
+            for (let i = 0; i < additional_orders_query.length; i++) {
+              orders.push({
+                date: moment(additional_orders_query[i].date).format(
+                  "YYYY-MM-DD"
+                ),
+                qty: additional_orders_query[i].quantity,
+                status: additional_orders_query[i].status,
+              });
+
+              dates.push(
+                moment(additional_orders_query[i].date).format("YYYY-MM-DD")
+              );
+            }
+            additional_orders.dates = dates
+            additional_orders.order_details = orders;
+            orders = [];
+
+            get_subscription_products[i].additional_orders = additional_orders;
+          }
+        }
+
+
+
         if (get_subscription_products[i].subscription_status == "subscribed") {
           is_subscription_active = 1;
         }
@@ -171,8 +216,6 @@ export const getSingleUser = async (req, res) => {
         ).format("YYYY-MM-DD");
       }
     }
-
-
 
     const add_on_order_query =
       await knex.raw(`SELECT adds.id,adds.user_id ,adds.delivery_date,adds.sub_total,adds.status
@@ -186,7 +229,11 @@ export const getSingleUser = async (req, res) => {
     let get_user_products_query;
     if (add_on.length !== 0) {
       for (let i = 0; i < add_on.length; i++) {
-        if (add_on[i].status == "pending") {
+        if (
+          add_on[i].status == "pending" ||
+          add_on[i].status == "new_order" ||
+          add_on[i].status == "order_placed"
+        ) {
           is_add_on_active = 1;
         }
 
@@ -217,14 +264,16 @@ export const getSingleUser = async (req, res) => {
       }
     }
 
-    // for new subscription and add on 
+    // for new subscription and add on
 
-    const get_plan = await knex("subscription_type").select("name", "id").where({status : "1"})
+    const get_plan = await knex("subscription_type")
+      .select("name", "id")
+      .where({ status: "1" });
 
-    let sub_product_id = []
-    if(get_subscription_products.length !== 0){
-      for (let i = 0 ; i< get_subscription_products.length ; i++){
-        sub_product_id.push(get_subscription_products[i].product_id)
+    let sub_product_id = [];
+    if (get_subscription_products.length !== 0) {
+      for (let i = 0; i < get_subscription_products.length; i++) {
+        sub_product_id.push(get_subscription_products[i].product_id);
       }
     }
 
@@ -239,9 +288,9 @@ export const getSingleUser = async (req, res) => {
       )
       .where({
         "products.product_type_id": 1,
-        "products.status": "1"
-      }).whereNotIn("products.id",sub_product_id)
-
+        "products.status": "1",
+      })
+      .whereNotIn("products.id", sub_product_id);
 
     const add_on_products = await knex("products")
       .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
@@ -254,9 +303,10 @@ export const getSingleUser = async (req, res) => {
       )
       .where({
         "products.product_type_id": 2,
-        "products.status": "1"
+        "products.status": "1",
       });
 
+      console.log(get_subscription_products[0].additional_orders)
 
     res.render("branch_admin/users/user_detail", {
       user,
@@ -265,8 +315,8 @@ export const getSingleUser = async (req, res) => {
       is_add_on_active,
       is_subscription_active,
       get_plan,
-      get_subscription_products : add_subscription_products,
-      add_on_products
+      get_subscription_products: add_subscription_products,
+      add_on_products,
     });
   } catch (error) {
     console.log(error);
@@ -293,7 +343,7 @@ export const getAddUser = async (req, res) => {
       )
       .where({
         "products.product_type_id": 1,
-        "products.status": "1"
+        "products.status": "1",
       });
     const add_on_products = await knex("products")
       .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
@@ -306,10 +356,12 @@ export const getAddUser = async (req, res) => {
       )
       .where({
         "products.product_type_id": 2,
-        "products.status": "1"
+        "products.status": "1",
       });
 
-    const get_plan = await knex("subscription_type").select("name", "id").where({status : "1"})
+    const get_plan = await knex("subscription_type")
+      .select("name", "id")
+      .where({ status: "1" });
 
     res.render("branch_admin/users/add_user", {
       get_subscription_products,
@@ -343,7 +395,6 @@ export const createUser = async (req, res) => {
 
     const user = await knex("users").insert(user_query);
 
-
     const address = await knex("user_address").insert({
       user_id: user[0],
       branch_id: admin_id,
@@ -352,7 +403,9 @@ export const createUser = async (req, res) => {
       landmark: data.address_landmark ? data.address_landmark : null,
       latitude: data.latitude,
       longitude: data.longitude,
-      alternate_mobile : data.alternate_mobile_number ? data.alternate_mobile_number : null,
+      alternate_mobile: data.alternate_mobile_number
+        ? data.alternate_mobile_number
+        : null,
       router_id: data.router_id ? data.router_id : null,
     });
 
@@ -372,10 +425,6 @@ export const createUser = async (req, res) => {
 
       if (data.router_id) {
         sub_product_query.router_id = data.router_id;
-
-
-
-
       }
 
       if (data.your_plan == 3) {
@@ -391,8 +440,7 @@ export const createUser = async (req, res) => {
         sub_product_query.customized_days = JSON.stringify(store_weekdays);
       }
 
-      await knex("subscribed_user_details").insert(sub_product_query)
-
+      await knex("subscribed_user_details").insert(sub_product_query);
     }
 
     if (data.add_on.length !== 0) {
@@ -428,9 +476,8 @@ export const createUser = async (req, res) => {
       await knex("add_on_orders").update({ sub_total }).where({ id: order_id });
     }
 
-
     // assign the route in user_mapping
-    if(data.router_id){
+    if (data.router_id) {
       const users = await knex("routes")
         .select("user_mapping")
         .where({ id: data.router_id });
@@ -456,8 +503,8 @@ export const createUser = async (req, res) => {
       //   .where({ id: address[0] });
     }
 
-    req.flash("success","Success Fully Added")
-    res.redirect("/home?is_user_added=2")
+    req.flash("success", "Success Fully Added");
+    res.redirect("/home?is_user_added=2");
     // return { status: true };
   } catch (error) {
     console.log(error);
@@ -465,107 +512,99 @@ export const createUser = async (req, res) => {
   }
 };
 
-export const newSubscription = async(req,res) => {
+export const newSubscription = async (req, res) => {
   try {
-    const {data,user_address_id} = req.body
-
+    const { data, user_address_id } = req.body;
 
     const user_query = await knex("user_address")
-    .select("user_id","branch_id","router_id")
-    .where({"id":user_address_id})
+      .select("user_id", "branch_id", "router_id")
+      .where({ id: user_address_id });
 
-    const user = user_query[0]
+    const user = user_query[0];
 
-    
-      let sub_product_query = {
-        start_date: data.sub_start_date,
-        user_id: user.user_id,
-        product_id: data.sub_product,
-        user_address_id,
-        quantity: data.sub_qty,
-        subscribe_type_id: data.your_plan,
-        branch_id: user.branch_id,
-        date: data.sub_start_date,
-        subscription_start_date: data.sub_start_date,
-        subscription_status: "subscribed",
-      };
+    let sub_product_query = {
+      start_date: data.sub_start_date,
+      user_id: user.user_id,
+      product_id: data.sub_product,
+      user_address_id,
+      quantity: data.sub_qty,
+      subscribe_type_id: data.your_plan,
+      branch_id: user.branch_id,
+      date: data.sub_start_date,
+      subscription_start_date: data.sub_start_date,
+      subscription_status: "subscribed",
+    };
 
-      if (user.router_id) {
-        sub_product_query.router_id = user.router_id;
+    if (user.router_id) {
+      sub_product_query.router_id = user.router_id;
+    }
 
-      }
-
-      if (data.your_plan == 3) {
-        let weekdays = await knex("weekdays").select("id", "name");
-        let store_weekdays = [];
-        for (let i = 0; i < data.custom_days.length; i++) {
-          for (let j = 0; j < weekdays.length; j++) {
-            if (weekdays[j].id == data.custom_days[i]) {
-              store_weekdays.push(weekdays[j].name);
-            }
+    if (data.your_plan == 3) {
+      let weekdays = await knex("weekdays").select("id", "name");
+      let store_weekdays = [];
+      for (let i = 0; i < data.custom_days.length; i++) {
+        for (let j = 0; j < weekdays.length; j++) {
+          if (weekdays[j].id == data.custom_days[i]) {
+            store_weekdays.push(weekdays[j].name);
           }
         }
-        sub_product_query.customized_days = JSON.stringify(store_weekdays);
       }
+      sub_product_query.customized_days = JSON.stringify(store_weekdays);
+    }
 
-      await knex("subscribed_user_details").insert(sub_product_query)
+    await knex("subscribed_user_details").insert(sub_product_query);
 
-return res.status(200).json({status : true})
+    return res.status(200).json({ status: true });
   } catch (error) {
-    console.log(error)
-    return res.redirect("/home")
+    console.log(error);
+    return res.redirect("/home");
   }
-}
+};
 
-
-export const newAddOn = async(req,res) =>{
+export const newAddOn = async (req, res) => {
   try {
-    const {data,user_address_id} = req.body
-
+    const { data, user_address_id } = req.body;
 
     const user_query = await knex("user_address")
-    .select("user_id","branch_id","router_id")
-    .where({"id":user_address_id})
+      .select("user_id", "branch_id", "router_id")
+      .where({ id: user_address_id });
 
-    const user = user_query[0]
+    const user = user_query[0];
 
-    
-   
-      const order = await knex("add_on_orders").insert({
+    const order = await knex("add_on_orders").insert({
+      user_id: user.user_id,
+      delivery_date: data.delivery_date,
+      address_id: user_address_id,
+      branch_id: user.branch_id,
+      status: "new_order",
+    });
+
+    let order_id = order[0];
+
+    let sub_total = 0;
+
+    for (let i = 0; i < data.add_on.length; i++) {
+      const product_price = await knex("products")
+        .select("price")
+        .where({ id: data.add_on[i].product_id });
+
+      await knex("add_on_order_items").insert({
+        add_on_order_id: order_id,
         user_id: user.user_id,
-        delivery_date: data.delivery_date,
-        address_id: user_address_id,
-        branch_id: user.branch_id,
-        status: "new_order",
+        product_id: data.add_on[i].product_id,
+        quantity: data.add_on[i].qty,
+        price: product_price[0].price,
+        total_price: product_price[0].price * data.add_on[i].qty,
       });
 
-      let order_id = order[0];
+      sub_total = sub_total + product_price[0].price * data.add_on[i].qty;
+    }
 
-      let sub_total = 0;
+    await knex("add_on_orders").update({ sub_total }).where({ id: order_id });
 
-      for (let i = 0; i < data.add_on.length; i++) {
-        const product_price = await knex("products")
-          .select("price")
-          .where({ id: data.add_on[i].product_id });
-
-        await knex("add_on_order_items").insert({
-          add_on_order_id: order_id,
-          user_id: user.user_id,
-          product_id: data.add_on[i].product_id,
-          quantity: data.add_on[i].qty,
-          price: product_price[0].price,
-          total_price: product_price[0].price * data.add_on[i].qty,
-        });
-
-        sub_total = sub_total + product_price[0].price * data.add_on[i].qty;
-      }
-
-      await knex("add_on_orders").update({ sub_total }).where({ id: order_id });
-   
-
-return res.status(200).json({status : true})
+    return res.status(200).json({ status: true });
   } catch (error) {
-    console.log(error)
-    return res.redirect("/home")
+    console.log(error);
+    return res.redirect("/home");
   }
-}
+};

@@ -570,11 +570,42 @@ export const createTable = async (req, res) => {
       }
     });
 
+
+    // additional order parent
+    await knex.schema.hasTable("additional_orders_parent").then(function (exists) {
+      if (!exists) {
+        return knex.schema.createTable("additional_orders_parent", function (t) {
+          t.increments("id").primary();
+
+          t.integer("subscription_id").unsigned().nullable();
+          t.foreign("subscription_id")
+            .references("id")
+            .inTable("subscribed_user_details");
+
+          t.integer("user_id").unsigned().notNullable();
+          t.foreign("user_id").references("id").inTable("users");
+
+          t.integer("month").nullable();
+
+          t.timestamps(true, true);
+        });
+      }
+    });
+
+
+
+
     // additional orders
     await knex.schema.hasTable("additional_orders").then(function (exists) {
       if (!exists) {
         return knex.schema.createTable("additional_orders", function (t) {
           t.increments("id").primary();
+
+          t.integer("additional_orders_parent_id").unsigned().nullable();
+          t.foreign("additional_orders_parent_id")
+            .references("id")
+            .inTable("additional_orders_parent");
+
 
           t.integer("subscription_id").unsigned().nullable();
           t.foreign("subscription_id")
@@ -586,7 +617,7 @@ export const createTable = async (req, res) => {
 
           t.date("date").nullable();
 
-          t.enu("status", ["pending", "delivered", "undelivered"]).defaultTo(
+          t.enu("status", ["pending", "delivered", "undelivered" , "cancelled"]).defaultTo(
             "pending"
           );
           t.integer("quantity", 255).nullable();

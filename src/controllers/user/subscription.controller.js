@@ -16,22 +16,19 @@ import knex from "../../services/db.service";
 
 export const removeAdditionalOrder = async (req, res) => {
   try {
-    const { userId, subscription_id ,additional_order_id } = req.body;
+    const { userId, subscription_id } = req.body;
 
-    if (!subscription_id || !additional_order_id) {
+    if (!subscription_id) {
       return res
         .status(responseCode.FAILURE.BAD_REQUEST)
         .json({ status: false, message: messages.MANDATORY_ERROR });
     }
 
-    await knex("additional_orders")
-      .where({
-        subscription_id,
-        status: "pending",
-        user_id: userId,
-        id:additional_order_id
-      })
-      .del();
+    await knex("additional_orders").update({ status: "cancelled" }).where({
+      subscription_id,
+      status: "pending",
+      user_id: userId,
+    });
 
     res
       .status(responseCode.SUCCESS)
@@ -46,13 +43,19 @@ export const removeAdditionalOrder = async (req, res) => {
 
 export const editAdditionalOrder = async (req, res) => {
   try {
-    const { userId, subscription_id, dates, qty, additional_order_id } = req.body;
+    const { userId, subscription_id, dates, qty } = req.body;
 
-    if (!subscription_id || dates.length === 0 || !qty ||! additional_order_id ) {
+    if (!subscription_id || dates.length === 0 || !qty) {
       return res
         .status(responseCode.FAILURE.BAD_REQUEST)
         .json({ status: false, message: messages.MANDATORY_ERROR });
     }
+
+    const current_month = moment().format("M");
+
+    const addditional_parent_id = await knex("additional_orders_parent")
+      .select("id")
+      .where({ subscription_id, user_id: userId, month: current_month });
 
     await knex("additional_orders")
       .where({
@@ -64,6 +67,7 @@ export const editAdditionalOrder = async (req, res) => {
 
     dates.map(async (data) => {
       await knex("additional_orders").insert({
+        additional_orders_parent_id: addditional_parent_id[0].id,
         user_id: userId,
         subscription_id,
         quantity: qty,
@@ -92,12 +96,19 @@ export const createAdditionalOrder = async (req, res) => {
         .json({ status: false, message: messages.MANDATORY_ERROR });
     }
 
+    const current_month = moment().format("M");
+
+    const addditional_parent_id = await knex("additional_orders_parent").insert(
+      { subscription_id, user_id: userId, month: current_month }
+    );
+
     dates.map(async (data) => {
       await knex("additional_orders").insert({
+        additional_orders_parent_id: addditional_parent_id[0],
         user_id: userId,
         subscription_id,
         quantity: qty,
-        date: data, 
+        date: data,
       });
     });
 
@@ -206,12 +217,14 @@ export const getAllSubscription = async (req, res) => {
 
     for (let i = 0; i < subscription_product.data.length; i++) {
       subscription_product.data[i].image =
-      process.env.BASE_URL + subscription_product.data[i].image;
-      subscription_product.data[i].quantity = subscription_product.data[i].quantity,
-      subscription_product.data[i].price = subscription_product.data[i].price,
-// below next delivery date in static
-        subscription_product.data[i].next_delivery_date = "22-Jan"
-        subscription_product.data[i].next_delviery = "Next delivery 22-Jan-2022";
+        process.env.BASE_URL + subscription_product.data[i].image;
+      (subscription_product.data[i].quantity =
+        subscription_product.data[i].quantity),
+        (subscription_product.data[i].price =
+          subscription_product.data[i].price),
+        // below next delivery date in static
+        (subscription_product.data[i].next_delivery_date = "22-Jan");
+      subscription_product.data[i].next_delviery = "Next delivery 22-Jan-2022";
 
       if (subscription_product.data[i].unit_value >= 500) {
         subscription_product.data[i].unit =
@@ -229,10 +242,10 @@ export const getAllSubscription = async (req, res) => {
       delete subscription_product.data[i].unit_value;
       delete subscription_product.data[i].unit_type;
     }
-    
+
     return res
       .status(responseCode.SUCCESS)
-      .json({ status: true, data: subscription_product.data});
+      .json({ status: true, data: subscription_product.data });
   } catch (error) {
     console.log(error);
     return res
@@ -262,12 +275,12 @@ export const singleSubscription = async (req, res) => {
     for (let i = 0; i < sub.data.length; i++) {
       sub.data[i].image = process.env.BASE_URL + sub.data[i].image;
       sub.data[i].subscription_start_date = moment().format("YYYY-MM-DD");
-      sub.data[i].customized_days = sub.data[i].customized_days; 
-      sub.data[i].address_id = sub.data[i].address_id; 
-      sub.data[i].quantity = sub.data[i].quantity; 
-      sub.data[i].price = sub.data[i].price; 
+      sub.data[i].customized_days = sub.data[i].customized_days;
+      sub.data[i].address_id = sub.data[i].address_id;
+      sub.data[i].quantity = sub.data[i].quantity;
+      sub.data[i].price = sub.data[i].price;
       sub.data[i].date = [moment().format("YYYY-MM-DD")];
-      sub.query[i].id = sub.query[i].id; 
+      sub.query[i].id = sub.query[i].id;
       sub.query[i].image = process.env.IMAGE + sub.query[i].image;
       sub.query[i].date = [moment().format("YYYY-MM-DD")];
 
@@ -286,8 +299,8 @@ export const singleSubscription = async (req, res) => {
 
     const response = {
       additional_orders: [sub.query[0]],
-      this_month_item_detail: sub.this_month_item_detail[0]
-    }
+      this_month_item_detail: sub.this_month_item_detail[0],
+    };
 
     return res
       .status(responseCode.SUCCESS)
@@ -332,8 +345,6 @@ export const getSubcription_order = async (req, res) => {
   }
 };
 
-
-
 export const Remove_Subscription = async (req, res) => {
   try {
     const { user_id, subscription_id } = req.body;
@@ -344,113 +355,104 @@ export const Remove_Subscription = async (req, res) => {
         .json({ status: false, message: messages.MANDATORY_ERROR });
     }
 
-    const unsubscription = await remove_subscription(user_id, subscription_id)
+    const unsubscription = await remove_subscription(user_id, subscription_id);
 
     if (unsubscription.status) {
-      return res.status(responseCode.SUCCESS).json(unsubscription)
+      return res.status(responseCode.SUCCESS).json(unsubscription);
     } else {
-      return res.status(responseCode.FAILURE.DATA_NOT_FOUND).json(unsubscription)
-
+      return res
+        .status(responseCode.FAILURE.DATA_NOT_FOUND)
+        .json(unsubscription);
     }
-
-
   } catch (error) {
     console.log(error);
     return res
       .status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
       .json({ status: false, message: messages.SERVER_ERROR });
-
   }
-}
+};
 
-
-// change  subscription quantity 
+// change  subscription quantity
 export const changeQuantity = async (req, res) => {
   try {
     const { userId, subscription_id, quantity } = req.body;
 
-    if ( !subscription_id || !quantity) {
+    if (!subscription_id || !quantity) {
       return res
         .status(responseCode.FAILURE.BAD_REQUEST)
         .json({ status: false, message: messages.MANDATORY_ERROR });
     }
-    const quantity1 = await change_quantity(userId, subscription_id, quantity)
+    const quantity1 = await change_quantity(userId, subscription_id, quantity);
 
     if (quantity1.status) {
-      return res.status(responseCode.SUCCESS).json(quantity1)
+      return res.status(responseCode.SUCCESS).json(quantity1);
     } else {
-      return res.status(responseCode.FAILURE.DATA_NOT_FOUND).json({ status: false, message: messages.SERVER_ERROR })
-
-
+      return res
+        .status(responseCode.FAILURE.DATA_NOT_FOUND)
+        .json({ status: false, message: messages.SERVER_ERROR });
     }
-
-  }
-  catch (error) {
+  } catch (error) {
     console.log(error);
     return res
       .status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
       .json({ status: false, message: messages.SERVER_ERROR });
-
   }
-}
-
+};
 
 //  change subscription plan
 export const changeSubscriptionplan = async (req, res) => {
   try {
-    const { 
+    const {
+      userId,
+      subscription_id,
+      subscription_plan_id,
+      start_date,
+      customized_days,
+    } = req.body;
+
+    if (!subscription_id || !subscription_plan_id || !start_date) {
+      return res
+        .status(responseCode.FAILURE.BAD_REQUEST)
+        .json({ status: false, message: messages.MANDATORY_ERROR });
+    }
+
+    const changeplan = await change_subscriptionplan(
       userId,
       subscription_id,
       subscription_plan_id,
       start_date,
       customized_days
-    } = req.body;
-
-
-
-
-    if (!subscription_id || !subscription_plan_id || !start_date) {
-
-      return res
-        .status(responseCode.FAILURE.BAD_REQUEST)
-        .json({ status: false, message: messages.MANDATORY_ERROR });
-    }
-
-    const changeplan = await change_subscriptionplan(userId,
-      subscription_id,
-      subscription_plan_id,
-      start_date,
-      customized_days
     );
-    return res.status(responseCode.SUCCESS).json(changeplan)
-
-  }
-  catch (error) {
+    return res.status(responseCode.SUCCESS).json(changeplan);
+  } catch (error) {
     console.log(error);
     return res
       .status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
-      .json({ status: false, message: messages.SERVER_ERROR })
+      .json({ status: false, message: messages.SERVER_ERROR });
   }
-}
+};
 
 // pause subscription dates
 export const pauseSubscription = async (req, res) => {
   try {
     const { userId, subscription_id, dates } = req.body;
 
-    if ( !subscription_id || !dates) {
+    if (!subscription_id || !dates) {
       return res
         .status(responseCode.FAILURE.BAD_REQUEST)
         .json({ status: false, message: messages.MANDATORY_ERROR });
     }
 
-    const pausedates = await pause_subscriptiondate(userId, subscription_id, dates);
-    return res.status(responseCode.SUCCESS).json(pausedates)
-
-  }
-  catch (error) {
+    const pausedates = await pause_subscriptiondate(
+      userId,
+      subscription_id,
+      dates
+    );
+    return res.status(responseCode.SUCCESS).json(pausedates);
+  } catch (error) {
     console.log(error);
-    return res.status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
-      .json({ status: false, message: messages.SERVER_ERROR })
+    return res
+      .status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
+      .json({ status: false, message: messages.SERVER_ERROR });
   }
-}
+};
