@@ -434,22 +434,22 @@ export const getBillList = async (req, res) => {
         .json({ status: false, message: "User Not Found" });
     }
 
-    let get_bill = {};
-    user.body.map((data) => {
-      get_bill.id = data.id;
-      get_bill.user_id = data.user_id;
-      get_bill.payment_id = data.id // payment id set to id
-      // ? process.env.BASE_URL + data.image
-      // : null;
-      get_bill.items = data.items;
-      get_bill.bill_no = data.bill_no
-      get_bill.bill_value = data.bill_value;
-      get_bill.status = data.status;
-    });
+    // let get_bill = {};
+    // user.body.map((data) => {
+    //   get_bill.id = data.id;
+    //   get_bill.user_id = data.user_id;
+    //   get_bill.payment_id = data.id // payment id set to id
+    //   // ? process.env.BASE_URL + data.image
+    //   // : null;
+    //   get_bill.items = data.items;
+    //   get_bill.bill_no = data.bill_no
+    //   get_bill.bill_value = data.bill_value;
+    //   get_bill.status = data.status;
+    // });
 
     res
       .status(responseCode.SUCCESS)
-      .json({ status: true, data: [get_bill] });
+      .json({ status: true, data: user.body });
   } catch (error) {
     console.log(error);
 
@@ -477,7 +477,7 @@ export const getSingleBillList = async (req, res) => {
       "month": "Jan 2023",
       "order_string": "Bill No#MA3948F3J492",
       "bill_value": 1085,
-      "payment_status": 0,
+      "payment_status": "0",
       "sub_total": 0,
       "discount": 0,
       "subscription_products": [
