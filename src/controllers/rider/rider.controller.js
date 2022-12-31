@@ -49,17 +49,21 @@ export const login = async (req, res) => {
       const checkPassword1 = await knex
         .select("id", "password")
         .from("rider_details")
-        .where({ user_name, status: "1" });
+        .where({ user_name, login_status: "0" });
 
       console.log(checkPassword1);
 
-      const isPassword = await bcrypt.compare(password, checkPassword1[0].password);
+      const isPassword = await bcrypt.compare(password,checkPassword1[0].password);
       console.log(isPassword);
 
       console.log(checkPassword1);
       let query;
 
       if (isPassword) {
+        const checkPassword2 = await knex
+        .update({login_status:"1"})
+        .from("rider_details")
+        .where({ user_name,});
         res
           .status(responseCode.SUCCESS)
           .json({ status: true, delivery_partner_id: checkPassword1[0].id, message: "Rider Login Successfully" });

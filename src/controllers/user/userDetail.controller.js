@@ -469,6 +469,8 @@ export const getSingleBillList = async (req, res) => {
         .json({ status: false, message: "Cannot find bill list" });
     }
 
+    
+
     // const list = await get_single_bill(bill_id);
     const data =
     {
@@ -477,7 +479,7 @@ export const getSingleBillList = async (req, res) => {
       "month": "Jan 2023",
       "order_string": "Bill No#MA3948F3J492",
       "bill_value": 1085,
-      "payment_status": "0",
+      "payment_status": "success",
       "sub_total": 0,
       "discount": 0,
       "subscription_products": [
