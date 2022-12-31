@@ -451,7 +451,7 @@ var singleSubscription = /*#__PURE__*/function () {
               sub.data[i].price = sub.data[i].price;
               sub.data[i].date = [(0, _moment["default"])().format("YYYY-MM-DD")];
               sub.query[i].id = sub.query[i].id;
-              sub.query[i].image = process.env.IMAGE + sub.query[i].image;
+              sub.query[i].image = sub.query[i].image;
               sub.query[i].date = [(0, _moment["default"])().format("YYYY-MM-DD")];
               if (sub.data[i].unit_value >= 500) {
                 sub.data[i].unit = sub.data[i].unit_value / 1000 + " " + (sub.data[i].unit_type === "ml" ? "litre" : sub.data[i].unit_type);

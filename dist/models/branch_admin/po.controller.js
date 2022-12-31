@@ -66,9 +66,6 @@ var getBothProducts = /*#__PURE__*/function () {
             _context.next = 3;
             break;
           case 17:
-            console.log(sub_products_id);
-            console.log(add_products_id);
-
             //////////////////////////////////////////////////////////////////////////////// get products id (sub)
             if (sub_products_id.length !== 0) {
               removedIndex = [];
@@ -111,53 +108,52 @@ var getBothProducts = /*#__PURE__*/function () {
 
             ///////////////////////////////////////////////////////////////////////// get subscription product
             subscription_products = [];
-            console.log(sub_products_id, "products");
             _i4 = 0;
-          case 24:
+          case 21:
             if (!(_i4 < sub_products_id.length)) {
-              _context.next = 32;
+              _context.next = 29;
               break;
             }
-            _context.next = 27;
+            _context.next = 24;
             return (0, _db["default"])("products").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id", "products.name", "products.image", "products.unit_value", "unit_types.value as unit_type", "products.branch_price as price").where({
               "products.product_type_id": 1,
               "products.id": sub_products_id[_i4].product_id
             });
-          case 27:
+          case 24:
             product = _context.sent;
             subscription_products.push(_objectSpread(_objectSpread({}, product[0]), {}, {
               total_qty: sub_products_id[_i4].qty
             }));
-          case 29:
+          case 26:
             _i4++;
-            _context.next = 24;
+            _context.next = 21;
             break;
-          case 32:
+          case 29:
             ///////////////////////////////////////////////////////////////////////// get add on product
             add_on_products = [];
             add_on_products_id = [];
             _i5 = 0;
-          case 35:
+          case 32:
             if (!(_i5 < add_products_id.length)) {
-              _context.next = 44;
+              _context.next = 41;
               break;
             }
-            _context.next = 38;
+            _context.next = 35;
             return (0, _db["default"])("products").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id", "products.name", "products.image", "products.unit_value", "unit_types.value as unit_type", "products.branch_price as price").where({
               "products.product_type_id": 2,
               "products.id": add_products_id[_i5].product_id
             });
-          case 38:
+          case 35:
             _product = _context.sent;
             add_on_products.push(_objectSpread(_objectSpread({}, _product[0]), {}, {
               total_qty: add_products_id[_i5].qty
             }));
             add_on_products_id.push(_product[0].id);
-          case 41:
+          case 38:
             _i5++;
-            _context.next = 35;
+            _context.next = 32;
             break;
-          case 44:
+          case 41:
             ///////////////////////////////////////////////////////////////// calculating the units
             for (_i6 = 0; _i6 < subscription_products.length; _i6++) {
               if (subscription_products[_i6].unit_type == "ml") {
@@ -181,11 +177,11 @@ var getBothProducts = /*#__PURE__*/function () {
                 add_on_products[_i7].value = add_on_products[_i7].unit_value + " " + add_on_products[_i7].unit_type;
               }
             }
-            _context.next = 48;
+            _context.next = 45;
             return (0, _db["default"])("products").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id", "products.name", "products.image", "products.unit_value", "unit_types.value as unit_type", "products.branch_price as price").where({
               "products.product_type_id": 2
             }).whereNotIn("products.id", add_on_products_id);
-          case 48:
+          case 45:
             excess_add_on_product = _context.sent;
             if (excess_add_on_product.length !== 0) {
               for (_i8 = 0; _i8 < excess_add_on_product.length; _i8++) {
@@ -200,14 +196,12 @@ var getBothProducts = /*#__PURE__*/function () {
                 }
               }
             }
-            console.log(add_on_products_id);
-            console.log(excess_add_on_product);
             return _context.abrupt("return", {
               add_on_products: add_on_products,
               subscription_products: subscription_products,
               excess_add_on_products: excess_add_on_product
             });
-          case 53:
+          case 48:
           case "end":
             return _context.stop();
         }

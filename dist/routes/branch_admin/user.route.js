@@ -15,6 +15,9 @@ var userRouter = _express["default"].Router({
 userRouter.get('/branch_user', _users.getusers);
 userRouter.get('/single_user', _users.getSingleUser);
 
+// additional orders
+userRouter.post('/create_additional', _users.createAdditional);
+
 // add user
 userRouter.get('/get_add_users', _users.getAddUser);
 userRouter.post('/create_user', _users.createUser);

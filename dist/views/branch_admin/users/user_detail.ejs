@@ -19,8 +19,6 @@
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
             
             <div class="doc-container">
-
-                <!-- <form action="/branch_admin/po/create_po" method="post"> -->
                 <div class="row">
                     <div class="col-xl-12">
 
@@ -38,12 +36,11 @@
                                                 
                                                     <div class="col-sm-6 col-12 mr-auto">
                                                         <div class="d-flex">
-                                                            <!-- <p class="inv-to">Invoice</p> -->
+                                                           
                                                         </div>
                                                     </div>
 
                                                     <div class="col-sm-6 text-sm-right">
-                                                        <!-- <p class="inv-list-number"><span class="inv-title">Invoice : </span> <span class="inv-number">#0001</span></p> -->
                                                     </div>
 
                                                     <div class="col-sm-6 align-self-center mt-3">
@@ -77,8 +74,8 @@
                                                                 margin: 0; 
                                                             }
                                                             </style>
-
-<!-- <div class="form-group mb-0">
+<!-- 
+<div class="form-group mb-0">
     <input id="rangeCalendarFlatpickr" class="form-control flatpickr flatpickr-input active" onchange="checkHandlersss()" type="text" placeholder="Select Date..">
 </div>
 
@@ -249,7 +246,7 @@
                                         <thead class="">
                                             <tr>
                                                 <!-- <th class="checkbox-column dt-no-sorting"> Choose</th> -->
-                                                <th scope="col" >id</th>
+                                                <th scope="col" >Subscription Id</th>
                                                 <th scope="col" >Name</th>
                                                 <th scope="col">Unit</th>
                                                 <th class="text-right" scope="col">Price</th>
@@ -275,14 +272,15 @@
                                                     <td class="text-right"><%= sub_product.sub_name %> </td>
                                                     <td class="text-right"><%= sub_product.subscription_status %> </td>
                                                     <td class="text-right">
-                                                        <span  data-toggle="modal" data-target="#additionalSubscription<%= sub_product.sub_id  %>" ><img style="width:35px; " src="/assets/img/additional_order_icon.png"></span>
+                                                        
+                                                        <span style="cursor: pointer;"  data-toggle="modal" class="badge badge-primary" data-target="#additionalSubscription<%= sub_product.sub_id  %>">Additional Order</span>
                                                     </td>
                                                 </tr>
 
 
 
                                                 <div class="modal fade" id="additionalSubscription<%= sub_product.sub_id  %>"  tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                                                    <div class="modal-dialog modal-dialog-centered " role="document">
+                                                    <div class="modal-dialog " role="document">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
                                                                 <h5 class="modal-title" id="exampleModalCenterTitle">Additional Orders</h5>
@@ -290,7 +288,7 @@
                                                                     <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                                                                 </button>
                                                             </div>
-                                                            <form id="subscriptionForm">
+                                                          
                                                                 <div class="modal-body">
                                                                     <!-- <h4 class="modal-heading mb-4 mt-2">Are You Sure?</h4> -->
 
@@ -298,25 +296,43 @@
                                                                     <% if(sub_product.additional_orders != undefined){ %> 
                                                                         <div class="form-row mb-4">
                                                                         
-                                                                            <div class="form-group col-md-4">
+                                                                            <div class="col-4">
+                                                                                <label for="sub_qty">Additional Id</label>
+                                                                                <p><%= additional.additional_orders_parent_id %> </p>
+                                                                            </div>
+                                                                            <div class="col-4">
+                                                                                <label for="sub_qty">Subscription Id</label>
+                                                                                <p><%= additional.sub_id %> </p>
+                                                                            </div>
+                                                                            <div class="col-4">
                                                                                 <label for="sub_qty">Qty</label>
-                                                                                <p><%= sub_product.additional_orders.qty %> </p>
+                                                                                <p><%= additional.qty %> </p>
                                                                             </div>
+                                                                        </div>
+                                                                            <div class="form-row mb-4">
+                                                                
+                                                                           
+                                                                                <div class="form-group mb-0 col-5">
 
-                                                                            <div class="col-6">
-                                                                                <input id="rangeCalendarFlatpickrs" class="form-control flatpickr flatpickr-input active" 
-                                                                                onchange="checkHandlersss(this)" type="text" placeholder="Select Date.." 
-                                                                                value="<%= sub_product.additional_orders.dates %> ">
+                                                                                    <!-- <label for="sub_qty">Date</label> -->
+                                                                                    <input  id="rangeCalendarFlatpickrs"  class="form-control flatpickr flatpickr-input active" 
+                                                                                    onchange="dateChangeHandler(this)" type="text" placeholder="Select Date.." 
+                                                                                    value="<%= sub_product.additional_orders.dates %>" >
+                                                                                    
+                                                                                </div>
+                                                                               
                                                                             </div>
-                                                                            
                                                                             <script>
                                                                             
                                                                                 const gets = document.getElementById('rangeCalendarFlatpickrs')
-                                                                      
-                                                                                
-                                                                                
-                                                                                
+                                            
+                                                                                // const style_change = document.getElementsByClassName("flatpickr-wrapper")
                                                                             
+                                                                                // style_change.style.width = "100%"
+                                                                                // style_change.style.position = "relative"
+                                                                                // style_change.style.display = "inline-block"
+
+
                                                                                 var f3 = flatpickr(gets, {
                                                                                 mode: "multiple" ,
                                                                                 static : true ,
@@ -324,41 +340,138 @@
                                                                                 defaultDate : gets.value.split(",")
                                                                             });
                                                                             
-                                                                                // function checkHandlersss(){
-                                                                                //     console.log(gets.value)
-                                                                                //     console.log(gets.value.split(","))
-                                                                                // }
-                                                                                // console.log(f3)
+                                                                                function dateChangeHandler(){
+                                                                                    console.log(gets.value)
+                                                                                    console.log(gets.value.split(","))
+                                                                                }
+                                                                         
                                                                             
                                                                             </script>
 
-                                                                            <!-- <div class="form-group col-md-4">
-                                                                                <label for="start_date">Start Date</label>
-                                                                                <input type="date"   class="form-control"   min=<%=   new Date().toISOString().split('T')[0]%>   id="start_date" name="sub_start_date">
-                                                                            </div> -->
-                                                                        </div>
                                                                         <% }else{ %> 
-                                                                            1111111
+                                                                            <form id="addAdditionalOrders">
+
+                                                                                <div class="form-row mb-4">
+                                                                                    
+                                                                                    <div class="col-12 mb-3">
+                                                                                        <h5>Add Additional Order </h5>
+                                                                                </div>
+                                                                                <div class="col-4">
+                                                                                    <label for="sub_qty">Qty</label>
+                                                                                    <input required class="form-control" type="number" name="qty"> 
+                                                                                </div>
+                                                                                <div class="col-8">
+                                                                                    
+                                                                                    <label for="sub_qty">Choose a Date</label>
+                                                                                    <input  id="createDate" name="dates"  class="form-control flatpickr flatpickr-input active" 
+                                                                                    onchange="createdateChangeHandler(this)" type="text" placeholder="Select Date.." 
+                                                                                    >
+                                                                                </div>
+                                                                                <input type="hidden"  name="sub_id" value="<%= sub_product.sub_id %>">
+                                                                                <input type="hidden"  name="user_id" value="<%= sub_product.user_id %>">
+                                                                            </div>
+
+
+                                                                            <div class="modal-footer">
+                                                                                <button class="btn btn-warning" data-dismiss="modal" type="button"> <i class="flaticon-cancel-12"></i> Discard</button>
+                                                                                <button  class="btn btn-primary" type="submit">Add</button>
+                                                                            </div>
+
+                                                                            </form>
+                                                                                <script>
+                                                                                    let ErroHandler = document.createElement("div")
+                                                ErroHandler.innerHTML =`<div class="modal show fade" id="exampleModal" tabindex="-1" style="display: block; padding-right: 17px;" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog  animated fadeInDown" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"></h5>
+            </div>
+            <div class="modal-body">
+                <p class="modal-text" id="dynamic_content_error">Please Fill The Form! </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-warning" onclick="removeModal()" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Discard</button>
+            </div>
+        </div>
+    </div>
+</div> ` 
+
+                                                                       
+                                                                                    const create = document.getElementById('createDate')
+                                                
+                                                                                    // const style_change = document.getElementsByClassName("flatpickr-wrapper")
+                                                                                
+                                                                                    // style_change.style.width = "100%"
+                                                                                    // style_change.style.position = "relative"
+                                                                                    // style_change.style.display = "inline-block"
+    
+    
+                                                                                    var f3 = flatpickr(create, {
+                                                                                    mode: "multiple" ,
+                                                                                    static : true ,
+                                                                                    minDate :  new Date().toISOString().split('T')[0],
+                                                                                    // enable : create.value.split(","),
+                                                                                    // defaultDate : create.value.split(",")
+                                                                                });
+                                                                                
+                                                                                    let dates 
+
+                                                                                    function createdateChangeHandler(){
+                                                                                        dates = create.value.split(",")
+                                                                                    }
+                                                                                   
+
+                                                                                    const addAdditionalFrom=document.getElementById("addAdditionalOrders")
+                                                                                    addAdditionalFrom.addEventListener("submit",async(e)=>{
+
+                                                                                        e.preventDefault()
+                                                                                        let query = {}
+
+                                                                                        query.qty = e.target.qty.value
+                                                                                        query.sub_id = e.target.sub_id.value
+                                                                                        query.user_id = e.target.user_id.value
+
+                                                                                        console.log(dates)
+
+                                                                                        if(dates.length == undefined || dates.length == 0){
+                                                                                            document.body.insertAdjacentElement("afterbegin",ErroHandler) 
+                                                                                            return document.getElementById("dynamic_content_error").innerText = "Please Choose The Date"
+                                                                                        }
+
+                                                                                        query.dates = dates
+
+                                                                                        console.log(dates)
+                                                                                        
+                                                                                        // await fetch('/branch_admin/user/create_additional', {
+                                                                                        //     method: 'POST',
+                                                                                        //     headers: {
+                                                                                        //         'Accept': 'application/json',
+                                                                                        //         'Content-Type': 'application/json'
+                                                                                        //     },
+                                                                                        //     body: JSON.stringify({"data": query})
+                                                                                        //     })
+                                                                                            
+                                                                                            
+                                                                                        // window.location.href = "/home"
+                                                                                        
+                                                                                    })
+
+                                                                                  
+                                                                    
+
+                                                                                    function removeModal(){
+                                                                                        ErroHandler.remove()
+                                                                                    }
+
+
+                                                                                
+                                                                                </script>
                                                                         <% } %> 
 
-                                                                    <!-- <div class="form-row mb-4">
-                                                                        
-                                                                            <div class="form-group col-md-4">
-                                                                                <label for="sub_qty">Qty</label>
-                                                                                <input type="number"  class="form-control" name="sub_qty" id="sub_qty" placeholder="qty">
-                                                                            </div>
-                                                                            <div class="form-group col-md-4">
-                                                                                <label for="start_date">Start Date</label>
-                                                                                <input type="date"   class="form-control"   min=<%=   new Date().toISOString().split('T')[0]%>   id="start_date" name="sub_start_date">
-                                                                            </div>
-                                                                        </div> -->
-                                                                        <input type="hidden"  name="user_address_id" value="<%= user.user_address_id %>">
-                                                            <div class="modal-footer">
-                                                                <button class="btn btn-dark" data-dismiss="modal" type="button"> <i class="flaticon-cancel-12"></i> Discard</button>
-                                                                <button  class="btn btn-primary" type="submit">Add</button>
-                                                            </div>
+                                                                      
+                                                            
                                                         </div>
-                                                    </form>
+                                             
                                                     </div>
                                                 </div>
                                                 </div>
@@ -373,13 +486,14 @@
                                         </table>
                                     </div>
                                     <% } %>   
-                                </div>
+                    </div>
+                   
                     
-                                                 </div>
+                </div>
                                         
         
             
-               
+                
             <div class="tab-pane fade" id="justify-right-pills-contact" role="tabpanel" aria-labelledby="justify-right-pills-contact-tab">
                 
                 <div class="inv--product-table-section">

@@ -21,7 +21,7 @@
                         </div>
                         <div class="widget-content widget-content-area" >
                             <!-- <form action="/branch_admin/user/create_user" method="post"> -->
-                            <form >
+                            <form id="addUserForm">
                                     <div class="form-row mb-4">
                                         <div class="form-group col-md-4">
                                             <label for="name">Name</label>
@@ -308,7 +308,7 @@
 
 
 
-                                         const form=document.querySelector("form")
+                                         const form=document.getElementById("addUserForm")
                                             form.addEventListener("submit",async(e)=>{
 
                                                 let query = {}
