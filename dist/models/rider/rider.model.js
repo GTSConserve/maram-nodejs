@@ -1166,7 +1166,8 @@ var order_list = /*#__PURE__*/function () {
             query3 = _context15.sent;
             _context15.next = 9;
             return (0, _db["default"])('daily_orders').select('id', 'total_collective_bottle', 'status', 'add_on_order_id', 'user_id', 'total_qty', 'tour_status').where({
-              router_id: router[0].id
+              router_id: router[0].id,
+              "daily_orders.status": status
             });
           case 9:
             order = _context15.sent;

@@ -132,7 +132,7 @@ var GetProduct = /*#__PURE__*/function () {
                 for (j = 0; j < sub_product.length; j++) {
                   if (product[i].id == sub_product[j].product_id) {
                     product[i].is_subscribed = "1";
-                    product[i].subscription_id = sub_product[0].id;
+                    // product[i].subscription_id = sub_product[j].product_id
                   } else {
                     product[i].is_subscribed = "0";
                     // product[i].subscription_id = sub_product[0].id;
