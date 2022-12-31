@@ -135,8 +135,11 @@ export const single_subscription = async (userId, sub_id) => {
       .join("user_address", "user_address.id", "=", "sub.user_address_id")
       .where({ "sub.user_id": userId, "sub.id": sub_id });
 
+      console.log(products)
+
+
       const query = await knex("subscribed_user_details AS sub").select(
-        "additional_orders.user_id as id",
+        "additional_orders.id as id",
         "additional_orders.date ",
         "additional_orders.quantity",
         "additional_orders.status",

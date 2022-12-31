@@ -49,7 +49,7 @@ export const login = async (req, res) => {
       const checkPassword1 = await knex
         .select("id", "password")
         .from("rider_details")
-        .where({ user_name, login_status: "0" });
+        .where({ user_name});
 
       console.log(checkPassword1);
 
@@ -229,7 +229,7 @@ export const getSingleorder = async (req, res) => {
     }
     // console.log(order_status)
 
-    const order = await getsingleorder(order_id, delivery_partner_id, order_status)
+    const order = await getsingleorder(order_id,delivery_partner_id, order_status)
 
 
     //  console.log(order.query5)
