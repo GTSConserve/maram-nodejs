@@ -281,7 +281,7 @@ export const singleSubscription = async (req, res) => {
       sub.data[i].price = sub.data[i].price;
       sub.data[i].date = [moment().format("YYYY-MM-DD")];
       sub.query[i].id = sub.query[i].id;
-      sub.query[i].image = process.env.IMAGE + sub.query[i].image;
+      sub.query[i].image = sub.query[i].image;
       sub.query[i].date = [moment().format("YYYY-MM-DD")];
 
       if (sub.data[i].unit_value >= 500) {

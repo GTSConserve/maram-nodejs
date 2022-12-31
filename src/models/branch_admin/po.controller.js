@@ -30,8 +30,7 @@ export const getBothProducts = async (daily_orders) => {
     }
   }
 
-  console.log(sub_products_id);
-  console.log(add_products_id);
+
 
   //////////////////////////////////////////////////////////////////////////////// get products id (sub)
   if (sub_products_id.length !== 0) {
@@ -78,7 +77,7 @@ export const getBothProducts = async (daily_orders) => {
   ///////////////////////////////////////////////////////////////////////// get subscription product
   let subscription_products = [];
 
-  console.log(sub_products_id, "products");
+
 
   for (let i = 0; i < sub_products_id.length; i++) {
     const product = await knex("products")
@@ -193,10 +192,6 @@ export const getBothProducts = async (daily_orders) => {
           }
         }
       }
-
-
-      console.log(add_on_products_id)
-      console.log(excess_add_on_product)
 
   return { add_on_products, subscription_products,excess_add_on_products : excess_add_on_product };
 };
