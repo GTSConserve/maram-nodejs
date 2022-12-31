@@ -161,48 +161,49 @@ var single_subscription = /*#__PURE__*/function () {
             });
           case 3:
             products = _context3.sent;
-            _context3.next = 6;
-            return (0, _db["default"])("subscribed_user_details AS sub").select("additional_orders.user_id as id", "additional_orders.date ", "additional_orders.quantity", "additional_orders.status", "products.name as product_name", "products.image", "products.unit_value", "unit_types.value as unit_type").join("additional_orders", "additional_orders.user_id", "=", "sub.user_id").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").where({
+            console.log(products);
+            _context3.next = 7;
+            return (0, _db["default"])("subscribed_user_details AS sub").select("additional_orders.id as id", "additional_orders.date ", "additional_orders.quantity", "additional_orders.status", "products.name as product_name", "products.image", "products.unit_value", "unit_types.value as unit_type").join("additional_orders", "additional_orders.user_id", "=", "sub.user_id").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").where({
               "sub.user_id": userId,
               "sub.id": sub_id
             });
-          case 6:
+          case 7:
             query = _context3.sent;
-            _context3.next = 9;
+            _context3.next = 10;
             return (0, _db["default"])("users").select("one_liter_in_hand as delivered_orders", "one_liter_in_return as remaining_orders", "half_liter_in_hand as additional_delivered_orders", "one_liter_in_return as additional_remaining_orders").where({
               id: userId
             });
-          case 9:
+          case 10:
             this_month_item_detail = _context3.sent;
             if (!(products.length === 0)) {
-              _context3.next = 12;
+              _context3.next = 13;
               break;
             }
             return _context3.abrupt("return", {
               status: false,
               message: "No Subscription Found"
             });
-          case 12:
+          case 13:
             return _context3.abrupt("return", {
               status: true,
               data: products,
               query: query,
               this_month_item_detail: this_month_item_detail
             });
-          case 15:
-            _context3.prev = 15;
+          case 16:
+            _context3.prev = 16;
             _context3.t0 = _context3["catch"](0);
             console.log(_context3.t0);
             return _context3.abrupt("return", {
               status: false,
               message: _context3.t0
             });
-          case 19:
+          case 20:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3, null, [[0, 15]]);
+    }, _callee3, null, [[0, 16]]);
   }));
   return function single_subscription(_x9, _x10) {
     return _ref3.apply(this, arguments);

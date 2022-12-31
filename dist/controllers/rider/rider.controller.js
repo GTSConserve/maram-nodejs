@@ -101,8 +101,7 @@ var login = /*#__PURE__*/function () {
             }
             _context2.next = 6;
             return _db["default"].select("id", "password").from("rider_details").where({
-              user_name: user_name,
-              login_status: "0"
+              user_name: user_name
             });
           case 6:
             checkPassword1 = _context2.sent;
