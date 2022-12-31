@@ -127,83 +127,32 @@ var GetProduct = /*#__PURE__*/function () {
               message: "No Product Found"
             });
           case 7:
-            if (!(sub_product.length !== 0)) {
-              _context2.next = 31;
-              break;
+            if (sub_product.length !== 0) {
+              for (i = 0; i < product.length; i++) {
+                for (j = 0; j < sub_product.length; j++) {
+                  if (product[i].id == sub_product[j].product_id) {
+                    product[i].is_subscribed = "1";
+                    product[i].subscription_id = sub_product[0].id;
+                  } else {
+                    product[i].is_subscribed = "0";
+                    // product[i].subscription_id = sub_product[0].id;
+                  }
+                }
+              }
             }
-            i = 0;
-          case 9:
-            if (!(i < product.length)) {
-              _context2.next = 31;
-              break;
+
+            for (_i = 0; _i < product.length; _i++) {
+              product[_i].image = product[_i].image ? process.env.BASE_URL + product[_i].image : null;
+              if (!userId || sub_product.length == 0) {
+                product[_i].is_subscribed = "0";
+                // product[i].subscription_id = sub_product[0].id;  
+              }
             }
-            j = 0;
-          case 11:
-            if (!(j < sub_product.length)) {
-              _context2.next = 28;
-              break;
-            }
-            if (!(product[i].id == sub_product[j].product_id)) {
-              _context2.next = 20;
-              break;
-            }
-            _context2.next = 15;
-            return (0, _db["default"])("subscribed_user_details").select("id").where({
-              user_id: userId
-            });
-          case 15:
-            sub_product = _context2.sent;
-            product[i].is_subscribed = "1";
-            product[i].subscription_id = sub_product[0].id;
-            _context2.next = 25;
-            break;
-          case 20:
-            _context2.next = 22;
-            return (0, _db["default"])("subscribed_user_details").select("id").where({
-              user_id: userId
-            });
-          case 22:
-            sub_product = _context2.sent;
-            product[i].is_subscribed = "0";
-            product[i].subscription_id = sub_product[0].id;
-          case 25:
-            j++;
-            _context2.next = 11;
-            break;
-          case 28:
-            i++;
-            _context2.next = 9;
-            break;
-          case 31:
-            _i = 0;
-          case 32:
-            if (!(_i < product.length)) {
-              _context2.next = 43;
-              break;
-            }
-            product[_i].image = product[_i].image ? process.env.BASE_URL + product[_i].image : null;
-            if (!(!userId || sub_product.length == 0)) {
-              _context2.next = 40;
-              break;
-            }
-            _context2.next = 37;
-            return (0, _db["default"])("subscribed_user_details").select("id").where({
-              user_id: userId
-            });
-          case 37:
-            sub_product = _context2.sent;
-            product[_i].is_subscribed = "0";
-            product[_i].subscription_id = sub_product[0].id;
-          case 40:
-            _i++;
-            _context2.next = 32;
-            break;
-          case 43:
             return _context2.abrupt("return", {
               status: true,
               data: product
             });
-          case 44:
+          case 10:
           case "end":
             return _context2.stop();
         }
