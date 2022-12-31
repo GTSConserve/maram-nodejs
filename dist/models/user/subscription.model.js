@@ -169,7 +169,9 @@ var single_subscription = /*#__PURE__*/function () {
           case 6:
             query = _context3.sent;
             _context3.next = 9;
-            return (0, _db["default"])("empty_bottle_tracking").select("one_liter_in_hand as delivered_orders", "one_liter_in_return as remaining_orders", "half_liter_in_hand as additional_delivered_orders", "one_liter_in_return as additional_remaining_orders");
+            return (0, _db["default"])("users").select("one_liter_in_hand as delivered_orders", "one_liter_in_return as remaining_orders", "half_liter_in_hand as additional_delivered_orders", "one_liter_in_return as additional_remaining_orders").where({
+              id: userId
+            });
           case 9:
             this_month_item_detail = _context3.sent;
             if (!(products.length === 0)) {

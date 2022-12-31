@@ -87,7 +87,7 @@ var getAppControls = /*#__PURE__*/function () {
 exports.getAppControls = getAppControls;
 var login = /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(req, res) {
-    var payload, user_name, password, checkPassword1, isPassword, _query;
+    var payload, user_name, password, checkPassword1, isPassword, _query, checkPassword2;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
@@ -96,13 +96,13 @@ var login = /*#__PURE__*/function () {
             payload = (0, _validator.userValidator)(req.body);
             user_name = payload.user_name, password = payload.password;
             if (!payload.status) {
-              _context2.next = 14;
+              _context2.next = 21;
               break;
             }
             _context2.next = 6;
             return _db["default"].select("id", "password").from("rider_details").where({
               user_name: user_name,
-              status: "1"
+              login_status: "0"
             });
           case 6:
             checkPassword1 = _context2.sent;
@@ -113,34 +113,46 @@ var login = /*#__PURE__*/function () {
             isPassword = _context2.sent;
             console.log(isPassword);
             console.log(checkPassword1);
-            if (isPassword) {
-              res.status(_responseCode["default"].SUCCESS).json({
-                status: true,
-                delivery_partner_id: checkPassword1[0].id,
-                message: "Rider Login Successfully"
-              });
-            } else {
-              res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
-                status: false,
-                message: "password mismatch"
-              });
+            if (!isPassword) {
+              _context2.next = 20;
+              break;
             }
-          case 14:
-            _context2.next = 20;
-            break;
+            _context2.next = 16;
+            return _db["default"].update({
+              login_status: "1"
+            }).from("rider_details").where({
+              user_name: user_name
+            });
           case 16:
-            _context2.prev = 16;
+            checkPassword2 = _context2.sent;
+            res.status(_responseCode["default"].SUCCESS).json({
+              status: true,
+              delivery_partner_id: checkPassword1[0].id,
+              message: "Rider Login Successfully"
+            });
+            _context2.next = 21;
+            break;
+          case 20:
+            res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
+              status: false,
+              message: "password mismatch"
+            });
+          case 21:
+            _context2.next = 27;
+            break;
+          case 23:
+            _context2.prev = 23;
             _context2.t0 = _context2["catch"](0);
             console.error('Whooops! This broke with error: ', _context2.t0);
             res.status(500).json({
               message: "user_id and password not matching"
             });
-          case 20:
+          case 27:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[0, 16]]);
+    }, _callee2, null, [[0, 23]]);
   }));
   return function login(_x3, _x4) {
     return _ref2.apply(this, arguments);

@@ -300,7 +300,7 @@ var update_riderstatus = /*#__PURE__*/function () {
             _context7.prev = 0;
             _context7.next = 3;
             return (0, _db["default"])("rider_details").update({
-              "rider_details.status": status
+              online_status: status
             }).where({
               id: delivery_partner_id
             });
@@ -1336,7 +1336,7 @@ var logout_rider = /*#__PURE__*/function () {
             _context17.prev = 0;
             _context17.next = 3;
             return (0, _db["default"])("rider_details").update({
-              status: "0"
+              login_status: "0"
             }).where({
               id: delivery_partner_id
             });
