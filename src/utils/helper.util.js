@@ -77,11 +77,12 @@ export const GetProduct = async (product, userId) => {
     for (let i = 0; i < product.length; i++) {
       for (let j = 0; j < sub_product.length; j++) {
         if (product[i].id == sub_product[j].product_id) {
+
           product[i].is_subscribed = "1";
-          product[i].subscription_id = sub_product[0].id;
+          // product[i].subscription_id = sub_product[j].product_id
          
         } else {
-      
+
           product[i].is_subscribed = "0";
           // product[i].subscription_id = sub_product[0].id;
       }
@@ -94,9 +95,9 @@ export const GetProduct = async (product, userId) => {
       ? process.env.BASE_URL + product[i].image
       : null;
     if (!userId || sub_product.length == 0) {
-
       product[i].is_subscribed = "0";
       // product[i].subscription_id = sub_product[0].id;  
+
     }
   }
 

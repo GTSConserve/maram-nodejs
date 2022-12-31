@@ -556,9 +556,9 @@ export const order_list = async (delivery_partner_id,status) =>{
       'total_collective_bottle',
       'status','add_on_order_id',
       'user_id','total_qty','tour_status')
-      .where({router_id:router[0].id});
+      .where({router_id:router[0].id,"daily_orders.status":status});
 
-      
+      // console.log(order)
 
     const delivery = await knex('daily_orders')
     .select('id')
