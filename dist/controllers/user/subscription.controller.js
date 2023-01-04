@@ -473,9 +473,9 @@ var singleSubscription = /*#__PURE__*/function () {
             _context9.prev = 14;
             _context9.t0 = _context9["catch"](0);
             console.log(_context9.t0);
-            return _context9.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
+            return _context9.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
-              message: _messages["default"].SERVER_ERROR
+              message: _messages["default"].DATA_NOT_FOUND
             }));
           case 18:
           case "end":
