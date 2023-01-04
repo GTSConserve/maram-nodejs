@@ -308,8 +308,8 @@ export const singleSubscription = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res
-      .status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
-      .json({ status: false, message: messages.SERVER_ERROR });
+      .status(responseCode.FAILURE.DATA_NOT_FOUND)
+      .json({ status: false, message: messages.DATA_NOT_FOUND });
   }
 };
 

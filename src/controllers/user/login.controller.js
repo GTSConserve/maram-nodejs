@@ -199,7 +199,7 @@ export const userMobileNumberChange = async (req,res) => {
 
   } catch (error) {
     console.log(error)
-    return res.status(responseCode.FAILURE.INTERNAL_SERVER_ERROR).json({status : false , message : messages.SERVER_ERROR})
+    return res.status(responseCode.FAILURE.INVALID).json({status : false , message : "Please check mobile number"})
   }
 }
 
