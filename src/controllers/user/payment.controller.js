@@ -2,6 +2,8 @@
 
 import knex from "../../services/db.service";
 
+import Razorpay from "razorpay"
+
 export const getPaymentReminder = async (req, res) => {
     try {
 
@@ -50,6 +52,7 @@ export const getPaymentStatusUpdate = async (req, res) => {
 export const getRazorpayMethod = async (req, res) => {
     try {
         const { amount, order_id } = req.body
+        
 
         const list = 
            {

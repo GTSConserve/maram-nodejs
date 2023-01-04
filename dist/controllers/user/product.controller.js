@@ -459,48 +459,52 @@ var addon_Order = /*#__PURE__*/function () {
 exports.addon_Order = addon_Order;
 var nextDayProduct = /*#__PURE__*/function () {
   var _ref9 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9(req, res) {
-    var userId, static_response;
+    var userId, static_response, query;
     return _regeneratorRuntime().wrap(function _callee9$(_context9) {
       while (1) {
         switch (_context9.prev = _context9.next) {
           case 0:
             _context9.prev = 0;
             userId = req.body.userId;
-            static_response = [{
-              "product_id": "18",
-              "product_name": "Farm Fresh Natural Milk",
-              "product_image": "https://i.pinimg.com/originals/af/31/cf/af31cff157e5304e32a3777c8245ae8c.jpg",
-              "product_status": 1,
-              "product_variation": "1.5 litres",
-              "Product price": 100
-            }];
+            _context9.next = 4;
+            return (0, _product.nextday_product)(userId);
+          case 4:
+            static_response = _context9.sent;
+            query = {
+              "product_id": static_response.product[0].product_id,
+              "product_name": static_response.product[0].product_name,
+              "product_image": static_response.product[0].product_image,
+              "product_status": static_response.product[0].product_status,
+              "product_variation": static_response.product[0].value + static_response.product[0].unit_type,
+              "Product price": static_response.product[0].price
+            };
             if (static_response) {
-              _context9.next = 5;
+              _context9.next = 8;
               break;
             }
             return _context9.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
               message: "No Product Available"
             }));
-          case 5:
+          case 8:
             return _context9.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               status: true,
-              data: static_response,
+              data: query,
               "date": "25 Oct | Mon"
             }));
-          case 8:
-            _context9.prev = 8;
+          case 11:
+            _context9.prev = 11;
             _context9.t0 = _context9["catch"](0);
             console.log(_context9.t0);
             res.status(500).json({
               status: false
             });
-          case 12:
+          case 15:
           case "end":
             return _context9.stop();
         }
       }
-    }, _callee9, null, [[0, 8]]);
+    }, _callee9, null, [[0, 11]]);
   }));
   return function nextDayProduct(_x17, _x18) {
     return _ref9.apply(this, arguments);

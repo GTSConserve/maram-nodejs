@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.newSubscription = exports.newAddOn = exports.getusers = exports.getSingleUser = exports.getAddUser = exports.createUser = exports.createAdditional = void 0;
+exports.unsubscribeSubscription = exports.subscribeSubscription = exports.newSubscription = exports.newAddOn = exports.getusers = exports.getSingleUser = exports.getAddUser = exports.editPaused = exports.editAdditional = exports.createUser = exports.createPaused = exports.createAdditional = exports.changeUserPlan = exports.cancelAdditional = void 0;
 var _moment = _interopRequireDefault(require("moment"));
 var _db = _interopRequireDefault(require("../../../services/db.service"));
 var _helper = require("../../../utils/helper.util");
@@ -132,7 +132,7 @@ var getusers = /*#__PURE__*/function () {
 exports.getusers = getusers;
 var getSingleUser = /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(req, res) {
-    var user_address_id, admin_id, get_user_query, user, get_subscription_products, current_month, get_additional_orders, subscription_ids, is_subscription_active, i, additional_orders_parent_id, additional_orders, additional_orders_query, orders, dates, is_active, _i, add_on_order_query, add_on, is_add_on_active, get_user_products_query, _i2, j, get_plan, sub_product_id, _i3, add_subscription_products, add_on_products;
+    var user_address_id, admin_id, get_user_query, user, get_subscription_products, current_month, get_additional_orders, subscription_ids, is_subscription_active, i, pause_dates, pause_orders_query, k, additional_orders_parent_id, additional_orders, additional_orders_query, orders, dates, is_active, _i, add_on_order_query, add_on, is_add_on_active, get_user_products_query, _i2, j, get_plan, sub_product_id, _i3, add_subscription_products, add_on_products;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
@@ -164,36 +164,57 @@ var getSingleUser = /*#__PURE__*/function () {
             subscription_ids = [];
             is_subscription_active = 0;
             if (!(get_subscription_products.length !== 0)) {
-              _context2.next = 35;
+              _context2.next = 41;
               break;
             }
             i = 0;
           case 19:
             if (!(i < get_subscription_products.length)) {
-              _context2.next = 35;
+              _context2.next = 41;
               break;
             }
             subscription_ids.push(get_subscription_products[i].sub_id);
-            _context2.next = 23;
+
+            /////////////////////////////////////////////////////////////////////////////// pause
+            pause_dates = [];
+            _context2.next = 24;
+            return (0, _db["default"])("pause_dates").select("date", "id").where({
+              subscription_id: get_subscription_products[i].sub_id
+            });
+          case 24:
+            pause_orders_query = _context2.sent;
+            if (pause_orders_query.length !== 0) {
+              for (k = 0; k < pause_orders_query.length; k++) {
+                pause_dates.push((0, _moment["default"])(pause_orders_query[k].date).format("YYYY-MM-DD"));
+              }
+            }
+            get_subscription_products[i].pause_dates = pause_dates;
+            pause_dates = [];
+
+            /////////////////////////////////////////////////////////////////////////////// additional
+            _context2.next = 30;
             return (0, _db["default"])("additional_orders_parent").select("id").where({
               subscription_id: get_subscription_products[i].sub_id
               // month: current_month,
             });
-          case 23:
+          case 30:
             additional_orders_parent_id = _context2.sent;
-            if (!(additional_orders_parent_id.length !== 0)) {
-              _context2.next = 30;
-              break;
-            }
+            // if (additional_orders_parent_id.length !== 0) {
             additional_orders = {};
-            _context2.next = 28;
+            _context2.next = 34;
             return (0, _db["default"])("additional_orders").select("date", "status", "quantity").where({
-              additional_orders_parent_id: additional_orders_parent_id[0].id
+              subscription_id: get_subscription_products[i].sub_id,
+              is_cancelled: "0"
             });
-          case 28:
+          case 34:
             additional_orders_query = _context2.sent;
+            // .where({
+            //   additional_orders_parent_id: additional_orders_parent_id[0].id,
+            // });
+
             if (additional_orders_query.length !== 0) {
-              additional_orders.additional_orders_parent_id = additional_orders_parent_id[0].id;
+              // additional_orders.additional_orders_parent_id =
+              //   additional_orders_parent_id[0].id;
               additional_orders.qty = additional_orders_query[0].quantity;
               orders = [];
               dates = [];
@@ -203,7 +224,7 @@ var getSingleUser = /*#__PURE__*/function () {
                   is_active = true;
                 }
                 orders.push({
-                  date: (0, _moment["default"])(additional_orders_query[_i].date).format("YYYY-MM-DD"),
+                  date: (0, _moment["default"])(additional_orders_query[_i].date).format("DD-MM-YYYY"),
                   qty: additional_orders_query[_i].quantity,
                   status: additional_orders_query[_i].status
                 });
@@ -219,58 +240,59 @@ var getSingleUser = /*#__PURE__*/function () {
 
               get_subscription_products[i].additional_orders = additional_orders;
               get_additional_orders.push(additional_orders);
+              // }
             }
-          case 30:
+
             if (get_subscription_products[i].subscription_status == "subscribed") {
               is_subscription_active = 1;
             }
-            get_subscription_products[i].start_date = (0, _moment["default"])(get_subscription_products[i].start_date).format("YYYY-MM-DD");
-          case 32:
+            get_subscription_products[i].start_date = (0, _moment["default"])(get_subscription_products[i].start_date).format("DD-MM-YYYY");
+          case 38:
             i++;
             _context2.next = 19;
             break;
-          case 35:
-            _context2.next = 37;
+          case 41:
+            _context2.next = 43;
             return _db["default"].raw("SELECT adds.id,adds.user_id ,adds.delivery_date,adds.sub_total,adds.status\n      FROM add_on_orders as adds \n      WHERE adds.user_id = ".concat(user.user_id, " AND adds.address_id = ").concat(user_address_id));
-          case 37:
+          case 43:
             add_on_order_query = _context2.sent;
             // console.log(add_on_order_query[0]);
             add_on = add_on_order_query[0];
             is_add_on_active = 0;
             if (!(add_on.length !== 0)) {
-              _context2.next = 53;
+              _context2.next = 59;
               break;
             }
             _i2 = 0;
-          case 42:
+          case 48:
             if (!(_i2 < add_on.length)) {
-              _context2.next = 53;
+              _context2.next = 59;
               break;
             }
             if (add_on[_i2].status == "pending" || add_on[_i2].status == "new_order" || add_on[_i2].status == "order_placed") {
               is_add_on_active = 1;
             }
-            _context2.next = 46;
+            _context2.next = 52;
             return (0, _db["default"])("add_on_order_items as adds").select("adds.add_on_order_id", "adds.quantity", "adds.price", "adds.total_price", "adds.status", "products.name as product_name", "products.image", "products.unit_value", "unit_types.value").join("products", "products.id", "=", "adds.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").where({
               "adds.add_on_order_id": add_on[_i2].id
             });
-          case 46:
+          case 52:
             get_user_products_query = _context2.sent;
             for (j = 0; j < get_user_products_query.length; j++) {
               get_user_products_query[j].image = process.env.BASE_URL + get_user_products_query[j].image;
             }
             add_on[_i2].add_on_products = get_user_products_query;
-            add_on[_i2].delivery_date = (0, _moment["default"])(add_on[_i2].delivery_date).format("YYYY-MM-DD");
-          case 50:
+            add_on[_i2].delivery_date = (0, _moment["default"])(add_on[_i2].delivery_date).format("DD-MM-YYYY");
+          case 56:
             _i2++;
-            _context2.next = 42;
+            _context2.next = 48;
             break;
-          case 53:
-            _context2.next = 55;
+          case 59:
+            _context2.next = 61;
             return (0, _db["default"])("subscription_type").select("name", "id").where({
               status: "1"
             });
-          case 55:
+          case 61:
             get_plan = _context2.sent;
             sub_product_id = [];
             if (get_subscription_products.length !== 0) {
@@ -278,21 +300,24 @@ var getSingleUser = /*#__PURE__*/function () {
                 sub_product_id.push(get_subscription_products[_i3].product_id);
               }
             }
-            _context2.next = 60;
+            _context2.next = 66;
             return (0, _db["default"])("products").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id", "products.name", "products.unit_value", "unit_types.value as unit_type", "products.price").where({
               "products.product_type_id": 1,
               "products.status": "1"
             }).whereNotIn("products.id", sub_product_id);
-          case 60:
+          case 66:
             add_subscription_products = _context2.sent;
-            _context2.next = 63;
+            _context2.next = 69;
             return (0, _db["default"])("products").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id", "products.name", "products.unit_value", "unit_types.value as unit_type", "products.price").where({
               "products.product_type_id": 2,
               "products.status": "1"
             });
-          case 63:
+          case 69:
             add_on_products = _context2.sent;
-            console.log(get_additional_orders, "check");
+            // console.log(get_additional_orders , "check")
+            // console.log(get_subscription_products[0]);
+            // console.log(get_subscription_products[0].pause_dates);
+
             res.render("branch_admin/users/user_detail", {
               user: user,
               sub_products: get_subscription_products,
@@ -304,19 +329,19 @@ var getSingleUser = /*#__PURE__*/function () {
               add_on_products: add_on_products,
               get_additional_orders: get_additional_orders
             });
-            _context2.next = 72;
+            _context2.next = 77;
             break;
-          case 68:
-            _context2.prev = 68;
+          case 73:
+            _context2.prev = 73;
             _context2.t0 = _context2["catch"](0);
             console.log(_context2.t0);
             return _context2.abrupt("return", res.redirect("/home"));
-          case 72:
+          case 77:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[0, 68]]);
+    }, _callee2, null, [[0, 73]]);
   }));
   return function getSingleUser(_x3, _x4) {
     return _ref2.apply(this, arguments);
@@ -730,17 +755,348 @@ var newAddOn = /*#__PURE__*/function () {
     return _ref6.apply(this, arguments);
   };
 }();
+
+// additional
 exports.newAddOn = newAddOn;
 var createAdditional = /*#__PURE__*/function () {
   var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7(req, res) {
-    var data;
+    var data, i;
     return _regeneratorRuntime().wrap(function _callee7$(_context7) {
       while (1) {
         switch (_context7.prev = _context7.next) {
           case 0:
+            _context7.prev = 0;
+            data = req.body.data;
+            console.log("hitting");
+            console.log(data);
+            i = 0;
+          case 5:
+            if (!(i < data.dates.length)) {
+              _context7.next = 11;
+              break;
+            }
+            _context7.next = 8;
+            return (0, _db["default"])("additional_orders").insert({
+              subscription_id: data.sub_id,
+              user_id: data.user_id,
+              quantity: data.qty,
+              date: data.dates[i]
+            });
+          case 8:
+            i++;
+            _context7.next = 5;
+            break;
+          case 11:
+            return _context7.abrupt("return", res.status(200).json({
+              status: true
+            }));
+          case 14:
+            _context7.prev = 14;
+            _context7.t0 = _context7["catch"](0);
+            console.log(_context7.t0);
+            res.redirect("/home");
+          case 18:
+          case "end":
+            return _context7.stop();
+        }
+      }
+    }, _callee7, null, [[0, 14]]);
+  }));
+  return function createAdditional(_x13, _x14) {
+    return _ref7.apply(this, arguments);
+  };
+}();
+exports.createAdditional = createAdditional;
+var editAdditional = /*#__PURE__*/function () {
+  var _ref8 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8(req, res) {
+    var data, i;
+    return _regeneratorRuntime().wrap(function _callee8$(_context8) {
+      while (1) {
+        switch (_context8.prev = _context8.next) {
+          case 0:
+            _context8.prev = 0;
+            data = req.body.data;
+            console.log("hitting");
+            console.log(data);
+            _context8.next = 6;
+            return (0, _db["default"])("additional_orders").where({
+              subscription_id: data.sub_id,
+              user_id: data.user_id,
+              status: "pending"
+            }).del();
+          case 6:
+            i = 0;
+          case 7:
+            if (!(i < data.dates.length)) {
+              _context8.next = 13;
+              break;
+            }
+            _context8.next = 10;
+            return (0, _db["default"])("additional_orders").insert({
+              subscription_id: data.sub_id,
+              user_id: data.user_id,
+              quantity: data.qty,
+              date: data.dates[i]
+            });
+          case 10:
+            i++;
+            _context8.next = 7;
+            break;
+          case 13:
+            return _context8.abrupt("return", res.status(200).json({
+              status: true
+            }));
+          case 16:
+            _context8.prev = 16;
+            _context8.t0 = _context8["catch"](0);
+            console.log(_context8.t0);
+            res.redirect("/home");
+          case 20:
+          case "end":
+            return _context8.stop();
+        }
+      }
+    }, _callee8, null, [[0, 16]]);
+  }));
+  return function editAdditional(_x15, _x16) {
+    return _ref8.apply(this, arguments);
+  };
+}();
+exports.editAdditional = editAdditional;
+var cancelAdditional = /*#__PURE__*/function () {
+  var _ref9 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9(req, res) {
+    var _req$body4, sub_id, user_id, user_address_id;
+    return _regeneratorRuntime().wrap(function _callee9$(_context9) {
+      while (1) {
+        switch (_context9.prev = _context9.next) {
+          case 0:
+            _context9.prev = 0;
+            _req$body4 = req.body, sub_id = _req$body4.sub_id, user_id = _req$body4.user_id, user_address_id = _req$body4.user_address_id;
+            _context9.next = 4;
+            return (0, _db["default"])("additional_orders").update({
+              status: "cancelled",
+              is_cancelled: "1"
+            }).where({
+              subscription_id: sub_id,
+              user_id: user_id
+            });
+          case 4:
+            req.flash("success", "SuccessFully Additional Orders Cancelled");
+            res.redirect("/branch_admin/user/single_user?user_address_id=".concat(user_address_id));
+            _context9.next = 12;
+            break;
+          case 8:
+            _context9.prev = 8;
+            _context9.t0 = _context9["catch"](0);
+            console.log(_context9.t0);
+            res.redirect("/home");
+          case 12:
+          case "end":
+            return _context9.stop();
+        }
+      }
+    }, _callee9, null, [[0, 8]]);
+  }));
+  return function cancelAdditional(_x17, _x18) {
+    return _ref9.apply(this, arguments);
+  };
+}();
+
+// subscribe
+exports.cancelAdditional = cancelAdditional;
+var unsubscribeSubscription = /*#__PURE__*/function () {
+  var _ref10 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10(req, res) {
+    var _req$body5, sub_id, user_id, user_address_id;
+    return _regeneratorRuntime().wrap(function _callee10$(_context10) {
+      while (1) {
+        switch (_context10.prev = _context10.next) {
+          case 0:
+            _context10.prev = 0;
+            _req$body5 = req.body, sub_id = _req$body5.sub_id, user_id = _req$body5.user_id, user_address_id = _req$body5.user_address_id;
+            _context10.next = 4;
+            return (0, _db["default"])("subscribed_user_details").update({
+              subscription_status: "unsubscribed"
+            }).where({
+              id: sub_id,
+              user_id: user_id
+            });
+          case 4:
+            req.flash("success", "UnSubscribed SuccessFully");
+            res.redirect("/branch_admin/user/single_user?user_address_id=".concat(user_address_id));
+            _context10.next = 12;
+            break;
+          case 8:
+            _context10.prev = 8;
+            _context10.t0 = _context10["catch"](0);
+            console.log(_context10.t0);
+            res.redirect("/home");
+          case 12:
+          case "end":
+            return _context10.stop();
+        }
+      }
+    }, _callee10, null, [[0, 8]]);
+  }));
+  return function unsubscribeSubscription(_x19, _x20) {
+    return _ref10.apply(this, arguments);
+  };
+}();
+exports.unsubscribeSubscription = unsubscribeSubscription;
+var subscribeSubscription = /*#__PURE__*/function () {
+  var _ref11 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11(req, res) {
+    var _req$body6, sub_id, user_id, user_address_id;
+    return _regeneratorRuntime().wrap(function _callee11$(_context11) {
+      while (1) {
+        switch (_context11.prev = _context11.next) {
+          case 0:
+            _context11.prev = 0;
+            _req$body6 = req.body, sub_id = _req$body6.sub_id, user_id = _req$body6.user_id, user_address_id = _req$body6.user_address_id;
+            _context11.next = 4;
+            return (0, _db["default"])("subscribed_user_details").update({
+              subscription_status: "subscribed"
+            }).where({
+              id: sub_id,
+              user_id: user_id
+            });
+          case 4:
+            req.flash("success", "Subscribed SuccessFully");
+            res.redirect("/branch_admin/user/single_user?user_address_id=".concat(user_address_id));
+            _context11.next = 12;
+            break;
+          case 8:
+            _context11.prev = 8;
+            _context11.t0 = _context11["catch"](0);
+            console.log(_context11.t0);
+            res.redirect("/home");
+          case 12:
+          case "end":
+            return _context11.stop();
+        }
+      }
+    }, _callee11, null, [[0, 8]]);
+  }));
+  return function subscribeSubscription(_x21, _x22) {
+    return _ref11.apply(this, arguments);
+  };
+}();
+
+// paused
+exports.subscribeSubscription = subscribeSubscription;
+var createPaused = /*#__PURE__*/function () {
+  var _ref12 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee12(req, res) {
+    var data, i;
+    return _regeneratorRuntime().wrap(function _callee12$(_context12) {
+      while (1) {
+        switch (_context12.prev = _context12.next) {
+          case 0:
+            _context12.prev = 0;
+            data = req.body.data;
+            console.log("hitting");
+            console.log(data);
+            i = 0;
+          case 5:
+            if (!(i < data.dates.length)) {
+              _context12.next = 11;
+              break;
+            }
+            _context12.next = 8;
+            return (0, _db["default"])("pause_dates").insert({
+              subscription_id: data.sub_id,
+              user_id: data.user_id,
+              date: data.dates[i]
+            });
+          case 8:
+            i++;
+            _context12.next = 5;
+            break;
+          case 11:
+            return _context12.abrupt("return", res.status(200).json({
+              status: true
+            }));
+          case 14:
+            _context12.prev = 14;
+            _context12.t0 = _context12["catch"](0);
+            console.log(_context12.t0);
+            res.redirect("/home");
+          case 18:
+          case "end":
+            return _context12.stop();
+        }
+      }
+    }, _callee12, null, [[0, 14]]);
+  }));
+  return function createPaused(_x23, _x24) {
+    return _ref12.apply(this, arguments);
+  };
+}();
+exports.createPaused = createPaused;
+var editPaused = /*#__PURE__*/function () {
+  var _ref13 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee13(req, res) {
+    var data, i;
+    return _regeneratorRuntime().wrap(function _callee13$(_context13) {
+      while (1) {
+        switch (_context13.prev = _context13.next) {
+          case 0:
+            _context13.prev = 0;
+            data = req.body.data;
+            _context13.next = 4;
+            return (0, _db["default"])("pause_dates").where({
+              subscription_id: data.sub_id,
+              user_id: data.user_id
+            }).del();
+          case 4:
+            if (!(data.dates[0] != "")) {
+              _context13.next = 12;
+              break;
+            }
+            i = 0;
+          case 6:
+            if (!(i < data.dates.length)) {
+              _context13.next = 12;
+              break;
+            }
+            _context13.next = 9;
+            return (0, _db["default"])("pause_dates").insert({
+              subscription_id: data.sub_id,
+              user_id: data.user_id,
+              date: data.dates[i]
+            });
+          case 9:
+            i++;
+            _context13.next = 6;
+            break;
+          case 12:
+            return _context13.abrupt("return", res.status(200).json({
+              status: true
+            }));
+          case 15:
+            _context13.prev = 15;
+            _context13.t0 = _context13["catch"](0);
+            console.log(_context13.t0);
+            res.redirect("/home");
+          case 19:
+          case "end":
+            return _context13.stop();
+        }
+      }
+    }, _callee13, null, [[0, 15]]);
+  }));
+  return function editPaused(_x25, _x26) {
+    return _ref13.apply(this, arguments);
+  };
+}();
+
+// change user plan 
+exports.editPaused = editPaused;
+var changeUserPlan = /*#__PURE__*/function () {
+  var _ref14 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee14(req, res) {
+    var data;
+    return _regeneratorRuntime().wrap(function _callee14$(_context14) {
+      while (1) {
+        switch (_context14.prev = _context14.next) {
+          case 0:
             try {
               data = req.body.data;
-              console.log("hitting");
               console.log(data);
             } catch (error) {
               console.log(error);
@@ -748,13 +1104,13 @@ var createAdditional = /*#__PURE__*/function () {
             }
           case 1:
           case "end":
-            return _context7.stop();
+            return _context14.stop();
         }
       }
-    }, _callee7);
+    }, _callee14);
   }));
-  return function createAdditional(_x13, _x14) {
-    return _ref7.apply(this, arguments);
+  return function changeUserPlan(_x27, _x28) {
+    return _ref14.apply(this, arguments);
   };
 }();
-exports.createAdditional = createAdditional;
+exports.changeUserPlan = changeUserPlan;

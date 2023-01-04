@@ -8,6 +8,7 @@ import {
   search_products,
   addon_order,
   remove_addonorders,
+  nextday_product,
 } from "../../models/user/product.model";
 
 import { parseJwtPayload } from "../../services/jwt.service";
@@ -268,16 +269,18 @@ export const nextDayProduct = async (req, res) => {
   try {
     const { userId } = req.body;
 
-    const static_response = [{
+    const static_response = await nextday_product(userId)
+    
+    let query ={
         
-          "product_id": "18",
-          "product_name": "Farm Fresh Natural Milk",
-          "product_image": "https://i.pinimg.com/originals/af/31/cf/af31cff157e5304e32a3777c8245ae8c.jpg",
-          "product_status": 1,
-          "product_variation": "1.5 litres",
-          "Product price": 100
-  }]
-     
+          "product_id": static_response.product[0].product_id ,
+          "product_name": static_response.product[0].product_name,
+          "product_image": static_response.product[0].product_image,
+          "product_status":static_response.product[0].product_status,
+          "product_variation": static_response.product[0].value + static_response.product[0].unit_type,
+          "Product price": static_response.product[0].price
+  
+    }
     if (!static_response) {
       return res
         .status(responseCode.FAILURE.DATA_NOT_FOUND)
@@ -286,7 +289,7 @@ export const nextDayProduct = async (req, res) => {
 
     return res.status(responseCode.SUCCESS).json({
       status: true,
-      data: static_response,"date": "25 Oct | Mon"
+      data: query,"date": "25 Oct | Mon"
     });
   } catch (error) {
     console.log(error);

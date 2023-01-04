@@ -375,7 +375,7 @@ var getNewUsers = /*#__PURE__*/function () {
           case 59:
             subscription_users = results[0];
             for (i = 0; i < subscription_users.length; i++) {
-              subscription_users[i].start_date = (0, _moment["default"])(subscription_users[i].start_date).format("YYYY-MM-DD");
+              subscription_users[i].start_date = (0, _moment["default"])(subscription_users[i].start_date).format("DD-MM-YYYY");
               subscription_users[i].image = process.env.BASE_URL + subscription_users[i].image;
             }
           case 61:
@@ -408,7 +408,7 @@ var getNewUsers = /*#__PURE__*/function () {
             add_on_order_query[0][_i2].is_add_on = true;
             add_on_order_query[0][_i2].add_on_order_id = add_on_order_query[0][_i2].id;
             add_on_order_query[0][_i2].add_on_products = get_user_products_query;
-            add_on_order_query[0][_i2].delivery_date = (0, _moment["default"])(add_on_order_query[0][_i2].delivery_date).format("YYYY-MM-DD");
+            add_on_order_query[0][_i2].delivery_date = (0, _moment["default"])(add_on_order_query[0][_i2].delivery_date).format("DD-MM-YYYY");
             add_on_users.push(add_on_order_query[0][_i2]);
           case 77:
             _i2++;
@@ -803,7 +803,7 @@ var getSingleUser = /*#__PURE__*/function () {
                 if (get_subscription_products[i].subscription_status == "subscribed") {
                   is_subscription_active = 1;
                 }
-                get_subscription_products[i].start_date = (0, _moment["default"])(get_subscription_products[i].start_date).format("YYYY-MM-DD");
+                get_subscription_products[i].start_date = (0, _moment["default"])(get_subscription_products[i].start_date).format("DD-MM-YYYY");
               }
             }
             _context6.next = 17;
@@ -837,7 +837,7 @@ var getSingleUser = /*#__PURE__*/function () {
               get_user_products_query[j].image = process.env.BASE_URL + get_user_products_query[j].image;
             }
             add_on[_i5].add_on_products = get_user_products_query;
-            add_on[_i5].delivery_date = (0, _moment["default"])(add_on[_i5].delivery_date).format("YYYY-MM-DD");
+            add_on[_i5].delivery_date = (0, _moment["default"])(add_on[_i5].delivery_date).format("DD-MM-YYYY");
           case 31:
             _i5++;
             _context6.next = 23;

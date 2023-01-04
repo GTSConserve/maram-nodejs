@@ -23,6 +23,6 @@ productRouter.post("/remove_add_on_products", _authToken.authenticateJWT, _authT
 
 // next day delivery product api for static
 
-productRouter.post("/next_day_product", _authToken.authenticateJWT, _authToken.nonMandatoryToken, _product.nextDayProduct);
+productRouter.post("/next_day_product", _authToken.nonMandatoryToken, _product.nextDayProduct);
 var _default = productRouter;
 exports["default"] = _default;

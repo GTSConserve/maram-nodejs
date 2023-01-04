@@ -10,7 +10,7 @@ import {
   category,
   subscription_type,
   product_variations,
-  week_days
+  week_days,app_settings
 } from "../seeds/dummy_data";
 
 export const insertData = async (req, res) => {
@@ -41,6 +41,9 @@ export const insertData = async (req, res) => {
 
     // // product_type
     await knex("product_type").insert(product_type);
+
+    // // app_settings
+    await knex("app_settings").insert(app_settings);
 
     //variation_type
     await knex("unit_types").insert(variation_types);

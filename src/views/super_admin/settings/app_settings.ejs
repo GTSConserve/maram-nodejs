@@ -142,9 +142,9 @@
                                 aria-label="NAME: activate to sort column ascending" style="width: 100px;">key</th>
                             <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
                                 aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">value</th>
-                            <th class="text-center sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                            <!-- <th class="text-center sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
                                 colspan="1" aria-label="Status: activate to sort column ascending" style="width: 49px;">
-                                Status</th>
+                                Status</th> -->
                             <th class="text-center dt-no-sorting sorting" tabindex="0"
                                 aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
                                 aria-label="Action: activate to sort column ascending" style="width: 56px;">Action</th>
@@ -162,7 +162,7 @@
                                    
 
                                     <div>
-                                        <td style="text-align: center; vertical-align: middle;">
+                                        <!-- <td style="text-align: center; vertical-align: middle;">
                                             <div class="custom-control custom-switch">
                                                     <input <%= app_settings.status == "1" ? "checked"  :""  %>  type="checkbox"   class="custom-control-input" name="status" 
                                                     value="<%=app_settings.status %>"  onChange="onToDochange(this)" id=<%=app_settings.id %>>
@@ -184,7 +184,7 @@
                                                     </script>
                                              
                                             </div>
-                                        </td>
+                                        </td> -->
                                         <td class="text-center"> <button class="btn btn-sm btn-primary" data-toggle="modal"
                                             data-target="#editCategory<%=app_settings.id %>">edit</button> </td>
                                     </div>

@@ -481,35 +481,30 @@ var get_user_bill = /*#__PURE__*/function () {
 exports.get_user_bill = get_user_bill;
 var get_single_bill = /*#__PURE__*/function () {
   var _ref10 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10(bill_id, userId) {
-    var getSingleList, sub_products, add_on_products;
+    var getSingleBillList, sub_products, add_on_products;
     return _regeneratorRuntime().wrap(function _callee10$(_context10) {
       while (1) {
         switch (_context10.prev = _context10.next) {
           case 0:
             _context10.prev = 0;
             _context10.next = 3;
-            return _db["default"].select("id", "bill_value").from("bill_history").where({
-              user_id: bill_id
-            });
+            return (0, _db["default"])("bill_history").select("bill_history.id", "bill_history.bill_no", "bill_history.bill_value", "bill_history.date", "payment_gateways.id as payment_id", "payment_gateways.status as payment_status", "add_on_orders.sub_total as sub_total").join("payment_gateways", "payment_gateways.user_id", "=", "bill_history.user_id").join("add_on_orders", "add_on_orders.user_id", "=", "payment_gateways.user_id");
           case 3:
-            getSingleList = _context10.sent;
+            getSingleBillList = _context10.sent;
             _context10.next = 6;
-            return (0, _db["default"])("subscribed_user_details as sub").select("sub.quantity", "sub.product_id", "products.price", "unit_types.name", "unit_types.id").join("products", "products.id", "=", "sub.user_id").join("unit_types", "unit_types.id", "=", "unit_type_id").where({
+            return (0, _db["default"])("subscribed_user_details as sub").select("sub.product_id", "sub.quantity", "unit_types.name", "unit_types.id", "products.price").join("products", "products.id", "=", "sub.user_id").join("unit_types", "unit_types.id", "=", "unit_type_id").where({
               user_id: bill_id
             });
           case 6:
             sub_products = _context10.sent;
             _context10.next = 9;
-            return (0, _db["default"])("add_on_order_items as add").select("add.quantity", "add.product_id", "add.total_price", "unit_types.name", "unit_types.id").join("unit_types", "unit_types.id", "=", "add.id")
-            // .join("add_on_order_items","add.user_id","=","add.product_id")
-            .where({
+            return (0, _db["default"])("add_on_order_items as add").select("add.product_id", "add.quantity", "unit_types.id as variation_id", "unit_types.name as variation_type", "products.unit_value", "add.total_price").join("products", "products.id", "=", "add.user_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").where({
               user_id: bill_id
             });
           case 9:
             add_on_products = _context10.sent;
             return _context10.abrupt("return", {
-              status: _responseCode["default"].SUCCESS,
-              body: getSingleList,
+              data: getSingleBillList,
               sub_products: sub_products,
               add_on_products: add_on_products
             });

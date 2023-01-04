@@ -456,7 +456,7 @@ var getNewUsers = /*#__PURE__*/function () {
           case 60:
             subscription_users = results[0];
             for (i = 0; i < subscription_users.length; i++) {
-              subscription_users[i].start_date = (0, _moment["default"])(subscription_users[i].start_date).format("YYYY-MM-DD");
+              subscription_users[i].start_date = (0, _moment["default"])(subscription_users[i].start_date).format("DD-MM-YYYY");
               subscription_users[i].image = process.env.BASE_URL + subscription_users[i].image;
             }
           case 62:
@@ -490,7 +490,7 @@ var getNewUsers = /*#__PURE__*/function () {
             add_on_order_query[0][_i].is_add_on = true;
             add_on_order_query[0][_i].add_on_order_id = add_on_order_query[0][_i].id;
             add_on_order_query[0][_i].add_on_products = get_user_products_query;
-            add_on_order_query[0][_i].delivery_date = (0, _moment["default"])(add_on_order_query[0][_i].delivery_date).format("YYYY-MM-DD");
+            add_on_order_query[0][_i].delivery_date = (0, _moment["default"])(add_on_order_query[0][_i].delivery_date).format("DD-MM-YYYY");
             add_on_users.push(add_on_order_query[0][_i]);
           case 79:
             _i++;
@@ -699,7 +699,7 @@ var getExistUsers = /*#__PURE__*/function () {
           case 60:
             subscription_users = results[0];
             for (i = 0; i < subscription_users.length; i++) {
-              subscription_users[i].start_date = (0, _moment["default"])(subscription_users[i].start_date).format("YYYY-MM-DD");
+              subscription_users[i].start_date = (0, _moment["default"])(subscription_users[i].start_date).format("DD-MM-YYYY");
               subscription_users[i].image = process.env.BASE_URL + subscription_users[i].image;
             }
           case 62:
@@ -732,7 +732,7 @@ var getExistUsers = /*#__PURE__*/function () {
             add_on_order_query[0][_i4].is_add_on = true;
             add_on_order_query[0][_i4].add_on_order_id = add_on_order_query[0][_i4].id;
             add_on_order_query[0][_i4].add_on_products = get_user_products_query;
-            add_on_order_query[0][_i4].delivery_date = (0, _moment["default"])(add_on_order_query[0][_i4].delivery_date).format("YYYY-MM-DD");
+            add_on_order_query[0][_i4].delivery_date = (0, _moment["default"])(add_on_order_query[0][_i4].delivery_date).format("DD-MM-YYYY");
             add_on_users.push(add_on_order_query[0][_i4]);
           case 78:
             _i4++;
@@ -893,7 +893,7 @@ var getExistUsers = /*#__PURE__*/function () {
 //       }
 //       data = results[0];
 //       for (let i = 0; i < data.length; i++) {
-//         data[i].start_date = moment(data[i].start_date).format("YYYY-MM-DD");
+//         data[i].start_date = moment(data[i].start_date).format("DD-MM-YYYY");
 //         data[i].image = process.env.BASE_URL + data[i].image;
 //       }
 //     }

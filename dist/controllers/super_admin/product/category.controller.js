@@ -13,7 +13,7 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 var updateCategory = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(req, res) {
-    var _req$body, name, id, addon, subscription, file, query, image, is_sub, sub, add;
+    var _req$body, name, id, addon, subscription, file, query, image, is_sub1, i, is_sub, sub, add;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
@@ -35,74 +35,91 @@ var updateCategory = /*#__PURE__*/function () {
               image = req.file.destination.slice(1) + "/" + req.file.filename;
               query.image = image;
             }
-            if (!subscription) {
-              _context.next = 23;
+            _context.next = 12;
+            return (0, _db["default"])("categories_product_type").select("id", "product_type_id").where({
+              category_id: id
+            });
+          case 12:
+            is_sub1 = _context.sent;
+            i = 0;
+          case 14:
+            if (!(i < is_sub1.length)) {
+              _context.next = 40;
               break;
             }
-            _context.next = 13;
+            if (!(is_sub1[i].product_type_id == 1)) {
+              _context.next = 28;
+              break;
+            }
+            _context.next = 18;
             return (0, _db["default"])("categories_product_type").select("id").where({
               category_id: id,
               product_type_id: 1
             });
-          case 13:
+          case 18:
             is_sub = _context.sent;
             if (!(is_sub.length === 0)) {
-              _context.next = 19;
+              _context.next = 24;
               break;
             }
-            _context.next = 17;
+            _context.next = 22;
             return (0, _db["default"])("categories_product_type").insert({
               category_id: cat[0],
               product_type_id: 1
             });
-          case 17:
-            _context.next = 19;
+          case 22:
+            _context.next = 24;
             break;
-          case 19:
-            _context.next = 21;
+          case 24:
+            _context.next = 26;
             return (0, _db["default"])("categories_product_type").update({
               product_type_id: 1
             }).where({
               id: id
             });
-          case 21:
+          case 26:
             sub = _context.sent;
             console.log(sub);
-          case 23:
-            if (!addon) {
-              _context.next = 28;
+          case 28:
+            if (!(is_sub1[i].product_type_id == 2)) {
+              _context.next = 33;
               break;
             }
-            _context.next = 26;
+            _context.next = 31;
             return (0, _db["default"])("categories_product_type").update({
               product_type_id: 2
             }).where({
               id: id
             });
-          case 26:
+          case 31:
             add = _context.sent;
             console.log(add);
-          case 28:
-            _context.next = 30;
+          case 33:
+            _context.next = 35;
             return (0, _db["default"])("categories").update(query).where({
               id: id
             });
-          case 30:
+          case 35:
             req.flash("success", "Updated SuccessFully");
             res.redirect("/super_admin/product/get_category");
-            _context.next = 38;
+          case 37:
+            i++;
+            _context.next = 14;
             break;
-          case 34:
-            _context.prev = 34;
+          case 40:
+            _context.next = 46;
+            break;
+          case 42:
+            _context.prev = 42;
             _context.t0 = _context["catch"](0);
             console.log(_context.t0);
             res.redirect("/home");
-          case 38:
+          case 46:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 34]]);
+    }, _callee, null, [[0, 42]]);
   }));
   return function updateCategory(_x, _x2) {
     return _ref.apply(this, arguments);

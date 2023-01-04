@@ -74,32 +74,9 @@
                                                                 margin: 0; 
                                                             }
                                                             </style>
-<!-- 
-<div class="form-group mb-0">
-    <input id="rangeCalendarFlatpickr" class="form-control flatpickr flatpickr-input active" onchange="checkHandlersss()" type="text" placeholder="Select Date..">
-</div>
-
-<script>
-
-    const get = document.getElementById('rangeCalendarFlatpickr')
 
 
-    
-
-    var f3 = flatpickr(get, {
-    mode: "multiple"
-});
-
-    function checkHandlersss(){
-        console.log(get.value)
-        console.log(get.value.split(","))
-    }
-    console.log(f3)
-
-</script> -->
-
-
-<div class="col-lg-12 col-12 layout-spacing">
+<!-- <div class="col-lg-12 col-12 layout-spacing">
     <div class="statbox widget box box-shadow">
         <div class="widget-content widget-content-area pill-justify-right">
             
@@ -114,7 +91,7 @@
 
             <div class="tab-content" id="justify-right-pills-tabContent">
                 <div class="tab-pane fade show active" id="justify-right-pills-home" role="tabpanel" aria-labelledby="justify-right-pills-home-tab">
-                                     
+                                      -->
                     <div class="inv--product-table-section">
                         <h6 class="ml-2 pb-2" style="font-weight: 900;">Subscription Products : 
                             <% if(sub_products.length !== 0){ %>
@@ -136,7 +113,7 @@
                                             <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                                         </button>
                                     </div>
-                                    <form id="subscriptionForm">
+                                    <form id="subscriptionForm" onsubmit="createSubscription(event)">
                                         <div class="modal-body">
                                             <!-- <h4 class="modal-heading mb-4 mt-2">Are You Sure?</h4> -->
                                             <div class="form-row mb-4">
@@ -177,13 +154,13 @@
                                                          
                                                             
                                                         </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button class="btn btn-dark" data-dismiss="modal" type="button"> <i class="flaticon-cancel-12"></i> Discard</button>
-                                        <button  class="btn btn-primary" type="submit">Add</button>
-                                    </div>
-                                </div>
-                            </form>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button class="btn btn-dark" data-dismiss="modal" type="button"> <i class="flaticon-cancel-12"></i> Discard</button>
+                                                    <button  class="btn btn-primary" type="submit">Add</button>
+                                                </div>
+                                            </div>
+                                    </form>
                             </div>
                         </div>
 </div>
@@ -245,14 +222,14 @@
                                     <table class="table">
                                         <thead class="">
                                             <tr>
-                                                <!-- <th class="checkbox-column dt-no-sorting"> Choose</th> -->
-                                                <th scope="col" >Subscription Id</th>
+
+                                                <th scope="col" >Id</th>
                                                 <th scope="col" >Name</th>
                                                 <th scope="col">Unit</th>
                                                 <th class="text-right" scope="col">Price</th>
                                                 <th class="text-right" scope="col">Qty</th>
                                                 <th class="text-right" scope="col">Start Date</th>
-                                                <th class="text-right" scope="col">Subscription Type</th>
+                                                <th class="text-right" scope="col">Type</th>
                                                 <th class="text-right" scope="col">Status</th>
                                                 <th class="text-right" scope="col">Action</th>
                                             </tr>
@@ -260,26 +237,37 @@
                                         <tbody>
                                             
                                             
-                                            <% for(sub_product of sub_products){ %>
+                                            <% for(let i = 0 ; i< sub_products.length ; i++){ %>
                                                 <tr>
                                                     
-                                                    <td name="name"><%= sub_product.sub_id %></td>
-                                                    <td name="name"><%= sub_product.product_name %></td>
-                                                    <td><%= sub_product.unit_value %> <%= sub_product.value %></td> 
-                                                    <td class="text-right"><%= sub_product.price %></td>
-                                                    <td class="text-right"><%= sub_product.quantity %></td>
-                                                    <td class="text-right"><%= sub_product.start_date %> </td>
-                                                    <td class="text-right"><%= sub_product.sub_name %> </td>
-                                                    <td class="text-right"><%= sub_product.subscription_status %> </td>
+                                                    <td name="name"><%= sub_products[i].sub_id %></td>
+                                                    <td name="name"><%= sub_products[i].product_name %></td>
+                                                    <td><%= sub_products[i].unit_value %> <%= sub_products[i].value %></td> 
+                                                    <td class="text-right"><%= sub_products[i].price %></td>
+                                                    <td class="text-right"><%= sub_products[i].quantity %></td>
+                                                    <td class="text-right"><%= sub_products[i].start_date %> </td>
+                                                    <td class="text-right"><%= sub_products[i].sub_name %> </td>
+                                                    <td class="text-right"><%= sub_products[i].subscription_status %> </td>
                                                     <td class="text-right">
-                                                        
-                                                        <span style="cursor: pointer;"  data-toggle="modal" class="badge badge-primary" data-target="#additionalSubscription<%= sub_product.sub_id  %>">Additional Order</span>
+                                                        <% if( sub_products[i].subscription_status == "unsubscribed"){ %> 
+                                                            <span style="cursor: pointer;"  data-toggle="modal" class="badge badge-primary p-2"  data-target="#reSubscription<%= sub_products[i].sub_id  %>">Subscribe</span>
+                                                      
+                                                        <% }else{ %> 
+                                                            <span style="cursor: pointer;"  data-toggle="modal" class="badge badge-primary mb-2  p-2" data-target="#additionalSubscription<%= sub_products[i].sub_id  %>">Additional Order</span>
+                                                            <span style="cursor: pointer;"  data-toggle="modal" class="badge badge-secondary mb-2 p-2" data-target="#pauseSubscription<%= sub_products[i].sub_id  %>">Pause Subscription</span>
+                                                            <br>
+                                                            <span style="cursor: pointer;"  data-toggle="modal" class="badge badge-info mb-2  p-2" data-target="#editSubscription<%= sub_products[i].sub_id  %>">Edit Subscription</span>
+                                                            <span style="cursor: pointer;"  data-toggle="modal" class="badge badge-danger mb-2 p-2" data-target="#unSubscription<%= sub_products[i].sub_id  %>">unsubscribe</span>
+
+                                                            <span style="cursor: pointer;"  data-toggle="modal" class="badge badge-dark mb-2 p-2" data-target="#changePlan<%= sub_products[i].sub_id  %>">Change Plan</span>
+                                                            
+                                                            <% } %> 
                                                     </td>
                                                 </tr>
 
 
 
-                                                <div class="modal fade" id="additionalSubscription<%= sub_product.sub_id  %>"  tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                                <div class="modal fade" id="editSubscription<%= sub_products[i].sub_id  %>"  tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                                     <div class="modal-dialog " role="document">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
@@ -289,24 +277,89 @@
                                                                 </button>
                                                             </div>
                                                           
+                                                            <form onsubmit="editSubscriptionDetails(event)">
                                                                 <div class="modal-body">
                                                                     <!-- <h4 class="modal-heading mb-4 mt-2">Are You Sure?</h4> -->
 
 
-                                                                    <% if(sub_product.additional_orders != undefined){ %> 
+                                                                   
                                                                         <div class="form-row mb-4">
                                                                         
-                                                                            <div class="col-4">
-                                                                                <label for="sub_qty">Additional Id</label>
-                                                                                <p><%= additional.additional_orders_parent_id %> </p>
+                                                                          
+                                                                            <div class="col-6">
+                                                                                <label>Status</label>
+                                                                                <select   wire:model="countryid" class="form-control" name="status" >
+                                                                                    <option value="<%= sub_products[i].subscription_status %>" selected ><%= sub_products[i].subscription_status %> </option>
+                                                                                    <%  %> 
+                                                                                        <option  value="subscribed">subscribed  </option>
+                                                                                        <option  value="unsubscribed">unsubscribed  </option>
+                                                                               
+                                                                                    </select>
                                                                             </div>
-                                                                            <div class="col-4">
-                                                                                <label for="sub_qty">Subscription Id</label>
-                                                                                <p><%= additional.sub_id %> </p>
-                                                                            </div>
-                                                                            <div class="col-4">
+                                                                            <div class="col-6">
                                                                                 <label for="sub_qty">Qty</label>
-                                                                                <p><%= additional.qty %> </p>
+                                                                                <input class="form-control" name="qty" type="number" value="<%= sub_products[i].quantity %>"> 
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-row mb-4">
+                                                                            <div class="form-group col-md-4">
+                                                                                <label>Choose Your Plan</label>
+                                                                                <select onchange="checkHandler(this)"  wire:model="countryid" class="form-control" name="your_plan" >
+                                                                                    <option value="<%= sub_products[i].sub_name %>" selected ><%= sub_products[i].sub_name %> </option>
+                                                                                    <% for(plan of get_plan){ %>
+                                                                                        <% if(plan.name != sub_products[i].sub_name){ %> 
+                                                                                        <option  value="<%=plan.id %>"><%=plan.name %>  </option>
+                                                                                        <% } %>
+                                                                                    <% } %>
+                                                                                    </select>
+                                                                                </div>
+                                                                               
+                                                                                <div class="form-group col-md-4 pl-3 " id="custom_days">
+                                                                                 
+                                                                                    
+                                                                                </div>
+                                                                        </div>
+                                                                            <input type="hidden"  name="sub_id" value="<%= sub_products[i].sub_id %>">
+                                                                            <input type="hidden"  name="user_id" value="<%= sub_products[i].user_id %>">
+                                                                            <div class="modal-footer">
+                                                                                <button class="btn btn-warning" data-dismiss="modal" type="button"> <i class="flaticon-cancel-12"></i> Discard</button>
+                                                                                <button  class="btn btn-primary" type="submit">Update</button>
+                                                                            </div>
+                                                                            
+                                                                        </div>
+                                                                    </form>
+
+                                                    </div>
+                                                </div>
+                                                </div>
+
+
+                                                
+
+                                                <div class="modal fade" id="additionalSubscription<%= sub_products[i].sub_id  %>"  tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                                    <div class="modal-dialog " role="document">
+                                                        <div class="modal-content ">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalCenterTitle">Additional Orders</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                                                </button>
+                                                            </div>
+                                                          
+                                                                <div class="modal-body">
+
+
+                                                                    <% if(sub_products[i].additional_orders != undefined){ %> 
+                                                                        <form onsubmit="editAdditionalProduct(event)">
+                                                                        <div class="form-row mb-4">
+
+                                                                            <div class="col-6">
+                                                                                <label for="sub_qty">Subscription Id</label>
+                                                                                <p><%= sub_products[i].additional_orders.sub_id %> </p>
+                                                                            </div>
+                                                                            <div class="col-6">
+                                                                                <label for="sub_qty">Qty</label>
+                                                                                <input class="form-control" name="qty" type="number" value="<%= sub_products[i].additional_orders.qty %>"> 
                                                                             </div>
                                                                         </div>
                                                                             <div class="form-row mb-4">
@@ -314,42 +367,27 @@
                                                                            
                                                                                 <div class="form-group mb-0 col-5">
 
-                                                                                    <!-- <label for="sub_qty">Date</label> -->
-                                                                                    <input  id="rangeCalendarFlatpickrs"  class="form-control flatpickr flatpickr-input active" 
-                                                                                    onchange="dateChangeHandler(this)" type="text" placeholder="Select Date.." 
-                                                                                    value="<%= sub_product.additional_orders.dates %>" >
+                                                                                    <label id="dynamicDate" for="sub_qty">Date</label>
                                                                                     
+                                                                                    <input  id="<%= sub_products[i].sub_id  %>"  class="editAdditional form-control flatpickr flatpickr-input" 
+                                                                                    onchange="editAdditionalChange(this)" type="text" placeholder="Select Date.." 
+                                                                                    value="<%= sub_products[i].additional_orders.dates %>" >
+                                                                                  
                                                                                 </div>
                                                                                
                                                                             </div>
-                                                                            <script>
-                                                                            
-                                                                                const gets = document.getElementById('rangeCalendarFlatpickrs')
-                                            
-                                                                                // const style_change = document.getElementsByClassName("flatpickr-wrapper")
-                                                                            
-                                                                                // style_change.style.width = "100%"
-                                                                                // style_change.style.position = "relative"
-                                                                                // style_change.style.display = "inline-block"
-
-
-                                                                                var f3 = flatpickr(gets, {
-                                                                                mode: "multiple" ,
-                                                                                static : true ,
-                                                                                enable : gets.value.split(","),
-                                                                                defaultDate : gets.value.split(",")
-                                                                            });
-                                                                            
-                                                                                function dateChangeHandler(){
-                                                                                    console.log(gets.value)
-                                                                                    console.log(gets.value.split(","))
-                                                                                }
-                                                                         
-                                                                            
-                                                                            </script>
+                                                                            <input type="hidden"  name="sub_id" value="<%= sub_products[i].sub_id %>">
+                                                                            <input type="hidden"  name="user_id" value="<%= sub_products[i].user_id %>">
+                                                                            <div class="modal-footer">
+                                                                                <button class="btn btn-danger mr-auto" data-toggle="modal" data-target="#removeAdditional<%= sub_products[i].sub_id  %>" type="button"> <i class="flaticon-cancel-12"></i> Cancel</button>
+                                                                                <button class="btn btn-warning" data-dismiss="modal" type="button"> <i class="flaticon-cancel-12"></i> Discard</button>
+                                                                                <button  class="btn btn-primary" type="submit">Update</button>
+                                                                            </div>
+                                                                        </form>
+                                                                     
 
                                                                         <% }else{ %> 
-                                                                            <form id="addAdditionalOrders">
+                                                                            <form id="addAdditionalOrders" onsubmit="createAdditionalProduct(event)">
 
                                                                                 <div class="form-row mb-4">
                                                                                     
@@ -363,109 +401,109 @@
                                                                                 <div class="col-8">
                                                                                     
                                                                                     <label for="sub_qty">Choose a Date</label>
-                                                                                    <input  id="createDate" name="dates"  class="form-control flatpickr flatpickr-input active" 
-                                                                                    onchange="createdateChangeHandler(this)" type="text" placeholder="Select Date.." 
-                                                                                    >
+                                                                                    <div class="form-group mb-0">
+                                                                                        <input  id="addAdditional" name="dates" class="addAdditional form-control flatpickr flatpickr-input active" onchange="addAdditionalChange(this)" type="text" placeholder="Select Date..">
+                                                                                    </div>
+
                                                                                 </div>
-                                                                                <input type="hidden"  name="sub_id" value="<%= sub_product.sub_id %>">
-                                                                                <input type="hidden"  name="user_id" value="<%= sub_product.user_id %>">
-                                                                            </div>
+                                                                                <input type="hidden"  name="sub_id" value="<%= sub_products[i].sub_id %>">
+                                                                                <input type="hidden"  name="user_id" value="<%= sub_products[i].user_id %>">
+                                                                                </div>
 
 
-                                                                            <div class="modal-footer">
-                                                                                <button class="btn btn-warning" data-dismiss="modal" type="button"> <i class="flaticon-cancel-12"></i> Discard</button>
-                                                                                <button  class="btn btn-primary" type="submit">Add</button>
-                                                                            </div>
+                                                                                <div class="modal-footer">
+                                                                                    <button class="btn btn-warning" data-dismiss="modal" type="button"> <i class="flaticon-cancel-12"></i> Discard</button>
+                                                                                    <button  class="btn btn-primary" type="submit">Add</button>
+                                                                                </div>
 
                                                                             </form>
-                                                                                <script>
-                                                                                    let ErroHandler = document.createElement("div")
-                                                ErroHandler.innerHTML =`<div class="modal show fade" id="exampleModal" tabindex="-1" style="display: block; padding-right: 17px;" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog  animated fadeInDown" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel"></h5>
-            </div>
-            <div class="modal-body">
-                <p class="modal-text" id="dynamic_content_error">Please Fill The Form! </p>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-warning" onclick="removeModal()" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Discard</button>
-            </div>
-        </div>
-    </div>
-</div> ` 
+                                                                               
+                                                                        <% } %> 
 
-                                                                       
-                                                                                    const create = document.getElementById('createDate')
-                                                
-                                                                                    // const style_change = document.getElementsByClassName("flatpickr-wrapper")
-                                                                                
-                                                                                    // style_change.style.width = "100%"
-                                                                                    // style_change.style.position = "relative"
-                                                                                    // style_change.style.display = "inline-block"
-    
-    
-                                                                                    var f3 = flatpickr(create, {
-                                                                                    mode: "multiple" ,
-                                                                                    static : true ,
-                                                                                    minDate :  new Date().toISOString().split('T')[0],
-                                                                                    // enable : create.value.split(","),
-                                                                                    // defaultDate : create.value.split(",")
-                                                                                });
-                                                                                
-                                                                                    let dates 
+                                                                      
+                                                            
+                                                        </div>
+                                             
+                                                    </div>
+                                                </div>
+                                                </div>
 
-                                                                                    function createdateChangeHandler(){
-                                                                                        dates = create.value.split(",")
-                                                                                    }
-                                                                                   
 
-                                                                                    const addAdditionalFrom=document.getElementById("addAdditionalOrders")
-                                                                                    addAdditionalFrom.addEventListener("submit",async(e)=>{
+                                                <div class="modal fade" id="pauseSubscription<%= sub_products[i].sub_id  %>"  tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                                    <div class="modal-dialog " role="document">
+                                                        <div class="modal-content ">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalCenterTitle"> Pause Subscription</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                                                </button>
+                                                            </div>
+                                                          
+                                                                <div class="modal-body">
 
-                                                                                        e.preventDefault()
-                                                                                        let query = {}
 
-                                                                                        query.qty = e.target.qty.value
-                                                                                        query.sub_id = e.target.sub_id.value
-                                                                                        query.user_id = e.target.user_id.value
+                                                                    <% if(sub_products[i].pause_dates != 0){ %> 
+                                                                        <form onsubmit="editPausedDates(event)">
+                                                                        <div class="form-row mb-4">
 
-                                                                                        console.log(dates)
+                                                                            <div class="col-4">
+                                                                                <label for="sub_qty">Subscription Id</label>
+                                                                                <p><%= sub_products[i].sub_id %> </p>
+                                                                            </div>
 
-                                                                                        if(dates.length == undefined || dates.length == 0){
-                                                                                            document.body.insertAdjacentElement("afterbegin",ErroHandler) 
-                                                                                            return document.getElementById("dynamic_content_error").innerText = "Please Choose The Date"
-                                                                                        }
+                                                                           
+                                                                                <div class="col-6">
 
-                                                                                        query.dates = dates
-
-                                                                                        console.log(dates)
-                                                                                        
-                                                                                        // await fetch('/branch_admin/user/create_additional', {
-                                                                                        //     method: 'POST',
-                                                                                        //     headers: {
-                                                                                        //         'Accept': 'application/json',
-                                                                                        //         'Content-Type': 'application/json'
-                                                                                        //     },
-                                                                                        //     body: JSON.stringify({"data": query})
-                                                                                        //     })
-                                                                                            
-                                                                                            
-                                                                                        // window.location.href = "/home"
-                                                                                        
-                                                                                    })
-
+                                                                                    <label id="dynamicDate" for="sub_qty">Date</label>
+                                                                                    
+                                                                                    <input  id="<%= sub_products[i].sub_id  %>"  class="editPause form-control flatpickr flatpickr-input" 
+                                                                                    onchange="editPausedChange(this)" type="text" placeholder="Select Date.." 
+                                                                                    value="<%= sub_products[i].pause_dates%>" >
                                                                                   
+                                                                                </div>
+                                                                            </div>
+                                                                               
                                                                     
+                                                                            <input type="hidden"  name="sub_id" value="<%= sub_products[i].sub_id %>">
+                                                                            <input type="hidden"  name="user_id" value="<%= sub_products[i].user_id %>">
+                                                                            <div class="modal-footer">
+                                                                                <!-- <button class="btn btn-danger mr-auto" data-toggle="modal" data-target="#pauseSubscription<%= sub_products[i].sub_id  %>" type="button"> <i class="flaticon-cancel-12"></i> Cancel</button> -->
+                                                                                <button class="btn btn-warning" data-dismiss="modal" type="button"> <i class="flaticon-cancel-12"></i> Discard</button>
+                                                                                <button  class="btn btn-primary" type="submit">Update</button>
+                                                                            </div>
+                                                                        </form>
+                                                                     
 
-                                                                                    function removeModal(){
-                                                                                        ErroHandler.remove()
-                                                                                    }
+                                                                        <% }else{ %> 
+                                                                            <form onsubmit="createPausedDates(event)">
+
+                                                                                <div class="form-row mb-4">
+                                                                                    
+                                                                                    <div class="col-12 mb-3">
+                                                                                        <h5>Add Pause Dates</h5>
+                                                                                </div>
+
+                                                                                <div class="col-12">
+                                                                                    
+                                                                                    <label for="sub_qty">Choose a Date</label>
+                                                                                    <div class="form-group mb-0">
+                                                                                        <input  id="addAdditional" name="dates" class="addPause form-control flatpickr flatpickr-input active" 
+                                                                                        onchange="addPausedChanges(this)" type="text" placeholder="Select Date..">
+                                                                                    </div>
+
+                                                                                </div>
+                                                                                <input type="hidden"  name="sub_id" value="<%= sub_products[i].sub_id %>">
+                                                                                <input type="hidden"  name="user_id" value="<%= sub_products[i].user_id %>">
+                                                                                </div>
 
 
-                                                                                
-                                                                                </script>
+                                                                                <div class="modal-footer">
+                                                                                    <button class="btn btn-warning" data-dismiss="modal" type="button"> <i class="flaticon-cancel-12"></i> Discard</button>
+                                                                                    <button  class="btn btn-primary" type="submit">Add</button>
+                                                                                </div>
+
+                                                                            </form>
+                                                                               
                                                                         <% } %> 
 
                                                                       
@@ -478,23 +516,208 @@
 
 
 
+                                                <div class="modal fade" id="removeAdditional<%= sub_products[i].sub_id  %>"  tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalCenterTitle">Cancel Additional Orders</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                                                </button>
+                                                            </div>
+                                                          
+                                                            <form action="/branch_admin/user/cancel_additional" method="post">
+                                                                <div class="modal-body">
+                                                                    <h4 class="modal-heading mb-4 mt-2"> Cancel The All Pending Additional Orders? </h4>
+                                                                            <input type="hidden"  name="sub_id" value="<%= sub_products[i].sub_id %>">
+                                                                            <input type="hidden"  name="user_id" value="<%= sub_products[i].user_id %>">
+                                                                            <input type="hidden"  name="user_address_id" value="<%= user.user_address_id%>">
+                                                                            <div class="modal-footer">
+                                                                                <button class="btn btn-warning" data-dismiss="modal" type="button"> <i class="flaticon-cancel-12"></i> Discard</button>
+                                                                                <button  class="btn btn-primary" type="submit">Proceed</button>
+                                                                            </div>
+                                                                            
+                                                                        </div>
+                                                                    </form>
 
-                                                <% }  %> 
+                                                    </div>
+                                                </div>
+                                                </div>
+
+                                                <div class="modal fade" id="unSubscription<%= sub_products[i].sub_id  %>"  tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalCenterTitle">Unsubscribe The Subscription</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                                                </button>
+                                                            </div>
+                                                          
+                                                            <form action="/branch_admin/user/unsubscribe_subscription" method="post">
+                                                                <div class="modal-body">
+                                                                    <h4 class="modal-heading mb-4 mt-2"> Are You Sure To UnSubscribe This Subscription? </h4>
+                                                                            <input type="hidden"  name="sub_id" value="<%= sub_products[i].sub_id %>">
+                                                                            <input type="hidden"  name="user_id" value="<%= sub_products[i].user_id %>">
+                                                                            <input type="hidden"  name="user_address_id" value="<%= user.user_address_id%>">
+                                                                            <div class="modal-footer">
+                                                                                <button class="btn btn-warning" data-dismiss="modal" type="button"> <i class="flaticon-cancel-12"></i> Discard</button>
+                                                                                <button  class="btn btn-primary" type="submit">unsubscribe</button>
+                                                                            </div>
+                                                                            
+                                                                        </div>
+                                                                    </form>
+
+                                                    </div>
+                                                </div>
+                                                </div>
+
+                                                <div class="modal fade" id="reSubscription<%= sub_products[i].sub_id  %>"  tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalCenterTitle">Subscribe The Subscription</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                                                </button>
+                                                            </div>
+                                                          
+                                                            <form action="/branch_admin/user/subscribe_subscription" method="post">
+                                                                <div class="modal-body">
+                                                                    <h4 class="modal-heading mb-4 mt-2"> Are You Sure To Subscribe This Subscription? </h4>
+                                                                            <input type="hidden"  name="sub_id" value="<%= sub_products[i].sub_id %>">
+                                                                            <input type="hidden"  name="user_id" value="<%= sub_products[i].user_id %>">
+                                                                            <input type="hidden"  name="user_address_id" value="<%= user.user_address_id%>">
+                                                                            <div class="modal-footer">
+                                                                                <button class="btn btn-warning" data-dismiss="modal" type="button"> <i class="flaticon-cancel-12"></i> Discard</button>
+                                                                                <button  class="btn btn-primary" type="submit">subscribe</button>
+                                                                            </div>
+                                                                            
+                                                                        </div>
+                                                                    </form>
+
+                                                    </div>
+                                                </div>
+                                                </div>
+
+
+                                                
+
+                                                <div class="modal fade" id="changePlan<%= sub_products[i].sub_id  %>"  tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalCenterTitle">Change Subscription Plan</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                                                </button>
+                                                            </div>
+                                                            <form  onsubmit="changeSubscriptionPlan(event)">
+                                                                <div class="modal-body">
+                                                                  
+                                                                    <div class="form-row mb-4">
+                                                                        
+                                                                            <div class="col - 6">
+                                                                                <label for="start_date">Start Date</label>
+                                                                                <input type="date"   class="form-control"   min=<%=   new Date().toISOString().split('T')[0]%>   id="start_date" name="sub_start_date">
+                                                                            </div>
+                                                                      
+                                                                        <input type="hidden"  name="user_address_id" value="<%= user.user_address_id %>">
+                                                                        <input type="hidden"  name="sub_id" value="<%= sub_products[i].sub_id %>">
+                                                                            <div class="col-6">
+
+                                                                                <label>Choose Your Plan</label>
+                                                                                <select onchange="checkChangePlanCustom(this)" id="<%= sub_products[i].sub_id %>" wire:model="countryid" class="form-control" name="your_plan" >
+                                                                                    <option value="" selected >Choose Your plan </option>
+                                                                                    <% for(plan of get_plan){ %>
+                                                                                        
+                                                                                        <option  value="<%=plan.id %>"><%=plan.name %>  </option>
+                                                                                        <% } %>
+                                                                                    </select>
+                                                                                    
+                                                                                </div>
+                                                                               
+                                                                                <div class="form-group col-md-4 pl-3 " id="custom_days_change_plan<%= sub_products[i].sub_id %>">
+                                                                                 
+                                                                                    
+                                                                                </div>
+                                                                        
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button class="btn btn-dark" data-dismiss="modal" type="button"> <i class="flaticon-cancel-12"></i> Discard</button>
+                                                                            <button  class="btn btn-primary" type="submit">Update</button>
+                                                                        </div>
+                                                            </form>
+                                                    </div>
+                                                </div>
+                        </div>
+                        
+                            
+                        <script>
+                            function checkChangePlanCustom(event){
+                                if(event.value == 3){
+                                    document.getElementById("custom_days_change_plan" + event.id).innerHTML = ` <label for="delivery_days" class="mt-3">Choose Your Custome Days</label>
+                                    <div class="row ">
+                                        <div class="col-5">
+                            <div class="custom-control custom-checkbox checkbox-info">
+                                <input type="checkbox" name="custom_days" value="1" class="custom-control-input" id="hChkbox">
+                                <label class="custom-control-label" for="hChkbox">Sun</label>
+                            </div>
+                            <div class="custom-control custom-checkbox checkbox-info">
+                                <input type="checkbox" name="custom_days" value="2" class="custom-control-input" id="hChkbox2">
+                                <label class="custom-control-label" for="hChkbox2">Mon</label>
+                            </div>
+                            <div class="custom-control custom-checkbox checkbox-info">
+                                <input type="checkbox" name="custom_days" value="3" class="custom-control-input" id="hChkbox3">
+                                <label class="custom-control-label" for="hChkbox3">Tue</label>
+                            </div>
+                            <div class="custom-control custom-checkbox checkbox-info">
+                                <input type="checkbox" name="custom_days" value="4" class="custom-control-input" id="hChkbox4">
+                                <label class="custom-control-label" for="hChkbox4">Wed</label>
+                            </div>
+                            </div>
+                            <div class="col-5">
+                            <div class="custom-control custom-checkbox checkbox-info">
+                                <input type="checkbox" name="custom_days" value="5" class="custom-control-input" id="hChkbox5">
+                                <label class="custom-control-label" for="hChkbox5">Thu</label>
+                            </div>
+                            <div class="custom-control custom-checkbox checkbox-info">
+                                <input type="checkbox" name="custom_days" value="6" class="custom-control-input" id="hChkbox6">
+                                <label class="custom-control-label" for="hChkbox6">Fri</label>
+                            </div>
+                            <div class="custom-control custom-checkbox checkbox-info">
+                                <input type="checkbox" name="custom_days" value="7" class="custom-control-input" id="hChkbox7">
+                                <label class="custom-control-label" for="hChkbox7">Sat</label>
+                            </div>
+                            </div>
+                            `
+                                }else{
+                                    document.getElementById("custom_days_change_plan" + event.id).innerHTML = ``
+                                }
+                            }
+                        </script>
+
+
+
+                                        <% } %> 
+
                                                 
                                                 
                                             </tbody>
                                         </table>
                                     </div>
-                                    <% } %>   
+                                    
+                                    <% }  %> 
                     </div>
                    
                     
-                </div>
+                
                                         
         
             
                 
-            <div class="tab-pane fade" id="justify-right-pills-contact" role="tabpanel" aria-labelledby="justify-right-pills-contact-tab">
+            <!-- <div class="tab-pane fade" id="justify-right-pills-contact" role="tabpanel" aria-labelledby="justify-right-pills-contact-tab"> -->
                 
                 <div class="inv--product-table-section">
                     <h6 class="ml-2 pb-2" style="font-weight: 900;">Add On Products : 
@@ -518,7 +741,7 @@
                                       <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                                     </button>
                                 </div>
-                                <form id="addOnForm">
+                                <form id="addOnForm" onsubmit="createAddonProduct(event)">
                                 <div class="modal-body">
                                     <!-- <h4 class="modal-heading mb-4 mt-2">Are You Sure?</h4> -->
                                     <div class="form-row mb-4" >
@@ -719,9 +942,9 @@
                                     <% }  %> 
                         </div>
                     </div>
-                            </div>
+                            <!-- </div> -->
             
-            
+                        </div>
             
             
                
@@ -784,200 +1007,666 @@
 
 
 <script>    
+                                let ErroHandler = document.createElement("div")
+                                 ErroHandler.innerHTML =`<div class="modal show fade" id="exampleModal" tabindex="-1" style="display: block; padding-right: 17px;" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog  animated fadeInDown" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"></h5>
+            </div>
+            <div class="modal-body">
+                <p class="modal-text" id="dynamic_content_error">Please Fill The Form! </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-warning" onclick="removeModal()" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Discard</button>
+            </div>
+        </div>
+    </div>
+</div> ` 
+
+
+                                  function removeModal(){
+                                         ErroHandler.remove()
+                                  }
+
+
+
                                 let error = document.getElementById("errorModal")
+                                //     let query = {}
 
-                                const addOnForm=document.getElementById("addOnForm")
-                                addOnForm.addEventListener("submit",async(e)=>{
-                                    let query = {}
+                                //                 e.preventDefault()
 
-                                                e.preventDefault()
-
-                                                //  addon product
-                                                const add_on_delivery_date = e.target.add_on_delivery_date.value
-                                                const user_address_id = e.target.user_address_id.value
+                                //                 //  addon product
+                                //                 const add_on_delivery_date = e.target.add_on_delivery_date.value
+                                //                 const user_address_id = e.target.user_address_id.value
 
                                                 
-                                                let add_on_products 
-                                                let add_on_qty
+                                //                 let add_on_products 
+                                //                 let add_on_qty
                                              
               
 
-                                                    if(e.target.add_on_qty.length == undefined){
-                                                         add_on_products = e.target.add_on_products.value
-                                                         add_on_qty = e.target.add_on_qty.value
-                                                        }else{
-                                                            add_on_products = e.target.add_on_products
-                                                            add_on_qty = e.target.add_on_qty
-                                                    }
+                                //                     if(e.target.add_on_qty.length == undefined){
+                                //                          add_on_products = e.target.add_on_products.value
+                                //                          add_on_qty = e.target.add_on_qty.value
+                                //                         }else{
+                                //                             add_on_products = e.target.add_on_products
+                                //                             add_on_qty = e.target.add_on_qty
+                                //                     }
 
                                                
-                                                    let add_on = []
-                                                    if(e.target.add_on_qty.length == undefined){
-                                                        if(add_on_delivery_date.length != 0 ||add_on_products.length != 0 ||add_on_qty.length != 0   ){
+                                //                     let add_on = []
+                                //                     if(e.target.add_on_qty.length == undefined){
+                                //                         if(add_on_delivery_date.length != 0 ||add_on_products.length != 0 ||add_on_qty.length != 0   ){
                                                     
-                                                             if(add_on_delivery_date.length === 0 ||add_on_products.length === 0 ||add_on_qty.length === 0   ){
-                                                                error.style ="display: block; padding-right: 17px;"
-                                                                error.className = "modal fade show"
+                                //                              if(add_on_delivery_date.length === 0 ||add_on_products.length === 0 ||add_on_qty.length === 0   ){
+                                //                                 error.style ="display: block; padding-right: 17px;"
+                                //                                 error.className = "modal fade show"
 
-                                                                     return document.getElementById("dynamic_content_error").innerText = "Please Fill the Add on  Product Details"
+                                //                                      return document.getElementById("dynamic_content_error").innerText = "Please Fill the Add on  Product Details"
     
-                                                                 }
+                                //                                  }
 
-                                                                let add_on_object = {}
-                                                                 add_on_object.product_id = add_on_products
-                                                                 add_on_object.qty = add_on_qty
-                                                                 add_on.push(add_on_object)
+                                //                                 let add_on_object = {}
+                                //                                  add_on_object.product_id = add_on_products
+                                //                                  add_on_object.qty = add_on_qty
+                                //                                  add_on.push(add_on_object)
 
-                                                                //  query.is_add_on = true
-                                                                 query.delivery_date = add_on_delivery_date
-                                                        }
-                                                    }else{
-                                                        query.delivery_date = add_on_delivery_date
-                                                        let add_on_object = {}
+                                //                                 //  query.is_add_on = true
+                                //                                  query.delivery_date = add_on_delivery_date
+                                //                         }
+                                //                     }else{
+                                //                         query.delivery_date = add_on_delivery_date
+                                //                         let add_on_object = {}
 
-                                                        for(let i = 0 ; i < add_on_products.length; i++){
+                                //                         for(let i = 0 ; i < add_on_products.length; i++){
 
-                                                            if(add_on_products[i].value.length === 0 || add_on_qty[i].value.length === 0){
-                                                                error.style ="display: block; padding-right: 17px;"
-                                                                error.className = "modal fade show"
+                                //                             if(add_on_products[i].value.length === 0 || add_on_qty[i].value.length === 0){
+                                //                                 error.style ="display: block; padding-right: 17px;"
+                                //                                 error.className = "modal fade show"
  
-                                                            return document.getElementById("dynamic_content_error").innerText = "Please Fill the Add on  Product Details"
+                                //                             return document.getElementById("dynamic_content_error").innerText = "Please Fill the Add on  Product Details"
 
-                                                        }
+                                //                         }
 
 
-                                                        add_on_object.product_id = add_on_products[i].value
-                                                        add_on_object.qty = add_on_qty[i].value
+                                //                         add_on_object.product_id = add_on_products[i].value
+                                //                         add_on_object.qty = add_on_qty[i].value
 
-                                                        add_on.push(add_on_object)
-                                                        add_on_object = {}
+                                //                         add_on.push(add_on_object)
+                                //                         add_on_object = {}
 
-                                                        }
+                                //                         }
+                                //                     }
+
+                                                    
+                                //                     query.add_on = add_on
+
+                                //                     console.log(query)
+
+                                //                          await fetch('/branch_admin/user/new_add_on', {
+                                //                     method: 'POST',
+                                //                     headers: {
+                                //                         'Accept': 'application/json',
+                                //                         'Content-Type': 'application/json'
+                                //                     },
+                                //                     body: JSON.stringify({"data": query,"user_address_id": user_address_id})
+                                //                     })
+                                                    
+                                                   
+                                //                     window.location.href = "/branch_admin/user/single_user?user_address_id=" + user_address_id
+
+                                // })
+
+
+                                async function createAddonProduct(e){
+                                    let query = {}
+
+                                    e.preventDefault()
+
+                                    //  addon product
+                                    const add_on_delivery_date = e.target.add_on_delivery_date.value
+                                    const user_address_id = e.target.user_address_id.value
+
+                                    if(add_on_delivery_date.length == 0){
+                                        error.style ="display: block; padding-right: 17px;"
+                                                    error.className = "modal fade show"
+
+                                                        return document.getElementById("dynamic_content_error").innerText = "Please Choose A Delivery Date"
+
+                                    }
+
+                                    let add_on_products 
+                                    let add_on_qty
+
+
+
+                                        if(e.target.add_on_qty.length == undefined){
+                                            add_on_products = e.target.add_on_products.value
+                                            add_on_qty = e.target.add_on_qty.value
+                                            }else{
+                                                add_on_products = e.target.add_on_products
+                                                add_on_qty = e.target.add_on_qty
+                                        }
+
+
+                                        let add_on = []
+                                        if(e.target.add_on_qty.length == undefined){
+                                            if(add_on_delivery_date.length != 0 ||add_on_products.length != 0 ||add_on_qty.length != 0   ){
+                                        
+                                                if(add_on_delivery_date.length === 0 ||add_on_products.length === 0 ||add_on_qty.length === 0   ){
+                                                    error.style ="display: block; padding-right: 17px;"
+                                                    error.className = "modal fade show"
+
+                                                        return document.getElementById("dynamic_content_error").innerText = "Please Fill the Add on  Product Details"
+
                                                     }
 
-                                                    
-                                                    query.add_on = add_on
+                                                    let add_on_object = {}
+                                                    add_on_object.product_id = add_on_products
+                                                    add_on_object.qty = add_on_qty
+                                                    add_on.push(add_on_object)
+
+                                                    //  query.is_add_on = true
+                                                    query.delivery_date = add_on_delivery_date
+                                            }
+                                        }else{
+                                            query.delivery_date = add_on_delivery_date
+                                            let add_on_object = {}
+
+                                            for(let i = 0 ; i < add_on_products.length; i++){
+
+                                                if(add_on_products[i].value.length === 0 || add_on_qty[i].value.length === 0){
+                                                    error.style ="display: block; padding-right: 17px;"
+                                                    error.className = "modal fade show"
+
+                                                return document.getElementById("dynamic_content_error").innerText = "Please Fill the Add on  Product Details"
+
+                                            }
+
+
+                                            add_on_object.product_id = add_on_products[i].value
+                                            add_on_object.qty = add_on_qty[i].value
+
+                                            add_on.push(add_on_object)
+                                            add_on_object = {}
+
+                                            }
+                                        }
+
+                                        
+                                        query.add_on = add_on
+
+                                        console.log(query)
+
+                                            await fetch('/branch_admin/user/new_add_on', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Accept': 'application/json',
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({"data": query,"user_address_id": user_address_id})
+                                        })
+                                        
+                                    
+                                        window.location.href = "/branch_admin/user/single_user?user_address_id=" + user_address_id
+                                                                    }
+
+
+                                async function createSubscription(e){
+                                                let query = {}
+
+                                                    e.preventDefault()
+
+                                                    console.log(e)
+
+                                                    // sub products
+                                                    const sub_product = e.target.sub_product.value
+                                                    const sub_qty = e.target.sub_qty.value
+                                                    const sub_start_date = e.target.sub_start_date.value
+                                                    const your_plan = e.target.your_plan.value
+
+                                                    const user_address_id = e.target.user_address_id.value
+
+
+                                                    let custom_days 
+                                                    if(your_plan){
+                                                            custom_days = e.target.custom_days
+                                                    }
+
+                                                    console.log(sub_product)
+                                                    console.log(sub_qty)
+                                                    console.log(sub_product.length)
+
+                                                    // sub product
+                                                    if(sub_product.length != 0 ||sub_qty.length != 0 ||your_plan.length != 0 ||sub_start_date.length != 0  ){
+                                                        
+                                                        console.log("22222")
+                                                        if(sub_product.length === 0 ||sub_qty.length === 0 ||your_plan.length === 0 ||sub_start_date.length === 0  ){
+                                                            console.log("pppp")
+                                                            console.log(error)
+
+                                                            error.style ="display: block; padding-right: 17px;"
+                                                            error.className = "modal fade show"
+
+                                                            return document.getElementById("dynamic_content_error").innerText = "Please Fill the Subscription Product Details"
+
+
+                                                        }
+
+                                                        if(your_plan == 3){
+
+                                                            let count = 0
+                                                            let cutsom = []
+
+                                                            for(days of custom_days){
+                                                                if(!days.checked){
+                                                                    count += 1
+                                                                }
+                                                                if (count == 7){
+                                                                    error.style ="display: block; padding-right: 17px;"
+                                                                    error.className = "modal fade show"
+                                                                    return document.getElementById("dynamic_content_error").innerText = "Please Choose A Day "
+                                                                }
+
+                                                                if(days.checked){
+                                                                    cutsom.push(days.value)
+                                                                }
+
+                                                            }
+                                                            query.custom_days = cutsom
+                                                        }
+
+                                                        query.sub_product = sub_product
+                                                        query.sub_qty = sub_qty
+                                                        query.your_plan = your_plan
+                                                        query.sub_start_date = sub_start_date
+
+                                                    }
+
+
 
                                                     console.log(query)
 
-                                                         await fetch('/branch_admin/user/new_add_on', {
-                                                    method: 'POST',
-                                                    headers: {
-                                                        'Accept': 'application/json',
-                                                        'Content-Type': 'application/json'
-                                                    },
-                                                    body: JSON.stringify({"data": query,"user_address_id": user_address_id})
-                                                    })
-                                                    
-                                                   
+
+
+                                                    await fetch('/branch_admin/user/new_subscription', {
+                                                        method: 'POST',
+                                                        headers: {
+                                                            'Accept': 'application/json',
+                                                            'Content-Type': 'application/json'
+                                                        },
+                                                        body: JSON.stringify({"data": query , "user_address_id" : user_address_id})
+                                                        })
+                                                                                                    
                                                     window.location.href = "/branch_admin/user/single_user?user_address_id=" + user_address_id
 
-                                })
-
-
-
-
-
-
-
-                                const form=document.getElementById("subscriptionForm")
-                                            form.addEventListener("submit",async(e)=>{
-
-                                                let query = {}
-
-                                                e.preventDefault()
-
-
-                                              
-                                                // sub products
-                                                const sub_product = e.target.sub_product.value
-                                                const sub_qty = e.target.sub_qty.value
-                                                const sub_start_date = e.target.sub_start_date.value
-                                                const your_plan = e.target.your_plan.value
-                                                
-                                                const user_address_id = e.target.user_address_id.value
-
-
-                                                let custom_days 
-                                                if(your_plan){
-                                                         custom_days = e.target.custom_days
-                                                }
-                                            
-                                               
-                                                // sub product
-                                                if(sub_product.length != 0 ||sub_qty.length != 0 ||your_plan.length != 0 ||sub_start_date.length != 0  ){
-                                                    
-                                                    if(sub_product.length === 0 ||sub_qty.length === 0 ||your_plan.length === 0 ||sub_start_date.length === 0  ){
-
-
-                                                        error.style ="display: block; padding-right: 17px;"
-                                                        error.className = "modal fade show"
-
-                                                        return document.getElementById("dynamic_content_error").innerText = "Please Fill the Subscription Product Details"
-                                
-    
-                                                    }
-
-                                                    if(your_plan == 3){
-
-                                                        let count = 0
-                                                        let cutsom = []
-
-                                                        for(days of custom_days){
-                                                            if(!days.checked){
-                                                                count += 1
-                                                            }
-                                                            if (count == 7){
-                                                                error.style ="display: block; padding-right: 17px;"
-                                                                error.className = "modal fade show"
-                                                                return document.getElementById("dynamic_content_error").innerText = "Please Choose A Day "
-                                                            }
-
-                                                            if(days.checked){
-                                                                cutsom.push(days.value)
-                                                            }
-
-                                                        }
-                                                        query.custom_days = cutsom
-                                                    }
-
-                                                    query.sub_product = sub_product
-                                                    query.sub_qty = sub_qty
-                                                    query.your_plan = your_plan
-                                                    query.sub_start_date = sub_start_date
-
-                                                }
-
-
-
-                                                console.log(query)
-
-                                                
-
-                                                await fetch('/branch_admin/user/new_subscription', {
-                                                    method: 'POST',
-                                                    headers: {
-                                                        'Accept': 'application/json',
-                                                        'Content-Type': 'application/json'
-                                                    },
-                                                    body: JSON.stringify({"data": query , "user_address_id" : user_address_id})
-                                                    })
-                                                    alert("asda")                                                   
-                                                 window.location.href = "/branch_admin/user/single_user?user_address_id=" + user_address_id
-
-
-                                            })
-
-
-
+                                            }
                                
 
-                                            function removeModal(){
+                                function removeModal(){
                                                 ErroHandler.remove()
                                             }
-                                            function removeErrorModal(){
+                                function removeErrorModal(){
+
                                                 error.style ="display: none; padding-right: 17px;"
                                                         error.className = "modal fade"
 
                                             }
+
+                                             ///////////////////////////////////////////////////////////////////////////
+                                            // add additionla orders
+                                let addDates 
+
+                                function addAdditionalChange(date){
+                                        
+                                    // console.log(date.value.split(","))
+                                    addDates =  date.value.split(",")
+                                }
+
+
+
+                                async function createAdditionalProduct(e) {
+                                    e.preventDefault()
+                                    let addQuery = {}
+
+                                    addQuery.qty = e.target.qty.value
+                                    addQuery.sub_id = e.target.sub_id.value
+                                    addQuery.user_id = e.target.user_id.value
+
+                                    console.log(addDates)
+                                    if(addDates == undefined || addDates.length == 0){
+                                        error.style ="display: block; padding-right: 17px;"
+                                        error.className = "modal fade show"
+                                        
+                                        return document.getElementById("dynamic_content_error").innerText = "Please Choose A  Date"
+                                    }
+                                    
+                                    addQuery.dates = addDates
+                                    
+                                                                                        
+                                    await fetch('/branch_admin/user/create_additional', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Accept': 'application/json',
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({"data": addQuery})
+                                        })
+
+                                        window.location.href = "/branch_admin/user/single_user?user_address_id=<%= user.user_address_id%>"
+                                }
+
+
+                                ///////////////////////////////////////////////////////////////////////////
+                                // edit additional orders
+                                let editDates 
+
+                                function editAdditionalChange(date){
+                                    editDates =  date.value.split(",")
+                                }
+
+
+
+                                async function editAdditionalProduct(e) {
+                                    e.preventDefault()
+                                    let editQuery = {}
+
+                                    editQuery.qty = e.target.qty.value
+                                    editQuery.sub_id = e.target.sub_id.value
+                                    editQuery.user_id = e.target.user_id.value
+
+                                    console.log(editDates)
+                                    if(editDates == undefined || editDates.length == 0){
+                                        error.style ="display: block; padding-right: 17px;"
+                                        error.className = "modal fade show"
+                                        
+                                        return document.getElementById("dynamic_content_error").innerText = "Please Choose A  Date"
+                                    }
+                                    
+                                    editQuery.dates = editDates
+                                    
+                                                                                        
+                                    await fetch('/branch_admin/user/edit_additional', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Accept': 'application/json',
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({"data": editQuery})
+                                        })
+
+                                        window.location.href = "/branch_admin/user/single_user?user_address_id=<%= user.user_address_id%>"
+                                }
+
+
+ ///////////////////////////////////////////////////////////////////////////
+                                // edit subscription
+
+                                async function editSubscriptionDetails(e){
+                                    e.preventDefault()
+                                }
+
+                          
+ ///////////////////////////////////////////////////////////////////////////
+                                // add paused dates
+                                let addPauseDates 
+
+                                    function addPausedChanges(date){
+                                            
+                                        // console.log(date.value.split(","))
+                                        addPauseDates =  date.value.split(",")
+                                        console.log(addPauseDates)
+                                    }
+
+
+
+                                    
+                                    
+                                async function createPausedDates(e) {
+                                    e.preventDefault()
+                                    let addPausedQuery = {}
+
+                                    addPausedQuery.sub_id = e.target.sub_id.value
+                                    addPausedQuery.user_id = e.target.user_id.value
+
+                                    console.log(addPauseDates)
+                                    if(addPauseDates == undefined || addPauseDates.length == 0){
+                                        error.style ="display: block; padding-right: 17px;"
+                                        error.className = "modal fade show"
+                                        
+                                        return document.getElementById("dynamic_content_error").innerText = "Please Choose A  Date"
+                                    }
+                                    
+                                    addPausedQuery.dates = addPauseDates
+                                    
+                                                                                        
+                                    await fetch('/branch_admin/user/create_pause', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Accept': 'application/json',
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({"data": addPausedQuery})
+                                        })
+
+                                        window.location.href = "/branch_admin/user/single_user?user_address_id=<%= user.user_address_id%>"
+                                }
+
+
+                                    
+                                    
+
+
+
+ ///////////////////////////////////////////////////////////////////////////
+                                    // edit paused dates
+                                         
+                                let editPauseDates 
+
+                                function editPausedChange(date){
+                                        
+                                    // console.log(date.value.split(","))
+                                    editPauseDates =  date.value.split(",")
+                                    console.log(editPauseDates)
+                                }
+
+
+                                async function editPausedDates(e) {
+                                    e.preventDefault()
+                                    let editPausedQuery = {}
+
+                                    editPausedQuery.sub_id = e.target.sub_id.value
+                                    editPausedQuery.user_id = e.target.user_id.value
+
+                                    console.log(editPauseDates)
+                                    // if(editPauseDates == undefined || editPauseDates.length == 0){
+                                    //     error.style ="display: block; padding-right: 17px;"
+                                    //     error.className = "modal fade show"
+                                        
+                                    //     return document.getElementById("dynamic_content_error").innerText = "Please Choose A  Date"
+                                    // }
+                                    
+                                    if(editPauseDates == undefined || editPauseDates.length == 0){
+                                        
+                                        editPausedQuery.dates = []
+                                    }else{
+
+                                        editPausedQuery.dates = editPauseDates
+                                    }
+                                    
+                                                                                        
+                                    await fetch('/branch_admin/user/edit_pause', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Accept': 'application/json',
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({"data": editPausedQuery})
+                                        })
+
+                                        window.location.href = "/branch_admin/user/single_user?user_address_id=<%= user.user_address_id%>"
+                                }
+
+
+                 ///////////////////////////////////////////////////////////////////////////                
+
+                                // flat pickr date set 
+                                    const getaddAdditional = document.getElementsByClassName("addAdditional")
+
+                                    if(getaddAdditional.length !== 0){
+
+                                        for(let  i = 0; i < getaddAdditional.length ; i++){
+                                            flatpickr(getaddAdditional[i], {
+                                                mode: "multiple",
+                                                static : true ,
+                                                minDate: "today",
+                                            });
+                                        }
+                                    }
+
+
+                                    const getEditAdditional = document.getElementsByClassName("editAdditional")
+
+                                    if(getEditAdditional.length !== 0){
+
+                                        for(let  i = 0; i < getEditAdditional.length ; i++){
+                                                flatpickr(getEditAdditional[i], {
+                                                    mode: "multiple",
+                                                    static : true ,
+                                                    defaultDate : getEditAdditional[i].value.split(","),
+                                                    // minDate: "today",
+                                                });
+                             
+                                        }
+                                    }
+
+                                    const getEditPause = document.getElementsByClassName("editPause")
+
+                                    if(getEditPause.length !== 0){
+
+                                        for(let  i = 0; i < getEditPause.length ; i++){
+                                                flatpickr(getEditPause[i], {
+                                                    mode: "multiple",
+                                                    static : true ,
+                                                    defaultDate : getEditPause[i].value.split(","),
+                                                    // minDate: "today",
+                                                });
+                             
+                                        }
+                                    }
+
+                                    const getAddPause = document.getElementsByClassName("addPause")
+
+                                    if(getAddPause.length !== 0){
+
+                                        for(let  i = 0; i < getAddPause.length ; i++){
+                                                flatpickr(getAddPause[i], {
+                                                    mode: "multiple",
+                                                    static : true ,
+                                                    minDate: "today",
+                                                });
+                             
+                                        }
+                                    }
+
+
+
+                                    ////////////////////////////////////////////////////// chnage user plan
+                                    
+
+                                    async function changeSubscriptionPlan(e){
+                                                let query = {}
+
+                                                    e.preventDefault()
+
+                                                    console.log(e)
+
+                                                    // sub products
+
+                                                    const sub_start_date = e.target.sub_start_date.value
+                                                    const your_plan = e.target.your_plan.value
+
+                                                    const user_address_id = e.target.user_address_id.value
+                                                    const sub_id = e.target.sub_id.value
+
+
+                                                    let custom_days 
+                                                    if(your_plan){
+                                                            custom_days = e.target.custom_days
+                                                    }
+
+                                                    console.log(e.target)
+                                                    console.log(e.target.custom_days)
+                                                    console.log(custom_days)
+                                                  
+
+                                                    // sub product
+                                                    if(your_plan.length != 0 ||sub_start_date.length != 0  ){
+                                                        
+                                                       
+                                                        if(your_plan.length === 0 ||sub_start_date.length === 0  ){
+                                                          
+
+                                                            error.style ="display: block; padding-right: 17px;"
+                                                            error.className = "modal fade show"
+
+                                                            return document.getElementById("dynamic_content_error").innerText = "Please Fill the Change Plan Details"
+
+
+                                                        }
+
+                                                        if(your_plan == 3){
+
+                                                            let count = 0
+                                                            let cutsom = []
+
+                                                            for(days of custom_days){
+                                                                if(!days.checked){
+                                                                    count += 1
+                                                                }
+                                                                if (count == 7){
+                                                                    error.style ="display: block; padding-right: 17px;"
+                                                                    error.className = "modal fade show"
+                                                                    return document.getElementById("dynamic_content_error").innerText = "Please Choose A Day "
+                                                                }
+
+                                                                if(days.checked){
+                                                                    cutsom.push(days.value)
+                                                                }
+
+                                                            }
+                                                            query.custom_days = cutsom
+                                                        }
+
+                                        
+                                                        query.your_plan = your_plan
+                                                        query.sub_start_date = sub_start_date
+                                                        query.sub_id = sub_id
+
+                                                    }
+
+
+
+                                                    console.log(query)
+
+
+
+                                                    await fetch('/branch_admin/user/change_user_plan', {
+                                                        method: 'POST',
+                                                        headers: {
+                                                            'Accept': 'application/json',
+                                                            'Content-Type': 'application/json'
+                                                        },
+                                                        body: JSON.stringify({"data": query , "user_address_id" : user_address_id})
+                                                        })
+                                                                                                    
+                                                    // window.location.href = "/branch_admin/user/single_user?user_address_id=" + user_address_id
+
+                                            }
+                               
+
+
+
+
 </script>

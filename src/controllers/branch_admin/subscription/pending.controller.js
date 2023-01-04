@@ -330,7 +330,7 @@ export const getNewUsers = async (req, res) => {
       for (let i = 0; i < subscription_users.length; i++) {
         subscription_users[i].start_date = moment(
           subscription_users[i].start_date
-        ).format("YYYY-MM-DD");
+        ).format("DD-MM-YYYY");
         subscription_users[i].image =
           process.env.BASE_URL + subscription_users[i].image;
       }
@@ -380,7 +380,7 @@ export const getNewUsers = async (req, res) => {
         add_on_order_query[0][i].add_on_products = get_user_products_query;
         add_on_order_query[0][i].delivery_date = moment(
           add_on_order_query[0][i].delivery_date
-        ).format("YYYY-MM-DD");
+        ).format("DD-MM-YYYY");
 
         add_on_users.push(add_on_order_query[0][i]);
       }
@@ -592,7 +592,7 @@ export const getExistUsers = async (req, res) => {
       for (let i = 0; i < subscription_users.length; i++) {
         subscription_users[i].start_date = moment(
           subscription_users[i].start_date
-        ).format("YYYY-MM-DD");
+        ).format("DD-MM-YYYY");
         subscription_users[i].image =
           process.env.BASE_URL + subscription_users[i].image;
       }
@@ -640,7 +640,7 @@ export const getExistUsers = async (req, res) => {
         add_on_order_query[0][i].add_on_products = get_user_products_query;
         add_on_order_query[0][i].delivery_date = moment(
           add_on_order_query[0][i].delivery_date
-        ).format("YYYY-MM-DD");
+        ).format("DD-MM-YYYY");
 
         add_on_users.push(add_on_order_query[0][i]);
       }
@@ -788,7 +788,7 @@ export const getExistUsers = async (req, res) => {
 //       }
 //       data = results[0];
 //       for (let i = 0; i < data.length; i++) {
-//         data[i].start_date = moment(data[i].start_date).format("YYYY-MM-DD");
+//         data[i].start_date = moment(data[i].start_date).format("DD-MM-YYYY");
 //         data[i].image = process.env.BASE_URL + data[i].image;
 //       }
 //     }

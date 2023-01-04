@@ -22,7 +22,9 @@ export const updateCategory = async (req, res) => {
       query.image = image;
     }
 
-    if (subscription) {
+    const is_sub1 = await knex("categories_product_type").select("id","product_type_id").where({category_id : id })
+    for(let i=0; i<is_sub1.length;i++){
+    if (is_sub1[i].product_type_id==1) {
 
 
       const is_sub = await knex("categories_product_type").select("id").where({category_id : id , product_type_id : 1})
@@ -42,7 +44,7 @@ export const updateCategory = async (req, res) => {
         console.log(sub)
     }
 
-    if (addon) {
+    if (is_sub1[i].product_type_id==2) {
       const add = await knex("categories_product_type")
         .update({ product_type_id: 2 })
         .where({ id });
@@ -51,9 +53,10 @@ export const updateCategory = async (req, res) => {
     }
 
     await knex("categories").update(query).where({ id });
-
     req.flash("success", "Updated SuccessFully");
     res.redirect("/super_admin/product/get_category");
+  }
+   
   } catch (error) {
     console.log(error);
     res.redirect("/home");

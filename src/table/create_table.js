@@ -378,7 +378,7 @@ export const createTable = async (req, res) => {
           //   .inTable("subscription_type");
 
           t.string("branch_price", 255).nullable();
-          t.string("demo_price", 255).nullable();
+          t.integer("demo_price").nullable();
           t.string("name", 255).nullable();
           t.text("description").nullable();
           t.text("image").nullable();
@@ -434,6 +434,34 @@ export const createTable = async (req, res) => {
       }
     });
 
+
+          // subscription_users_change_plan
+          await knex.schema.hasTable("subscription_users_change_plan").then(function (exists) {
+            if (!exists) {
+              return knex.schema.createTable("subscription_users_change_plan", function (t) {
+                t.increments("id").primary();
+    
+                t.integer("user_id").unsigned().notNullable();
+                t.foreign("user_id").references("id").inTable("users");
+    
+                t.integer("subscription_id").unsigned().nullable();
+                  t.foreign("subscription_id")
+                    .references("id")
+                    .inTable("subscribed_user_details");
+    
+                    t.integer("previous_subscription_type_id").nullable();
+                    t.integer("change_subscription_type_id").nullable();
+      
+                t.date("start_date").nullable();
+                t.json("customized_days").nullable();
+        
+                t.timestamps(true, true);
+              });
+            }
+          });
+    
+
+
     //  subscribed user details
     await knex.schema
       .hasTable("subscribed_user_details")
@@ -469,6 +497,13 @@ export const createTable = async (req, res) => {
               t.foreign("user_address_id")
                 .references("id")
                 .inTable("user_address");
+
+              t.integer("change_plan_id").nullable();
+              t.foreign("change_plan_id")
+                .references("id")
+                .inTable("subscription_users_change_plan");
+
+                t.date("change_start_date").nullable();
 
               t.integer("product_id").unsigned().notNullable();
               t.foreign("product_id").references("id").inTable("products");
@@ -620,6 +655,9 @@ export const createTable = async (req, res) => {
           t.enu("status", ["pending", "delivered", "undelivered" , "cancelled"]).defaultTo(
             "pending"
           );
+
+            t.enu("is_cancelled" , ["0","1"]).defaultTo("0")
+
           t.integer("quantity", 255).nullable();
           t.integer("price").nullable();
 
@@ -976,30 +1014,6 @@ export const createTable = async (req, res) => {
         }
       });
 
-      // subscription_users_change_plan
-      await knex.schema.hasTable("subscription_users_change_plan").then(function (exists) {
-        if (!exists) {
-          return knex.schema.createTable("subscription_users_change_plan", function (t) {
-            t.increments("id").primary();
-
-            t.integer("user_id").unsigned().notNullable();
-            t.foreign("user_id").references("id").inTable("users");
-
-            t.integer("subscription_id").unsigned().nullable();
-              t.foreign("subscription_id")
-                .references("id")
-                .inTable("subscribed_user_details");
-
-                t.integer("previous_subscription_type_id").nullable();
-                t.integer("change_subscription_type_id").nullable();
-  
-            t.date("start_date").nullable();
-            t.json("customized_days").nullable();
-    
-            t.timestamps(true, true);
-          });
-        }
-      });
 
       // empty bottle tracking
 
@@ -1053,6 +1067,34 @@ export const createTable = async (req, res) => {
         }
       });
 
+
+      // rider daily details
+      await knex.schema.hasTable("rider_daily_details").then(function (exists) {
+        if (!exists) {
+          return knex.schema.createTable("rider_daily_details", function (t) {
+            t.increments("id").primary().unsigned().notNullable();
+
+            t.integer("router_id").unsigned().nullable();
+            t.foreign("router_id").references("id").inTable("routes");
+
+            t.integer("rider_id").unsigned().nullable();
+            t.foreign("rider_id").references("id").inTable("rider_details");
+
+            
+            t.integer("total_one_liter").nullable();
+            t.integer("total_half_liter").nullable();
+            t.integer("remainding_one_liter").nullable();
+            t.integer("remainding_half_lite").nullable();
+            t.integer("bottle_collected_one_liter").nullable();
+            t.integer("bottle_collected_half_liter").nullable();
+
+            t.json("order_details").nullable();
+
+            t.enu("status", ["0", "1"]).defaultTo("1");
+            t.timestamps(true, true);
+          });
+        }
+      });
 
     return res
       .status(200)

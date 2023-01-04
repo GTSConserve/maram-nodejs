@@ -293,7 +293,7 @@ export const getNewUsers = async (req, res) => {
       for (let i = 0; i < subscription_users.length; i++) {
         subscription_users[i].start_date = moment(
           subscription_users[i].start_date
-        ).format("YYYY-MM-DD");
+        ).format("DD-MM-YYYY");
         subscription_users[i].image =
           process.env.BASE_URL + subscription_users[i].image;
       }
@@ -343,7 +343,7 @@ export const getNewUsers = async (req, res) => {
         add_on_order_query[0][i].add_on_products = get_user_products_query;
         add_on_order_query[0][i].delivery_date = moment(
           add_on_order_query[0][i].delivery_date
-        ).format("YYYY-MM-DD");
+        ).format("DD-MM-YYYY");
 
         add_on_users.push(add_on_order_query[0][i]);
       }
@@ -756,7 +756,7 @@ export const getSingleUser = async (req, res) => {
 
         get_subscription_products[i].start_date = moment(
           get_subscription_products[i].start_date
-        ).format("YYYY-MM-DD");
+        ).format("DD-MM-YYYY");
       }
     }
 
@@ -799,7 +799,7 @@ export const getSingleUser = async (req, res) => {
         }
         add_on[i].add_on_products = get_user_products_query;
         add_on[i].delivery_date = moment(add_on[i].delivery_date).format(
-          "YYYY-MM-DD"
+          "DD-MM-YYYY"
         );
       }
     }

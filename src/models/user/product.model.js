@@ -1,6 +1,8 @@
 import e from "connect-flash";
 import knex from "../../services/db.service";
 import { GetProduct } from "../../utils/helper.util";
+import moment from "moment";
+
 
 export const get_subscription_or_add_on_products = async (id,userId) => {
   try {
@@ -206,4 +208,53 @@ export const remove_addonorders = async (product_id , delivery_date) => {
     console.log(error);
     return { status: false, message: "Cannot Remove addon order"};
      }
-   }
+   } 
+
+
+  //  next day products
+  export const nextday_product = async (userId) => {
+    try{
+     const product = await knex('subscribed_user_details')
+     .join('products','products.id','=','subscribed_user_details.product_id') 
+     .join('unit_types','unit_types.id','=','products.unit_type_id')
+     .select(
+      'products.id as product_id',
+      'products.name as product_name',
+      'products.image as product_image',
+      'products.status as product_status',
+      'products.unit_value as value',
+      'unit_types.name as unit_type',
+      'products.price as price',
+     )
+     .where({'subscribed_user_details.user_id':userId})
+
+     
+      console.log(product)
+    const tommorow_date = moment(new Date(), "YYYY-MM-DD").add(2, "days");
+     
+    
+  //   let date = await knex('daily_orders').select("*");
+  //   // let date1 = await knex('rider_daily_details').insert({order_details:date})
+  //   for (let j = 0; j < date.length; j++) {
+  //   let date1 = await knex.table('rider_daily_details')
+  //   //.where({id: 1})
+  //   .update({order_details: JSON.stringify(date)});
+  //   //   let store_weekdays = [];
+  //   //  let query =[];
+  //   //     for (let j = 0; j < date.length; j++) {
+          
+  //   //         store_weekdays.push(date1[0].order_details);
+  //   console.log(date1)      
+  // }
+        
+      
+    //   query = JSON.stringify(store_weekdays);
+    
+    return { status: true, product };
+  }
+    catch(error){
+      console.log(error);
+      return { status: false, message: "no next day products"}; 
+       }
+    }
+  

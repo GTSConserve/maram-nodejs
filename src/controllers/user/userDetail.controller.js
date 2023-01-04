@@ -2,6 +2,7 @@ import responseCode from "../../constants/responseCode";
 import { parseJwtPayload } from "../../services/jwt.service";
 import { userAddressValidator } from "../../services/validator.service";
 import knex from "../../services/db.service";
+import moment from "moment";
 import {
   change_plan,
   delete_user_address,
@@ -469,58 +470,21 @@ export const getSingleBillList = async (req, res) => {
         .json({ status: false, message: "Cannot find bill list" });
     }
 
-    
+    const list = await get_single_bill(bill_id);
 
-    // const list = await get_single_bill(bill_id);
-    const data =
-    {
-      "bill_id": "1",
-      "payment_id": "1",
-      "month": "Jan 2023",
-      "order_string": "Bill No#MA3948F3J492",
-      "bill_value": 1085,
-      "payment_status": "success",
-      "sub_total": 0,
-      "discount": 0,
-      "subscription_products": [
-        {
-          "no_quantity": 1,
-          "product_name": "Milk",
-          "product_id": 664,
-          "product_total": 1252,
-          "recipe_price": 1242,
-          "variation_name": "1 Litre",
-          "variation_id": 183,
-          "no_of_days": 40
-        }
-      ],
-      "addons_products": [
-        {
-          "no_quantity": 1,
-          "product_name": "Vegetables",
-          "product_id": 664,
-          "product_total": 1252,
-          "recipe_price": 1242,
-          "variation_name": "1 Litre",
-          "variation_id": 183
-        }
-      ],
-      "user": {
-        "address_id": 183,
-        "address": "221, M.K.K.Nagar, Kamban Nagar, Thiruvalluvar Nagar, Pudukkottai, Tamil Nadu 622003, India\n",
-        "landmark": ""
-      }
-
-
+    if (!list) {
+      return res
+        .status(responseCode.FAILURE.DATA_NOT_FOUND)
+        .json({ status: false, message: "Cannot find bill list" });
     }
-
-    // if (!list) {
-    //   return res
-    //     .status(responseCode.FAILURE.DATA_NOT_FOUND)
-    //     .json({ status: false, message: sub.message });
-    // }
-
-    res.status(200).json({ status: true, data: data });
+    for (let i = 0; i < list.data.length; i++) {
+      console.log(list)
+      
+      list.data[i].id = list.data[i].id;
+      list.data[i].bill_value = list.data[i].bill_value;
+      list.data[i].date = moment().format("DD-MM-YYYY"); 
+    }
+    return res.status(responseCode.SUCCESS).json({ status: true, data: list });
   } catch (error) {
     console.log(error);
 

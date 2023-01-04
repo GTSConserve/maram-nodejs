@@ -49,39 +49,42 @@ var insertData = /*#__PURE__*/function () {
             return (0, _db["default"])("product_type").insert(_dummy_data.product_type);
           case 15:
             _context.next = 17;
-            return (0, _db["default"])("unit_types").insert(_dummy_data.variation_types);
+            return (0, _db["default"])("app_settings").insert(_dummy_data.app_settings);
           case 17:
             _context.next = 19;
-            return (0, _db["default"])("coupons").insert(_dummy_data.coupons);
+            return (0, _db["default"])("unit_types").insert(_dummy_data.variation_types);
           case 19:
             _context.next = 21;
-            return (0, _db["default"])("subscription_type").insert(_dummy_data.subscription_type);
+            return (0, _db["default"])("coupons").insert(_dummy_data.coupons);
           case 21:
             _context.next = 23;
-            return (0, _db["default"])("product_type").select("id");
+            return (0, _db["default"])("subscription_type").insert(_dummy_data.subscription_type);
           case 23:
+            _context.next = 25;
+            return (0, _db["default"])("product_type").select("id");
+          case 25:
             product_type_id = _context.sent;
-            _context.next = 26;
+            _context.next = 28;
             return (0, _db["default"])("categories").insert(_dummy_data.category);
-          case 26:
+          case 28:
             return _context.abrupt("return", res.status(200).json({
               status: true,
               message: "Successfully data inserted"
             }));
-          case 29:
-            _context.prev = 29;
+          case 31:
+            _context.prev = 31;
             _context.t0 = _context["catch"](0);
             console.log(_context.t0);
             return _context.abrupt("return", res.status(500).json({
               status: false,
               message: "Error at seeding data"
             }));
-          case 33:
+          case 35:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 29]]);
+    }, _callee, null, [[0, 31]]);
   }));
   return function insertData(_x, _x2) {
     return _ref.apply(this, arguments);

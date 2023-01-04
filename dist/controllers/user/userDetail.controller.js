@@ -9,6 +9,7 @@ var _responseCode = _interopRequireDefault(require("../../constants/responseCode
 var _jwt = require("../../services/jwt.service");
 var _validator = require("../../services/validator.service");
 var _db = _interopRequireDefault(require("../../services/db.service"));
+var _moment = _interopRequireDefault(require("moment"));
 var _user_details = require("../../models/user/user_details.model");
 var _messages = _interopRequireDefault(require("../../constants/messages"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -750,7 +751,7 @@ var getBillList = /*#__PURE__*/function () {
 exports.getBillList = getBillList;
 var getSingleBillList = /*#__PURE__*/function () {
   var _ref16 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee16(req, res) {
-    var bill_id, data;
+    var bill_id, list, i;
     return _regeneratorRuntime().wrap(function _callee16$(_context16) {
       while (1) {
         switch (_context16.prev = _context16.next) {
@@ -766,64 +767,42 @@ var getSingleBillList = /*#__PURE__*/function () {
               message: "Cannot find bill list"
             }));
           case 4:
-            // const list = await get_single_bill(bill_id);
-            data = {
-              "bill_id": "1",
-              "payment_id": "1",
-              "month": "Jan 2023",
-              "order_string": "Bill No#MA3948F3J492",
-              "bill_value": 1085,
-              "payment_status": "success",
-              "sub_total": 0,
-              "discount": 0,
-              "subscription_products": [{
-                "no_quantity": 1,
-                "product_name": "Milk",
-                "product_id": 664,
-                "product_total": 1252,
-                "recipe_price": 1242,
-                "variation_name": "1 Litre",
-                "variation_id": 183,
-                "no_of_days": 40
-              }],
-              "addons_products": [{
-                "no_quantity": 1,
-                "product_name": "Vegetables",
-                "product_id": 664,
-                "product_total": 1252,
-                "recipe_price": 1242,
-                "variation_name": "1 Litre",
-                "variation_id": 183
-              }],
-              "user": {
-                "address_id": 183,
-                "address": "221, M.K.K.Nagar, Kamban Nagar, Thiruvalluvar Nagar, Pudukkottai, Tamil Nadu 622003, India\n",
-                "landmark": ""
-              }
-            }; // if (!list) {
-            //   return res
-            //     .status(responseCode.FAILURE.DATA_NOT_FOUND)
-            //     .json({ status: false, message: sub.message });
-            // }
-            res.status(200).json({
+            _context16.next = 6;
+            return (0, _user_details.get_single_bill)(bill_id);
+          case 6:
+            list = _context16.sent;
+            if (list) {
+              _context16.next = 9;
+              break;
+            }
+            return _context16.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
+              status: false,
+              message: "Cannot find bill list"
+            }));
+          case 9:
+            for (i = 0; i < list.data.length; i++) {
+              console.log(list);
+              list.data[i].id = list.data[i].id;
+              list.data[i].bill_value = list.data[i].bill_value;
+              list.data[i].date = (0, _moment["default"])().format("DD-MM-YYYY");
+            }
+            return _context16.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               status: true,
-              data: data
-            });
-            _context16.next = 12;
-            break;
-          case 8:
-            _context16.prev = 8;
+              data: list
+            }));
+          case 13:
+            _context16.prev = 13;
             _context16.t0 = _context16["catch"](0);
             console.log(_context16.t0);
             res.status(500).json({
               status: false
             });
-          case 12:
+          case 17:
           case "end":
             return _context16.stop();
         }
       }
-    }, _callee16, null, [[0, 8]]);
+    }, _callee16, null, [[0, 13]]);
   }));
   return function getSingleBillList(_x31, _x32) {
     return _ref16.apply(this, arguments);

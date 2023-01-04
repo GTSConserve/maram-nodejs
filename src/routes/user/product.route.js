@@ -17,6 +17,7 @@ const productRouter = express.Router({
   strict: true,
 });
 
+
 productRouter.post("/get_categories",nonMandatoryToken,authenticateJWT,getCategories);
 productRouter.post("/get_products", nonMandatoryToken,authenticateJWT,getProducts);
 productRouter.post("/search_products",nonMandatoryToken,authenticateJWT,searchProducts);
@@ -33,7 +34,7 @@ productRouter.post("/remove_add_on_products",authenticateJWT,nonMandatoryToken,r
 
 // next day delivery product api for static
 
-productRouter.post("/next_day_product", authenticateJWT,nonMandatoryToken,nextDayProduct);
+productRouter.post("/next_day_product", nonMandatoryToken,nextDayProduct);
 
 
 export default productRouter;
