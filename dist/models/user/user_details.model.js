@@ -135,7 +135,7 @@ var get_user = /*#__PURE__*/function () {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.next = 2;
-            return _db["default"].select("id", "name", "image", "mobile_number", "email", "total_bill_due_Amount", "total_bill_count", "total_address_count", "total_subcription_count", 'total_delivered_product_count', 'rider_status').from("users").where({
+            return _db["default"].select("id", "name", "image", "mobile_number", "email").from("users").where({
               id: id
             });
           case 2:
