@@ -819,3 +819,19 @@ export const changeUserPlan = async (req,res) => {
     res.redirect("/home")
   }
 }
+
+
+
+export const updateQty = async (req,res) => {
+  try {
+    
+    const {data} = req.body
+    console.log(data)
+    await knex("subscribed_user_details").update({quantity : data.qty}).where({user_id : data.user_id , id : data.sub_id})
+    return res.status(200).json({status : true})
+
+  } catch (error) {
+      console.log(error)
+      res.redirect("/home")
+  }
+}

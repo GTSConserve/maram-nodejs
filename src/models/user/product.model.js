@@ -225,32 +225,16 @@ export const remove_addonorders = async (product_id , delivery_date) => {
       'products.unit_value as value',
       'unit_types.name as unit_type',
       'products.price as price',
+      'subscribed_user_details.date as date'
      )
      .where({'subscribed_user_details.user_id':userId})
 
      
-      console.log(product)
-    const tommorow_date = moment(new Date(), "YYYY-MM-DD").add(2, "days");
-     
+
+     const date = await knex('daily_orders').select('date').where({user_id:userId});
+      // console.log(product)
     
-  //   let date = await knex('daily_orders').select("*");
-  //   // let date1 = await knex('rider_daily_details').insert({order_details:date})
-  //   for (let j = 0; j < date.length; j++) {
-  //   let date1 = await knex.table('rider_daily_details')
-  //   //.where({id: 1})
-  //   .update({order_details: JSON.stringify(date)});
-  //   //   let store_weekdays = [];
-  //   //  let query =[];
-  //   //     for (let j = 0; j < date.length; j++) {
-          
-  //   //         store_weekdays.push(date1[0].order_details);
-  //   console.log(date1)      
-  // }
-        
-      
-    //   query = JSON.stringify(store_weekdays);
-    
-    return { status: true, product };
+    return { status: true, product,date };
   }
     catch(error){
       console.log(error);

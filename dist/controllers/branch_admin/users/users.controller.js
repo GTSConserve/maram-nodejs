@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.unsubscribeSubscription = exports.subscribeSubscription = exports.newSubscription = exports.newAddOn = exports.getusers = exports.getSingleUser = exports.getAddUser = exports.editPaused = exports.editAdditional = exports.createUser = exports.createPaused = exports.createAdditional = exports.changeUserPlan = exports.cancelAdditional = void 0;
+exports.updateQty = exports.unsubscribeSubscription = exports.subscribeSubscription = exports.newSubscription = exports.newAddOn = exports.getusers = exports.getSingleUser = exports.getAddUser = exports.editPaused = exports.editAdditional = exports.createUser = exports.createPaused = exports.createAdditional = exports.changeUserPlan = exports.cancelAdditional = void 0;
 var _moment = _interopRequireDefault(require("moment"));
 var _db = _interopRequireDefault(require("../../../services/db.service"));
 var _helper = require("../../../utils/helper.util");
@@ -1114,3 +1114,41 @@ var changeUserPlan = /*#__PURE__*/function () {
   };
 }();
 exports.changeUserPlan = changeUserPlan;
+var updateQty = /*#__PURE__*/function () {
+  var _ref15 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee15(req, res) {
+    var data;
+    return _regeneratorRuntime().wrap(function _callee15$(_context15) {
+      while (1) {
+        switch (_context15.prev = _context15.next) {
+          case 0:
+            _context15.prev = 0;
+            data = req.body.data;
+            console.log(data);
+            _context15.next = 5;
+            return (0, _db["default"])("subscribed_user_details").update({
+              quantity: data.qty
+            }).where({
+              user_id: data.user_id,
+              id: data.sub_id
+            });
+          case 5:
+            return _context15.abrupt("return", res.status(200).json({
+              status: true
+            }));
+          case 8:
+            _context15.prev = 8;
+            _context15.t0 = _context15["catch"](0);
+            console.log(_context15.t0);
+            res.redirect("/home");
+          case 12:
+          case "end":
+            return _context15.stop();
+        }
+      }
+    }, _callee15, null, [[0, 8]]);
+  }));
+  return function updateQty(_x29, _x30) {
+    return _ref15.apply(this, arguments);
+  };
+}();
+exports.updateQty = updateQty;

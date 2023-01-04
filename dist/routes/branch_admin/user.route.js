@@ -38,5 +38,8 @@ userRouter.post("/new_add_on", _users.newAddOn);
 
 // chnage user plan
 userRouter.post("/change_user_plan", _users.changeUserPlan);
+
+// edit qty
+userRouter.post("/update_qty", _users.updateQty);
 var _default = userRouter;
 exports["default"] = _default;

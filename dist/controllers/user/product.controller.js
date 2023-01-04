@@ -8,6 +8,7 @@ exports.searchProducts = exports.removeAddOnOrder = exports.nextDayProduct = exp
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 var _messages = _interopRequireDefault(require("../../constants/messages"));
 var _helper = require("../../utils/helper.util");
+var _moment = _interopRequireDefault(require("moment"));
 var _product = require("../../models/user/product.model");
 var _jwt = require("../../services/jwt.service");
 var _db = _interopRequireDefault(require("../../services/db.service"));
@@ -459,7 +460,7 @@ var addon_Order = /*#__PURE__*/function () {
 exports.addon_Order = addon_Order;
 var nextDayProduct = /*#__PURE__*/function () {
   var _ref9 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9(req, res) {
-    var userId, static_response, query;
+    var userId, static_response, date1, date2, tommorow_date, query, _query;
     return _regeneratorRuntime().wrap(function _callee9$(_context9) {
       while (1) {
         switch (_context9.prev = _context9.next) {
@@ -470,6 +471,14 @@ var nextDayProduct = /*#__PURE__*/function () {
             return (0, _product.nextday_product)(userId);
           case 4:
             static_response = _context9.sent;
+            date1 = (0, _moment["default"])(static_response.product[0].date, "YYYY-MM-DD").format("YYYY-MM-DD");
+            date2 = (0, _moment["default"])(static_response.product[0].date, "YYYY-MM-DD").format("YYYY-MM-DD");
+            tommorow_date = (0, _moment["default"])(new Date(), "YYYY-MM-DD").add(1, "days").format("YYYY-MM-DD");
+            console.log(tommorow_date, date1, date2);
+            if (!(tommorow_date === date1)) {
+              _context9.next = 14;
+              break;
+            }
             query = {
               "product_id": static_response.product[0].product_id,
               "product_name": static_response.product[0].product_name,
@@ -477,34 +486,51 @@ var nextDayProduct = /*#__PURE__*/function () {
               "product_status": static_response.product[0].product_status,
               "product_variation": static_response.product[0].value + static_response.product[0].unit_type,
               "Product price": static_response.product[0].price
-            };
-            if (static_response) {
-              _context9.next = 8;
+            }; // tommorow_date = moment().format("YYYY-MM-DD")
+            return _context9.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
+              status: true,
+              data: query,
+              "date": static_response.product[0].date
+            }));
+          case 14:
+            if (!(tommorow_date === date2)) {
+              _context9.next = 19;
               break;
             }
+            _query = {
+              "product_id": static_response.product[0].product_id,
+              "product_name": static_response.product[0].product_name,
+              "product_image": static_response.product[0].product_image,
+              "product_status": static_response.product[0].product_status,
+              "product_variation": static_response.product[0].value + static_response.product[0].unit_type,
+              "Product price": static_response.product[0].price
+            }; // tommorow_date = moment().format("YYYY-MM-DD")
+            return _context9.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
+              status: true,
+              data: _query,
+              "date": static_response.date[0].date
+            }));
+          case 19:
             return _context9.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
               message: "No Product Available"
             }));
-          case 8:
-            return _context9.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
-              status: true,
-              data: query,
-              "date": "25 Oct | Mon"
-            }));
-          case 11:
-            _context9.prev = 11;
+          case 20:
+            _context9.next = 26;
+            break;
+          case 22:
+            _context9.prev = 22;
             _context9.t0 = _context9["catch"](0);
             console.log(_context9.t0);
             res.status(500).json({
               status: false
             });
-          case 15:
+          case 26:
           case "end":
             return _context9.stop();
         }
       }
-    }, _callee9, null, [[0, 11]]);
+    }, _callee9, null, [[0, 22]]);
   }));
   return function nextDayProduct(_x17, _x18) {
     return _ref9.apply(this, arguments);

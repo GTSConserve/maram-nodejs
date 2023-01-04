@@ -13,7 +13,8 @@ import {
   remove_order,
   checkAddress,
   get_user_bill,
-  get_single_bill
+  get_single_bill,
+  rider_location
 } from "../../models/user/user_details.model";
 import messages from "../../constants/messages";
 
@@ -491,6 +492,47 @@ export const getSingleBillList = async (req, res) => {
     res.status(500).json({ status: false });
   }
 };
+
+
+// rider location 
+export const RiderLocation = async (req,res) => {
+  try{
+      const { userId } = req.body;
+    
+    const rider1= await rider_location(userId)
+    let data =[];
+
+    let user ={
+      'id':rider1.location[0].user_id,
+      'name':rider1.location[0].user_name,
+      'address':rider1.location[0].user_address,
+      'latitude':rider1.location[0].user_latitude,
+      'longitude':rider1.location[0].user_longitude,
+
+    }
+
+    let branch ={
+      'id':rider1.location[0].admin_id,
+      'name':rider1.location[0].admin_name,
+      'address':rider1.location[0].admin_address,
+      'latitude':rider1.location[0].admin_latitude,
+      'longitude':rider1.location[0].admin_longitude,
+    }
+
+    let rider ={
+      'id':rider1.location[0].rider_id,
+      'name':rider1.location[0].rider_name,
+      'latitude':rider1.location[0].rider_latitude,
+      'longitude':rider1.location[0].rider_longitude,
+    }
+    return res.status(responseCode.SUCCESS).json({ status: true, data:{user,branch,rider} });
+
+  }
+  catch(error){
+    console.log(error);
+    res.status(500).json({ status: false });
+  }
+}
 
 
 

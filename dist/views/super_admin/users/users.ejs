@@ -2,24 +2,23 @@
 <% layout('layouts/boilerPlate') %>
     <div class="widget-content widget-content-area br-6">
         <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
-            <div class="dt--top-section">
-                <div class="row">
-                    <div class="col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center">
-                        <div class="dataTables_length" id="DataTables_Table_0_length">
-                            <h4>Users</h4>
+            <div class="row">
+                 <div class="col-8">
+                        <h3 class="mt-2">Users</h3>
                         </div>
-                    </div>
+                        <div class="col-4">
+                             <div class="input-group mb-3">
+                            <input type="text" class="form-control" name="searchKeyword" oninput="onChangeSearch()" value="<%=searchKeyword ? searchKeyword : ""  %>"  id="searchText" placeholder="search by username or mobile number"  aria-describedby="basic-addon2">
+                            <div class="input-group-append" style="cursor: pointer;"  onclick="onSearch()" >
+                              <span style="background-color: #80C659;" class="input-group-text " id="basic-addon2"><svg style="color: #fff;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button></span>
+                            </div>
+                          </div>
+                          </div>     
+             
+             
 
-                    <!-- <div class="col-1"></div> -->
-                    <div class="col-6  filtered-list-search mx-auto">
-                        <div class="form-inline my-2 my-lg-0 justify-content-center">
-                            <div class="w-100 row">
-
-                                <div class="w-100">
-                                    <input type="text" name="searchKeyword" oninput="onChangeSearch()" value="<%=searchKeyword? searchKeyword : ""  %>" class="w-100 form-control product-search br-30 col-7" id="searchText" placeholder="Search By User Name Or Mobile Number">
-                                    <button class="btn btn-primary" type="submit" onclick="onSearch()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
-                                </div>
-
+            </div>
+    </div>
 
 
                     
@@ -43,13 +42,7 @@
                                  
                                 };
                                 </script>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
+            
     
 
         <% if(data.length === 0){ %> 

@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.remove_order = exports.get_user_bill = exports.get_user = exports.get_single_bill = exports.get_address = exports.edit_address = exports.edit = exports.delete_user_address = exports.checkAddress = exports.change_plan = void 0;
+exports.rider_location = exports.remove_order = exports.get_user_bill = exports.get_user = exports.get_single_bill = exports.get_address = exports.edit_address = exports.edit = exports.delete_user_address = exports.checkAddress = exports.change_plan = void 0;
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 var _db = _interopRequireDefault(require("../../services/db.service"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -527,4 +527,62 @@ var get_single_bill = /*#__PURE__*/function () {
     return _ref10.apply(this, arguments);
   };
 }();
+
+// rider location 
 exports.get_single_bill = get_single_bill;
+var rider_location = /*#__PURE__*/function () {
+  var _ref11 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11(userId) {
+    var router, location;
+    return _regeneratorRuntime().wrap(function _callee11$(_context11) {
+      while (1) {
+        switch (_context11.prev = _context11.next) {
+          case 0:
+            _context11.prev = 0;
+            _context11.next = 3;
+            return (0, _db["default"])('daily_orders').join("routes", "routes.id", "=", "daily_orders.router_id").join("rider_details", "rider_details.id", "=", "routes.rider_id").select('rider_details.tour_status as status').where({
+              user_id: userId
+            });
+          case 3:
+            router = _context11.sent;
+            if (!(router[0].status == 1)) {
+              _context11.next = 11;
+              break;
+            }
+            _context11.next = 7;
+            return (0, _db["default"])('daily_orders').join("users", "users.id", "=", "daily_orders.user_id").join("user_address", "user_address.user_id", "=", "daily_orders.user_id").join("admin_users", "admin_users.id", "=", "daily_orders.branch_id").join("routes", "routes.id", "=", "daily_orders.router_id").join("rider_details", "rider_details.id", "=", "routes.rider_id").select('users.id as user_id', 'users.name as user_name', 'user_address.address as user_address', 'user_address.latitude as user_latitude', 'user_address.longitude as user_longitude', 'admin_users.id as admin_id', 'admin_users.first_name as admin_name', 'admin_users.address as admin_address', 'admin_users.latitude as admin_latitude', 'admin_users.longitude as admin_longitude', 'rider_details.id as rider_id', 'rider_details.name as rider_name', 'rider_details.latitude as rider_latitude', 'rider_details.longitude as rider_longitude').where({
+              'daily_orders.user_id': userId
+            });
+          case 7:
+            location = _context11.sent;
+            return _context11.abrupt("return", {
+              status: _responseCode["default"].SUCCESS,
+              location: location
+            });
+          case 11:
+            return _context11.abrupt("return", {
+              status: false,
+              message: "no order placed today SORRY!!!!!"
+            });
+          case 12:
+            _context11.next = 18;
+            break;
+          case 14:
+            _context11.prev = 14;
+            _context11.t0 = _context11["catch"](0);
+            console.log(_context11.t0);
+            return _context11.abrupt("return", {
+              status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
+              error: _context11.t0
+            });
+          case 18:
+          case "end":
+            return _context11.stop();
+        }
+      }
+    }, _callee11, null, [[0, 14]]);
+  }));
+  return function rider_location(_x25) {
+    return _ref11.apply(this, arguments);
+  };
+}();
+exports.rider_location = rider_location;

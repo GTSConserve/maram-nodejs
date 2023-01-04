@@ -219,7 +219,7 @@
                             <h6 class="pl-5">No Subscription Product Found</h6>
                             <% }else{ %>
                                 <div class="table-responsive">
-                                    <table class="table">
+                                    <table class="table   table-hover mb-4 alterateTable">
                                         <thead class="">
                                             <tr>
 
@@ -231,7 +231,7 @@
                                                 <th class="text-right" scope="col">Start Date</th>
                                                 <th class="text-right" scope="col">Type</th>
                                                 <th class="text-right" scope="col">Status</th>
-                                                <th class="text-right" scope="col">Action</th>
+                                                <th class="text-center" scope="col">Action</th>
                                             </tr>
                                         </thead>  
                                         <tbody>
@@ -256,7 +256,7 @@
                                                             <span style="cursor: pointer;"  data-toggle="modal" class="badge badge-primary mb-2  p-2" data-target="#additionalSubscription<%= sub_products[i].sub_id  %>">Additional Order</span>
                                                             <span style="cursor: pointer;"  data-toggle="modal" class="badge badge-secondary mb-2 p-2" data-target="#pauseSubscription<%= sub_products[i].sub_id  %>">Pause Subscription</span>
                                                             <br>
-                                                            <span style="cursor: pointer;"  data-toggle="modal" class="badge badge-info mb-2  p-2" data-target="#editSubscription<%= sub_products[i].sub_id  %>">Edit Subscription</span>
+                                                            <span style="cursor: pointer;"  data-toggle="modal" class="badge badge-info mb-2  p-2" data-target="#editQty<%= sub_products[i].sub_id  %>">Edit Qty</span>
                                                             <span style="cursor: pointer;"  data-toggle="modal" class="badge badge-danger mb-2 p-2" data-target="#unSubscription<%= sub_products[i].sub_id  %>">unsubscribe</span>
 
                                                             <span style="cursor: pointer;"  data-toggle="modal" class="badge badge-dark mb-2 p-2" data-target="#changePlan<%= sub_products[i].sub_id  %>">Change Plan</span>
@@ -267,57 +267,23 @@
 
 
 
-                                                <div class="modal fade" id="editSubscription<%= sub_products[i].sub_id  %>"  tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                                <div class="modal fade" id="editQty<%= sub_products[i].sub_id  %>"  tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                                     <div class="modal-dialog " role="document">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
-                                                                <h5 class="modal-title" id="exampleModalCenterTitle">Additional Orders</h5>
+                                                                <h5 class="modal-title" id="exampleModalCenterTitle">Edit Qty</h5>
                                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                                     <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                                                                 </button>
                                                             </div>
                                                           
-                                                            <form onsubmit="editSubscriptionDetails(event)">
-                                                                <div class="modal-body">
-                                                                    <!-- <h4 class="modal-heading mb-4 mt-2">Are You Sure?</h4> -->
-
-
-                                                                   
+                                                            <form onsubmit="editQty(event)">
+                                                                <div class="modal-body"> 
                                                                         <div class="form-row mb-4">
-                                                                        
-                                                                          
-                                                                            <div class="col-6">
-                                                                                <label>Status</label>
-                                                                                <select   wire:model="countryid" class="form-control" name="status" >
-                                                                                    <option value="<%= sub_products[i].subscription_status %>" selected ><%= sub_products[i].subscription_status %> </option>
-                                                                                    <%  %> 
-                                                                                        <option  value="subscribed">subscribed  </option>
-                                                                                        <option  value="unsubscribed">unsubscribed  </option>
-                                                                               
-                                                                                    </select>
-                                                                            </div>
                                                                             <div class="col-6">
                                                                                 <label for="sub_qty">Qty</label>
-                                                                                <input class="form-control" name="qty" type="number" value="<%= sub_products[i].quantity %>"> 
+                                                                                <input class="form-control" name="qty" required min="1" type="number" value="<%= sub_products[i].quantity %>"> 
                                                                             </div>
-                                                                        </div>
-                                                                        <div class="form-row mb-4">
-                                                                            <div class="form-group col-md-4">
-                                                                                <label>Choose Your Plan</label>
-                                                                                <select onchange="checkHandler(this)"  wire:model="countryid" class="form-control" name="your_plan" >
-                                                                                    <option value="<%= sub_products[i].sub_name %>" selected ><%= sub_products[i].sub_name %> </option>
-                                                                                    <% for(plan of get_plan){ %>
-                                                                                        <% if(plan.name != sub_products[i].sub_name){ %> 
-                                                                                        <option  value="<%=plan.id %>"><%=plan.name %>  </option>
-                                                                                        <% } %>
-                                                                                    <% } %>
-                                                                                    </select>
-                                                                                </div>
-                                                                               
-                                                                                <div class="form-group col-md-4 pl-3 " id="custom_days">
-                                                                                 
-                                                                                    
-                                                                                </div>
                                                                         </div>
                                                                             <input type="hidden"  name="sub_id" value="<%= sub_products[i].sub_id %>">
                                                                             <input type="hidden"  name="user_id" value="<%= sub_products[i].user_id %>">
@@ -326,8 +292,8 @@
                                                                                 <button  class="btn btn-primary" type="submit">Update</button>
                                                                             </div>
                                                                             
-                                                                        </div>
-                                                                    </form>
+                                                                </div>
+                                                            </form>
 
                                                     </div>
                                                 </div>
@@ -359,7 +325,7 @@
                                                                             </div>
                                                                             <div class="col-6">
                                                                                 <label for="sub_qty">Qty</label>
-                                                                                <input class="form-control" name="qty" type="number" value="<%= sub_products[i].additional_orders.qty %>"> 
+                                                                                <input class="form-control" name="qty" required min="1" type="number" value="<%= sub_products[i].additional_orders.qty %>"> 
                                                                             </div>
                                                                         </div>
                                                                             <div class="form-row mb-4">
@@ -396,7 +362,7 @@
                                                                                 </div>
                                                                                 <div class="col-4">
                                                                                     <label for="sub_qty">Qty</label>
-                                                                                    <input required class="form-control" type="number" name="qty"> 
+                                                                                    <input required class="form-control"  min="1" type="number" name="qty"> 
                                                                                 </div>
                                                                                 <div class="col-8">
                                                                                     
@@ -617,7 +583,7 @@
                                                                   
                                                                     <div class="form-row mb-4">
                                                                         
-                                                                            <div class="col - 6">
+                                                                            <div class="col-6">
                                                                                 <label for="start_date">Start Date</label>
                                                                                 <input type="date"   class="form-control"   min=<%=   new Date().toISOString().split('T')[0]%>   id="start_date" name="sub_start_date">
                                                                             </div>
@@ -651,52 +617,8 @@
                                                             </form>
                                                     </div>
                                                 </div>
-                        </div>
-                        
-                            
-                        <script>
-                            function checkChangePlanCustom(event){
-                                if(event.value == 3){
-                                    document.getElementById("custom_days_change_plan" + event.id).innerHTML = ` <label for="delivery_days" class="mt-3">Choose Your Custome Days</label>
-                                    <div class="row ">
-                                        <div class="col-5">
-                            <div class="custom-control custom-checkbox checkbox-info">
-                                <input type="checkbox" name="custom_days" value="1" class="custom-control-input" id="hChkbox">
-                                <label class="custom-control-label" for="hChkbox">Sun</label>
-                            </div>
-                            <div class="custom-control custom-checkbox checkbox-info">
-                                <input type="checkbox" name="custom_days" value="2" class="custom-control-input" id="hChkbox2">
-                                <label class="custom-control-label" for="hChkbox2">Mon</label>
-                            </div>
-                            <div class="custom-control custom-checkbox checkbox-info">
-                                <input type="checkbox" name="custom_days" value="3" class="custom-control-input" id="hChkbox3">
-                                <label class="custom-control-label" for="hChkbox3">Tue</label>
-                            </div>
-                            <div class="custom-control custom-checkbox checkbox-info">
-                                <input type="checkbox" name="custom_days" value="4" class="custom-control-input" id="hChkbox4">
-                                <label class="custom-control-label" for="hChkbox4">Wed</label>
-                            </div>
-                            </div>
-                            <div class="col-5">
-                            <div class="custom-control custom-checkbox checkbox-info">
-                                <input type="checkbox" name="custom_days" value="5" class="custom-control-input" id="hChkbox5">
-                                <label class="custom-control-label" for="hChkbox5">Thu</label>
-                            </div>
-                            <div class="custom-control custom-checkbox checkbox-info">
-                                <input type="checkbox" name="custom_days" value="6" class="custom-control-input" id="hChkbox6">
-                                <label class="custom-control-label" for="hChkbox6">Fri</label>
-                            </div>
-                            <div class="custom-control custom-checkbox checkbox-info">
-                                <input type="checkbox" name="custom_days" value="7" class="custom-control-input" id="hChkbox7">
-                                <label class="custom-control-label" for="hChkbox7">Sat</label>
-                            </div>
-                            </div>
-                            `
-                                }else{
-                                    document.getElementById("custom_days_change_plan" + event.id).innerHTML = ``
-                                }
-                            }
-                        </script>
+                                                </div>
+   
 
 
 
@@ -835,7 +757,7 @@
                         <h6 class="pl-5">No Add On Product Found</h6>
                         <% }else{ %>
                     <div class="table-responsive">
-                        <table class="table">
+                        <table class="table alterateTable" >
                             <thead class="">
                                 <tr>
                                     <!-- <th class="checkbox-column dt-no-sorting"> Choose</th> -->
@@ -1129,10 +1051,12 @@
                                     const user_address_id = e.target.user_address_id.value
 
                                     if(add_on_delivery_date.length == 0){
-                                        error.style ="display: block; padding-right: 17px;"
-                                                    error.className = "modal fade show"
+                                        // error.style ="display: block; padding-right: 17px;"
+                                        //             error.className = "modal fade show"
 
-                                                        return document.getElementById("dynamic_content_error").innerText = "Please Choose A Delivery Date"
+                                        //                 return document.getElementById("dynamic_content_error").innerText = "Please Choose A Delivery Date"
+
+                                       return  await  swal("", "Please Choose A Delivery Date", "error");
 
                                     }
 
@@ -1155,10 +1079,12 @@
                                             if(add_on_delivery_date.length != 0 ||add_on_products.length != 0 ||add_on_qty.length != 0   ){
                                         
                                                 if(add_on_delivery_date.length === 0 ||add_on_products.length === 0 ||add_on_qty.length === 0   ){
-                                                    error.style ="display: block; padding-right: 17px;"
-                                                    error.className = "modal fade show"
+                                                    // error.style ="display: block; padding-right: 17px;"
+                                                    // error.className = "modal fade show"
 
-                                                        return document.getElementById("dynamic_content_error").innerText = "Please Fill the Add on  Product Details"
+                                                    //     return document.getElementById("dynamic_content_error").innerText = "Please Fill the Add on  Product Details"
+
+                                                        return  await  swal("", "Please Fill the Add on  Product Details", "error");
 
                                                     }
 
@@ -1177,10 +1103,11 @@
                                             for(let i = 0 ; i < add_on_products.length; i++){
 
                                                 if(add_on_products[i].value.length === 0 || add_on_qty[i].value.length === 0){
-                                                    error.style ="display: block; padding-right: 17px;"
-                                                    error.className = "modal fade show"
+                                                //     error.style ="display: block; padding-right: 17px;"
+                                                //     error.className = "modal fade show"
 
-                                                return document.getElementById("dynamic_content_error").innerText = "Please Fill the Add on  Product Details"
+                                                // return document.getElementById("dynamic_content_error").innerText = "Please Fill the Add on  Product Details"
+                                                return  await  swal("", "Please Fill the Add on  Product Details", "error");
 
                                             }
 
@@ -1208,6 +1135,7 @@
                                         body: JSON.stringify({"data": query,"user_address_id": user_address_id})
                                         })
                                         
+                                        await  swal("Done", "New Add On Order Placed", "success");
                                     
                                         window.location.href = "/branch_admin/user/single_user?user_address_id=" + user_address_id
                                                                     }
@@ -1234,23 +1162,20 @@
                                                             custom_days = e.target.custom_days
                                                     }
 
-                                                    console.log(sub_product)
-                                                    console.log(sub_qty)
-                                                    console.log(sub_product.length)
+                                                    console.log(custom_days , "custsss")
 
                                                     // sub product
                                                     if(sub_product.length != 0 ||sub_qty.length != 0 ||your_plan.length != 0 ||sub_start_date.length != 0  ){
                                                         
-                                                        console.log("22222")
+                                       
                                                         if(sub_product.length === 0 ||sub_qty.length === 0 ||your_plan.length === 0 ||sub_start_date.length === 0  ){
-                                                            console.log("pppp")
-                                                            console.log(error)
+                                                   
 
-                                                            error.style ="display: block; padding-right: 17px;"
-                                                            error.className = "modal fade show"
+                                                            // error.style ="display: block; padding-right: 17px;"
+                                                            // error.className = "modal fade show"
 
-                                                            return document.getElementById("dynamic_content_error").innerText = "Please Fill the Subscription Product Details"
-
+                                                            // return document.getElementById("dynamic_content_error").innerText = "Please Fill the Subscription Product Details"
+                                                            return  await  swal("", "Please Fill the Subscription Product Details", "error");
 
                                                         }
 
@@ -1264,9 +1189,10 @@
                                                                     count += 1
                                                                 }
                                                                 if (count == 7){
-                                                                    error.style ="display: block; padding-right: 17px;"
-                                                                    error.className = "modal fade show"
-                                                                    return document.getElementById("dynamic_content_error").innerText = "Please Choose A Day "
+                                                                    // error.style ="display: block; padding-right: 17px;"
+                                                                    // error.className = "modal fade show"
+                                                                    // return document.getElementById("dynamic_content_error").innerText = "Please Choose A Day "
+                                                                    return  await  swal("", "Please Choose A Day", "error");
                                                                 }
 
                                                                 if(days.checked){
@@ -1298,7 +1224,9 @@
                                                         },
                                                         body: JSON.stringify({"data": query , "user_address_id" : user_address_id})
                                                         })
-                                                                                                    
+                                                               
+                                                        await  swal("Done", "New Subscription Added", "success");
+
                                                     window.location.href = "/branch_admin/user/single_user?user_address_id=" + user_address_id
 
                                             }
@@ -1336,10 +1264,12 @@
 
                                     console.log(addDates)
                                     if(addDates == undefined || addDates.length == 0){
-                                        error.style ="display: block; padding-right: 17px;"
-                                        error.className = "modal fade show"
+                                        // error.style ="display: block; padding-right: 17px;"
+                                        // error.className = "modal fade show"
                                         
-                                        return document.getElementById("dynamic_content_error").innerText = "Please Choose A  Date"
+                                        // return document.getElementById("dynamic_content_error").innerText = "Please Choose A  Date"
+                                        return  await  swal("", "Please Choose A  Date", "error");
+                                        
                                     }
                                     
                                     addQuery.dates = addDates
@@ -1353,6 +1283,8 @@
                                         },
                                         body: JSON.stringify({"data": addQuery})
                                         })
+
+                                        await  swal("Done", "Additional Order Created", "success");
 
                                         window.location.href = "/branch_admin/user/single_user?user_address_id=<%= user.user_address_id%>"
                                 }
@@ -1378,10 +1310,11 @@
 
                                     console.log(editDates)
                                     if(editDates == undefined || editDates.length == 0){
-                                        error.style ="display: block; padding-right: 17px;"
-                                        error.className = "modal fade show"
+                                        // error.style ="display: block; padding-right: 17px;"
+                                        // error.className = "modal fade show"
                                         
-                                        return document.getElementById("dynamic_content_error").innerText = "Please Choose A  Date"
+                                        // return document.getElementById("dynamic_content_error").innerText = "Please Choose A  Date"
+                                        return  await  swal("", "Please Choose A  Date", "error");
                                     }
                                     
                                     editQuery.dates = editDates
@@ -1396,6 +1329,8 @@
                                         body: JSON.stringify({"data": editQuery})
                                         })
 
+                                        await  swal("Updated", "Additional Order Updated", "success");
+
                                         window.location.href = "/branch_admin/user/single_user?user_address_id=<%= user.user_address_id%>"
                                 }
 
@@ -1403,8 +1338,33 @@
  ///////////////////////////////////////////////////////////////////////////
                                 // edit subscription
 
-                                async function editSubscriptionDetails(e){
+                                async function editQty(e){
                                     e.preventDefault()
+
+                                    let editQtyQuery = {}
+
+                                    editQtyQuery.qty =  e.target.qty.value
+                                    editQtyQuery.sub_id = e.target.sub_id.value
+                                    editQtyQuery.user_id = e.target.user_id.value
+
+
+                                    
+                                   
+                                    
+                                    await fetch('/branch_admin/user/update_qty', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Accept': 'application/json',
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({"data": editQtyQuery})
+                                    })
+                                    
+                                    await  swal("Updated", "Product Quantity Updated", "success");
+                                    
+                                    window.location.href = "/branch_admin/user/single_user?user_address_id=<%= user.user_address_id%>"
+                                   
+
                                 }
 
                           
@@ -1430,12 +1390,13 @@
                                     addPausedQuery.sub_id = e.target.sub_id.value
                                     addPausedQuery.user_id = e.target.user_id.value
 
-                                    console.log(addPauseDates)
+   
                                     if(addPauseDates == undefined || addPauseDates.length == 0){
-                                        error.style ="display: block; padding-right: 17px;"
-                                        error.className = "modal fade show"
+                                        // error.style ="display: block; padding-right: 17px;"
+                                        // error.className = "modal fade show"
                                         
-                                        return document.getElementById("dynamic_content_error").innerText = "Please Choose A  Date"
+                                        // return document.getElementById("dynamic_content_error").innerText = "Please Choose A  Date"
+                                        return  await  swal("", "Please Choose A  Date", "error");
                                     }
                                     
                                     addPausedQuery.dates = addPauseDates
@@ -1449,6 +1410,8 @@
                                         },
                                         body: JSON.stringify({"data": addPausedQuery})
                                         })
+
+                                        await  swal("Done", "Pause Date Added", "success");
 
                                         window.location.href = "/branch_admin/user/single_user?user_address_id=<%= user.user_address_id%>"
                                 }
@@ -1479,7 +1442,7 @@
                                     editPausedQuery.sub_id = e.target.sub_id.value
                                     editPausedQuery.user_id = e.target.user_id.value
 
-                                    console.log(editPauseDates)
+                                  
                                     // if(editPauseDates == undefined || editPauseDates.length == 0){
                                     //     error.style ="display: block; padding-right: 17px;"
                                     //     error.className = "modal fade show"
@@ -1504,6 +1467,8 @@
                                         },
                                         body: JSON.stringify({"data": editPausedQuery})
                                         })
+
+                                        await  swal("Done", "Pause Date Updated", "success");
 
                                         window.location.href = "/branch_admin/user/single_user?user_address_id=<%= user.user_address_id%>"
                                 }
@@ -1572,6 +1537,58 @@
 
 
 
+                                    ///////////////////////////////////////////////// chnage user plan custom days insertation
+
+                                    function checkChangePlanCustom(event){
+                                        console.log(event , "idddd")
+                                        console.log(event.id , "idddd")
+                                        console.log(event.value , "value")
+                                if(event.value == 3){
+                                    document.getElementById("custom_days_change_plan" + event.id).innerHTML = ` <label for="delivery_days" class="mt-3">Choose Your Custome Days</label>
+                                    <div class="row">
+                                        <div class="col-5">
+                            <div class="custom-control custom-checkbox checkbox-info">
+                                <input type="checkbox" name="custom_days" value="1" class="custom-control-input" id="hChkbox">
+                                <label class="custom-control-label" for="hChkbox">Sun</label>
+                            </div>
+                            <div class="custom-control custom-checkbox checkbox-info">
+                                <input type="checkbox" name="custom_days" value="2" class="custom-control-input" id="hChkbox2">
+                                <label class="custom-control-label" for="hChkbox2">Mon</label>
+                            </div>
+                            <div class="custom-control custom-checkbox checkbox-info">
+                                <input type="checkbox" name="custom_days" value="3" class="custom-control-input" id="hChkbox3">
+                                <label class="custom-control-label" for="hChkbox3">Tue</label>
+                            </div>
+                            <div class="custom-control custom-checkbox checkbox-info">
+                                <input type="checkbox" name="custom_days" value="4" class="custom-control-input" id="hChkbox4">
+                                <label class="custom-control-label" for="hChkbox4">Wed</label>
+                            </div>
+                            </div>
+                            <div class="col-5">
+                            <div class="custom-control custom-checkbox checkbox-info">
+                                <input type="checkbox" name="custom_days" value="5" class="custom-control-input" id="hChkbox5">
+                                <label class="custom-control-label" for="hChkbox5">Thu</label>
+                            </div>
+                            <div class="custom-control custom-checkbox checkbox-info">
+                                <input type="checkbox" name="custom_days" value="6" class="custom-control-input" id="hChkbox6">
+                                <label class="custom-control-label" for="hChkbox6">Fri</label>
+                            </div>
+                            <div class="custom-control custom-checkbox checkbox-info">
+                                <input type="checkbox" name="custom_days" value="7" class="custom-control-input" id="hChkbox7">
+                                <label class="custom-control-label" for="hChkbox7">Sat</label>
+                            </div>
+                            </div>
+                            `
+                                }else{
+                                    document.getElementById("custom_days_change_plan" + event.id).innerHTML = ``
+                                }
+                            }
+
+
+
+
+
+
                                     ////////////////////////////////////////////////////// chnage user plan
                                     
 
@@ -1591,14 +1608,21 @@
                                                     const sub_id = e.target.sub_id.value
 
 
-                                                    let custom_days 
+                                        // console.log($('#hChkbox').value() , "hit")
+
+                                        console.log(e.target.sub_start_date.value)
+                                        console.log(e.target)
+                                        console.log(e.target.custom_days_change_plan , "tets")
+
+                                                    let custom_days_change 
                                                     if(your_plan){
-                                                            custom_days = e.target.custom_days
+                                                        console.log("tetsssssss" ,e.target.custom_days_change_plan )
+                                                        // custom_days_change_plan
+                                                        custom_days_change = e.target.custom_days_change_plan
                                                     }
 
-                                                    console.log(e.target)
-                                                    console.log(e.target.custom_days)
-                                                    console.log(custom_days)
+                                                    
+                                                    console.log(custom_days_change ,"check")
                                                   
 
                                                     // sub product

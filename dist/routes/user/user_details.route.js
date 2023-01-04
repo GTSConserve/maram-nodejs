@@ -40,5 +40,8 @@ userRouter.post("/get_single_bill_list", _userDetail.getSingleBillList);
 userRouter.post("/user_address_change", _authToken.authenticateJWT, _userDetail.userAddressChange);
 userRouter.post("/single_calendar", _authToken.authenticateJWT, _userDetail.getSingleCalendar);
 userRouter.post("/over_all_calendar", _authToken.authenticateJWT, _userDetail.getOverallCalendar);
+
+// rider details 
+userRouter.post("/rider_location", _userDetail.RiderLocation);
 var _default = userRouter;
 exports["default"] = _default;

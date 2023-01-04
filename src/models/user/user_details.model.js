@@ -288,3 +288,49 @@ export const get_single_bill = async (bill_id,userId) => {
     return { status: responseCode.FAILURE.INTERNAL_SERVER_ERROR, error };
   }
 }
+
+// rider location 
+export const rider_location = async (userId) => {
+try {
+     const router = await knex('daily_orders')
+     .join("routes","routes.id","=","daily_orders.router_id")
+     .join("rider_details","rider_details.id","=","routes.rider_id")
+     .select('rider_details.tour_status as status')
+     .where({user_id:userId});
+      // console.log(router)
+
+    if(router[0].status==1){
+    const location = await knex('daily_orders')
+    .join("users","users.id","=","daily_orders.user_id")
+    .join("user_address","user_address.user_id","=","daily_orders.user_id")  
+    .join("admin_users","admin_users.id","=","daily_orders.branch_id")
+    .join("routes","routes.id","=","daily_orders.router_id")
+    .join("rider_details","rider_details.id","=","routes.rider_id")
+    .select(
+      'users.id as user_id',
+      'users.name as user_name',
+      'user_address.address as user_address',
+      'user_address.latitude as user_latitude',
+      'user_address.longitude as user_longitude',
+      'admin_users.id as admin_id',
+      'admin_users.first_name as admin_name',
+      'admin_users.address as admin_address',
+      'admin_users.latitude as admin_latitude',
+      'admin_users.longitude as admin_longitude',
+      'rider_details.id as rider_id',
+      'rider_details.name as rider_name',
+      'rider_details.latitude as rider_latitude',
+      'rider_details.longitude as rider_longitude',
+      )
+     .where({'daily_orders.user_id':userId});
+    //  console.log(location)
+    return { status: responseCode.SUCCESS, location };
+    }
+else{
+  return { status: false, message:"no order placed today SORRY!!!!!" };
+}
+} catch (error) {
+  console.log(error);
+    return { status: responseCode.FAILURE.INTERNAL_SERVER_ERROR, error };
+}
+}

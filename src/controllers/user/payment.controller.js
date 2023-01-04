@@ -1,8 +1,17 @@
+import responseCode from "../../constants/responseCode";
+import messages from "../../constants/messages"
+import crypto from "crypto";
+
+import { hmac } from "crypto";
+
+
 // import { add_feedback, get_AppSettings } from '../../models/user/payment.model';
 
 import knex from "../../services/db.service";
 
-import Razorpay from "razorpay"
+// import Razorpay from "razorpay"
+
+import shortid from "shortid"
 
 export const getPaymentReminder = async (req, res) => {
     try {
@@ -23,7 +32,7 @@ export const getPaymentMethod = async (req, res) => {
             'payment_gateways.id as payment_method_id',
             'payment_gateways.gatewayname as payment_method_name',
             'payment_gateways.status as payment_method_status')
-    
+
         console.log(payment_method)
         res.status(200).json({ status: true, data: payment_method })
 
@@ -36,9 +45,20 @@ export const getPaymentMethod = async (req, res) => {
 
 export const getPaymentStatusUpdate = async (req, res) => {
     try {
-        const { order_id,payment_status,payment_type,payment_method_id,razorpay_order_id,razorpay_payment_id,razorpay_signature,token} = req.body
-        
-        
+        const { 
+            order_id, 
+            payment_status, 
+            payment_type, 
+            payment_method_id, 
+            razorpay_order_id, 
+            razorpay_payment_id, 
+            razorpay_signature, 
+            token 
+        } = req.body
+
+        const response = await knex('')
+
+
         res.status(200).json({ status: true, message: "Ok" })
 
         // res.status(200).json({ status: true,data: settings.body }) 
@@ -52,27 +72,73 @@ export const getPaymentStatusUpdate = async (req, res) => {
 export const getRazorpayMethod = async (req, res) => {
     try {
         const { amount, order_id } = req.body
-        
 
-        const list = 
-           {
-                    "id": "order_J1n7KFAxwLNeun",
-                    "entity": "order",
-                    "amount": 19400,
-                    "amount_paid": 0,
-                    "amount_due": 19400,
-                    "currency": "INR",
-                    "receipt": "pay01032022155456",
-                    "offer_id": null,
-                    "status": "created",
-                    "attempts": 0,
-                    "notes": [],
-                    "created_at": 1646130359
-            }
-            
-        res.status(200).json({ status: true, data: list })
+        if (!amount && !order_id) {
+            return res
+                .status(responseCode.FAILURE.DATA_NOT_FOUND)
+                .json({ status: false, message: messages.MANDATORY_ERROR });
+        }
 
-        // res.status(200).json({ status: true,data: settings.body }) 
+        var razorpay = new Razorpay({
+            key_id: process.env.RAZORPAY_KEY_ID,
+            key_secret: process.env.RAZORPAY_KEY_SECRET,
+        });
+
+        if (!razorpay) {
+            return res
+                .status(responseCode.FAILURE.DATA_NOT_FOUND)
+                .json({ status: false, message: "please check razorpay id" });
+        }
+
+        const options = {
+            amount,
+            currency: "INR",
+            receipt: order_id,
+
+        };
+        const response = await razorpay.orders.create(options);
+        // console.log(response.id);
+        res.status(200).json({
+            status: true, data: response
+
+        });
+
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ status: false, error })
+    }
+}
+
+export const getVerifyPaymentMethod = async (req, res) => {
+    try {
+        const {
+            order_id,
+            payment_id,
+        } = req.body
+
+        if (!order_id && !payment_id) {
+            return res
+            .status(responseCode.FAILURE.DATA_NOT_FOUND)
+            .json({ status: false, message: messages.MANDATORY_ERROR });
+        }
+
+        const secret = "razorpaysecret";
+
+        const shasum = crypto.createHmac("sha256", secret);
+        shasum.update(order_id + "|" + payment_id);
+        const digest = shasum.digest('hex');
+
+        console.log(digest, req.headers["x-razorpay-signature"]);
+
+        if (digest===req.headers["x-razorpay-signature"]) {
+            console.log("request is properly");
+            res.status(200).json({
+                message: "Payment has been verified",
+            });
+        } else {
+            res.status(403).json({ message: "Payment verification failed" });
+        }
     }
     catch (error) {
         console.log(error);

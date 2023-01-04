@@ -164,7 +164,7 @@ export const userLogin = async (password) => {
   export const update_starttour = async (delivery_partner_id,tour_id,tour_status) => {
     try {
       if(tour_status==1){
-      const updatetour = await knex('rider_details').update({status:'1'}).where({id:delivery_partner_id})
+      const updatetour = await knex('rider_details').update({tour_status:'1'}).where({id:delivery_partner_id})
       return{status:true,message:"successfully updated"}
       }
       else{
@@ -186,8 +186,10 @@ export const userLogin = async (password) => {
       const daily = await knex('daily_orders').select("status").where({router_id:router[0].id,status:"pending"})
      if(daily.status !== "pending"){
       if(tour_status==2){
-        const updatetour = await knex('rider_details').update({status:'2'}).where({id:delivery_partner_id})
+        const updatetour = await knex('rider_details').update({tour_status:'2'}).where({id:delivery_partner_id})
         return{status:true,message:"successfully updated"}
+
+        // const users = await knex()
         }
         else{
           return{status:false,message:"cannot updated"}

@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.userAddressChange = exports.updateUser = exports.getUser = exports.getSingleCalendar = exports.getSingleBillList = exports.getOverallCalendar = exports.getEmptyBottle = exports.getBillList = exports.getAddress = exports.editAddress = exports.deleteUseraddress = exports.checkDeliveryAddress = exports.changePlan = exports.addUserAddress = exports.RemoveOrder = exports.Edit = void 0;
+exports.userAddressChange = exports.updateUser = exports.getUser = exports.getSingleCalendar = exports.getSingleBillList = exports.getOverallCalendar = exports.getEmptyBottle = exports.getBillList = exports.getAddress = exports.editAddress = exports.deleteUseraddress = exports.checkDeliveryAddress = exports.changePlan = exports.addUserAddress = exports.RiderLocation = exports.RemoveOrder = exports.Edit = void 0;
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 var _jwt = require("../../services/jwt.service");
 var _validator = require("../../services/validator.service");
@@ -808,4 +808,67 @@ var getSingleBillList = /*#__PURE__*/function () {
     return _ref16.apply(this, arguments);
   };
 }();
+
+// rider location 
 exports.getSingleBillList = getSingleBillList;
+var RiderLocation = /*#__PURE__*/function () {
+  var _ref17 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee17(req, res) {
+    var userId, rider1, data, user, branch, rider;
+    return _regeneratorRuntime().wrap(function _callee17$(_context17) {
+      while (1) {
+        switch (_context17.prev = _context17.next) {
+          case 0:
+            _context17.prev = 0;
+            userId = req.body.userId;
+            _context17.next = 4;
+            return (0, _user_details.rider_location)(userId);
+          case 4:
+            rider1 = _context17.sent;
+            data = [];
+            user = {
+              'id': rider1.location[0].user_id,
+              'name': rider1.location[0].user_name,
+              'address': rider1.location[0].user_address,
+              'latitude': rider1.location[0].user_latitude,
+              'longitude': rider1.location[0].user_longitude
+            };
+            branch = {
+              'id': rider1.location[0].admin_id,
+              'name': rider1.location[0].admin_name,
+              'address': rider1.location[0].admin_address,
+              'latitude': rider1.location[0].admin_latitude,
+              'longitude': rider1.location[0].admin_longitude
+            };
+            rider = {
+              'id': rider1.location[0].rider_id,
+              'name': rider1.location[0].rider_name,
+              'latitude': rider1.location[0].rider_latitude,
+              'longitude': rider1.location[0].rider_longitude
+            };
+            return _context17.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
+              status: true,
+              data: {
+                user: user,
+                branch: branch,
+                rider: rider
+              }
+            }));
+          case 12:
+            _context17.prev = 12;
+            _context17.t0 = _context17["catch"](0);
+            console.log(_context17.t0);
+            res.status(500).json({
+              status: false
+            });
+          case 16:
+          case "end":
+            return _context17.stop();
+        }
+      }
+    }, _callee17, null, [[0, 12]]);
+  }));
+  return function RiderLocation(_x33, _x34) {
+    return _ref17.apply(this, arguments);
+  };
+}();
+exports.RiderLocation = RiderLocation;

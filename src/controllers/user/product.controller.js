@@ -1,6 +1,8 @@
 import responseCode from "../../constants/responseCode";
 import messages from "../../constants/messages";
 import { GetProduct } from "../../utils/helper.util";
+import moment from "moment";
+
 import {
   get_products,
   get_categories,
@@ -270,7 +272,13 @@ export const nextDayProduct = async (req, res) => {
     const { userId } = req.body;
 
     const static_response = await nextday_product(userId)
-    
+    let date1=moment(static_response.product[0].date, "YYYY-MM-DD").format("YYYY-MM-DD");
+    let date2=moment(static_response.product[0].date, "YYYY-MM-DD").format("YYYY-MM-DD");
+    let tommorow_date = moment(new Date(), "YYYY-MM-DD").add(1, "days").format("YYYY-MM-DD");
+    console.log(tommorow_date,date1,date2)
+     
+    if(tommorow_date === date1){
+
     let query ={
         
           "product_id": static_response.product[0].product_id ,
@@ -281,16 +289,41 @@ export const nextDayProduct = async (req, res) => {
           "Product price": static_response.product[0].price
   
     }
-    if (!static_response) {
+    
+    // tommorow_date = moment().format("YYYY-MM-DD")
+   
+    return res.status(responseCode.SUCCESS).json({
+      status: true,
+      data: query,"date": static_response.product[0].date
+    });
+  }
+
+  else if (tommorow_date === date2){
+    let query ={
+        
+      "product_id": static_response.product[0].product_id ,
+      "product_name": static_response.product[0].product_name,
+      "product_image": static_response.product[0].product_image,
+      "product_status":static_response.product[0].product_status,
+      "product_variation": static_response.product[0].value + static_response.product[0].unit_type,
+      "Product price": static_response.product[0].price
+
+}
+
+// tommorow_date = moment().format("YYYY-MM-DD")
+
+return res.status(responseCode.SUCCESS).json({
+  status: true,
+  data: query,"date": static_response.date[0].date
+});
+  }
+   else {
       return res
         .status(responseCode.FAILURE.DATA_NOT_FOUND)
         .json({ status: false, message: "No Product Available" });
     }
 
-    return res.status(responseCode.SUCCESS).json({
-      status: true,
-      data: query,"date": "25 Oct | Mon"
-    });
+
   } catch (error) {
     console.log(error);
     res.status(500).json({ status: false });

@@ -70,7 +70,10 @@ var createTable = /*#__PURE__*/function () {
                   t.string("incharge_name", 255).nullable();
                   t.integer("zone_id").unsigned().nullable();
                   t.foreign("zone_id").references("id").inTable("zones");
+                  t.string("address", 255).nullable();
                   t.string("location", 255).nullable();
+                  t.string("latitude", 255).nullable();
+                  t.string("longitude", 255).nullable();
                   t.string("mobile_number", 255).nullable();
                   t.string("alternate_mobile_number", 255).nullable();
                   t.string("email", 255).unique().notNullable();
@@ -149,7 +152,7 @@ var createTable = /*#__PURE__*/function () {
                   t.string("address", 255).nullable();
                   t.enu("online_status", ["0", "1"]).defaultTo("1");
                   t.enu("tour_status", ["0", "1", "2"]).defaultTo("0");
-                  t.enu("status", ["0", "1", "2"]).defaultTo("0");
+                  t.enu("status", ["0", "1", "2"]).defaultTo("1");
                   t.timestamps(true, true);
                 });
               }
@@ -433,7 +436,7 @@ var createTable = /*#__PURE__*/function () {
                   t.json("customized_days").nullable();
                   t.integer("user_address_id").unsigned().notNullable();
                   t.foreign("user_address_id").references("id").inTable("user_address");
-                  t.integer("change_plan_id").nullable();
+                  t.integer("change_plan_id").unsigned().nullable();
                   t.foreign("change_plan_id").references("id").inTable("subscription_users_change_plan");
                   t.date("change_start_date").nullable();
                   t.integer("product_id").unsigned().notNullable();

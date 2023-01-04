@@ -13,7 +13,8 @@ import {
   subscribeSubscription,
   createPaused,
   editPaused,
-  changeUserPlan
+  changeUserPlan,
+  updateQty
 } from "../../controllers/branch_admin/users/users.controller";
 
 const userRouter = express.Router({
@@ -50,6 +51,11 @@ userRouter.post("/new_add_on", newAddOn);
 
 // chnage user plan
 userRouter.post("/change_user_plan", changeUserPlan);
+
+
+// edit qty
+userRouter.post("/update_qty", updateQty);
+
 
 
 export default userRouter;

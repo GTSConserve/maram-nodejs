@@ -406,50 +406,43 @@ var remove_addonorders = /*#__PURE__*/function () {
 exports.remove_addonorders = remove_addonorders;
 var nextday_product = /*#__PURE__*/function () {
   var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7(userId) {
-    var product, tommorow_date;
+    var product, date;
     return _regeneratorRuntime().wrap(function _callee7$(_context7) {
       while (1) {
         switch (_context7.prev = _context7.next) {
           case 0:
             _context7.prev = 0;
             _context7.next = 3;
-            return (0, _db["default"])('subscribed_user_details').join('products', 'products.id', '=', 'subscribed_user_details.product_id').join('unit_types', 'unit_types.id', '=', 'products.unit_type_id').select('products.id as product_id', 'products.name as product_name', 'products.image as product_image', 'products.status as product_status', 'products.unit_value as value', 'unit_types.name as unit_type', 'products.price as price').where({
+            return (0, _db["default"])('subscribed_user_details').join('products', 'products.id', '=', 'subscribed_user_details.product_id').join('unit_types', 'unit_types.id', '=', 'products.unit_type_id').select('products.id as product_id', 'products.name as product_name', 'products.image as product_image', 'products.status as product_status', 'products.unit_value as value', 'unit_types.name as unit_type', 'products.price as price', 'subscribed_user_details.date as date').where({
               'subscribed_user_details.user_id': userId
             });
           case 3:
             product = _context7.sent;
-            console.log(product);
-            tommorow_date = (0, _moment["default"])(new Date(), "YYYY-MM-DD").add(2, "days"); //   let date = await knex('daily_orders').select("*");
-            //   // let date1 = await knex('rider_daily_details').insert({order_details:date})
-            //   for (let j = 0; j < date.length; j++) {
-            //   let date1 = await knex.table('rider_daily_details')
-            //   //.where({id: 1})
-            //   .update({order_details: JSON.stringify(date)});
-            //   //   let store_weekdays = [];
-            //   //  let query =[];
-            //   //     for (let j = 0; j < date.length; j++) {
-            //   //         store_weekdays.push(date1[0].order_details);
-            //   console.log(date1)      
-            // }
-            //   query = JSON.stringify(store_weekdays);
+            _context7.next = 6;
+            return (0, _db["default"])('daily_orders').select('date').where({
+              user_id: userId
+            });
+          case 6:
+            date = _context7.sent;
             return _context7.abrupt("return", {
               status: true,
-              product: product
+              product: product,
+              date: date
             });
-          case 9:
-            _context7.prev = 9;
+          case 10:
+            _context7.prev = 10;
             _context7.t0 = _context7["catch"](0);
             console.log(_context7.t0);
             return _context7.abrupt("return", {
               status: false,
               message: "no next day products"
             });
-          case 13:
+          case 14:
           case "end":
             return _context7.stop();
         }
       }
-    }, _callee7, null, [[0, 9]]);
+    }, _callee7, null, [[0, 10]]);
   }));
   return function nextday_product(_x16) {
     return _ref7.apply(this, arguments);

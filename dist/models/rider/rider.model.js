@@ -389,7 +389,7 @@ var update_starttour = /*#__PURE__*/function () {
             }
             _context9.next = 4;
             return (0, _db["default"])('rider_details').update({
-              status: '1'
+              tour_status: '1'
             }).where({
               id: delivery_partner_id
             });
@@ -460,7 +460,7 @@ var update_endtour = /*#__PURE__*/function () {
             }
             _context10.next = 11;
             return (0, _db["default"])('rider_details').update({
-              status: '2'
+              tour_status: '2'
             }).where({
               id: delivery_partner_id
             });

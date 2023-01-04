@@ -22,11 +22,7 @@ export const banners = [
     image: "https://i.pinimg.com/originals/5f/c6/39/5fc63959e52072aa559578577ace6d70.jpg",
     status: "1",
   },
-  {
-    name: "bannner 2",
-    image: "bannner image 2",
-    status: "1",
-  },
+  
 ];
 
 export const user_groups = [
@@ -49,7 +45,7 @@ export const coupons = [
     name: "coupon 1",
     coupon_code: "TRYFREE",
     image: "FREEEEEEEEEE",
-    // admin_id: "1",
+    admin_id: "1",
     discount: "50",
     minimum_amount: "100",
     maximum_discount_amount: "100",
@@ -59,7 +55,7 @@ export const coupons = [
     name: "coupon 22",
     coupon_code: "FRIDAY",
     image: "2imagte",
-    // admin_id: "1",
+    admin_id: "1",
     discount: "10",
     minimum_amount: "100",
     maximum_discount_amount: "150",
