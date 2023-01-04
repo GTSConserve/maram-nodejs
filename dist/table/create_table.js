@@ -404,8 +404,6 @@ var createTable = /*#__PURE__*/function () {
                   t.increments("id").primary();
                   t.integer("user_id").unsigned().notNullable();
                   t.foreign("user_id").references("id").inTable("users");
-                  t.integer("subscription_id").unsigned().nullable();
-                  t.foreign("subscription_id").references("id").inTable("subscribed_user_details");
                   t.integer("previous_subscription_type_id").nullable();
                   t.integer("change_subscription_type_id").nullable();
                   t.date("start_date").nullable();
