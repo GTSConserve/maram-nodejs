@@ -10,7 +10,8 @@ import {
   category,
   subscription_type,
   product_variations,
-  week_days,app_settings
+  week_days,
+  app_settings
 } from "../seeds/dummy_data";
 
 export const insertData = async (req, res) => {
