@@ -356,19 +356,39 @@ export const userLogin = async (password) => {
          const update = await knex('daily_orders')
          .update({status:order_status }).where({user_id:user_id,id:order_id});
 
-         let bottle_entry =[]
-         let bottle_entry1 =[]
+         let bottle_entry =[];
+         let bottle_entry1 =[];
+         let bottle_entry2 =[];
+         let bottle_entry3 =[];
+         let suma = 0;
+         let sumb = 0;
+         let sumx = 0;
+         let sumy = 0;
 
          if(product){
           for(let i=0; i<product.length; i++){
            const subscription = await knex('subscribed_user_details').update({rider_status:order_status}).where({id:product[i].subscription_id})
             
            const one =await knex('subscribed_user_details')
-          .select("subscribed_user_details.id","products.unit_value ","subscribed_user_details.quantity","subscribed_user_details.rider_status as status","products.price","subscribed_user_details.subscription_monthly_price","subscribed_user_details.subscription_delivered_quantity")
+          .select("subscribed_user_details.id","products.unit_value ","subscribed_user_details.quantity","subscribed_user_details.rider_status","products.price","subscribed_user_details.subscription_monthly_price","subscribed_user_details.subscription_delivered_quantity")
           .join("products", "products.id", "=", "subscribed_user_details.product_id")
           .where({"subscribed_user_details.id":product[i].subscription_id});
 
-          bottle_entry.push(one[0])
+          // console.log(one)
+          // console.log(one[0].rider_status)
+
+        //   if(one[0].rider_status == 'delivered'){
+
+        //     console.log(one[0].rider_status)
+            
+        //     suma +=Number(one[0].price +one[0].subscription_monthly_price);
+        //     sumb +=Number(one[0].quantity +one[0].subscription_delivered_quantity);
+        // const price = await knex('subscribed_user_details')
+        // .update({subscription_monthly_price:suma,subscription_delivered_quantity:sumb})
+        // .where({"subscribed_user_details.id":product[i].subscription_id});
+        //  }
+         bottle_entry.push(one[0])
+
           }
       
         
@@ -377,7 +397,7 @@ export const userLogin = async (password) => {
               const entry = await knex('users').update({today_one_liter:bottle_entry[j].quantity}).where({id:user_id});
   
               const total_one_liter =await  knex('users').select('total_one_liter').where({id:user_id});
-              console.log(total_one_liter);
+              // console.log(total_one_liter);
                 let sum_total = 0;
               sum_total +=Number(total_one_liter[0].total_one_liter + bottle_entry[j].quantity)
   
@@ -390,7 +410,7 @@ export const userLogin = async (password) => {
              const sum1 = await  knex('users').update({one_liter_in_hand:given_bottle}).where({id:user_id})
   
   
-              console.log(given_bottle)
+              // console.log(given_bottle)
             }
             else if(bottle_entry[j].unit_value==500){
               const entry = await knex('users').update({today_half_liter:bottle_entry[j].quantity}).where({id:user_id});
@@ -409,19 +429,11 @@ export const userLogin = async (password) => {
              const sum1 = await  knex('users').update({half_liter_in_hand:given_bottle}).where({id:user_id})
   
   
-              console.log(given_bottle)
+              // console.log(given_bottle)
             
   
           }
-          if(one[0].status=="delivered"){
-            let sum = 0;
-            let sum1 = 0;
-             sum +=Number(one[0].price +one[0].subscription_monthly_price);
-             sum1 +=Number(one[0].quantity +one[0].subscription_delivered_quantity);
-         const price = await knex('subscribed_user_details')
-         .update({subscription_monthly_price:sum,subscription_delivered_quantity:sum1})
-         .where({"subscribed_user_details.id":product[i].subscription_id});
-          }
+         
 
           }
            
@@ -434,25 +446,38 @@ export const userLogin = async (password) => {
   
   
             const one1 =await knex('subscribed_user_details')
-            .select("products.unit_value ","additional_orders.quantity","subscribed_user_details.id")
+            .select("products.unit_value ","additional_orders.quantity","subscribed_user_details.id","additional_orders.status as status","products.price","subscribed_user_details.additional_monthly_price","subscribed_user_details.additional_delivered_quantity"
+            )
             .join("additional_orders", "additional_orders.subscription_id", "=", "subscribed_user_details.id")
             .join("products", "products.id", "=", "subscribed_user_details.product_id")
             .where({"additional_orders.id":additional_orders[j].additional_order_id,"subscribed_user_details.id":additional_orders[j].subscription_id});
   
-            bottle_entry1.push(one1[0])
+           
   
-          }
-          console.log(bottle_entry1)
+          // console.log(one1)
+
+        //   if(one1[0].status =="delivered"){
+           
+        //      sumx +=Number(one1[0].price +one1[0].additional_monthly_price);
+        //      sumy +=Number(one1[0].quantity +one1[0].additional_delivered_quantity);
+        //  const price = await knex('subscribed_user_details')
+        //  .join("additional_orders", "additional_orders.subscription_id", "=", "subscribed_user_details.id")
+        //  .update({additional_monthly_price:sumx,additional_delivered_quantity:sumy})
+        //  .where({"additional_orders.id":additional_orders[j].additional_order_id,"subscribed_user_details.id":additional_orders[j].subscription_id});
+        //   }
+          bottle_entry1.push(one1[0])
+        }
+          // console.log(bottle_entry1)
           for( let j =0;j<bottle_entry1.length;j++){
   
             if(bottle_entry1[j].unit_value==1000){
               const entry = await knex('users').update({today_one_liter:bottle_entry1[j].quantity}).where({id:user_id});
   
               const total_one_liter =await  knex('users').select('total_one_liter').where({id:user_id});
-              console.log(total_one_liter);
+              // console.log(total_one_liter);
                 let sum_total = 0;
               sum_total +=Number(total_one_liter[0].total_one_liter) + Number(bottle_entry1[j].quantity)
-            console.log( sum_total)
+            // console.log( sum_total)
              const sum = await  knex('users').update({total_one_liter:sum_total}).where({id:user_id})
   
              const return1 = await knex('users').select('total_one_liter').where({id:user_id});
@@ -462,7 +487,7 @@ export const userLogin = async (password) => {
              const sum1 = await  knex('users').update({one_liter_in_hand:given_bottle}).where({id:user_id})
   
   
-              console.log(given_bottle)
+              // console.log(given_bottle)
             }
            else if(bottle_entry1[j].unit_value==500){
               const entry = await knex('users').update({today_half_liter:bottle_entry1[j].quantity}).where({id:user_id});
@@ -481,7 +506,7 @@ export const userLogin = async (password) => {
              const sum1 = await  knex('users').update({half_liter_in_hand:given_bottle}).where({id:user_id})
   
   
-              console.log(given_bottle)
+              // console.log(given_bottle)
             }
 
             
@@ -501,12 +526,92 @@ export const userLogin = async (password) => {
                       }
                     }
           }
+          if(order_status == 'delivered'){
+          for(let i=0; i<product.length; i++){
+
+          let one =await knex('subscribed_user_details')
+          .select("subscribed_user_details.id","products.unit_value ","subscribed_user_details.quantity","subscribed_user_details.rider_status","products.price","subscribed_user_details.subscription_monthly_price","subscribed_user_details.subscription_delivered_quantity")
+          .join("products", "products.id", "=", "subscribed_user_details.product_id")
+          .where({"subscribed_user_details.id":product[i].subscription_id,'subscribed_user_details.rider_status':'delivered'});
+
+          console.log(one)
+          // console.log(one[0].rider_status)
+          // bottle_entry2.push(one[0])
+       
+        // console.log(bottle_entry2)
+          // for(let i=0; i<bottle_entry2.length; i++){
+          
+            console.log(i)
+            console.log(one[0].price)
+            
+            
+            suma =Number(one[0].price) + Number(one[0].subscription_monthly_price)
+            sumb =Number(one[0].quantity) + Number(one[0].subscription_delivered_quantity);
+      await knex('subscribed_user_details')
+        .update({subscription_monthly_price:suma,subscription_delivered_quantity:sumb})
+        .where({"subscribed_user_details.id":product[i].subscription_id});
+
+        suma = 0;
+        sumb = 0;
+          
+        }
+
+         for(let j=0; j<additional_orders.length; j++){
+
+         const one1 =await knex('subscribed_user_details')
+         .select("products.unit_value ","additional_orders.quantity","subscribed_user_details.id as sub_id","additional_orders.id as add_id","additional_orders.status","products.price","subscribed_user_details.additional_monthly_price","subscribed_user_details.additional_delivered_quantity"
+         )
+         .join("additional_orders", "additional_orders.subscription_id", "=", "subscribed_user_details.id")
+         .join("products", "products.id", "=", "subscribed_user_details.product_id")
+         .where({"additional_orders.id":additional_orders[j].additional_order_id,"subscribed_user_details.id":additional_orders[j].subscription_id,'additional_orders.status':"delivered"});
+        
+        //  bottle_entry3.push(one1[0])
+
+       console.log(one1)
+        //  }
+        //  for(let i=0; i<bottle_entry3.length; i++){
+     
+        
+          sumx +=Number(one1[0].price +one1[0].additional_monthly_price);
+          sumy +=Number(one1[0].quantity +one1[0].additional_delivered_quantity);
+       await knex('subscribed_user_details')
+      .join("additional_orders", "additional_orders.subscription_id", "=", "subscribed_user_details.id")
+      .update({additional_monthly_price:sumx,additional_delivered_quantity:sumy})
+      .where({"additional_orders.id":one1[0].add_id,"subscribed_user_details.id":one1[0].sub_id,});
+        }
+      
+
+
+           let sum1 = 0;
+           let sum2 = 0;
+           for(let i=0; i<product.length; i++){
+            const total = await knex('subscribed_user_details').select('subscription_monthly_price','additional_monthly_price','subscription_delivered_quantity','additional_delivered_quantity')
+            .where({"subscribed_user_details.id":product[i].subscription_id});
+           
+             sum1 =Number(total[0].subscription_monthly_price +total[0].additional_monthly_price);
+            sum2 =Number(total[0].subscription_delivered_quantity +total[0].additional_delivered_quantity);
+
+            console.log(total)
+
+        await knex('subscribed_user_details')
+        .update({total_monthly_price:sum1,total_delivered_quantity:sum2})
+        .where({"subscribed_user_details.id":product[i].subscription_id});
+           }
+           return{status:true,message:"ok"};}
+           else{
+
+           }
+        }
           return{status:true,message:"ok"};
-        }}
+        }
+
+
         else{
           return{ status: false, message: "tour cannot started" };    
 
         }
+
+
           } catch (error) {
     console.log(error)
     return{ status: false, message: "No data found" };    

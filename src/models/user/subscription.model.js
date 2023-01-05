@@ -153,7 +153,7 @@ export const single_subscription = async (userId, sub_id) => {
       .join("additional_orders","additional_orders.user_id","=","sub.user_id")
       .join("products", "products.id", "=", "sub.product_id")
       .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
-      .where({"sub.user_id": userId, "sub.id": sub_id })
+      .where({"additional_orders.id": userId })
 // console.log(query)
 
       const this_month_item_detail = await knex("users").select(
