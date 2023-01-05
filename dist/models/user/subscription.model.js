@@ -164,8 +164,7 @@ var single_subscription = /*#__PURE__*/function () {
             console.log(products);
             _context3.next = 7;
             return (0, _db["default"])("subscribed_user_details AS sub").select("additional_orders.id as id", "additional_orders.date ", "additional_orders.quantity", "additional_orders.status", "products.name as product_name", "products.image", "products.unit_value", "products.demo_price", "unit_types.value as unit_type").join("additional_orders", "additional_orders.user_id", "=", "sub.user_id").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").where({
-              "sub.user_id": userId,
-              "sub.id": sub_id
+              "additional_orders.id": userId
             });
           case 7:
             query = _context3.sent;

@@ -112,6 +112,7 @@ var createTable = /*#__PURE__*/function () {
                   t.timestamp("email_verified_at").nullable();
                   t.timestamp("registration_date").defaultTo(_db["default"].fn.now());
                   t.enu("online_status", ["online", "offline", "squeeze"]).defaultTo("online");
+                  t.enu("bottle_status", ["0", "1"]).defaultTo("1");
                   t.integer("total_one_liter", 255);
                   t.integer("total_half_liter", 255);
                   t.integer("one_liter_in_hand", 255);
