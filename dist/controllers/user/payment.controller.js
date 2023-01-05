@@ -90,39 +90,32 @@ var getPaymentMethod = /*#__PURE__*/function () {
 exports.getPaymentMethod = getPaymentMethod;
 var getPaymentStatusUpdate = /*#__PURE__*/function () {
   var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(req, res) {
-    var _req$body, order_id, payment_status, payment_type, payment_method_id, razorpay_order_id, razorpay_payment_id, razorpay_signature, token, response;
+    var _req$body, order_id, payment_status, payment_type, payment_method_id, razorpay_order_id, razorpay_payment_id, razorpay_signature, token;
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
-            _context3.prev = 0;
-            _req$body = req.body, order_id = _req$body.order_id, payment_status = _req$body.payment_status, payment_type = _req$body.payment_type, payment_method_id = _req$body.payment_method_id, razorpay_order_id = _req$body.razorpay_order_id, razorpay_payment_id = _req$body.razorpay_payment_id, razorpay_signature = _req$body.razorpay_signature, token = _req$body.token;
-            _context3.next = 4;
-            return (0, _db["default"])('');
-          case 4:
-            response = _context3.sent;
-            res.status(200).json({
-              status: true,
-              message: "Ok"
-            });
+            try {
+              _req$body = req.body, order_id = _req$body.order_id, payment_status = _req$body.payment_status, payment_type = _req$body.payment_type, payment_method_id = _req$body.payment_method_id, razorpay_order_id = _req$body.razorpay_order_id, razorpay_payment_id = _req$body.razorpay_payment_id, razorpay_signature = _req$body.razorpay_signature, token = _req$body.token; // const response = await knex('')
+              res.status(200).json({
+                status: true,
+                message: "Ok"
+              });
 
-            // res.status(200).json({ status: true,data: settings.body }) 
-            _context3.next = 12;
-            break;
-          case 8:
-            _context3.prev = 8;
-            _context3.t0 = _context3["catch"](0);
-            console.log(_context3.t0);
-            res.status(500).json({
-              status: false,
-              error: _context3.t0
-            });
-          case 12:
+              // res.status(200).json({ status: true,data: settings.body }) 
+            } catch (error) {
+              console.log(error);
+              res.status(500).json({
+                status: false,
+                error: error
+              });
+            }
+          case 1:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3, null, [[0, 8]]);
+    }, _callee3);
   }));
   return function getPaymentStatusUpdate(_x5, _x6) {
     return _ref3.apply(this, arguments);
@@ -169,7 +162,7 @@ var getRazorpayMethod = /*#__PURE__*/function () {
             return razorpay.orders.create(options);
           case 10:
             response = _context4.sent;
-            // const payment_list = await knex('payment_gateways').select('')
+            // const payment_list = await PaymentMethod(user_id)
             // console.log(response.id);
             res.status(200).json({
               status: true,

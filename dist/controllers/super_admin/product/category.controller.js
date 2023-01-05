@@ -13,7 +13,7 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 var updateCategory = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(req, res) {
-    var _req$body, name, id, addon, subscription, file, query, image, is_sub1, i, is_sub, sub, add;
+    var _req$body, name, id, addon, subscription, file, query, image;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
@@ -21,105 +21,71 @@ var updateCategory = /*#__PURE__*/function () {
             _context.prev = 0;
             _req$body = req.body, name = _req$body.name, id = _req$body.id, addon = _req$body.addon, subscription = _req$body.subscription;
             file = req.file;
-            console.log(req.body);
+            if (!(subscription == undefined && addon == undefined)) {
+              _context.next = 6;
+              break;
+            }
+            req.flash("error", "Please Choose a Product Type");
+            return _context.abrupt("return", res.redirect("/super_admin/product/get_category"));
+          case 6:
             if (name) {
-              _context.next = 7;
+              _context.next = 9;
               break;
             }
             req.flash("error", "Name is missing");
             return _context.abrupt("return", res.redirect("/super_admin/product/get_category"));
-          case 7:
+          case 9:
+            _context.next = 11;
+            return (0, _db["default"])("categories_product_type").where({
+              category_id: id
+            }).del();
+          case 11:
             query = {};
             query.name = name;
             if (file) {
               image = req.file.destination.slice(1) + "/" + req.file.filename;
               query.image = image;
             }
-            _context.next = 12;
-            return (0, _db["default"])("categories_product_type").select("id", "product_type_id").where({
-              category_id: id
-            });
-          case 12:
-            is_sub1 = _context.sent;
-            i = 0;
-          case 14:
-            if (!(i < is_sub1.length)) {
-              _context.next = 40;
+            if (!subscription) {
+              _context.next = 17;
               break;
             }
-            if (!(is_sub1[i].product_type_id == 1)) {
-              _context.next = 28;
-              break;
-            }
-            _context.next = 18;
-            return (0, _db["default"])("categories_product_type").select("id").where({
+            _context.next = 17;
+            return (0, _db["default"])("categories_product_type").insert({
               category_id: id,
               product_type_id: 1
             });
-          case 18:
-            is_sub = _context.sent;
-            if (!(is_sub.length === 0)) {
-              _context.next = 24;
+          case 17:
+            if (!addon) {
+              _context.next = 20;
               break;
             }
-            _context.next = 22;
+            _context.next = 20;
             return (0, _db["default"])("categories_product_type").insert({
-              category_id: cat[0],
-              product_type_id: 1
-            });
-          case 22:
-            _context.next = 24;
-            break;
-          case 24:
-            _context.next = 26;
-            return (0, _db["default"])("categories_product_type").update({
-              product_type_id: 1
-            }).where({
-              id: id
-            });
-          case 26:
-            sub = _context.sent;
-            console.log(sub);
-          case 28:
-            if (!(is_sub1[i].product_type_id == 2)) {
-              _context.next = 33;
-              break;
-            }
-            _context.next = 31;
-            return (0, _db["default"])("categories_product_type").update({
+              category_id: id,
               product_type_id: 2
-            }).where({
-              id: id
             });
-          case 31:
-            add = _context.sent;
-            console.log(add);
-          case 33:
-            _context.next = 35;
+          case 20:
+            _context.next = 22;
             return (0, _db["default"])("categories").update(query).where({
               id: id
             });
-          case 35:
+          case 22:
             req.flash("success", "Updated SuccessFully");
             res.redirect("/super_admin/product/get_category");
-          case 37:
-            i++;
-            _context.next = 14;
+            _context.next = 30;
             break;
-          case 40:
-            _context.next = 46;
-            break;
-          case 42:
-            _context.prev = 42;
+          case 26:
+            _context.prev = 26;
             _context.t0 = _context["catch"](0);
             console.log(_context.t0);
             res.redirect("/home");
-          case 46:
+          case 30:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 42]]);
+    }, _callee, null, [[0, 26]]);
   }));
   return function updateCategory(_x, _x2) {
     return _ref.apply(this, arguments);
@@ -179,7 +145,7 @@ var updateCategoryStatus = /*#__PURE__*/function () {
 exports.updateCategoryStatus = updateCategoryStatus;
 var createCategory = /*#__PURE__*/function () {
   var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(req, res) {
-    var _req$body3, name, subscription, addon, image, _cat;
+    var _req$body3, name, subscription, addon, image, cat;
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
@@ -193,64 +159,66 @@ var createCategory = /*#__PURE__*/function () {
             req.flash("error", "Name is missing");
             return _context3.abrupt("return", res.redirect("/super_admin/product/get_category"));
           case 5:
-            console.log(req.body);
-            if (!(!subscription || !addon)) {
-              _context3.next = 9;
+            console.log("htitiit");
+            console.log(subscription);
+            console.log(addon);
+            if (!(subscription == undefined && addon == undefined)) {
+              _context3.next = 11;
               break;
             }
             req.flash("error", "Please Choose a Product Type");
             return _context3.abrupt("return", res.redirect("/super_admin/product/get_category"));
-          case 9:
+          case 11:
             if (req.file) {
-              _context3.next = 12;
+              _context3.next = 14;
               break;
             }
             req.flash("error", "Please Choose a image");
             return _context3.abrupt("return", res.redirect("/super_admin/product/get_category"));
-          case 12:
+          case 14:
             image = req.file.destination.slice(1) + "/" + req.file.filename;
-            _context3.next = 15;
+            _context3.next = 17;
             return (0, _db["default"])("categories").insert({
               name: name,
               image: image
             });
-          case 15:
-            _cat = _context3.sent;
+          case 17:
+            cat = _context3.sent;
             if (!subscription) {
-              _context3.next = 19;
+              _context3.next = 21;
               break;
             }
-            _context3.next = 19;
+            _context3.next = 21;
             return (0, _db["default"])("categories_product_type").insert({
-              category_id: _cat[0],
+              category_id: cat[0],
               product_type_id: 1
             });
-          case 19:
+          case 21:
             if (!addon) {
-              _context3.next = 22;
+              _context3.next = 24;
               break;
             }
-            _context3.next = 22;
+            _context3.next = 24;
             return (0, _db["default"])("categories_product_type").insert({
-              category_id: _cat[0],
+              category_id: cat[0],
               product_type_id: 2
             });
-          case 22:
+          case 24:
             req.flash("success", "Successfully Created");
             res.redirect("/super_admin/product/get_category");
-            _context3.next = 30;
+            _context3.next = 32;
             break;
-          case 26:
-            _context3.prev = 26;
+          case 28:
+            _context3.prev = 28;
             _context3.t0 = _context3["catch"](0);
             console.log(_context3.t0);
             res.redirect("/home");
-          case 30:
+          case 32:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3, null, [[0, 26]]);
+    }, _callee3, null, [[0, 28]]);
   }));
   return function createCategory(_x5, _x6) {
     return _ref3.apply(this, arguments);
@@ -259,7 +227,7 @@ var createCategory = /*#__PURE__*/function () {
 exports.createCategory = createCategory;
 var getCategory = /*#__PURE__*/function () {
   var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(req, res) {
-    var loading, searchKeyword, data_length, search_data_length, productType, _yield$getPageNumber, startingLimit, page, resultsPerPage, numberOfPages, iterator, endingLink, results, is_search, data, i;
+    var loading, searchKeyword, data_length, search_data_length, productType, _yield$getPageNumber, startingLimit, page, resultsPerPage, numberOfPages, iterator, endingLink, results, is_search, data, get_product_type, i, j, _i;
     return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
@@ -334,13 +302,28 @@ var getCategory = /*#__PURE__*/function () {
             break;
           case 41:
             _context4.next = 43;
-            return _db["default"].raw("SELECT id,name,image,status\n        FROM categories \n        \n        LIMIT ".concat(startingLimit, ",").concat(resultsPerPage));
+            return _db["default"].raw("SELECT id,name,image,status\n        FROM categories \n      \n        LIMIT ".concat(startingLimit, ",").concat(resultsPerPage));
           case 43:
             results = _context4.sent;
           case 44:
             data = results[0];
-            for (i = 0; i < data.length; i++) {
-              data[i].image = process.env.BASE_URL + data[i].image;
+            _context4.next = 47;
+            return (0, _db["default"])("categories_product_type").select("category_id", "product_type_id");
+          case 47:
+            get_product_type = _context4.sent;
+            for (i = 0; i < get_product_type.length; i++) {
+              for (j = 0; j < data.length; j++) {
+                if (get_product_type[i].category_id == data[j].id) {
+                  if (get_product_type[i].product_type_id == 1) {
+                    data[j].is_subscription = true;
+                  } else {
+                    data[j].is_add_on = true;
+                  }
+                }
+              }
+            }
+            for (_i = 0; _i < data.length; _i++) {
+              data[_i].image = process.env.BASE_URL + data[_i].image;
             }
             loading = false;
             res.render("super_admin/product/category", {
@@ -377,19 +360,19 @@ var getCategory = /*#__PURE__*/function () {
             //   data: categories,
             //   productType,
             // });
-            _context4.next = 54;
+            _context4.next = 58;
             break;
-          case 50:
-            _context4.prev = 50;
+          case 54:
+            _context4.prev = 54;
             _context4.t0 = _context4["catch"](0);
             console.log(_context4.t0);
             res.redirect("/home");
-          case 54:
+          case 58:
           case "end":
             return _context4.stop();
         }
       }
-    }, _callee4, null, [[0, 50]]);
+    }, _callee4, null, [[0, 54]]);
   }));
   return function getCategory(_x7, _x8) {
     return _ref4.apply(this, arguments);

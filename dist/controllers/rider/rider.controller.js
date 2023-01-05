@@ -191,7 +191,7 @@ var getRiderdetails = /*#__PURE__*/function () {
             _context3.prev = 10;
             _context3.t0 = _context3["catch"](0);
             console.log(_context3.t0);
-            res.status(500).json({
+            res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false
             });
           case 14:
@@ -244,7 +244,7 @@ var updateRiderstatus = /*#__PURE__*/function () {
             _context4.prev = 14;
             _context4.t0 = _context4["catch"](0);
             console.log(_context4.t0);
-            res.status(500).json({
+            res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false
             });
           case 18:
@@ -291,7 +291,7 @@ var updeteRiderLocation = /*#__PURE__*/function () {
             _context5.prev = 10;
             _context5.t0 = _context5["catch"](0);
             console.log(_context5.t0);
-            res.status(500).json({
+            res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
               status: false
             });
           case 14:
@@ -359,7 +359,7 @@ var updateStartTour = /*#__PURE__*/function () {
             _context6.prev = 21;
             _context6.t0 = _context6["catch"](0);
             console.log(_context6.t0);
-            return _context6.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
+            return _context6.abrupt("return", res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
@@ -427,7 +427,7 @@ var updateEndtour = /*#__PURE__*/function () {
             _context7.prev = 20;
             _context7.t0 = _context7["catch"](0);
             console.log(_context7.t0);
-            return _context7.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
+            return _context7.abrupt("return", res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
@@ -539,7 +539,7 @@ var getSingleorder = /*#__PURE__*/function () {
             _context8.prev = 19;
             _context8.t0 = _context8["catch"](0);
             console.log(_context8.t0);
-            return _context8.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
+            return _context8.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
@@ -606,7 +606,7 @@ var orderStatusUpdate = /*#__PURE__*/function () {
             _context9.prev = 17;
             _context9.t0 = _context9["catch"](0);
             console.log(_context9.t0);
-            return _context9.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
+            return _context9.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
@@ -732,7 +732,7 @@ var cancelOrder = /*#__PURE__*/function () {
             _context11.prev = 13;
             _context11.t0 = _context11["catch"](0);
             console.log(_context11.t0);
-            return _context11.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
+            return _context11.abrupt("return", res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
@@ -777,7 +777,7 @@ var OrderList = /*#__PURE__*/function () {
             _context12.prev = 10;
             _context12.t0 = _context12["catch"](0);
             console.log(_context12.t0);
-            return _context12.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
+            return _context12.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
@@ -848,7 +848,7 @@ var LocationCheck = /*#__PURE__*/function () {
             _context13.prev = 19;
             _context13.t0 = _context13["catch"](0);
             console.log(_context13.t0);
-            return _context13.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
+            return _context13.abrupt("return", res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
@@ -868,7 +868,7 @@ var LocationCheck = /*#__PURE__*/function () {
 exports.LocationCheck = LocationCheck;
 var homeDelivery = /*#__PURE__*/function () {
   var _ref14 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee14(req, res) {
-    var _req$body11, delivery_partner_id, date, home, _query3, milk, addon, empty_bottle, router;
+    var _req$body11, delivery_partner_id, date, home, _query3, milk, addon, empty_bottle;
     return _regeneratorRuntime().wrap(function _callee14$(_context14) {
       while (1) {
         switch (_context14.prev = _context14.next) {
@@ -906,22 +906,6 @@ var homeDelivery = /*#__PURE__*/function () {
               "one_litre_bottle": home.sum2,
               "half_litre_bottle": home.sum3
             };
-            router = {
-              "tour_id": 1,
-              "route": "East Tambaram",
-              "total_orders": 15,
-              "completed_orders": 12,
-              "milk": {
-                "one_liter_count": 30,
-                "half_liter_count": 30,
-                "half_liter_pouch": 10
-              },
-              "addons_count": 30,
-              "empty_bottle": {
-                "one_litre_bottle": 12,
-                "half_litr_bottle": 10
-              }
-            };
             res.status(_responseCode["default"].SUCCESS).json({
               status: true,
               data: _query3,
@@ -929,22 +913,22 @@ var homeDelivery = /*#__PURE__*/function () {
               addon: addon,
               empty_bottle: empty_bottle
             });
-            _context14.next = 19;
+            _context14.next = 18;
             break;
-          case 15:
-            _context14.prev = 15;
+          case 14:
+            _context14.prev = 14;
             _context14.t0 = _context14["catch"](0);
             console.log(_context14.t0);
-            return _context14.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
+            return _context14.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
-          case 19:
+          case 18:
           case "end":
             return _context14.stop();
         }
       }
-    }, _callee14, null, [[0, 15]]);
+    }, _callee14, null, [[0, 14]]);
   }));
   return function homeDelivery(_x27, _x28) {
     return _ref14.apply(this, arguments);
@@ -989,7 +973,7 @@ var logout = /*#__PURE__*/function () {
             _context15.prev = 13;
             _context15.t0 = _context15["catch"](0);
             console.log(_context15.t0);
-            return _context15.abrupt("return", res.status(500).json({
+            return _context15.abrupt("return", res.status(_responseCode["default"].FAILURE.INVALID).json({
               status: false,
               message: "Server Error"
             }));

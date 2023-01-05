@@ -20,6 +20,10 @@ users_subscriptionRouter.get("/get_all_users", _pending.getAllUsers);
 users_subscriptionRouter.get("/single_user", _pending.getSingleUser);
 users_subscriptionRouter.post("/update_all_users_status", _pending.updateAllUsersStatus);
 
+// subscribe and unsubscribe 
+users_subscriptionRouter.post("/unsubscribe_subscription", _pending.unsubscribeSubscription);
+users_subscriptionRouter.post("/subscribe_subscription", _pending.subscribeSubscription);
+
 // pending
 // users_subscriptionRouter.get('/get_new_users',getNewUsers)
 users_subscriptionRouter.post('/approve_pending_list', _pending.updatePendingList);

@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updateSubscribedExistUser = exports.updateSubscribed = exports.updateCancel = exports.getNewUsers = exports.getExistUsers = void 0;
+exports.userMappingAssign = exports.updateSubscribedExistUser = exports.updateSubscribed = exports.updateCancel = exports.unassignUser = exports.getNewUsers = exports.getExistUsers = void 0;
 var _db = _interopRequireDefault(require("../../../services/db.service"));
 var _helper = require("../../../utils/helper.util");
 var _moment = _interopRequireDefault(require("moment"));
@@ -226,37 +226,6 @@ var updateSubscribed = /*#__PURE__*/function () {
             });
           case 36:
             // this below call from user mapping assign
-            // if (is_user_mapping_assign) {
-            //   // is_user_mapping_assign - is a router id
-            //   const { address_id } = req.body;
-
-            //   const users = await knex("routes")
-            //     .select("user_mapping")
-            //     .where({ id: is_user_mapping_assign });
-
-            //   if (users.length === 0 || users[0].user_mapping === null) {
-            //     let arr_users = [Number(address_id)];
-            //     await knex("routes")
-            //       .update({ user_mapping: JSON.stringify(arr_users) })
-            //       .where({ id: is_user_mapping_assign });
-            //   } else {
-            //     const get_users = await knex("routes")
-            //       .select("user_mapping")
-            //       .where({ id: is_user_mapping_assign });
-            //     get_users[0].user_mapping.push(Number(address_id));
-
-            //     await knex("routes")
-            //       .update({ user_mapping: JSON.stringify(get_users[0].user_mapping) })
-            //       .where({ id: is_user_mapping_assign });
-            //   }
-
-            //   await knex("user_address")
-            //     .update({ router_id: is_user_mapping_assign })
-            //     .where({ id: address_id });
-            //   req.flash("success", "Route Assigned Successfully");
-            //   // return res.redirect(`/branch_admin/route/user_mapping?route_id=${is_user_mapping_assign}`)
-            //   return res.redirect(`/branch_admin/route/get_route`);
-            // }
 
             // // if (!date) {
             // //   req.flash("error", "Please Choose a Date ");
@@ -773,6 +742,139 @@ var getExistUsers = /*#__PURE__*/function () {
     return _ref5.apply(this, arguments);
   };
 }();
+exports.getExistUsers = getExistUsers;
+var userMappingAssign = /*#__PURE__*/function () {
+  var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(req, res) {
+    var _req$body3, router_id, address_id, users, arr_users, get_users;
+    return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+      while (1) {
+        switch (_context6.prev = _context6.next) {
+          case 0:
+            _context6.prev = 0;
+            _req$body3 = req.body, router_id = _req$body3.router_id, address_id = _req$body3.address_id;
+            _context6.next = 4;
+            return (0, _db["default"])("routes").select("user_mapping").where({
+              id: router_id
+            });
+          case 4:
+            users = _context6.sent;
+            if (!(users.length === 0 || users[0].user_mapping === null)) {
+              _context6.next = 11;
+              break;
+            }
+            arr_users = [Number(address_id)];
+            _context6.next = 9;
+            return (0, _db["default"])("routes").update({
+              user_mapping: JSON.stringify(arr_users)
+            }).where({
+              id: router_id
+            });
+          case 9:
+            _context6.next = 17;
+            break;
+          case 11:
+            _context6.next = 13;
+            return (0, _db["default"])("routes").select("user_mapping").where({
+              id: router_id
+            });
+          case 13:
+            get_users = _context6.sent;
+            get_users[0].user_mapping.push(Number(address_id));
+            _context6.next = 17;
+            return (0, _db["default"])("routes").update({
+              user_mapping: JSON.stringify(get_users[0].user_mapping)
+            }).where({
+              id: router_id
+            });
+          case 17:
+            _context6.next = 19;
+            return (0, _db["default"])("user_address").update({
+              router_id: router_id
+            }).where({
+              id: address_id
+            });
+          case 19:
+            req.flash("success", "Route Assigned Successfully");
+            // return res.redirect(`/branch_admin/route/user_mapping?route_id=${is_user_mapping_assign}`)
+            return _context6.abrupt("return", res.redirect("/branch_admin/route/get_route"));
+          case 23:
+            _context6.prev = 23;
+            _context6.t0 = _context6["catch"](0);
+            console.log(_context6.t0);
+            res.redirect("/home");
+          case 27:
+          case "end":
+            return _context6.stop();
+        }
+      }
+    }, _callee6, null, [[0, 23]]);
+  }));
+  return function userMappingAssign(_x11, _x12) {
+    return _ref6.apply(this, arguments);
+  };
+}();
+exports.userMappingAssign = userMappingAssign;
+var unassignUser = /*#__PURE__*/function () {
+  var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7(req, res) {
+    var _req$body4, address_id, router_id, users, user_mapping, i;
+    return _regeneratorRuntime().wrap(function _callee7$(_context7) {
+      while (1) {
+        switch (_context7.prev = _context7.next) {
+          case 0:
+            _context7.prev = 0;
+            _req$body4 = req.body, address_id = _req$body4.address_id, router_id = _req$body4.router_id;
+            _context7.next = 4;
+            return (0, _db["default"])("routes").select("user_mapping").where({
+              id: router_id
+            });
+          case 4:
+            users = _context7.sent;
+            user_mapping = users[0].user_mapping;
+            if (!(user_mapping.length == 1)) {
+              _context7.next = 11;
+              break;
+            }
+            _context7.next = 9;
+            return (0, _db["default"])("routes").update({
+              user_mapping: null
+            }).where({
+              id: router_id
+            });
+          case 9:
+            _context7.next = 12;
+            break;
+          case 11:
+            for (i = 0; i < user_mapping.length; i++) {
+              if (user_mapping[i] == address_id) {
+                user_mapping.splice(i, 1);
+              }
+            }
+          case 12:
+            _context7.next = 14;
+            return (0, _db["default"])("user_address").update({
+              router_id: null
+            }).where({
+              id: address_id
+            });
+          case 14:
+            req.flash("success", "SuccessFully UnAssigned");
+            return _context7.abrupt("return", res.redirect("/branch_admin/route/get_route"));
+          case 18:
+            _context7.prev = 18;
+            _context7.t0 = _context7["catch"](0);
+            console.log(_context7.t0);
+            return _context7.abrupt("return", res.redirect("/home"));
+          case 22:
+          case "end":
+            return _context7.stop();
+        }
+      }
+    }, _callee7, null, [[0, 18]]);
+  }));
+  return function unassignUser(_x13, _x14) {
+    return _ref7.apply(this, arguments);
+  };
+}();
 
 // export const getExistUsers = async (req, res) => {
 //   try {
@@ -966,4 +1068,4 @@ var getExistUsers = /*#__PURE__*/function () {
 //     res.redirect("/home");
 //   }
 // };
-exports.getExistUsers = getExistUsers;
+exports.unassignUser = unassignUser;

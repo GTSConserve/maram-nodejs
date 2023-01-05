@@ -30,6 +30,7 @@
 
             </div>
         </div>
+  
         <% if(data.length === 0){ %> 
             <h2>No Data Found</h2>
             <% }else if(loading) { %>
@@ -60,7 +61,7 @@
                                         <% let count = 0 %>
                                         
                                         <% for(let i = 0 ; i< data.length; i++ ){ %> 
-                                           
+                                            <h5><%= data[i] %> </h5>
                                           
                                             <% if(count == (colo_array.length )){ %>
                                                 <% count = 0 %> 
@@ -76,12 +77,60 @@
                                                         <p class="t-meta-time"><%= data[i].address %></p>
                                                     </div>
                                                     <div>
-                                                        <button class="btn btn-info btn-sm">UnAssign</button>
+                                                        <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#unassign<%= data[i].id %>">UnAssign</button>
                                                     </div>
                                                 </div>
 
                                         <!-- <div class="media  d-md-flex d-block text-sm-left text-center" style="border-width:2px ;border-color:#2196f3" > -->
                                         
+
+                                            <div wire:ignore.self="" class="modal fade" id="unassign<%= data[i].id %>" tabindex="-1"
+                            aria-labelledby="addCategoryTitle" style="display: none;" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalCenterTitle">UnAssign The User</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                                height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                class="feather feather-x">
+                                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                    <div class="widget-content widget-content-area br-6">
+                                        <div class="row m-2 ">
+                                            <!-- <h4 class="modal-title" id="exampleModalLabel"> Add Admin</h4> -->
+                                            <div class="col-sm-3  ml-auto">
+
+                                            </div>
+
+                                        
+                                        </div>
+
+
+                                        <form action="/branch_admin/subscription/unassign_user" method="post">
+
+                                        <div class="form-row mb-4">
+                                            <h4>Are You Sure Want UnAssign The User?</h4>
+
+                                            <input type="hidden" name="address_id" value="<%= data[i].id %>" >
+                                            <input type="hidden" name="router_id" value="<%=router_id %>" >
+                                    </div>
+                                    <div class="modal-footer">
+
+                                        <button type="button" class="btn btn-danger" id="addmodalClose" data-dismiss="modal"><i
+                                                class="flaticon-cancel-12"></i>Discard</button>
+                                        <button type="submit" wire:click="save" class="btn btn-success">Proceed</button>
+                                    </div>
+                                </form>
+                                </div>
+                            </div>
+                        </div>
+
                                             
                                             <% } %> 
                                     

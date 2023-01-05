@@ -443,7 +443,14 @@ var createTable = /*#__PURE__*/function () {
                   t.integer("product_id").unsigned().notNullable();
                   t.foreign("product_id").references("id").inTable("products");
                   t.integer("quantity").notNullable();
+                  t.integer("subscription_monthly_price").nullable();
+                  t.integer("additional_monthly_price").nullable();
+                  t.integer("total_monthly_price").nullable();
+                  t.integer("subscription_delivered_quantity").nullable();
+                  t.integer("additional_delivered_quantity").nullable();
+                  t.integer("total_delivered_quantity").nullable();
                   t.enu("subscription_status", ["pending", "assigned", "cancelled", "subscribed", "unsubscribed", "branch_cancelled", "branch_pending", "change_date", "change_qty", "change_address", "change_plan"]).defaultTo("pending");
+                  t.enu("rider_status", ["pending", "delivered", "undelivered"]).defaultTo("pending");
                   t.enu("status", ["0", "1"]).defaultTo("1");
                   t.timestamps(true, true);
                 });
@@ -585,7 +592,7 @@ var createTable = /*#__PURE__*/function () {
                   t.integer("total_given_bottle").nullable();
                   t.integer("total_collective_bottle").nullable();
                   t.enu("status", ["pending", "started", "completed", "delivered", "undelivered", "cancelled"]).defaultTo("pending");
-                  t.enu("tour_status", ['pending', 'started', 'completed']).defaultTo("pending");
+                  t.enu("tour_status", ["pending", "started", "completed"]).defaultTo("pending");
                   t.timestamps(true, true);
                 });
               }
@@ -599,23 +606,39 @@ var createTable = /*#__PURE__*/function () {
                   t.string("bill_no", 255);
                   t.integer("user_id").unsigned().notNullable();
                   t.foreign("user_id").references("id").inTable("users");
-                  t.integer("items").unsigned().notNullable();
-                  t.integer("subscribe_type_id").unsigned().notNullable();
-                  t.foreign("subscribe_type_id").references("id").inTable("subscription_type");
-                  t.integer("product_type_id").unsigned().notNullable();
-                  t.foreign("product_type_id").references("id").inTable("product_type");
-                  t.integer("product_id", 255).unsigned().notNullable();
-                  t.foreign("product_id").references("id").inTable("products");
-                  t.integer("total_amount").unsigned().notNullable();
-                  t.date("date").notNullable();
-                  t.integer("bill_value", 255).unsigned().notNullable();
-                  t.enu("status", ["0", "1", "2"]).defaultTo("1");
+                  t.integer("sub_total").nullable();
+                  t.integer("discount").nullable();
+                  t.integer("grand_total").nullable();
+                  t.date("date").nullable();
+                  t.enu("payment_status", ["pending", "success", "payment_failed"]).defaultTo("pending");
                   t.timestamps(true, true);
                 });
               }
             });
           case 61:
             _context.next = 63;
+            return _db["default"].schema.hasTable("bill_history_details").then(function (exists) {
+              if (!exists) {
+                return _db["default"].schema.createTable("bill_history_details", function (t) {
+                  t.increments("id").primary().unsigned().notNullable();
+                  t.integer("bill_history_id").unsigned().notNullable();
+                  t.foreign("bill_history_id").references("id").inTable("bill_history");
+                  t.integer("add_on_order_id").unsigned().nullable();
+                  t.foreign("add_on_order_id").references("id").inTable("add_on_orders");
+                  t.integer("subscription_id").unsigned().nullable();
+                  t.foreign("subscription_id").references("id").inTable("subscribed_user_details");
+                  t.integer("subscription_price").nullable();
+                  t.integer("additional_price").nullable();
+                  t.integer("total_price").nullable();
+                  t.integer("subscription_qty").nullable();
+                  t.integer("additional_qty").nullable();
+                  t.integer("total_qty").nullable();
+                  t.timestamps(true, true);
+                });
+              }
+            });
+          case 63:
+            _context.next = 65;
             return _db["default"].schema.hasTable("monthly_paused_dates").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("monthly_paused_dates", function (t) {
@@ -629,8 +652,8 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 63:
-            _context.next = 65;
+          case 65:
+            _context.next = 67;
             return _db["default"].schema.hasTable("price_change").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("price_change", function (t) {
@@ -644,8 +667,8 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 65:
-            _context.next = 67;
+          case 67:
+            _context.next = 69;
             return _db["default"].schema.hasTable("monthly_bill").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("monthly_bill", function (t) {
@@ -664,8 +687,8 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 67:
-            _context.next = 69;
+          case 69:
+            _context.next = 71;
             return _db["default"].schema.hasTable("user_address_subscribe_branch").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("user_address_subscribe_branch", function (t) {
@@ -693,8 +716,8 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 69:
-            _context.next = 71;
+          case 71:
+            _context.next = 73;
             return _db["default"].schema.hasTable("branch_purchase_order").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("branch_purchase_order", function (t) {
@@ -708,8 +731,8 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 71:
-            _context.next = 73;
+          case 73:
+            _context.next = 75;
             return _db["default"].schema.hasTable("branch_purchase_order_items").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("branch_purchase_order_items", function (t) {
@@ -734,8 +757,8 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 73:
-            _context.next = 75;
+          case 75:
+            _context.next = 77;
             return _db["default"].schema.hasTable("empty_bottle_tracking").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("empty_bottle_tracking", function (t) {
@@ -753,8 +776,8 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 75:
-            _context.next = 77;
+          case 77:
+            _context.next = 79;
             return _db["default"].schema.hasTable("payment_type").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("payment_type", function (t) {
@@ -769,8 +792,8 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 77:
-            _context.next = 79;
+          case 79:
+            _context.next = 81;
             return _db["default"].schema.hasTable("payment_gateways").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("payment_gateways", function (t) {
@@ -785,8 +808,8 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 79:
-            _context.next = 81;
+          case 81:
+            _context.next = 83;
             return _db["default"].schema.hasTable("rider_daily_details").then(function (exists) {
               if (!exists) {
                 return _db["default"].schema.createTable("rider_daily_details", function (t) {
@@ -807,13 +830,13 @@ var createTable = /*#__PURE__*/function () {
                 });
               }
             });
-          case 81:
+          case 83:
             return _context.abrupt("return", res.status(200).json({
               status: true,
               message: "table successfully created"
             }));
-          case 84:
-            _context.prev = 84;
+          case 86:
+            _context.prev = 86;
             _context.t0 = _context["catch"](0);
             console.log(_context.t0);
             return _context.abrupt("return", res.status(500).json({
@@ -821,12 +844,12 @@ var createTable = /*#__PURE__*/function () {
               message: "Error at creating tables",
               error: _context.t0
             }));
-          case 88:
+          case 90:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 84]]);
+    }, _callee, null, [[0, 86]]);
   }));
   return function createTable(_x, _x2) {
     return _ref.apply(this, arguments);

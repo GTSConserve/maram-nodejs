@@ -111,7 +111,7 @@
                                        <button class="btn mb-2 btn-md  btn-secondary" value="<%=user.address_id %>" onclick="viewHandler(this)"
                                        >View</button>
                                        <button class="btn mb-2 btn-md  btn-info" data-toggle="modal"
-                                        data-target="#transfer<%=user.id %>">Assign</button>
+                                        data-target="#transfer<%=user.address_id %>">Assign</button>
                                           
                                         
                                     
@@ -141,7 +141,7 @@
     
     
   <!-- Assign -->
-                <div wire:ignore.self="" class="modal fade" id="transfer<%=user.id %>" tabindex="-1"
+                <div wire:ignore.self="" class="modal fade" id="transfer<%=user.address_id %>" tabindex="-1"
                     aria-labelledby="addCategoryTitle"  style="display: none;" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered " role="document" > 
                         <div class="modal-content" >
@@ -158,7 +158,7 @@
                                 </button>
                             </div>
             
-                            <form action="/branch_admin/subscription/subscribed?is_user_mapping_assign=<%= routes.id%>" method="post" >
+                            <form action="/branch_admin/subscription/user_mapping_assign" method="post" >
                                         <div class="modal-body">
                                             <div class="col-sm-12">
                                                 <h6> Assign This <%= user.user_unique_id %> To <%= routes.name %> Route ?</h6> 
@@ -171,7 +171,7 @@
                                         </div>
                                         <div class="modal-footer">
                                             <button class="btn" type="button" style="border-color: #006E33;" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancel</button>
-                                            <button type="submit" name="sub_id"  value="<%=user.id %>" class="btn btn-primary">Assign</button>
+                                            <button type="submit" name="router_id"  value="<%= router_id%>" class="btn btn-primary">Assign</button>
                                         </div>
                                     </form>
                         </div>

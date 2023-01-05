@@ -41,7 +41,7 @@ var updateRiderToken = /*#__PURE__*/function () {
             _context.prev = 7;
             _context.t0 = _context["catch"](3);
             return _context.abrupt("return", {
-              status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
+              status: _responseCode["default"].FAILURE.BAD_REQUEST,
               message: _context.t0.message
             });
           case 10:
@@ -195,7 +195,7 @@ var insertUser = /*#__PURE__*/function () {
             _context4.prev = 14;
             _context4.t0 = _context4["catch"](10);
             return _context4.abrupt("return", {
-              status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
+              status: _responseCode["default"].FAILURE.BAD_REQUEST,
               message: _context4.t0.message
             });
           case 17:
@@ -232,7 +232,7 @@ var get_Appcontrol = /*#__PURE__*/function () {
             _context5.prev = 7;
             _context5.t0 = _context5["catch"](3);
             return _context5.abrupt("return", {
-              status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
+              status: _responseCode["default"].FAILURE.DATA_NOT_FOUND,
               error: _context5.t0
             });
           case 10:
@@ -358,7 +358,7 @@ var update_location = /*#__PURE__*/function () {
             _context8.t0 = _context8["catch"](0);
             console.log(_context8.t0);
             return _context8.abrupt("return", {
-              status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
+              status: _responseCode["default"].FAILURE.BAD_REQUEST,
               message: _context8.t0.message
             });
           case 11:
@@ -377,14 +377,14 @@ var update_location = /*#__PURE__*/function () {
 exports.update_location = update_location;
 var update_starttour = /*#__PURE__*/function () {
   var _ref9 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9(delivery_partner_id, tour_id, tour_status) {
-    var updatetour;
+    var updatetour, subscription;
     return _regeneratorRuntime().wrap(function _callee9$(_context9) {
       while (1) {
         switch (_context9.prev = _context9.next) {
           case 0:
             _context9.prev = 0;
             if (!(tour_status == 1)) {
-              _context9.next = 8;
+              _context9.next = 11;
               break;
             }
             _context9.next = 4;
@@ -395,32 +395,38 @@ var update_starttour = /*#__PURE__*/function () {
             });
           case 4:
             updatetour = _context9.sent;
+            _context9.next = 7;
+            return (0, _db["default"])('subscribed_user_details').update({
+              rider_status: "pending"
+            });
+          case 7:
+            subscription = _context9.sent;
             return _context9.abrupt("return", {
               status: true,
               message: "successfully updated"
             });
-          case 8:
+          case 11:
             return _context9.abrupt("return", {
               status: false,
               message: "cannot updated"
             });
-          case 9:
-            _context9.next = 15;
+          case 12:
+            _context9.next = 18;
             break;
-          case 11:
-            _context9.prev = 11;
+          case 14:
+            _context9.prev = 14;
             _context9.t0 = _context9["catch"](0);
             console.log(_context9.t0);
             return _context9.abrupt("return", {
               status: false,
               message: "Cannot Update the status"
             });
-          case 15:
+          case 18:
           case "end":
             return _context9.stop();
         }
       }
-    }, _callee9, null, [[0, 11]]);
+    }, _callee9, null, [[0, 14]]);
   }));
   return function update_starttour(_x15, _x16, _x17) {
     return _ref9.apply(this, arguments);
@@ -431,7 +437,7 @@ var update_starttour = /*#__PURE__*/function () {
 exports.update_starttour = update_starttour;
 var update_endtour = /*#__PURE__*/function () {
   var _ref10 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10(delivery_partner_id, tour_id, tour_status) {
-    var router, daily, updatetour;
+    var router, daily, updatetour, _daily;
     return _regeneratorRuntime().wrap(function _callee10$(_context10) {
       while (1) {
         switch (_context10.prev = _context10.next) {
@@ -451,11 +457,11 @@ var update_endtour = /*#__PURE__*/function () {
           case 6:
             daily = _context10.sent;
             if (!(daily.status !== "pending")) {
-              _context10.next = 18;
+              _context10.next = 22;
               break;
             }
             if (!(tour_status == 2)) {
-              _context10.next = 15;
+              _context10.next = 19;
               break;
             }
             _context10.next = 11;
@@ -466,40 +472,51 @@ var update_endtour = /*#__PURE__*/function () {
             });
           case 11:
             updatetour = _context10.sent;
+            _context10.next = 14;
+            return (0, _db["default"])('daily_orders').select('*').where({
+              router_id: router[0].id
+            });
+          case 14:
+            _daily = _context10.sent;
+            console.log(_daily);
+
+            // const rider1 = await knex('rider_daily_details').select("order_details").where({router_id:router[0].id})
+
+            // rider1[0].order_details.push(daily);
             return _context10.abrupt("return", {
               status: true,
               message: "successfully updated"
             });
-          case 15:
+          case 19:
             return _context10.abrupt("return", {
               status: false,
               message: "cannot updated"
             });
-          case 16:
-            _context10.next = 19;
+          case 20:
+            _context10.next = 23;
             break;
-          case 18:
+          case 22:
             return _context10.abrupt("return", {
               status: false,
               message: "your orders not completed"
             });
-          case 19:
-            _context10.next = 25;
+          case 23:
+            _context10.next = 29;
             break;
-          case 21:
-            _context10.prev = 21;
+          case 25:
+            _context10.prev = 25;
             _context10.t0 = _context10["catch"](0);
             console.log(_context10.t0);
             return _context10.abrupt("return", {
               status: false,
               message: "Cannot Update the status"
             });
-          case 25:
+          case 29:
           case "end":
             return _context10.stop();
         }
       }
-    }, _callee10, null, [[0, 21]]);
+    }, _callee10, null, [[0, 25]]);
   }));
   return function update_endtour(_x18, _x19, _x20) {
     return _ref10.apply(this, arguments);
@@ -598,11 +615,11 @@ var getsingleorder = /*#__PURE__*/function () {
   };
 }();
 
-// oder status update
+// order status update
 exports.getsingleorder = getsingleorder;
 var statusupdate = /*#__PURE__*/function () {
   var _ref12 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee12(user_id, delivery_partner_id, one_liter_count, half_liter_count, order_id, order_status, product, addons, additional_orders) {
-    var update1, update, bottle_entry, bottle_entry1, i, subscription, one, j, entry, total_one_liter, sum_total, sum, return1, given_bottle, sum1, _entry, total_half_liter1, _sum_total, _sum, _return, _given_bottle, _sum2, _j, additional_order, one1, _j2, _entry2, _total_one_liter, _sum_total2, _sum3, _return2, _given_bottle2, _sum4, _entry3, _total_half_liter, _sum_total3, _sum5, _return3, _given_bottle3, _sum6, _i, add_on_orders, _i2, add_on_order_items;
+    var update1, update, bottle_entry, bottle_entry1, _i, subscription, _one, j, entry, total_one_liter, sum_total, sum, return1, given_bottle, sum1, _entry, total_half_liter1, _sum_total, _sum, _return, _given_bottle, _sum2, _sum3, _sum4, price, _j, additional_order, one1, _j2, _entry2, _total_one_liter, _sum_total2, _sum5, _return2, _given_bottle2, _sum6, _entry3, _total_half_liter, _sum_total3, _sum7, _return3, _given_bottle3, _sum8, _i2, add_on_orders, _i3, add_on_order_items;
     return _regeneratorRuntime().wrap(function _callee12$(_context12) {
       while (1) {
         switch (_context12.prev = _context12.next) {
@@ -616,7 +633,7 @@ var statusupdate = /*#__PURE__*/function () {
           case 3:
             update1 = _context12.sent;
             if (!(update1[0].tour_status == "started")) {
-              _context12.next = 157;
+              _context12.next = 165;
               break;
             }
             _context12.next = 7;
@@ -631,39 +648,39 @@ var statusupdate = /*#__PURE__*/function () {
             bottle_entry = [];
             bottle_entry1 = [];
             if (!product) {
-              _context12.next = 155;
+              _context12.next = 163;
               break;
             }
-            i = 0;
+            _i = 0;
           case 12:
-            if (!(i < product.length)) {
+            if (!(_i < product.length)) {
               _context12.next = 23;
               break;
             }
             _context12.next = 15;
             return (0, _db["default"])('subscribed_user_details').update({
-              subscription_status: order_status
+              rider_status: order_status
             }).where({
-              id: product[i].subscription_id
+              id: product[_i].subscription_id
             });
           case 15:
             subscription = _context12.sent;
             _context12.next = 18;
-            return (0, _db["default"])('subscribed_user_details').select("subscribed_user_details.id", "products.unit_value ", "subscribed_user_details.quantity").join("products", "products.id", "=", "subscribed_user_details.product_id").where({
-              "subscribed_user_details.id": product[i].subscription_id
+            return (0, _db["default"])('subscribed_user_details').select("subscribed_user_details.id", "products.unit_value ", "subscribed_user_details.quantity", "subscribed_user_details.rider_status as status", "products.price", "subscribed_user_details.subscription_monthly_price", "subscribed_user_details.subscription_delivered_quantity").join("products", "products.id", "=", "subscribed_user_details.product_id").where({
+              "subscribed_user_details.id": product[_i].subscription_id
             });
           case 18:
-            one = _context12.sent;
-            bottle_entry.push(one[0]);
+            _one = _context12.sent;
+            bottle_entry.push(_one[0]);
           case 20:
-            i++;
+            _i++;
             _context12.next = 12;
             break;
           case 23:
             j = 0;
           case 24:
             if (!(j < bottle_entry.length)) {
-              _context12.next = 71;
+              _context12.next = 79;
               break;
             }
             if (!(bottle_entry[j].unit_value == 1000)) {
@@ -760,174 +777,173 @@ var statusupdate = /*#__PURE__*/function () {
             _sum2 = _context12.sent;
             console.log(_given_bottle);
           case 68:
+            if (!(one[0].status == "delivered")) {
+              _context12.next = 76;
+              break;
+            }
+            _sum3 = 0;
+            _sum4 = 0;
+            _sum3 += Number(one[0].price + one[0].subscription_monthly_price);
+            _sum4 += Number(one[0].quantity + one[0].subscription_delivered_quantity);
+            _context12.next = 75;
+            return (0, _db["default"])('subscribed_user_details').update({
+              subscription_monthly_price: _sum3,
+              subscription_delivered_quantity: _sum4
+            }).where({
+              "subscribed_user_details.id": product[i].subscription_id
+            });
+          case 75:
+            price = _context12.sent;
+          case 76:
             j++;
             _context12.next = 24;
             break;
-          case 71:
+          case 79:
             if (!(additional_orders.length !== 0)) {
-              _context12.next = 154;
+              _context12.next = 162;
               break;
             }
             _j = 0;
-          case 73:
+          case 81:
             if (!(_j < additional_orders.length)) {
-              _context12.next = 84;
+              _context12.next = 92;
               break;
             }
-            _context12.next = 76;
+            _context12.next = 84;
             return (0, _db["default"])('additional_orders').update({
               status: order_status
             }).where({
               id: additional_orders[_j].additional_order_id,
               subscription_id: additional_orders[_j].subscription_id
             });
-          case 76:
+          case 84:
             additional_order = _context12.sent;
-            _context12.next = 79;
+            _context12.next = 87;
             return (0, _db["default"])('subscribed_user_details').select("products.unit_value ", "additional_orders.quantity", "subscribed_user_details.id").join("additional_orders", "additional_orders.subscription_id", "=", "subscribed_user_details.id").join("products", "products.id", "=", "subscribed_user_details.product_id").where({
               "additional_orders.id": additional_orders[_j].additional_order_id,
               "subscribed_user_details.id": additional_orders[_j].subscription_id
             });
-          case 79:
+          case 87:
             one1 = _context12.sent;
             bottle_entry1.push(one1[0]);
-          case 81:
+          case 89:
             _j++;
-            _context12.next = 73;
+            _context12.next = 81;
             break;
-          case 84:
+          case 92:
             console.log(bottle_entry1);
             _j2 = 0;
-          case 86:
+          case 94:
             if (!(_j2 < bottle_entry1.length)) {
-              _context12.next = 154;
+              _context12.next = 162;
               break;
             }
             if (!(bottle_entry1[_j2].unit_value == 1000)) {
-              _context12.next = 111;
+              _context12.next = 119;
               break;
             }
-            _context12.next = 90;
+            _context12.next = 98;
             return (0, _db["default"])('users').update({
               today_one_liter: bottle_entry1[_j2].quantity
             }).where({
               id: user_id
             });
-          case 90:
+          case 98:
             _entry2 = _context12.sent;
-            _context12.next = 93;
+            _context12.next = 101;
             return (0, _db["default"])('users').select('total_one_liter').where({
               id: user_id
             });
-          case 93:
+          case 101:
             _total_one_liter = _context12.sent;
             console.log(_total_one_liter);
             _sum_total2 = 0;
             _sum_total2 += Number(_total_one_liter[0].total_one_liter) + Number(bottle_entry1[_j2].quantity);
             console.log(_sum_total2);
-            _context12.next = 100;
+            _context12.next = 108;
             return (0, _db["default"])('users').update({
               total_one_liter: _sum_total2
             }).where({
               id: user_id
             });
-          case 100:
-            _sum3 = _context12.sent;
-            _context12.next = 103;
+          case 108:
+            _sum5 = _context12.sent;
+            _context12.next = 111;
             return (0, _db["default"])('users').select('total_one_liter').where({
               id: user_id
             });
-          case 103:
+          case 111:
             _return2 = _context12.sent;
             _given_bottle2 = _return2[0].total_one_liter - one_liter_count;
-            _context12.next = 107;
+            _context12.next = 115;
             return (0, _db["default"])('users').update({
               one_liter_in_hand: _given_bottle2
             }).where({
               id: user_id
             });
-          case 107:
-            _sum4 = _context12.sent;
+          case 115:
+            _sum6 = _context12.sent;
             console.log(_given_bottle2);
-            _context12.next = 134;
+            _context12.next = 142;
             break;
-          case 111:
+          case 119:
             if (!(bottle_entry1[_j2].unit_value == 500)) {
-              _context12.next = 133;
+              _context12.next = 141;
               break;
             }
-            _context12.next = 114;
+            _context12.next = 122;
             return (0, _db["default"])('users').update({
               today_half_liter: bottle_entry1[_j2].quantity
             }).where({
               id: user_id
             });
-          case 114:
-            _entry3 = _context12.sent;
-            _context12.next = 117;
-            return (0, _db["default"])('users').select('total_half_liter').where({
-              id: user_id
-            });
-          case 117:
-            _total_half_liter = _context12.sent;
-            // console.log(total_one_liter);
-            _sum_total3 = 0;
-            _sum_total3 += Number(_total_half_liter[0].total_half_liter + bottle_entry[_j2].quantity);
-            _context12.next = 122;
-            return (0, _db["default"])('users').update({
-              total_half_liter: _sum_total3
-            }).where({
-              id: user_id
-            });
           case 122:
-            _sum5 = _context12.sent;
+            _entry3 = _context12.sent;
             _context12.next = 125;
             return (0, _db["default"])('users').select('total_half_liter').where({
               id: user_id
             });
           case 125:
+            _total_half_liter = _context12.sent;
+            // console.log(total_one_liter);
+            _sum_total3 = 0;
+            _sum_total3 += Number(_total_half_liter[0].total_half_liter + bottle_entry[_j2].quantity);
+            _context12.next = 130;
+            return (0, _db["default"])('users').update({
+              total_half_liter: _sum_total3
+            }).where({
+              id: user_id
+            });
+          case 130:
+            _sum7 = _context12.sent;
+            _context12.next = 133;
+            return (0, _db["default"])('users').select('total_half_liter').where({
+              id: user_id
+            });
+          case 133:
             _return3 = _context12.sent;
             _given_bottle3 = _return3[0].total_half_liter - half_liter_count;
-            _context12.next = 129;
+            _context12.next = 137;
             return (0, _db["default"])('users').update({
               half_liter_in_hand: _given_bottle3
             }).where({
               id: user_id
             });
-          case 129:
-            _sum6 = _context12.sent;
+          case 137:
+            _sum8 = _context12.sent;
             console.log(_given_bottle3);
-            _context12.next = 134;
+            _context12.next = 142;
             break;
-          case 133:
+          case 141:
             return _context12.abrupt("return", {
               status: false,
               message: "no additional_orders product"
             });
-          case 134:
+          case 142:
             if (!addons) {
-              _context12.next = 151;
+              _context12.next = 159;
               break;
             }
-            _i = 0;
-          case 136:
-            if (!(_i < addons.length)) {
-              _context12.next = 143;
-              break;
-            }
-            _context12.next = 139;
-            return (0, _db["default"])('add_on_orders').update({
-              status: order_status
-            }).where({
-              id: addons[_i].id
-            });
-          case 139:
-            add_on_orders = _context12.sent;
-          case 140:
-            _i++;
-            _context12.next = 136;
-            break;
-          case 143:
             _i2 = 0;
           case 144:
             if (!(_i2 < addons.length)) {
@@ -935,51 +951,70 @@ var statusupdate = /*#__PURE__*/function () {
               break;
             }
             _context12.next = 147;
-            return (0, _db["default"])('add_on_order_items').update({
+            return (0, _db["default"])('add_on_orders').update({
               status: order_status
             }).where({
-              add_on_order_id: addons[_i2].id
+              id: addons[_i2].id
             });
           case 147:
-            add_on_order_items = _context12.sent;
+            add_on_orders = _context12.sent;
           case 148:
             _i2++;
             _context12.next = 144;
             break;
           case 151:
-            _j2++;
-            _context12.next = 86;
+            _i3 = 0;
+          case 152:
+            if (!(_i3 < addons.length)) {
+              _context12.next = 159;
+              break;
+            }
+            _context12.next = 155;
+            return (0, _db["default"])('add_on_order_items').update({
+              status: order_status
+            }).where({
+              add_on_order_id: addons[_i3].id
+            });
+          case 155:
+            add_on_order_items = _context12.sent;
+          case 156:
+            _i3++;
+            _context12.next = 152;
             break;
-          case 154:
+          case 159:
+            _j2++;
+            _context12.next = 94;
+            break;
+          case 162:
             return _context12.abrupt("return", {
               status: true,
               message: "ok"
             });
-          case 155:
-            _context12.next = 158;
+          case 163:
+            _context12.next = 166;
             break;
-          case 157:
+          case 165:
             return _context12.abrupt("return", {
               status: false,
               message: "tour cannot started"
             });
-          case 158:
-            _context12.next = 164;
+          case 166:
+            _context12.next = 172;
             break;
-          case 160:
-            _context12.prev = 160;
+          case 168:
+            _context12.prev = 168;
             _context12.t0 = _context12["catch"](0);
             console.log(_context12.t0);
             return _context12.abrupt("return", {
               status: false,
               message: "No data found"
             });
-          case 164:
+          case 172:
           case "end":
             return _context12.stop();
         }
       }
-    }, _callee12, null, [[0, 160]]);
+    }, _callee12, null, [[0, 168]]);
   }));
   return function statusupdate(_x25, _x26, _x27, _x28, _x29, _x30, _x31, _x32, _x33) {
     return _ref12.apply(this, arguments);
@@ -1065,7 +1100,7 @@ var dashboard = /*#__PURE__*/function () {
 exports.dashboard = dashboard;
 var home_delivery = /*#__PURE__*/function () {
   var _ref14 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee14(delivery_partner_id) {
-    var router, order, delivery, sum, sum1, sum2, sum3, i, delivery1, sum4, _i3;
+    var router, order, delivery, sum, sum1, sum2, sum3, _i4, delivery1, sum4, _i5;
     return _regeneratorRuntime().wrap(function _callee14$(_context14) {
       while (1) {
         switch (_context14.prev = _context14.next) {
@@ -1093,11 +1128,11 @@ var home_delivery = /*#__PURE__*/function () {
             sum1 = 0;
             sum2 = 0;
             sum3 = 0;
-            for (i = 0; i < delivery.length; i++) {
-              sum += delivery[i].today_one_liter;
-              sum1 += delivery[i].today_half_liter;
-              sum2 += delivery[i].one_liter_in_return;
-              sum2 += delivery[i].half_liter_in_return;
+            for (_i4 = 0; _i4 < delivery.length; _i4++) {
+              sum += delivery[_i4].today_one_liter;
+              sum1 += delivery[_i4].today_half_liter;
+              sum2 += delivery[_i4].one_liter_in_return;
+              sum2 += delivery[_i4].half_liter_in_return;
             }
             console.log(sum, sum1);
             _context14.next = 18;
@@ -1107,8 +1142,8 @@ var home_delivery = /*#__PURE__*/function () {
           case 18:
             delivery1 = _context14.sent;
             sum4 = 0;
-            for (_i3 = 0; _i3 < delivery1.length; _i3++) {
-              sum4 += Number(delivery1[_i3].quantity);
+            for (_i5 = 0; _i5 < delivery1.length; _i5++) {
+              sum4 += Number(delivery1[_i5].quantity);
             }
             console.log(delivery1);
             return _context14.abrupt("return", {
@@ -1146,7 +1181,7 @@ var home_delivery = /*#__PURE__*/function () {
 exports.home_delivery = home_delivery;
 var order_list = /*#__PURE__*/function () {
   var _ref15 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee15(delivery_partner_id, status) {
-    var router, query3, order, delivery, order1, data3, data, addon, bottle, user, addon1, addon2, i, query, _i4;
+    var router, query3, order, delivery, order1, data3, data, addon, bottle, user, addon1, addon2, _i6, query, _i7;
     return _regeneratorRuntime().wrap(function _callee15$(_context15) {
       while (1) {
         switch (_context15.prev = _context15.next) {
@@ -1193,22 +1228,22 @@ var order_list = /*#__PURE__*/function () {
             user = [];
             addon1 = [];
             addon2 = [];
-            i = 0;
+            _i6 = 0;
           case 24:
-            if (!(i < order.length)) {
+            if (!(_i6 < order.length)) {
               _context15.next = 32;
               break;
             }
             _context15.next = 27;
             return (0, _db["default"])('add_on_order_items').select('id').where({
               status: "delivered",
-              user_id: order[i].user_id
+              user_id: order[_i6].user_id
             });
           case 27:
             addon = _context15.sent;
             addon2.push(addon[0]);
           case 29:
-            i++;
+            _i6++;
             _context15.next = 24;
             break;
           case 32:
@@ -1240,19 +1275,19 @@ var order_list = /*#__PURE__*/function () {
             // const add_on_count = await knex('add_on_order_items').where({id:order[0].user_id})
             // console.log(add_on_count[0].status)
 
-            for (_i4 = 0; _i4 < order1.length; _i4++) {
+            for (_i7 = 0; _i7 < order1.length; _i7++) {
               data.push({
-                "order_id": order1[_i4].id,
-                "order_string": "Task " + order1[_i4].user_id,
-                "milk_variation": order1[_i4].total_qty + " " + query3[0].unit_type,
+                "order_id": order1[_i7].id,
+                "order_string": "Task " + order1[_i7].user_id,
+                "milk_variation": order1[_i7].total_qty + " " + query3[0].unit_type,
                 "addon_items_delivered": 2,
                 "addon_items_undelivered": 1,
                 // "addon_items_delivered": add_on_count[0].status,
                 // "addon_items_undelivered": add_on_count[0].status,
-                "user_name": order1[_i4].name,
-                "customer_id": order1[_i4].user_unique_id,
+                "user_name": order1[_i7].name,
+                "customer_id": order1[_i7].user_unique_id,
                 "bottle_return": order1[0].bottle_status,
-                "order_status": order1[_i4].status
+                "order_status": order1[_i7].status
               });
             }
             return _context15.abrupt("return", _objectSpread(_objectSpread({
@@ -1376,7 +1411,7 @@ var logout_rider = /*#__PURE__*/function () {
             _context17.prev = 7;
             _context17.t0 = _context17["catch"](0);
             return _context17.abrupt("return", {
-              status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
+              status: _responseCode["default"].FAILURE.INVALID,
               message: _context17.t0.message
             });
           case 10:
