@@ -13,7 +13,7 @@ export const updateRiderToken = async (refresh_token, user_name) => {
     return { status: responseCode.SUCCESS, body: query };
   } catch (error) {
     return {
-      status: responseCode.FAILURE.INTERNAL_SERVER_ERROR,
+      status: responseCode.FAILURE.BAD_REQUEST,
       message: error.message,
     };
   }
@@ -86,7 +86,7 @@ export const userLogin = async (password) => {
     try {
     return { status: responseCode.SUCCESS, body: query }
     } catch (error) {
-      return { status: responseCode.FAILURE.INTERNAL_SERVER_ERROR, message: error.message }
+      return { status: responseCode.FAILURE.BAD_REQUEST, message: error.message }
     }
   }
 
@@ -98,7 +98,7 @@ export const userLogin = async (password) => {
     try {
     return { status: responseCode.SUCCESS, body: appSetting }
     } catch (error) {
-      return { status: responseCode.FAILURE.INTERNAL_SERVER_ERROR, error}
+      return { status: responseCode.FAILURE.DATA_NOT_FOUND, error}
     }
   }
 
@@ -155,7 +155,7 @@ export const userLogin = async (password) => {
         return{status:true,data:riderlocation}
     }catch(error){
       console.log(error);
-      return{status:responseCode.FAILURE.INTERNAL_SERVER_ERROR,message:error.message}
+      return{status:responseCode.FAILURE.BAD_REQUEST,message:error.message}
     }
 
   }
@@ -165,6 +165,8 @@ export const userLogin = async (password) => {
     try {
       if(tour_status==1){
       const updatetour = await knex('rider_details').update({tour_status:'1'}).where({id:delivery_partner_id})
+      const subscription = await knex('subscribed_user_details').update({rider_status:"pending"})
+
       return{status:true,message:"successfully updated"}
       }
       else{
@@ -187,9 +189,44 @@ export const userLogin = async (password) => {
      if(daily.status !== "pending"){
       if(tour_status==2){
         const updatetour = await knex('rider_details').update({tour_status:'2'}).where({id:delivery_partner_id})
-        return{status:true,message:"successfully updated"}
+        
+//         const users = await knex('daily_orders').select('user_id').where({router_id:router[0].id})
+// console.log(users)
+//         let sum1 =0;
+//         let sum2 =0;
 
-        // const users = await knex()
+//         for(let i=0; i<users.length ;i++){
+//           let subscription = await knex('subscribed_user_details')
+//           .join("products", "products.id", "=", "subscribed_user_details.product_id")
+//           .select(
+//             'subscribed_user_details.quantity as quantity',
+//             'subscribed_user_details.product_id as product_id',
+//             'products.unit_value as unit_value',
+//             'products.name as product_name')
+//             .where({user_id:users[i].user_id})
+
+//             console.log(subscription[i].unit_value)
+
+//           if(subscription[i].unit_value == 1000){
+//             sum1 += subscription[i].quantity
+//           }
+//          else if(subscription[i].unit_value == 500){
+//             sum2 += subscription[i].quantity
+//           }
+//           else {
+//             let sum3 =0;
+//           }
+//          console.log(sum1,sum2,) 
+//         }
+        const daily = await knex('daily_orders').select('*').where({router_id:router[0].id})
+
+        console.log(daily)
+        
+        // const rider1 = await knex('rider_daily_details').select("order_details").where({router_id:router[0].id})
+
+        // rider1[0].order_details.push(daily);
+
+        return{status:true,message:"successfully updated"}
         }
         else{
           return{status:false,message:"cannot updated"}
@@ -308,7 +345,7 @@ export const userLogin = async (password) => {
     }
   }
 
-  // oder status update
+  // order status update
 
   export const statusupdate = async (user_id,delivery_partner_id,one_liter_count,half_liter_count,order_id,order_status,product,addons,additional_orders) => {
     try {
@@ -324,10 +361,10 @@ export const userLogin = async (password) => {
 
          if(product){
           for(let i=0; i<product.length; i++){
-           const subscription = await knex('subscribed_user_details').update({subscription_status:order_status}).where({id:product[i].subscription_id})
+           const subscription = await knex('subscribed_user_details').update({rider_status:order_status}).where({id:product[i].subscription_id})
             
            const one =await knex('subscribed_user_details')
-          .select("subscribed_user_details.id","products.unit_value ","subscribed_user_details.quantity")
+          .select("subscribed_user_details.id","products.unit_value ","subscribed_user_details.quantity","subscribed_user_details.rider_status as status","products.price","subscribed_user_details.subscription_monthly_price","subscribed_user_details.subscription_delivered_quantity")
           .join("products", "products.id", "=", "subscribed_user_details.product_id")
           .where({"subscribed_user_details.id":product[i].subscription_id});
 
@@ -376,7 +413,16 @@ export const userLogin = async (password) => {
             
   
           }
-  
+          if(one[0].status=="delivered"){
+            let sum = 0;
+            let sum1 = 0;
+             sum +=Number(one[0].price +one[0].subscription_monthly_price);
+             sum1 +=Number(one[0].quantity +one[0].subscription_delivered_quantity);
+         const price = await knex('subscribed_user_details')
+         .update({subscription_monthly_price:sum,subscription_delivered_quantity:sum1})
+         .where({"subscribed_user_details.id":product[i].subscription_id});
+          }
+
           }
            
         //  console.log(additional_orders[0]);
@@ -437,9 +483,12 @@ export const userLogin = async (password) => {
   
               console.log(given_bottle)
             }
+
+            
             else{
               return{status:false,message:"no additional_orders product"}
             }
+            
             if(addons){
                       for(let i=0; i<addons.length; i++){
                        const add_on_orders = await knex('add_on_orders')
@@ -543,7 +592,7 @@ export const order_list = async (delivery_partner_id,status) =>{
     const router = await knex('routes').select('id','name').where({rider_id:delivery_partner_id});
     // console.log(router)
     const query3 = await knex('daily_orders')
-        .join("subscribed_user_details", "subscribed_user_details.id", "=", "daily_orders.subscription_id")
+        .join("subscribed_user_details", "subscribed_user_details.id", "=",       "daily_orders.subscription_id")
         .join("products", "products.id", "=", "subscribed_user_details.product_id")
         .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
         .select(
@@ -698,7 +747,7 @@ export const logout_rider = async (delivery_partner_id) => {
     return { status: responseCode.SUCCESS, body: query };
   } catch (error) {
     return {
-      status: responseCode.FAILURE.INTERNAL_SERVER_ERROR,
+      status: responseCode.FAILURE.INVALID,
       message: error.message,
     };
   }

@@ -6,12 +6,17 @@ export const updateCategory = async (req, res) => {
     const { name, id, addon, subscription } = req.body;
     const file = req.file;
 
-    console.log(req.body)
+    if (subscription == undefined && addon == undefined) {
+      req.flash("error", "Please Choose a Product Type");
+      return res.redirect("/super_admin/product/get_category");
+    }
 
     if (!name) {
       req.flash("error", "Name is missing");
       return res.redirect("/super_admin/product/get_category");
     }
+
+    await knex("categories_product_type").where({category_id : id}).del()
 
     let query = {};
 
@@ -22,41 +27,25 @@ export const updateCategory = async (req, res) => {
       query.image = image;
     }
 
-    const is_sub1 = await knex("categories_product_type").select("id","product_type_id").where({category_id : id })
-    for(let i=0; i<is_sub1.length;i++){
-    if (is_sub1[i].product_type_id==1) {
-
-
-      const is_sub = await knex("categories_product_type").select("id").where({category_id : id , product_type_id : 1})
-
-      if(is_sub.length === 0){
-        await knex("categories_product_type").insert({
-          category_id: cat[0],
-          product_type_id: 1,
-        });
-      }else{
-
-      }
-     const sub =  await knex("categories_product_type")
-        .update({ product_type_id: 1 })
-        .where({ id });
-
-        console.log(sub)
+    if (subscription) {
+      await knex("categories_product_type").insert({
+        category_id: id,
+        product_type_id: 1,
+      });
     }
 
-    if (is_sub1[i].product_type_id==2) {
-      const add = await knex("categories_product_type")
-        .update({ product_type_id: 2 })
-        .where({ id });
-
-        console.log(add)
+    if (addon) {
+      await knex("categories_product_type").insert({
+        category_id: id,
+        product_type_id: 2,
+      });
     }
 
-    await knex("categories").update(query).where({ id });
-    req.flash("success", "Updated SuccessFully");
-    res.redirect("/super_admin/product/get_category");
-  }
-   
+
+
+      await knex("categories").update(query).where({ id });
+      req.flash("success", "Updated SuccessFully");
+      res.redirect("/super_admin/product/get_category");
   } catch (error) {
     console.log(error);
     res.redirect("/home");
@@ -89,9 +78,11 @@ export const createCategory = async (req, res) => {
       return res.redirect("/super_admin/product/get_category");
     }
 
-    console.log(req.body);
+    console.log("htitiit");
+    console.log(subscription);
+    console.log(addon);
 
-    if (!subscription || !addon) {
+    if (subscription == undefined && addon == undefined) {
       req.flash("error", "Please Choose a Product Type");
       return res.redirect("/super_admin/product/get_category");
     }
@@ -187,12 +178,31 @@ export const getCategory = async (req, res) => {
       results = await knex.raw(
         `SELECT id,name,image,status
         FROM categories 
-        
+      
         LIMIT ${startingLimit},${resultsPerPage}`
       );
     }
 
     const data = results[0];
+
+    const get_product_type = await knex("categories_product_type").select(
+      "category_id",
+      "product_type_id"
+    );
+
+
+    for (let i = 0; i < get_product_type.length; i++) {
+      for (let j = 0; j < data.length; j++) {
+        if (get_product_type[i].category_id == data[j].id) {
+          if (get_product_type[i].product_type_id == 1) {
+            data[j].is_subscription = true;
+          } else {
+            data[j].is_add_on = true;
+          }
+        }
+      }
+    }
+
 
     for (let i = 0; i < data.length; i++) {
       data[i].image = process.env.BASE_URL + data[i].image;

@@ -1,11 +1,11 @@
 import responseCode from "../../constants/responseCode";
 import messages from "../../constants/messages"
+// import { PaymentMethod } from '../../models/user/payment.model';
 import crypto from "crypto";
 
 import { hmac } from "crypto";
 
 
-// import { add_feedback, get_AppSettings } from '../../models/user/payment.model';
 
 import knex from "../../services/db.service";
 
@@ -56,7 +56,7 @@ export const getPaymentStatusUpdate = async (req, res) => {
             token 
         } = req.body
 
-        const response = await knex('')
+        // const response = await knex('')
 
 
         res.status(200).json({ status: true, message: "Ok" })
@@ -98,7 +98,7 @@ export const getRazorpayMethod = async (req, res) => {
         };
         const response = await razorpay.orders.create(options);
 
-        // const payment_list = await knex('payment_gateways').select('')
+        // const payment_list = await PaymentMethod(user_id)
         // console.log(response.id);
         res.status(200).json({
             status: true, data: response

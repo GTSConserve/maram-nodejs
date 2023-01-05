@@ -690,132 +690,7 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
-export const getSingleUser = async (req, res) => {
-  try {
-    const { user_address_id } = req.query;
-    const { admin_id } = req.body;
 
-    const get_user_query =
-      await knex.raw(`SELECT user_address.id as user_address_id,
-      user_address.address,user_address.user_id as user_id, 
-      users.name as user_name,users.user_unique_id,users.mobile_number,
-      routes.name as route_name,admin_users.first_name as branch_name
-      FROM user_address 
-      JOIN users ON users.id = user_address.user_id 
-      LEFT JOIN admin_users ON admin_users.id = user_address.branch_id
-      LEFT JOIN routes ON routes.id = user_address.router_id
-      WHERE user_address.id = ${user_address_id}`);
-
-    if (get_user_query[0].length === 0) {
-      req.flash("error", "User Not Found");
-      return res.redirect("/home");
-    }
-
-    const user = get_user_query[0][0];
-
-    // console.log(user);
-
-    const get_subscription_products = await knex(
-      "subscribed_user_details as sub"
-    )
-      .select(
-        "sub.id as sub_id",
-        "sub.user_id",
-        "sub.start_date",
-        "sub.customized_days",
-        "sub.quantity",
-        "sub.subscription_status",
-        "products.name as product_name",
-        "products.unit_value",
-        "products.price",
-        "unit_types.value",
-        "subscription_type.name as sub_name"
-      )
-      .join("products", "products.id", "=", "sub.product_id")
-      .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
-      .join(
-        "subscription_type",
-        "subscription_type.id",
-        "=",
-        "sub.subscribe_type_id"
-      )
-
-      .where({
-        "sub.user_id": user.user_id,
-        "sub.user_address_id": user_address_id,
-      });
-
-    // console.log(get_subscription_products);
-
-    let is_subscription_active = 0;
-    if (get_subscription_products.length !== 0) {
-      for (let i = 0; i < get_subscription_products.length; i++) {
-        if (get_subscription_products[i].subscription_status == "subscribed") {
-          is_subscription_active = 1;
-        }
-
-        get_subscription_products[i].start_date = moment(
-          get_subscription_products[i].start_date
-        ).format("DD-MM-YYYY");
-      }
-    }
-
-    const add_on_order_query =
-      await knex.raw(`SELECT adds.id,adds.user_id ,adds.delivery_date,adds.sub_total,adds.status
-      FROM add_on_orders as adds 
-      WHERE adds.user_id = ${user.user_id} AND adds.address_id = ${user_address_id}`);
-
-    // console.log(add_on_order_query[0]);
-    let add_on = add_on_order_query[0];
-    console.log(add_on)
-
-    let is_add_on_active = 0;
-    let get_user_products_query;
-    if (add_on.length !== 0) {
-      for (let i = 0; i < add_on.length; i++) {
-        if (add_on[i].status == "pending") {
-          is_add_on_active = 1;
-        }
-
-        get_user_products_query = await knex("add_on_order_items as adds")
-          .select(
-            "adds.add_on_order_id",
-            "adds.quantity",
-            "adds.price",
-            "adds.total_price",
-            "adds.status",
-            "products.name as product_name",
-            "products.image",
-            "products.unit_value",
-            "unit_types.value"
-          )
-          .join("products", "products.id", "=", "adds.product_id")
-          .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
-          .where({ "adds.add_on_order_id": add_on[i].id });
-
-        for (let j = 0; j < get_user_products_query.length; j++) {
-          get_user_products_query[j].image =
-            process.env.BASE_URL + get_user_products_query[j].image;
-        }
-        add_on[i].add_on_products = get_user_products_query;
-        add_on[i].delivery_date = moment(add_on[i].delivery_date).format(
-          "DD-MM-YYYY"
-        );
-      }
-    }
-
-    res.render("super_admin/users/user_detail", {
-      user,
-      sub_products: get_subscription_products,
-      add_on,
-      is_add_on_active,
-      is_subscription_active,
-    });
-  } catch (error) {
-    console.log(error);
-    return res.redirect("/home");
-  }
-};
 
 export const updatePendingList = async (req, res) => {
   try {
@@ -885,3 +760,440 @@ export const updateAllUsersStatus = async (req, res) => {
     res.redirect("/home");
   }
 };
+
+
+export const getSingleUser = async (req, res) => {
+  try {
+    const { user_address_id } = req.query;
+    const { admin_id } = req.body;
+
+    const get_user_query =
+      await knex.raw(`SELECT user_address.id as user_address_id,
+      user_address.address,user_address.user_id as user_id, 
+      users.name as user_name,users.user_unique_id,users.mobile_number,
+      routes.name as route_name,admin_users.first_name as branch_name
+      FROM user_address 
+      JOIN users ON users.id = user_address.user_id 
+      LEFT JOIN admin_users ON admin_users.id = user_address.branch_id
+      LEFT JOIN routes ON routes.id = user_address.router_id
+      WHERE user_address.id = ${user_address_id}`);
+
+    if (get_user_query[0].length === 0) {
+      req.flash("error", "User Not Found");
+      return res.redirect("/home");
+    }
+
+    const user = get_user_query[0][0];
+
+    const get_subscription_products = await knex(
+      "subscribed_user_details as sub"
+    )
+      .select(
+        "sub.id as sub_id",
+        "sub.user_id",
+        "sub.start_date",
+        "sub.customized_days",
+        "sub.quantity",
+        "sub.subscription_status",
+        "products.name as product_name",
+        "products.unit_value",
+        "products.id as product_id",
+        "products.price",
+        "unit_types.value",
+        "subscription_type.name as sub_name"
+      )
+      .join("products", "products.id", "=", "sub.product_id")
+      .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
+      .join(
+        "subscription_type",
+        "subscription_type.id",
+        "=",
+        "sub.subscribe_type_id"
+      )
+
+      .where({
+        "sub.user_id": user.user_id,
+        "sub.user_address_id": user_address_id,
+      });
+
+    const current_month = moment().format("M");
+
+    let get_additional_orders = [];
+
+    let subscription_ids = [];
+
+    let is_subscription_active = 0;
+    if (get_subscription_products.length !== 0) {
+      for (let i = 0; i < get_subscription_products.length; i++) {
+        subscription_ids.push(get_subscription_products[i].sub_id);
+
+        /////////////////////////////////////////////////////////////////////////////// pause
+
+        let pause_dates = [];
+
+        const pause_orders_query = await knex("pause_dates")
+          .select("date", "id")
+          .where({ subscription_id: get_subscription_products[i].sub_id });
+
+        if (pause_orders_query.length !== 0) {
+          for (let k = 0; k < pause_orders_query.length; k++) {
+            pause_dates.push(
+              moment(pause_orders_query[k].date).format("YYYY-MM-DD")
+            );
+          }
+        }
+        get_subscription_products[i].pause_dates = pause_dates;
+        pause_dates = [];
+
+        /////////////////////////////////////////////////////////////////////////////// additional
+        const additional_orders_parent_id = await knex(
+          "additional_orders_parent"
+        )
+          .select("id")
+          .where({
+            subscription_id: get_subscription_products[i].sub_id,
+            // month: current_month,
+          });
+
+        // if (additional_orders_parent_id.length !== 0) {
+        let additional_orders = {};
+        const additional_orders_query = await knex("additional_orders")
+          .select("date", "status", "quantity")
+          .where({
+            subscription_id: get_subscription_products[i].sub_id,
+            is_cancelled: "0",
+          });
+        // .where({
+        //   additional_orders_parent_id: additional_orders_parent_id[0].id,
+        // });
+
+        if (additional_orders_query.length !== 0) {
+          // additional_orders.additional_orders_parent_id =
+          //   additional_orders_parent_id[0].id;
+          additional_orders.qty = additional_orders_query[0].quantity;
+          let orders = [];
+          let dates = [];
+          let is_active = false;
+          for (let i = 0; i < additional_orders_query.length; i++) {
+            if (additional_orders_query[i].status == "pending") {
+              is_active = true;
+            }
+
+            orders.push({
+              date: moment(additional_orders_query[i].date).format(
+                "DD-MM-YYYY"
+              ),
+              qty: additional_orders_query[i].quantity,
+              status: additional_orders_query[i].status,
+            });
+
+            dates.push(
+              moment(additional_orders_query[i].date).format("YYYY-MM-DD")
+            );
+          }
+          additional_orders.dates = dates;
+          additional_orders.order_details = orders;
+          additional_orders.sub_id = get_subscription_products[i].sub_id;
+          additional_orders.is_active = is_active;
+          orders = [];
+
+          // additional_orders
+
+          get_subscription_products[i].additional_orders = additional_orders;
+          get_additional_orders.push(additional_orders);
+          // }
+        }
+
+        if (get_subscription_products[i].subscription_status == "subscribed") {
+          is_subscription_active = 1;
+        }
+
+        get_subscription_products[i].start_date = moment(
+          get_subscription_products[i].start_date
+        ).format("DD-MM-YYYY");
+      }
+    }
+
+    const add_on_order_query =
+      await knex.raw(`SELECT adds.id,adds.user_id ,adds.delivery_date,adds.sub_total,adds.status
+      FROM add_on_orders as adds 
+      WHERE adds.user_id = ${user.user_id} AND adds.address_id = ${user_address_id}`);
+
+    // console.log(add_on_order_query[0]);
+    let add_on = add_on_order_query[0];
+
+    let is_add_on_active = 0;
+    let get_user_products_query;
+    if (add_on.length !== 0) {
+      for (let i = 0; i < add_on.length; i++) {
+        if (
+          add_on[i].status == "pending" ||
+          add_on[i].status == "new_order" ||
+          add_on[i].status == "order_placed"
+        ) {
+          is_add_on_active = 1;
+        }
+
+        get_user_products_query = await knex("add_on_order_items as adds")
+          .select(
+            "adds.add_on_order_id",
+            "adds.quantity",
+            "adds.price",
+            "adds.total_price",
+            "adds.status",
+            "products.name as product_name",
+            "products.image",
+            "products.unit_value",
+            "unit_types.value"
+          )
+          .join("products", "products.id", "=", "adds.product_id")
+          .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
+          .where({ "adds.add_on_order_id": add_on[i].id });
+
+        for (let j = 0; j < get_user_products_query.length; j++) {
+          get_user_products_query[j].image =
+            process.env.BASE_URL + get_user_products_query[j].image;
+        }
+        add_on[i].add_on_products = get_user_products_query;
+        add_on[i].delivery_date = moment(add_on[i].delivery_date).format(
+          "DD-MM-YYYY"
+        );
+      }
+    }
+
+    // for new subscription and add on
+
+    const get_plan = await knex("subscription_type")
+      .select("name", "id")
+      .where({ status: "1" });
+
+    let sub_product_id = [];
+    if (get_subscription_products.length !== 0) {
+      for (let i = 0; i < get_subscription_products.length; i++) {
+        sub_product_id.push(get_subscription_products[i].product_id);
+      }
+    }
+
+    const add_subscription_products = await knex("products")
+      .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
+      .select(
+        "products.id",
+        "products.name",
+        "products.unit_value",
+        "unit_types.value as unit_type",
+        "products.price"
+      )
+      .where({
+        "products.product_type_id": 1,
+        "products.status": "1",
+      })
+      .whereNotIn("products.id", sub_product_id);
+
+    const add_on_products = await knex("products")
+      .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
+      .select(
+        "products.id",
+        "products.name",
+        "products.unit_value",
+        "unit_types.value as unit_type",
+        "products.price"
+      )
+      .where({
+        "products.product_type_id": 2,
+        "products.status": "1",
+      });
+
+    // console.log(get_additional_orders , "check")
+    // console.log(get_subscription_products[0]);
+    // console.log(get_subscription_products[0].pause_dates);
+
+    res.render("super_admin/users/user_detail", {
+      user,
+      sub_products: get_subscription_products,
+      add_on,
+      is_add_on_active,
+      is_subscription_active,
+      get_plan,
+      get_subscription_products: add_subscription_products,
+      add_on_products,
+      get_additional_orders,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.redirect("/home");
+  }
+};
+
+
+
+
+
+// subscribe and unsubscrivbe
+export const unsubscribeSubscription = async (req, res) => {
+  try {
+    const { sub_id, user_id, user_address_id } = req.body;
+
+    await knex("subscribed_user_details")
+      .update({ subscription_status: "unsubscribed" })
+      .where({ id: sub_id, user_id });
+
+    req.flash("success", "UnSubscribed SuccessFully");
+    res.redirect(
+      `/super_admin/users_subscription/single_user?user_address_id=${user_address_id}`
+    );
+  } catch (error) {
+    console.log(error);
+    res.redirect("/home");
+  }
+};
+
+export const subscribeSubscription = async (req, res) => {
+  try {
+    const { sub_id, user_id, user_address_id } = req.body;
+
+    await knex("subscribed_user_details")
+      .update({ subscription_status: "subscribed" })
+      .where({ id: sub_id, user_id });
+
+    req.flash("success", "Subscribed SuccessFully");
+    res.redirect(
+      `/super_admin/users_subscription/single_user?user_address_id=${user_address_id}`
+    );
+  } catch (error) {
+    console.log(error);
+    res.redirect("/home");
+  }
+};
+
+
+
+
+
+// export const getSingleUser = async (req, res) => {
+//   try {
+//     const { user_address_id } = req.query;
+//     const { admin_id } = req.body;
+
+//     const get_user_query =
+//       await knex.raw(`SELECT user_address.id as user_address_id,
+//       user_address.address,user_address.user_id as user_id, 
+//       users.name as user_name,users.user_unique_id,users.mobile_number,
+//       routes.name as route_name,admin_users.first_name as branch_name
+//       FROM user_address 
+//       JOIN users ON users.id = user_address.user_id 
+//       LEFT JOIN admin_users ON admin_users.id = user_address.branch_id
+//       LEFT JOIN routes ON routes.id = user_address.router_id
+//       WHERE user_address.id = ${user_address_id}`);
+
+//     if (get_user_query[0].length === 0) {
+//       req.flash("error", "User Not Found");
+//       return res.redirect("/home");
+//     }
+
+//     const user = get_user_query[0][0];
+
+//     // console.log(user);
+
+//     const get_subscription_products = await knex(
+//       "subscribed_user_details as sub"
+//     )
+//       .select(
+//         "sub.id as sub_id",
+//         "sub.user_id",
+//         "sub.start_date",
+//         "sub.customized_days",
+//         "sub.quantity",
+//         "sub.subscription_status",
+//         "products.name as product_name",
+//         "products.unit_value",
+//         "products.price",
+//         "unit_types.value",
+//         "subscription_type.name as sub_name"
+//       )
+//       .join("products", "products.id", "=", "sub.product_id")
+//       .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
+//       .join(
+//         "subscription_type",
+//         "subscription_type.id",
+//         "=",
+//         "sub.subscribe_type_id"
+//       )
+
+//       .where({
+//         "sub.user_id": user.user_id,
+//         "sub.user_address_id": user_address_id,
+//       });
+
+//     // console.log(get_subscription_products);
+
+//     let is_subscription_active = 0;
+//     if (get_subscription_products.length !== 0) {
+//       for (let i = 0; i < get_subscription_products.length; i++) {
+//         if (get_subscription_products[i].subscription_status == "subscribed") {
+//           is_subscription_active = 1;
+//         }
+
+//         get_subscription_products[i].start_date = moment(
+//           get_subscription_products[i].start_date
+//         ).format("DD-MM-YYYY");
+//       }
+//     }
+
+//     const add_on_order_query =
+//       await knex.raw(`SELECT adds.id,adds.user_id ,adds.delivery_date,adds.sub_total,adds.status
+//       FROM add_on_orders as adds 
+//       WHERE adds.user_id = ${user.user_id} AND adds.address_id = ${user_address_id}`);
+
+//     // console.log(add_on_order_query[0]);
+//     let add_on = add_on_order_query[0];
+//     console.log(add_on)
+
+//     let is_add_on_active = 0;
+//     let get_user_products_query;
+//     if (add_on.length !== 0) {
+//       for (let i = 0; i < add_on.length; i++) {
+//         if (add_on[i].status == "pending") {
+//           is_add_on_active = 1;
+//         }
+
+//         get_user_products_query = await knex("add_on_order_items as adds")
+//           .select(
+//             "adds.add_on_order_id",
+//             "adds.quantity",
+//             "adds.price",
+//             "adds.total_price",
+//             "adds.status",
+//             "products.name as product_name",
+//             "products.image",
+//             "products.unit_value",
+//             "unit_types.value"
+//           )
+//           .join("products", "products.id", "=", "adds.product_id")
+//           .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
+//           .where({ "adds.add_on_order_id": add_on[i].id });
+
+//         for (let j = 0; j < get_user_products_query.length; j++) {
+//           get_user_products_query[j].image =
+//             process.env.BASE_URL + get_user_products_query[j].image;
+//         }
+//         add_on[i].add_on_products = get_user_products_query;
+//         add_on[i].delivery_date = moment(add_on[i].delivery_date).format(
+//           "DD-MM-YYYY"
+//         );
+//       }
+//     }
+
+//     res.render("super_admin/users/user_detail", {
+//       user,
+//       sub_products: get_subscription_products,
+//       add_on,
+//       is_add_on_active,
+//       is_subscription_active,
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     return res.redirect("/home");
+//   }
+// };
+
+

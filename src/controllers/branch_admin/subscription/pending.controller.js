@@ -28,8 +28,6 @@ export const updateSubscribedExistUser = async (req, res) => {
   try {
     const { router_id, date, add_on_order_id, address_id, sub_id } = req.body;
 
-
-
     if (add_on_order_id) {
       await knex("add_on_orders")
         .update({ status: "new_order" })
@@ -94,6 +92,39 @@ export const updateSubscribed = async (req, res) => {
         .where({ id: sub_id });
     }
 
+    // if (is_user_mapping_assign) {
+    //   console.log(is_user_mapping_assign , "inside")
+    //   // is_user_mapping_assign - is a router id
+    //   const { map_address_id } = req.body;
+
+    //   const users = await knex("routes")
+    //     .select("user_mapping")
+    //     .where({ id: is_user_mapping_assign });
+
+    //   if (users.length === 0 || users[0].user_mapping === null) {
+    //     let arr_users = [Number(map_address_id)];
+    //     await knex("routes")
+    //       .update({ user_mapping: JSON.stringify(arr_users) })
+    //       .where({ id: is_user_mapping_assign });
+    //   } else {
+    //     const get_users = await knex("routes")
+    //       .select("user_mapping")
+    //       .where({ id: is_user_mapping_assign });
+    //     get_users[0].user_mapping.push(Number(map_address_id));
+
+    //     await knex("routes")
+    //       .update({ user_mapping: JSON.stringify(get_users[0].user_mapping) })
+    //       .where({ id: is_user_mapping_assign });
+    //   }
+
+    //   await knex("user_address")
+    //     .update({ router_id: is_user_mapping_assign })
+    //     .where({ id: map_address_id });
+    //   req.flash("success", "Route Assigned Successfully");
+    //   // return res.redirect(`/branch_admin/route/user_mapping?route_id=${is_user_mapping_assign}`)
+    //   return res.redirect(`/branch_admin/route/get_route`);
+    // }
+
     const users = await knex("routes")
       .select("user_mapping")
       .where({ id: router_id });
@@ -117,37 +148,6 @@ export const updateSubscribed = async (req, res) => {
     await knex("user_address").update({ router_id }).where({ id: address_id });
 
     // this below call from user mapping assign
-    // if (is_user_mapping_assign) {
-    //   // is_user_mapping_assign - is a router id
-    //   const { address_id } = req.body;
-
-    //   const users = await knex("routes")
-    //     .select("user_mapping")
-    //     .where({ id: is_user_mapping_assign });
-
-    //   if (users.length === 0 || users[0].user_mapping === null) {
-    //     let arr_users = [Number(address_id)];
-    //     await knex("routes")
-    //       .update({ user_mapping: JSON.stringify(arr_users) })
-    //       .where({ id: is_user_mapping_assign });
-    //   } else {
-    //     const get_users = await knex("routes")
-    //       .select("user_mapping")
-    //       .where({ id: is_user_mapping_assign });
-    //     get_users[0].user_mapping.push(Number(address_id));
-
-    //     await knex("routes")
-    //       .update({ user_mapping: JSON.stringify(get_users[0].user_mapping) })
-    //       .where({ id: is_user_mapping_assign });
-    //   }
-
-    //   await knex("user_address")
-    //     .update({ router_id: is_user_mapping_assign })
-    //     .where({ id: address_id });
-    //   req.flash("success", "Route Assigned Successfully");
-    //   // return res.redirect(`/branch_admin/route/user_mapping?route_id=${is_user_mapping_assign}`)
-    //   return res.redirect(`/branch_admin/route/get_route`);
-    // }
 
     // // if (!date) {
     // //   req.flash("error", "Please Choose a Date ");
@@ -666,6 +666,75 @@ export const getExistUsers = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.redirect("/home");
+  }
+};
+
+export const userMappingAssign = async (req, res) => {
+  try {
+    const { router_id, address_id } = req.body;
+
+    const users = await knex("routes")
+      .select("user_mapping")
+      .where({ id: router_id });
+
+    if (users.length === 0 || users[0].user_mapping === null) {
+      let arr_users = [Number(address_id)];
+      await knex("routes")
+        .update({ user_mapping: JSON.stringify(arr_users) })
+        .where({ id: router_id });
+    } else {
+      const get_users = await knex("routes")
+        .select("user_mapping")
+        .where({ id: router_id });
+      get_users[0].user_mapping.push(Number(address_id));
+
+      await knex("routes")
+        .update({ user_mapping: JSON.stringify(get_users[0].user_mapping) })
+        .where({ id: router_id });
+    }
+
+    await knex("user_address")
+      .update({ router_id: router_id })
+      .where({ id: address_id });
+    req.flash("success", "Route Assigned Successfully");
+    // return res.redirect(`/branch_admin/route/user_mapping?route_id=${is_user_mapping_assign}`)
+    return res.redirect(`/branch_admin/route/get_route`);
+  } catch (error) {
+    console.log(error);
+    res.redirect("/home");
+  }
+};
+
+export const unassignUser = async (req, res) => {
+  try {
+    const { address_id, router_id } = req.body;
+
+    const users = await knex("routes")
+      .select("user_mapping")
+      .where({ id: router_id });
+
+    const user_mapping = users[0].user_mapping;
+
+    if (user_mapping.length == 1) {
+      await knex("routes")
+        .update({ user_mapping: null })
+        .where({ id: router_id });
+    } else {
+
+      for(let i = 0 ; i <user_mapping.length ; i ++){
+        if(user_mapping[i] == address_id){
+          user_mapping.splice(i,1)
+        }
+      }
+
+    }
+
+    await knex("user_address").update({ router_id : null }).where({ id: address_id });
+    req.flash("success","SuccessFully UnAssigned")
+    return res.redirect("/branch_admin/route/get_route")
+  } catch (error) {
+    console.log(error);
+    return res.redirect("/home");
   }
 };
 

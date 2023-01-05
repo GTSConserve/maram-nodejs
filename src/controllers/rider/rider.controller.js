@@ -103,7 +103,7 @@ export const getRiderdetails = async (req, res) => {
       .json({ data: delivery_partner.body[0], status: true, message: "ok" });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ status: false });
+    res.status(responseCode.FAILURE.DATA_NOT_FOUND).json({ status: false});
   }
 };
 
@@ -129,7 +129,7 @@ export const updateRiderstatus = async (req, res) => {
   }
   catch (error) {
     console.log(error);
-    res.status(500).json({ status: false });
+    res.status(responseCode.FAILURE.DATA_NOT_FOUND).json({ status: false });
   }
 }
 
@@ -149,7 +149,7 @@ export const updeteRiderLocation = async (req, res) => {
   }
   catch (error) {
     console.log(error);
-    res.status(500).json({ status: false });
+    res.status(responseCode.FAILURE.BAD_REQUEST).json({ status: false });
   }
 }
 
@@ -180,7 +180,7 @@ export const updateStartTour = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res
-      .status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
+      .status(responseCode.FAILURE.BAD_REQUEST)
       .json({ status: false, message: messages.SERVER_ERROR });
   }
 }
@@ -211,7 +211,7 @@ export const updateEndtour = async (req, res) => {
   }
   catch (error) {
     console.log(error);
-    return res.status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
+    return res.status(responseCode.FAILURE.BAD_REQUEST)
       .json({ status: false, message: messages.SERVER_ERROR });
   }
 }
@@ -302,7 +302,7 @@ export const getSingleorder = async (req, res) => {
   }
   catch (error) {
     console.log(error);
-    return res.status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
+    return res.status(responseCode.FAILURE.DATA_NOT_FOUND)
       .json({ status: false, message: messages.SERVER_ERROR });
   }
 }
@@ -348,7 +348,7 @@ export const orderStatusUpdate = async (req, res) => {
 
   catch (error) {
     console.log(error);
-    return res.status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
+    return res.status(responseCode.FAILURE.DATA_NOT_FOUND)
       .json({ status: false, message: messages.SERVER_ERROR });
   }
 }
@@ -424,7 +424,7 @@ export const cancelOrder = async (req, res) => {
   }
   catch (error) {
     console.log(error)
-    return res.status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
+    return res.status(responseCode.FAILURE.BAD_REQUEST)
       .json({ status: false, message: messages.SERVER_ERROR });
   }
 }
@@ -450,7 +450,7 @@ export const OrderList = async (req, res) => {
   }
   catch (error) {
     console.log(error);
-    return res.status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
+    return res.status(responseCode.FAILURE.DATA_NOT_FOUND)
       .json({ status: false, message: messages.SERVER_ERROR });
   }
 }
@@ -490,7 +490,7 @@ export const LocationCheck = async (req, res) => {
 
   } catch (error) {
     console.log(error);
-    return res.status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
+    return res.status(responseCode.FAILURE.BAD_REQUEST)
       .json({ status: false, message: messages.SERVER_ERROR });
   }
 }
@@ -530,30 +530,14 @@ export const homeDelivery = async (req, res) => {
            "half_litre_bottle":home.sum3
             }
 
-    const router = {
-
-      "tour_id": 1,
-      "route": "East Tambaram",
-      "total_orders": 15,
-      "completed_orders": 12,
-      "milk": {
-        "one_liter_count": 30,
-        "half_liter_count": 30,
-        "half_liter_pouch": 10
-      },
-      "addons_count": 30,
-      "empty_bottle": {
-        "one_litre_bottle": 12,
-        "half_litr_bottle": 10
-      }
-    }
+  
     res
     .status(responseCode.SUCCESS)
     .json({ status: true, data: query,milk,addon,empty_bottle });
   }
   catch (error) {
     console.log(error);
-    return res.status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
+    return res.status(responseCode.FAILURE.DATA_NOT_FOUND)
       .json({ status: false, message: messages.SERVER_ERROR });
   }
 }
@@ -577,7 +561,7 @@ export const logout = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ status: false, message: "Server Error" });
+    return res.status(responseCode.FAILURE.INVALID).json({ status: false, message: "Server Error" });
   }
 };
 
