@@ -111,14 +111,14 @@ var getAddress = /*#__PURE__*/function () {
 exports.getAddress = getAddress;
 var editAddress = /*#__PURE__*/function () {
   var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(req, res) {
-    var _req$body, userId, address_id, title, address, landmark, type, alternate_mobile, latitude, longitude;
+    var _req$body, userId, address_id, title, address, landmark, type, alternate_mobile, _latitude, _longitude;
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.prev = 0;
-            _req$body = req.body, userId = _req$body.userId, address_id = _req$body.address_id, title = _req$body.title, address = _req$body.address, landmark = _req$body.landmark, type = _req$body.type, alternate_mobile = _req$body.alternate_mobile, latitude = _req$body.latitude, longitude = _req$body.longitude;
-            if (!(!latitude && !longitude)) {
+            _req$body = req.body, userId = _req$body.userId, address_id = _req$body.address_id, title = _req$body.title, address = _req$body.address, landmark = _req$body.landmark, type = _req$body.type, alternate_mobile = _req$body.alternate_mobile, _latitude = _req$body.latitude, _longitude = _req$body.longitude;
+            if (!(!_latitude && !_longitude)) {
               _context3.next = 4;
               break;
             }
@@ -128,7 +128,7 @@ var editAddress = /*#__PURE__*/function () {
             }));
           case 4:
             _context3.next = 6;
-            return (0, _user_details.edit_address)(userId, address_id, title, address, landmark, type, alternate_mobile, latitude, longitude);
+            return (0, _user_details.edit_address)(userId, address_id, title, address, landmark, type, alternate_mobile, _latitude, _longitude);
           case 6:
             res.status(_responseCode["default"].SUCCESS).json({
               status: true,
@@ -182,9 +182,7 @@ var getUser = /*#__PURE__*/function () {
             user.body.map(function (data) {
               get_user_detail.user_id = data.id;
               get_user_detail.name = data.name;
-              get_user_detail.image = data.image;
-              // ? process.env.BASE_URL + data.image
-              // : null;
+              get_user_detail.image = data.image ? process.env.BASE_URL + data.image : null;
               get_user_detail.mobile_number = data.mobile_number;
               get_user_detail.email = data.email;
               get_user_detail.total_bill_due_Amount = 'Bill due amount ₹0';
@@ -468,31 +466,40 @@ var checkDeliveryAddress = /*#__PURE__*/function () {
           case 4:
             check_address = _context10.sent;
             console.log(check_address.body[0].latitude);
-            if (!(check_address.body[0].latitude <= 10.9956 || check_address.body[0].longitude <= 77.2852)) {
-              _context10.next = 8;
+            if (!(check_address.body[0].latitude <= 12.9165 || check_address.body[0].longitude <= 79.1325)) {
+              _context10.next = 10;
               break;
             }
             return _context10.abrupt("return", res.status(200).json({
               status: true,
               message: "successfully delivery"
             }));
-          case 8:
-            _context10.next = 14;
-            break;
           case 10:
-            _context10.prev = 10;
+            if (!(!latitude <= 12.9165 && !longitude <= 79.1325)) {
+              _context10.next = 12;
+              break;
+            }
+            return _context10.abrupt("return", res.status(200).json({
+              status: true,
+              message: "out of locations"
+            }));
+          case 12:
+            _context10.next = 18;
+            break;
+          case 14:
+            _context10.prev = 14;
             _context10.t0 = _context10["catch"](0);
             console.log(_context10.t0);
             res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
               status: false,
               error: _context10.t0
             });
-          case 14:
+          case 18:
           case "end":
             return _context10.stop();
         }
       }
-    }, _callee10, null, [[0, 10]]);
+    }, _callee10, null, [[0, 14]]);
   }));
   return function checkDeliveryAddress(_x19, _x20) {
     return _ref10.apply(this, arguments);

@@ -479,18 +479,18 @@ var nextDayProduct = /*#__PURE__*/function () {
               _context9.next = 14;
               break;
             }
-            query = {
+            query = [{
               "product_id": static_response.product[0].product_id,
               "product_name": static_response.product[0].product_name,
               "product_image": static_response.product[0].product_image,
               "product_status": static_response.product[0].product_status,
               "product_variation": static_response.product[0].value + static_response.product[0].unit_type,
               "Product price": static_response.product[0].price
-            }; // tommorow_date = moment().format("YYYY-MM-DD")
+            }]; // tommorow_date = moment().format("YYYY-MM-DD")
             return _context9.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               status: true,
               data: query,
-              "date": static_response.product[0].date
+              "date": (0, _moment["default"])(static_response.product[0].date, "YYYY-MM-DD").format("DD-MM-YYYY")
             }));
           case 14:
             if (!(tommorow_date === date2)) {

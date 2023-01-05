@@ -9,6 +9,7 @@ var _responseCode = _interopRequireDefault(require("../../constants/responseCode
 var _messages = _interopRequireDefault(require("../../constants/messages"));
 var _crypto = _interopRequireWildcard(require("crypto"));
 var _db = _interopRequireDefault(require("../../services/db.service"));
+var _razorpay = _interopRequireDefault(require("razorpay"));
 var _shortid = _interopRequireDefault(require("shortid"));
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -146,7 +147,7 @@ var getRazorpayMethod = /*#__PURE__*/function () {
               message: _messages["default"].MANDATORY_ERROR
             }));
           case 4:
-            razorpay = new Razorpay({
+            razorpay = new _razorpay["default"]({
               key_id: process.env.RAZORPAY_KEY_ID,
               key_secret: process.env.RAZORPAY_KEY_SECRET
             });
@@ -168,6 +169,7 @@ var getRazorpayMethod = /*#__PURE__*/function () {
             return razorpay.orders.create(options);
           case 10:
             response = _context4.sent;
+            // const payment_list = await knex('payment_gateways').select('')
             // console.log(response.id);
             res.status(200).json({
               status: true,
