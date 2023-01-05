@@ -32,7 +32,7 @@ productRouter.post("/create_add_on_products", authenticateJWT,nonMandatoryToken,
 productRouter.post("/remove_add_on_products",authenticateJWT,nonMandatoryToken,removeAddOnOrder);
 
 
-// next day delivery product api for static
+// next day delivery product api
 
 productRouter.post("/next_day_product",authenticateJWT,nonMandatoryToken,nextDayProduct);
 

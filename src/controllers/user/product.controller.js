@@ -279,7 +279,7 @@ export const nextDayProduct = async (req, res) => {
      
     if(tommorow_date === date1){
 
-    let query ={
+    let query =[{
         
           "product_id": static_response.product[0].product_id ,
           "product_name": static_response.product[0].product_name,
@@ -288,13 +288,13 @@ export const nextDayProduct = async (req, res) => {
           "product_variation": static_response.product[0].value + static_response.product[0].unit_type,
           "Product price": static_response.product[0].price
   
-    }
+    }]
     
     // tommorow_date = moment().format("YYYY-MM-DD")
    
     return res.status(responseCode.SUCCESS).json({
       status: true,
-      data: query,"date": static_response.product[0].date
+      data: query,"date": moment(static_response.product[0].date, "YYYY-MM-DD").format("DD-MM-YYYY")
     });
   }
 

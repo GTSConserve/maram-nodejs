@@ -237,7 +237,7 @@ export const remove_addonorders = async (product_id , delivery_date) => {
     return { status: true, product,date };
   }
     catch(error){
-      console.log(error);
+      console.log(error); 
       return { status: false, message: "no next day products"}; 
        }
     }

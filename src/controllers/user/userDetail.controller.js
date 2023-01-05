@@ -21,9 +21,13 @@ import messages from "../../constants/messages";
 export const addUserAddress = async (req, res) => {
   try {
     const payload = userAddressValidator(req.body);
+
     const { userId } = req.body;
+
     if (payload.status) {
+
       await knex("user_address")
+
         .insert({
           user_id: userId,
 
@@ -78,7 +82,17 @@ export const getAddress = async (req, res) => {
 
 export const editAddress = async (req, res) => {
   try {
-    const { userId, address_id, title, address, landmark, type, alternate_mobile, latitude, longitude } = req.body;
+    const { 
+      userId, 
+      address_id, 
+      title, 
+      address, 
+      landmark, 
+      type, 
+      alternate_mobile, 
+      latitude, 
+      longitude 
+    } = req.body;
 
     if (!latitude && !longitude) {
       return res
@@ -88,7 +102,16 @@ export const editAddress = async (req, res) => {
 
     // console.log(userId, address_id, title, address, landmark, type, alternate_mobile, latitude, longitude)
 
-    await edit_address(userId, address_id, title, address, landmark, type, alternate_mobile, latitude, longitude);
+    await edit_address(
+      userId, 
+      address_id, 
+      title, 
+      address, 
+      landmark, 
+      type, 
+      alternate_mobile, 
+      latitude, 
+      longitude);
 
     res
       .status(responseCode.SUCCESS)
@@ -112,12 +135,14 @@ export const getUser = async (req, res) => {
     }
     
     let get_user_detail = {};
+
     user.body.map((data) => {
+
       get_user_detail.user_id = data.id;
       get_user_detail.name = data.name;
       get_user_detail.image = data.image
-      // ? process.env.BASE_URL + data.image
-      // : null;
+      ? process.env.BASE_URL + data.image
+      : null;
       get_user_detail.mobile_number = data.mobile_number;
       get_user_detail.email = data.email;
       get_user_detail.total_bill_due_Amount = 'Bill due amount ₹0'
@@ -208,7 +233,9 @@ export const RemoveOrder = async (req, res) => {
     res
       .status(responseCode.SUCCESS)
       .json({ status: true, message: "remove successfully" });
+
   } catch (error) {
+
     console.log(error);
 
     res.status(responseCode.FAILURE.BAD_REQUEST).json({ status: false, error });
@@ -275,12 +302,15 @@ export const checkDeliveryAddress = async (req, res) => {
     const check_address = await checkAddress(address_id);
     console.log(check_address.body[0].latitude)
 
-    if (check_address.body[0].latitude <= 10.9956 || check_address.body[0].longitude <= 77.2852) {
-
-
+    if (check_address.body[0].latitude <= 12.9165 || check_address.body[0].longitude <= 79.1325) {
       return res
         .status(200)
         .json({ status: true, message: "successfully delivery" });
+    }
+    else if (!latitude <= 12.9165 && !longitude <= 79.1325) {
+      return res
+        .status(200)
+        .json({ status: true, message: "out of locations" });
     }
 
   } catch (error) {
@@ -334,7 +364,14 @@ export const getEmptyBottle = async (req, res) => {
 
 export const userAddressChange = async (req, res) => {
   try {
-    const { userId, title, address, landmark, type, address_id } = req.body;
+    const { 
+      userId, 
+      title, 
+      address, 
+      landmark, 
+      type, 
+      address_id 
+    } = req.body;
 
     // await edit_address(userId, address_id, title, address, landmark, type);
 
@@ -533,6 +570,4 @@ export const RiderLocation = async (req,res) => {
     res.status(500).json({ status: false });
   }
 }
-
-
 

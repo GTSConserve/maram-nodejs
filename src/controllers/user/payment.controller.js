@@ -9,7 +9,7 @@ import { hmac } from "crypto";
 
 import knex from "../../services/db.service";
 
-// import Razorpay from "razorpay"
+import Razorpay from "razorpay"
 
 import shortid from "shortid"
 
@@ -97,6 +97,8 @@ export const getRazorpayMethod = async (req, res) => {
 
         };
         const response = await razorpay.orders.create(options);
+
+        // const payment_list = await knex('payment_gateways').select('')
         // console.log(response.id);
         res.status(200).json({
             status: true, data: response
