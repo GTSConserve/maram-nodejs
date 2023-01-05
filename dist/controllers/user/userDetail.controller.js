@@ -111,14 +111,14 @@ var getAddress = /*#__PURE__*/function () {
 exports.getAddress = getAddress;
 var editAddress = /*#__PURE__*/function () {
   var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(req, res) {
-    var _req$body, userId, address_id, title, address, landmark, type, alternate_mobile, _latitude, _longitude;
+    var _req$body, userId, address_id, title, address, landmark, type, alternate_mobile, latitude, longitude;
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.prev = 0;
-            _req$body = req.body, userId = _req$body.userId, address_id = _req$body.address_id, title = _req$body.title, address = _req$body.address, landmark = _req$body.landmark, type = _req$body.type, alternate_mobile = _req$body.alternate_mobile, _latitude = _req$body.latitude, _longitude = _req$body.longitude;
-            if (!(!_latitude && !_longitude)) {
+            _req$body = req.body, userId = _req$body.userId, address_id = _req$body.address_id, title = _req$body.title, address = _req$body.address, landmark = _req$body.landmark, type = _req$body.type, alternate_mobile = _req$body.alternate_mobile, latitude = _req$body.latitude, longitude = _req$body.longitude;
+            if (!(!latitude && !longitude)) {
               _context3.next = 4;
               break;
             }
@@ -128,7 +128,7 @@ var editAddress = /*#__PURE__*/function () {
             }));
           case 4:
             _context3.next = 6;
-            return (0, _user_details.edit_address)(userId, address_id, title, address, landmark, type, alternate_mobile, _latitude, _longitude);
+            return (0, _user_details.edit_address)(userId, address_id, title, address, landmark, type, alternate_mobile, latitude, longitude);
           case 6:
             res.status(_responseCode["default"].SUCCESS).json({
               status: true,
@@ -466,19 +466,16 @@ var checkDeliveryAddress = /*#__PURE__*/function () {
           case 4:
             check_address = _context10.sent;
             console.log(check_address.body[0].latitude);
-            if (!(check_address.body[0].latitude <= 12.9165 || check_address.body[0].longitude <= 79.1325)) {
-              _context10.next = 10;
+            console.log(check_address.body[0].longitude);
+            if (!(check_address.body[0].latitude <= 15.9165 || check_address.body[0].latitude <= 80.24965323507786)) {
+              _context10.next = 11;
               break;
             }
             return _context10.abrupt("return", res.status(200).json({
               status: true,
               message: "successfully delivery"
             }));
-          case 10:
-            if (!(!latitude <= 12.9165 && !longitude <= 79.1325)) {
-              _context10.next = 12;
-              break;
-            }
+          case 11:
             return _context10.abrupt("return", res.status(200).json({
               status: true,
               message: "out of locations"
