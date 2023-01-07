@@ -574,6 +574,9 @@ export const createTable = async (req, res) => {
             "removed",
             "order_placed",
           ]).defaultTo("pending");
+
+          t.enu("is_bill_generated",["0","1"]).defaultTo("0");
+
           t.integer("tip_amount").nullable();
           t.integer("grand_total").nullable();
           t.integer("sub_total").nullable();

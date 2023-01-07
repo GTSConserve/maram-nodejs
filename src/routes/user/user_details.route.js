@@ -63,7 +63,7 @@ userRouter.post("/over_all_calendar", authenticateJWT, getOverallCalendar);
 
 
 // rider details 
-userRouter.post("/rider_location", RiderLocation);
+userRouter.post("/rider_location", authenticateJWT,RiderLocation);
 
 
 

@@ -102,8 +102,11 @@
                                         <button style="font-weight: bold;" class="btn  btn-md  btn-primary" 
                                         onclick="viewhandler(this)" id="<%= user.user_address_id%>"
                                         >view</button>
+                                        <button style="font-weight: bold;" class="btn  btn-md  btn-info" 
+                                        onclick="billView(this)" id="<%= user.user_id%>"
+                                        >Bill</button>
                                     </td>
-                                    </td>
+                                 
                                     
                                 </div>
                                 
@@ -111,6 +114,9 @@
                             <script>
                                 function viewhandler(event){
                                      window.location.href = `/branch_admin/user/single_user?user_address_id=${event.id}`
+                                }
+                                function billView(event){
+                                     window.location.href = `/branch_admin/user/get_bill?user_id=${event.id}`
                                 }
                             </script>
     

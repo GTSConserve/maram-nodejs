@@ -1,3 +1,6 @@
+// import axios from "axios"
+import nodemailer from "nodemailer"
+
 // sendNotificationToSpecific =function (token) {
 
 // const sdk = require('api')('@onesignal/v9.0#26fd81ml9sbufxr');
@@ -26,9 +29,8 @@
 // })
 //   .then(res => console.log(res))
 //   .catch(err => console.error(err));
-// import axios from "axios"
 
-// export const sendNotification = function(data) {
+// const sendNotification = function(data) {
 //     var headers = {
 //       "Content-Type": "application/json;charset=utf-8",
 //       "Authorization": `Basic ${process.env.ONE_SIGNAL_REST_API_KEY}`
@@ -40,8 +42,7 @@
 //       port: 443,  
 //       path: "/api/v1/notifications",
 //       method: "POST",
-//       headers: headers,
-//       app_id: '66b9e467-b252-4f50-96bb-3bafe69436c4'
+//       headers: headers
 //     };
 //     const https = require('https');
 //     const req = https.request(options, function(res) {  
@@ -58,77 +59,43 @@
 //     req.end();
 //   };
 
-// new one signal
-// export const sendNotification = function(data) {
-//   var headers = {
-//     "Content-Type": "application/json; charset=utf-8",
-//     "Authorization": `Basic ${process.env.ONE_SIGNAL_REST_API_KEY}`
+
+//   const message = {
+//     app_id: 'c4878328-bc00-49a1-b741-df30c9ac4621',
+//     contents: {"en": "this from medagg app"},
+//     included_segments: ["Subscribed Users"],
+//     include_phone_numbers: ["+19840730996"],
+//     small_icon: "notify_icon",
 //   };
-//   var options = {
-//     host: "onesignal.com",
-//     port: 443,
-//     path: "/api/v1/notifications",
-//     method: "POST",
-//     headers: headers
-//   };
-//   var https = require('https');
-//   var req = https.request(options, function(res) {  
-//     res.on('data', function(data) {
-//       console.log("Response:");
-//       console.log(JSON.parse(data));
-//     });
-//   });
-//   req.on('error', function(e) {
-//     console.log("ERROR:");
-//     console.log(e);
-//   });
-//   req.write(JSON.stringify(data));
-//   req.end();
-// };
-// var message = {
-//   "app_id": "5eb5a37e-b458-11",
-//   "name": "Identifier for SMS Message",
-//   "sms_from": "+15555555555",
-//   "contents": { en: "Welcome to Cat Facts!", es: "Bienvenidos a Factos del Gato" },
-//   "sms_media_urls": ["https://cat.com/cat.jpg"],
-//   "include_external_user_ids": ["6392d91a-b206-4b7b-a620-cd68e32c3a76","76ece62b-bcfe-468c-8a78-839aeaa8c5fa","8e0f21fa-9a5a-4ae7-a9a6-ca1f24294b86"]
-// };
-// sendNotification(message);
-
-
-  // const message = {
-  //   app_id: '66b9e467-b252-4f50-96bb-3bafe69436c4',
-  //   contents: {"en": "this from medagg app"},
-  //   included_segments: ["Subscribed Users"],
-  //   include_external_user_ids: [userId],
-  //   small_icon: "notify_icon",
-  // };
-  // sendNotification(message);
-  // console.log(message.app_id)
+//   sendNotification(message);
+//   console.log(message.app_id)
 // };
 
-import axios from "axios"
-import nodemailer from "nodemailer"
 
-export const sendNotification = async (data) => {
-  
+
+export const riderSendNotification = async (data) => {
+ 
   try {
-    let instance = axios.create({
+   
+    const instance = axios.create({
       baseURL: "https://onesignal.com/api/v1/notifications",
       headers: {
-        authorization: `Basic ${process.env.ONE_SIGNAL_REST_API_KEY}`,
+        authorization: `Basic ${process.env.RIDER_REST_API_KEY}`,
       },
+      
     });
-    
-    data.small_icon = "notify_icon"
-    data.large_icon = "https://pickneats.com/yummychopps/dashboard/assets/img/favicon.png";
+    console.log("hi2")
+    data.small_icon = "notify_icon";
+    data.large_icon =
+      "https://pickneats.com/yummychopps/dashboard/assets/img/favicon.png";
 
     const response = await instance.post(
-      `?app_id=${process.env.ONESIGNAL_APP_ID}`,
+      `?app_id
+      
+      =${process.env.RIDER_APP_ID}`,
       data
     );
-
-
+    console.log("hi2")
     return { status: true };
   } catch (error) {
     console.log(error.data);

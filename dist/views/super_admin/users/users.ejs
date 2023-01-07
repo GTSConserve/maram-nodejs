@@ -105,6 +105,9 @@
                                         <button style="font-weight: bold;" class="btn  btn-md  btn-primary" 
                                         onclick="viewhandler(this)" id="<%= user.user_address_id%>"
                                         >view</button>
+                                        <button style="font-weight: bold;" class="btn  btn-md  btn-warning mt-2" 
+                                        onclick="billView(this)" id="<%= user.user_id%>"
+                                        >Bill</button>
                                     </td>
                                     </td>
                                     
@@ -114,6 +117,9 @@
                             <script>
                                 function viewhandler(event){
                                      window.location.href = `/super_admin/users_subscription/single_user?user_address_id=${event.id}`
+                                }
+                                function billView(event){
+                                     window.location.href = `/super_admin/user/get_bill?user_id=${event.id}`
                                 }
                             </script>
     
@@ -156,11 +162,11 @@
                             </div>
                         </div>
                         <div class="form-row mb-4">
-                            <div class="col-12">
+                            <!-- <div class="col-12">
                                 <label>Choose a Branch</label>
                                 
                               
-                            </div>
+                            </div> -->
                             <div class="col-12 mt-3">
                                 <label for="address">Address</label>
                                 <textarea id="address" class="form-control" name="address"><%= user.address %> </textarea>

@@ -4,12 +4,13 @@ import { get_Appcontrol, get_riderdetails, statusupdate, update_endtour, update_
 import responseCode from '../../constants/responseCode';
 import knex from '../../services/db.service'
 import { userValidator } from '../../services/validator.service';
-import id from 'date-fns/locale/id/index';
-import { createToken } from "../../services/jwt.service";
-import { updateRiderToken } from "../../models/rider/rider.model";
+// import id from 'date-fns/locale/id/index';
+// import { createToken } from "../../services/jwt.service";
+// import { updateRiderToken } from "../../models/rider/rider.model";
 import bcrypt from "bcrypt";
 import haversine from "haversine-distance";
-
+import { riderSendNotification } from '../../notifications/rider.message.sender';
+// import { riderSendNotification } from '../../notifications/rider.message.sender';
 
 
 
@@ -120,6 +121,20 @@ export const updateRiderstatus = async (req, res) => {
         .json({ status: false, message: "Mandatory field Is Missing" });
     }
     const riderstatus = await update_riderstatus(delivery_partner_id, status)
+
+    await riderSendNotification({
+        include_external_user_ids: [delivery_partner_id],
+        contents: { en: `Addon Products Created notificaiton` },
+        headings: { en: "RIDER CAN UPDATED" },
+        name: "Addon Products",
+        data: {
+          status: "pending",
+          type: 4,
+          // appointment_id: user._id,
+          // appointment_chat_id: user_chat._id
+        },
+      });
+
     if (riderstatus.status) {
       return res.status(responseCode.SUCCESS).json(riderstatus)
     } else {
@@ -145,6 +160,20 @@ export const updeteRiderLocation = async (req, res) => {
         .json({ status: false, message: "Mandatory field Is Missing" });
     }
     const location = await update_location(delivery_partner_id, latitude, longitude);
+
+    await riderSendNotification({
+      include_external_user_ids: [delivery_partner_id],
+      contents: { en: `Rider Location Updated notificaiton` },
+      headings: { en: "RIDER CAN UPDATED" },
+      name: "Addon Products",
+      data: {
+        status: "pending",
+        type: 4,
+        // appointment_id: user._id,
+        // appointment_chat_id: user_chat._id
+      },
+    });
+
     return res.status(responseCode.SUCCESS).json({ status: true, message: "ok" })
   }
   catch (error) {
@@ -166,6 +195,20 @@ export const updateStartTour = async (req, res) => {
     }
 
     const starttour = await update_starttour(delivery_partner_id, tour_id, tour_status);
+
+    await riderSendNotification({
+      include_external_user_ids: [delivery_partner_id],
+      contents: { en: `Rider Start Tour Updated notificaiton` },
+      headings: { en: "RIDER CAN UPDATED" },
+      name: "Addon Products",
+      data: {
+        status: "new_order",
+        type: 4,
+        // appointment_id: user._id,
+        // appointment_chat_id: user_chat._id
+      },
+    });
+
     if (starttour.status) {
       const route = await knex('routes').select('id').where({ rider_id: delivery_partner_id });
 
@@ -198,6 +241,20 @@ export const updateEndtour = async (req, res) => {
     }
 
     const endtour = await update_endtour(delivery_partner_id, tour_id, tour_status)
+
+    await riderSendNotification({
+      include_external_user_ids: [delivery_partner_id],
+      contents: { en: `Rider Rider End Tour Updated notificaiton` },
+      headings: { en: "RIDER CAN UPDATED" },
+      name: "Addon Products",
+      data: {
+        status: "pending",
+        type: 4,
+        // appointment_id: user._id,
+        // appointment_chat_id: user_chat._id
+      },
+    });
+
     if (endtour.status) {
       const route = await knex('routes').select('id').where({ rider_id: delivery_partner_id });
 
@@ -341,6 +398,19 @@ export const orderStatusUpdate = async (req, res) => {
       .update({ one_liter_in_return: one_liter_count, half_liter_in_return: half_liter_count,bottle_status:"0" })
       .where({ id: user_id })
 
+      await riderSendNotification({
+        include_external_user_ids: [delivery_partner_id],
+        contents: { en: `Order Status Updated notificaiton` },
+        headings: { en: "RIDER CAN UPDATED" },
+        name: "Addon Products",
+        data: {
+          status: "pending",
+          type: 4,
+          // appointment_id: user._id,
+          // appointment_chat_id: user_chat._id
+        },
+      });
+
     return res.status(responseCode.SUCCESS).json({  data:orderstatus })
 
   }
@@ -381,9 +451,9 @@ export const riderDashboard = async (req, res) => {
 
 
     let query = {
-      "total_orders": total.order.length,
-      "delivered_orders": total.delivery.length,
-      "undelivered_orders": total.pending.length + total.undelivered.length,
+      "total_orders": total.unique.length,
+      "delivered_orders": total.unique1.length,
+      "undelivered_orders": total.unique2.length + total.unique3.length,
       "empty_bottle": sum
     }
     console.log(query)
@@ -412,6 +482,19 @@ export const cancelOrder = async (req, res) => {
     const router = await knex('routes').select('id').where({ rider_id: delivery_partner_id });
 
     const order = await knex('daily_orders').update({ status: order_status }).where({ user_id: user_id, router_id: router[0].id, date: date });
+
+    await riderSendNotification({
+      include_external_user_ids: [delivery_partner_id],
+      contents: { en: `order cancelled by rider` },
+      headings: { en: "RIDER CAN UPDATED" },
+      name: "order cancelled by rider",
+      data: {
+        status: "pending",
+        type: 4,
+        // appointment_id: user._id,
+        // appointment_chat_id: user_chat._id
+      },
+    });
 
     return res.status(responseCode.SUCCESS).json({ status: true, message: "order cancelled by rider" });
     // if(cancel.status=true){

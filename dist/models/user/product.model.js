@@ -286,12 +286,32 @@ var addon_order = /*#__PURE__*/function () {
               id: order_id
             });
           case 29:
+            _context5.next = 31;
+            return sendNotification({
+              include_external_user_ids: [user_id.toString()],
+              contents: {
+                en: "Your Add_on Placed SuccessFully"
+              },
+              headings: {
+                en: "Add_on Notification"
+              },
+              name: "Add_on Notification",
+              data: {
+                status: "pending",
+                category_id: 0,
+                product_type_id: 0,
+                type: 2,
+                // subscription_id: sub_id[0],
+                bill_id: 0
+              }
+            });
+          case 31:
             return _context5.abrupt("return", {
               status: true,
               message: "SuccessFully Created"
             });
-          case 32:
-            _context5.prev = 32;
+          case 34:
+            _context5.prev = 34;
             _context5.t0 = _context5["catch"](0);
             console.log(_context5.t0);
             return _context5.abrupt("return", {
@@ -299,12 +319,12 @@ var addon_order = /*#__PURE__*/function () {
               message: "Something Went Wrong",
               error: _context5.t0
             });
-          case 36:
+          case 38:
           case "end":
             return _context5.stop();
         }
       }
-    }, _callee5, null, [[0, 32]]);
+    }, _callee5, null, [[0, 34]]);
   }));
   return function addon_order(_x10, _x11, _x12, _x13) {
     return _ref5.apply(this, arguments);
@@ -326,7 +346,7 @@ var remove_addonorders = /*#__PURE__*/function () {
           case 3:
             addon_status = _context6.sent;
             if (!(addon_status[0] != "cancelled")) {
-              _context6.next = 23;
+              _context6.next = 25;
               break;
             }
             _context6.next = 7;
@@ -370,32 +390,52 @@ var remove_addonorders = /*#__PURE__*/function () {
             });
           case 19:
             status = _context6.sent;
+            _context6.next = 22;
+            return sendNotification({
+              include_external_user_ids: [user_id.toString()],
+              contents: {
+                en: "Your Add_on Remove SuccessFully"
+              },
+              headings: {
+                en: "Remove Add_on Notification"
+              },
+              name: "Remove Add_on Notification",
+              data: {
+                status: "pending",
+                category_id: 0,
+                product_type_id: 0,
+                type: 2,
+                // subscription_id: status[0],
+                bill_id: 0
+              }
+            });
+          case 22:
             return _context6.abrupt("return", {
               status: true,
               message: "Successfully removed"
             });
-          case 23:
+          case 25:
             return _context6.abrupt("return", {
               status: false,
               message: "already cancelled"
             });
-          case 24:
-            _context6.next = 30;
-            break;
           case 26:
-            _context6.prev = 26;
+            _context6.next = 32;
+            break;
+          case 28:
+            _context6.prev = 28;
             _context6.t0 = _context6["catch"](0);
             console.log(_context6.t0);
             return _context6.abrupt("return", {
               status: false,
               message: "Cannot Remove addon order"
             });
-          case 30:
+          case 32:
           case "end":
             return _context6.stop();
         }
       }
-    }, _callee6, null, [[0, 26]]);
+    }, _callee6, null, [[0, 28]]);
   }));
   return function remove_addonorders(_x14, _x15) {
     return _ref6.apply(this, arguments);

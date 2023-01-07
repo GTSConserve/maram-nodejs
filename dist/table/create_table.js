@@ -471,6 +471,7 @@ var createTable = /*#__PURE__*/function () {
                   t.foreign("address_id").references("id").inTable("user_address");
                   t.date("delivery_date").nullable();
                   t.enu("status", ["pending", "delivered", "undelivered", "assigned", "cancelled", "branch_pending", "branch_cancelled", "new_order", "removed", "order_placed"]).defaultTo("pending");
+                  t.enu("is_bill_generated", ["0", "1"]).defaultTo("0");
                   t.integer("tip_amount").nullable();
                   t.integer("grand_total").nullable();
                   t.integer("sub_total").nullable();

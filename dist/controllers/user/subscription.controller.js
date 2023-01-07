@@ -7,7 +7,9 @@ Object.defineProperty(exports, "__esModule", {
 exports.singleSubscription = exports.removeAdditionalOrder = exports.pauseSubscription = exports.newSubscription = exports.getSubscriptionPlan = exports.getSubcription_order = exports.getAllSubscription = exports.editAdditionalOrder = exports.createAdditionalOrder = exports.changeSubscriptionplan = exports.changeQuantity = exports.Remove_Subscription = void 0;
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 var _messages = _interopRequireDefault(require("../../constants/messages"));
+var _axios = _interopRequireDefault(require("axios"));
 var _moment = _interopRequireDefault(require("moment"));
+var _message = require("../../notifications/message.sender");
 var _subscription = require("../../models/user/subscription.model");
 var _db = _interopRequireDefault(require("../../services/db.service"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -209,24 +211,44 @@ var createAdditionalOrder = /*#__PURE__*/function () {
                 return _ref5.apply(this, arguments);
               };
             }());
+            _context5.next = 11;
+            return (0, _message.sendNotification)({
+              include_external_user_ids: [userId.toString()],
+              contents: {
+                en: "Your Additional Order Placed SuccessFully"
+              },
+              headings: {
+                en: "Subscription Notification"
+              },
+              name: "Additional Order",
+              data: {
+                subscription_status: "pending",
+                category_id: 0,
+                product_type_id: 0,
+                type: 2,
+                subscription_id: subscription_id[0],
+                bill_id: 0
+              }
+            });
+          case 11:
             return _context5.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               status: true,
               message: "Additional Order Added SuccessFully"
             }));
-          case 12:
-            _context5.prev = 12;
+          case 14:
+            _context5.prev = 14;
             _context5.t0 = _context5["catch"](0);
             console.log(_context5.t0);
             res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             });
-          case 16:
+          case 18:
           case "end":
             return _context5.stop();
         }
       }
-    }, _callee5, null, [[0, 12]]);
+    }, _callee5, null, [[0, 14]]);
   }));
   return function createAdditionalOrder(_x6, _x7) {
     return _ref4.apply(this, arguments);
@@ -315,36 +337,37 @@ var newSubscription = /*#__PURE__*/function () {
             return (0, _subscription.new_subscription)(userId, subscription_plan_id, product_id, user_address_id, start_date, qty, customized_days);
           case 9:
             subscription = _context7.sent;
+            console.log(userId);
             if (!subscription.status) {
-              _context7.next = 14;
+              _context7.next = 15;
               break;
             }
             return _context7.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               status: true,
               message: "Subscription Starts Successfully"
             }));
-          case 14:
+          case 15:
             return _context7.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               status: false,
               message: subscription.message
             }));
-          case 15:
-            _context7.next = 21;
+          case 16:
+            _context7.next = 22;
             break;
-          case 17:
-            _context7.prev = 17;
+          case 18:
+            _context7.prev = 18;
             _context7.t0 = _context7["catch"](0);
             console.log(_context7.t0);
             return _context7.abrupt("return", res.status(_responseCode["default"].FAILURE).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
-          case 21:
+          case 22:
           case "end":
             return _context7.stop();
         }
       }
-    }, _callee7, null, [[0, 17]]);
+    }, _callee7, null, [[0, 18]]);
   }));
   return function newSubscription(_x11, _x12) {
     return _ref7.apply(this, arguments);
@@ -413,7 +436,7 @@ var getAllSubscription = /*#__PURE__*/function () {
 exports.getAllSubscription = getAllSubscription;
 var singleSubscription = /*#__PURE__*/function () {
   var _ref9 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9(req, res) {
-    var _req$body5, userId, subscription_id, sub, i, response;
+    var _req$body5, userId, subscription_id, sub, i, j, response;
     return _regeneratorRuntime().wrap(function _callee9$(_context9) {
       while (1) {
         switch (_context9.prev = _context9.next) {
@@ -442,47 +465,62 @@ var singleSubscription = /*#__PURE__*/function () {
               message: sub.message
             }));
           case 9:
-            for (i = 0; i < sub.data.length; i++) {
-              sub.data[i].image = process.env.BASE_URL + sub.data[i].image;
-              sub.data[i].subscription_start_date = (0, _moment["default"])().format("YYYY-MM-DD");
-              sub.data[i].customized_days = sub.data[i].customized_days;
-              sub.data[i].address_id = sub.data[i].address_id;
-              sub.data[i].quantity = sub.data[i].quantity;
-              sub.data[i].price = sub.data[i].price;
-              sub.data[i].date = [(0, _moment["default"])().format("YYYY-MM-DD")];
-              sub.query[i].id = sub.query[i].id;
-              sub.query[i].image = sub.query[i].image;
-              sub.query[i].date = [(0, _moment["default"])().format("YYYY-MM-DD")];
+            console.log(sub.add_product[0]);
+            i = 0;
+          case 11:
+            if (!(i < sub.data.length)) {
+              _context9.next = 25;
+              break;
+            }
+            sub.data[i].image = process.env.BASE_URL + sub.data[i].image;
+            sub.data[i].subscription_start_date = (0, _moment["default"])().format("YYYY-MM-DD");
+            sub.data[i].customized_days = sub.data[i].customized_days;
+            sub.data[i].address_id = sub.data[i].address_id;
+            sub.data[i].quantity = sub.data[i].quantity;
+            sub.data[i].price = sub.data[i].price;
+            sub.data[i].date = [(0, _moment["default"])().format("YYYY-MM-DD")];
+            for (j = 0; j < sub.add_product[0].length; j++) {
+              console.log(sub.add_product[0][j].id);
+              sub.add_product[0][j].id = sub.add_product[0][j].id;
+              sub.add_product[0][j].image = sub.add_product[0][j].image;
+              sub.add_product[0][j].date = [(0, _moment["default"])().format("YYYY-MM-DD")];
               if (sub.data[i].unit_value >= 500) {
                 sub.data[i].unit = sub.data[i].unit_value / 1000 + " " + (sub.data[i].unit_type === "ml" ? "litre" : sub.data[i].unit_type);
               } else {
-                sub.data[i].unit = sub.data[i].unit_value + " " + sub.data[i].unit_type.toString();
+                sub.data[i].unit = sub.data[i].unit_value + " " + sub.data[i].unit_type;
               }
               delete sub.data[i].unit_value;
               delete sub.data[i].unit_type;
             }
             response = {
-              additional_orders: [sub.query[0]],
+              additional_orders: [sub.add_product[0]],
               this_month_item_detail: sub.this_month_item_detail[0]
             };
             return _context9.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               status: true,
               data: _objectSpread(_objectSpread({}, sub.data[0]), response)
             }));
-          case 14:
-            _context9.prev = 14;
+          case 22:
+            i++;
+            _context9.next = 11;
+            break;
+          case 25:
+            _context9.next = 31;
+            break;
+          case 27:
+            _context9.prev = 27;
             _context9.t0 = _context9["catch"](0);
             console.log(_context9.t0);
             return _context9.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
               message: _messages["default"].DATA_NOT_FOUND
             }));
-          case 18:
+          case 31:
           case "end":
             return _context9.stop();
         }
       }
-    }, _callee9, null, [[0, 14]]);
+    }, _callee9, null, [[0, 27]]);
   }));
   return function singleSubscription(_x15, _x16) {
     return _ref9.apply(this, arguments);

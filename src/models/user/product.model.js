@@ -163,6 +163,21 @@ export const addon_order = async (
 
     await knex("add_on_orders").update(query).where({ id: order_id });
 
+    await sendNotification({
+      include_external_user_ids: [user_id.toString()],
+      contents: { en: `Your Add_on Placed SuccessFully` },
+      headings: { en: "Add_on Notification" },
+      name: "Add_on Notification",
+      data: {
+        status: "pending",
+        category_id: 0,
+        product_type_id: 0,
+        type: 2,
+        // subscription_id: sub_id[0],
+        bill_id: 0,
+      },
+    });
+
     return { status: true, message: "SuccessFully Created" };
   } catch (error) {
     console.log(error);
@@ -196,6 +211,21 @@ export const remove_addonorders = async (product_id , delivery_date) => {
     const update = await knex('add_on_orders').update({sub_total:total}).where({id:addon_status[0].id,delivery_date:delivery_date});
 
     const status = await knex('add_on_orders').update({status:"cancelled"}).where({sub_total:0})
+
+    await sendNotification({
+      include_external_user_ids: [user_id.toString()],
+      contents: { en: `Your Add_on Remove SuccessFully` },
+      headings: { en: "Remove Add_on Notification" },
+      name: "Remove Add_on Notification",
+      data: {
+        status: "pending",
+        category_id: 0,
+        product_type_id: 0,
+        type: 2,
+        // subscription_id: status[0],
+        bill_id: 0,
+      },
+    });
 
     return{status:true,message:"Successfully removed"};
     }

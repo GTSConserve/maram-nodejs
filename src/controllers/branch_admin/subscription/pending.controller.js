@@ -1,6 +1,7 @@
 import knex from "../../../services/db.service";
 import { getPageNumber } from "../../../utils/helper.util";
 import moment from "moment";
+import {sendNotification} from '../../../notifications/message.sender'
 
 export const updateCancel = async (req, res) => {
   try {
@@ -60,7 +61,7 @@ export const updateSubscribed = async (req, res) => {
   try {
     // const { sub_id, router_id, date, add_on_id, user_id } = req.body;
 
-    const { router_id, date, add_on_order_id, address_id, sub_id } = req.body;
+    const { router_id, date, add_on_order_id, address_id, sub_id,user_id } = req.body;
 
     const { is_exist, is_user_mapping_assign } = req.query;
 
@@ -90,6 +91,22 @@ export const updateSubscribed = async (req, res) => {
           date,
         })
         .where({ id: sub_id });
+
+
+        await sendNotification({
+          include_external_user_ids: [user_id.toString()],
+          contents: { en: `Your Subsciption Was Placed, Your Susbcription Start From ${moment(date).format("DD-MM-YYYY")}` },
+          headings: { en: "Subscription Notification" },
+          name: "Appoinment Request",
+          data: {
+            subscription_status: "subscribed",
+            category_id: 0,
+            product_type_id: 0,
+            type: 2,
+            subscription_id: sub_id,
+            bill_id: 0,
+          },
+        });
     }
 
     // if (is_user_mapping_assign) {
@@ -297,7 +314,7 @@ export const getNewUsers = async (req, res) => {
     if (data_length !== 0) {
       if (searchKeyword) {
         results = await knex.raw(
-          `SELECT sub.id , sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,
+          `SELECT sub.id ,sub.user_id, sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,
         user_address.address,user_address.id as user_address_id ,user_address.landmark,products.name as product_name,products.price,products.unit_value,products.image,
         unit_types.value,categories.name as category_name
         FROM subscribed_user_details AS sub 
@@ -313,7 +330,7 @@ export const getNewUsers = async (req, res) => {
         is_search = true;
       } else {
         results = await knex.raw(
-          `SELECT sub.id ,sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,
+          `SELECT sub.id ,sub.user_id,sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,
         user_address.address,user_address.id as user_address_id ,user_address.landmark,products.name as product_name,products.price,products.unit_value,products.image,
         unit_types.value,categories.name as category_name
         FROM subscribed_user_details AS sub 
@@ -331,6 +348,9 @@ export const getNewUsers = async (req, res) => {
         subscription_users[i].start_date = moment(
           subscription_users[i].start_date
         ).format("DD-MM-YYYY");
+        subscription_users[i].default_show_start_date = moment(
+          subscription_users[i].start_date
+        ).format("YYYY-DD-MM");
         subscription_users[i].image =
           process.env.BASE_URL + subscription_users[i].image;
       }

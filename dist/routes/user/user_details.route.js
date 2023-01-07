@@ -42,6 +42,6 @@ userRouter.post("/single_calendar", _authToken.authenticateJWT, _userDetail.getS
 userRouter.post("/over_all_calendar", _authToken.authenticateJWT, _userDetail.getOverallCalendar);
 
 // rider details 
-userRouter.post("/rider_location", _userDetail.RiderLocation);
+userRouter.post("/rider_location", _authToken.authenticateJWT, _userDetail.RiderLocation);
 var _default = userRouter;
 exports["default"] = _default;

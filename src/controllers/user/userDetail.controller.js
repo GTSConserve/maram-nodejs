@@ -2,6 +2,7 @@ import responseCode from "../../constants/responseCode";
 import { parseJwtPayload } from "../../services/jwt.service";
 import { userAddressValidator } from "../../services/validator.service";
 import knex from "../../services/db.service";
+import { sendNotification } from "../../notifications/message.sender";
 import moment from "moment";
 import {
   change_plan,
@@ -42,10 +43,8 @@ export const addUserAddress = async (req, res) => {
           alternate_mobile: payload.alternate_mobile,
 
           latitude: payload.latitude,
-          
-          longitude: payload.longitude,
 
-
+          longitude: payload.longitude
         })
         .where({ user_id: payload.user_id });
 
@@ -128,13 +127,28 @@ export const getUser = async (req, res) => {
     const { userId } = req.body;
 
     const user = await get_user(userId);
+
+    console.log(user)
     if (user.body.length === 0) {
       return res
         .status(responseCode.FAILURE.DATA_NOT_FOUND)
         .json({ status: false, message: "User Not Found" });
     }
-    
+
     let get_user_detail = {};
+     let status = [];
+    if(user.rider[0].status==0){
+      status.push("rider is assigned")
+    }
+    else if(user.rider[0].status==1){
+      status.push("rider can start the tour and delivered soon")
+    }
+    else if(user.rider[0].status==2){
+      status.push("rider can end the tour")
+    }
+    else{
+      status.push("no rider can assigned")
+    }
 
     user.body.map((data) => {
 
@@ -145,13 +159,13 @@ export const getUser = async (req, res) => {
       : null;
       get_user_detail.mobile_number = data.mobile_number;
       get_user_detail.email = data.email;
-      get_user_detail.total_bill_due_Amount = 'Bill due amount ₹0'
-      get_user_detail.total_bill_count = '0 bills'
-      get_user_detail.total_address_count = '0 Saved Address'
-      get_user_detail.total_subcription_count = '0 subscriptions'
-      get_user_detail.total_delivered_product_count = '0 Product Delivery'
-      get_user_detail.rider_status = 'No rider Assign'
-      get_user_detail.rider_status = '0 empty bottles in hand'
+      get_user_detail.rider_name = user.rider[0].name;
+      get_user_detail.rider_status = status;
+      get_user_detail.total_bill_due_Amount = user.bill[0].subscription_price;
+      get_user_detail.total_bill_count = user.bill[0].additional_price;
+      get_user_detail.total_address_count = user.sub[0].additional_delivered_quantity;
+      get_user_detail.total_subcription_count = user.sub[0].subscription_delivered_quantity;
+      get_user_detail.total_delivered_product_count = user.sub[0].total_delivered_quantity;
     });
 
     res
@@ -191,6 +205,19 @@ export const updateUser = async (req, res) => {
     console.log(query);
     await knex("users").update(query).where({ id: user.user_id });
 
+    // await sendNotification({
+      //   include_external_user_ids: [userId],
+      //   contents: { en: `Addon Products Created notificaiton` },
+      //   headings: { en: "Addon Products Notification" },
+      //   name: "Addon Products",
+      //   data: {
+      //     status: "new_order",
+      //     type: 2,
+      //     // appointment_id: user._id,
+      //     // appointment_chat_id: user_chat._id
+      //   },
+      // });
+
     return res
       .status(responseCode.SUCCESS)
       .json({ status: true, message: "User Profile Updated" });
@@ -213,6 +240,18 @@ export const deleteUseraddress = async (req, res) => {
 
     const addresses = await delete_user_address(address_id, userId);
 
+    // await sendNotification({
+      //   include_external_user_ids: [userId],
+      //   contents: { en: `Addon Products Created notificaiton` },
+      //   headings: { en: "Addon Products Notification" },
+      //   name: "Addon Products",
+      //   data: {
+      //     status: "new_order",
+      //     type: 2,
+      //     // appointment_id: user._id,
+      //     // appointment_chat_id: user_chat._id
+      //   },
+      // });
 
     res
       .status(responseCode.SUCCESS)
@@ -229,6 +268,19 @@ export const RemoveOrder = async (req, res) => {
     const { user_id } = req.body;
 
     const remove = await remove_order(user_id);
+
+    // await sendNotification({
+      //   include_external_user_ids: [userId],
+      //   contents: { en: `Addon Products Created notificaiton` },
+      //   headings: { en: "Addon Products Notification" },
+      //   name: "Addon Products",
+      //   data: {
+      //     status: "new_order",
+      //     type: 2,
+      //     // appointment_id: user._id,
+      //     // appointment_chat_id: user_chat._id
+      //   },
+      // });
 
     res
       .status(responseCode.SUCCESS)
@@ -283,6 +335,20 @@ export const changePlan = async (req, res) => {
       start_date,
       subscribe_type_id
     );
+
+    // await sendNotification({
+      //   include_external_user_ids: [userId],
+      //   contents: { en: `Addon Products Created notificaiton` },
+      //   headings: { en: "Addon Products Notification" },
+      //   name: "Addon Products",
+      //   data: {
+      //     status: "new_order",
+      //     type: 2,
+      //     // appointment_id: user._id,
+      //     // appointment_chat_id: user_chat._id
+      //   },
+      // });
+
     res
       .status(responseCode.SUCCESS)
       .json({ status: true, message: "updated successfully" });
@@ -301,14 +367,13 @@ export const checkDeliveryAddress = async (req, res) => {
 
     const check_address = await checkAddress(address_id);
     console.log(check_address.body[0].latitude)
-    console.log(check_address.body[0].longitude)
 
-    if (check_address.body[0].latitude <= 15.9165 || check_address.body[0].latitude <= 80.24965323507786) {
+    if (check_address.body[0].latitude <= 12.9165 || check_address.body[0].longitude <= 79.1325) {
       return res
         .status(200)
         .json({ status: true, message: "successfully delivery" });
     }
-    else {
+    else if (!latitude <= 12.9165 && !longitude <= 79.1325) {
       return res
         .status(200)
         .json({ status: true, message: "out of locations" });
@@ -468,6 +533,20 @@ export const getBillList = async (req, res) => {
     const { userId } = req.body;
 
     const user = await get_user_bill(userId);
+
+    // await sendNotification({
+      //   include_external_user_ids: [userId],
+      //   contents: { en: `Addon Products Created notificaiton` },
+      //   headings: { en: "Addon Products Notification" },
+      //   name: "Addon Products",
+      //   data: {
+      //     status: "new_order",
+      //     type: 2,
+      //     // appointment_id: user._id,
+      //     // appointment_chat_id: user_chat._id
+      //   },
+      // });
+      
     if (user.body.length === 0) {
       return res
         .status(responseCode.FAILURE.DATA_NOT_FOUND)
@@ -568,7 +647,7 @@ export const RiderLocation = async (req,res) => {
   }
   catch(error){
     console.log(error);
-    res.status(500).json({ status: false });
+    res.status(500).json({ status: false, message:"no order placed today SORRY!!!!!" });
   }
 }
 

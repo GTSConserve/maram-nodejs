@@ -12,6 +12,7 @@ var _fs = _interopRequireDefault(require("fs"));
 var _connectFlash = _interopRequireDefault(require("connect-flash"));
 var _expressSession = _interopRequireDefault(require("express-session"));
 var _nodemailer = _interopRequireDefault(require("nodemailer"));
+var _axios = _interopRequireDefault(require("axios"));
 var _db = _interopRequireDefault(require("./services/db.service"));
 var _jwt = require("./services/jwt.service");
 var _bodyParser2 = _interopRequireDefault(require("./middlewares/bodyParser.middleware"));

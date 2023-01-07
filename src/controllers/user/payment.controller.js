@@ -1,5 +1,6 @@
 import responseCode from "../../constants/responseCode";
 import messages from "../../constants/messages"
+import { sendNotification } from "../../notifications/message.sender";
 // import { PaymentMethod } from '../../models/user/payment.model';
 import crypto from "crypto";
 
@@ -15,6 +16,20 @@ import shortid from "shortid"
 
 export const getPaymentReminder = async (req, res) => {
     try {
+
+        await sendNotification({
+            include_external_user_ids: [order_id],
+            contents: { en: `Your Payment Reminder` },
+            headings: { en: "Your Payment Reminder" },
+            name: "Your Payment Reminder",
+            data: {
+              status: "pending",
+              category_id: 0,
+              product_type_id: 0,
+              type: 3,
+            //   amount: options.amount,
+            },
+          });
 
         res.status(200).json({ status: true, message: "Ok" })
 
@@ -97,6 +112,20 @@ export const getRazorpayMethod = async (req, res) => {
 
         };
         const response = await razorpay.orders.create(options);
+
+        await sendNotification({
+            include_external_user_ids: [order_id.toString()],
+            contents: { en: `Your Order Placed SuccessFully` },
+            headings: { en: "Order Notification" },
+            name: "Order Notification",
+            data: {
+              status: "pending",
+              category_id: 0,
+              product_type_id: 0,
+              type: 3,
+              amount: options.amount,
+            },
+          });
 
         // const payment_list = await PaymentMethod(user_id)
         // console.log(response.id);

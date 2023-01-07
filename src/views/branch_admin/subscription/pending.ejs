@@ -278,7 +278,8 @@
                                                                                                
                                                                                                     <p style="font-weight: 700;">Choose A Date To Start Subscription</p>
                                                                                                     <div class="form-group mb-0">
-                                                                                                        <input required id="basicFlatpickr" name="date" class="form-control flatpickr flatpickr-input active" type="date" placeholder="<%=user.start_date  %>" value="<%=user.start_date  %>" >
+                                                                                                        <input required id="basicFlatpickr" name="date" class="form-control flatpickr flatpickr-input active mb-2" type="date"  value="<%=user.default_show_start_date  %>" >
+                                                                                                        <span class="mt-2">User Start Date - <%=user.start_date  %> </span>
                                                                                                     </div>
                                                                                                 
                                                                                             </div>
@@ -338,6 +339,7 @@
                                                                                       
 
                                                                                         <input type="hidden" id="custId" name="address_id" value="<%= user.user_address_id %>">
+                                                                                        <input type="hidden" id="custId" name="user_id" value="<%= user.user_id %>">
 
 
 

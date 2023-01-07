@@ -95,13 +95,47 @@ export const edit_address = async (
   }
 };
 
-export const get_user = async (id) => {
+export const get_user = async (id,userId) => {
   const getuser = await knex
     .select("id", "name", "image", "mobile_number", "email")
     .from("users")
     .where({ id });
+
+    const bill = await knex.select(
+    "bill_history_details.subscription_price",
+    "bill_history_details.additional_price",
+    "bill_history_details.total_price",
+    "bill_history_details.additional_qty",
+    "bill_history_details.total_qty",
+    "bill_history_details.subscription_qty"
+    )
+    .from("bill_history_details")
+    .where({id})
+
+    const sub = await knex.select(
+      "subscribed_user_details.subscription_delivered_quantity",
+      "subscribed_user_details.additional_delivered_quantity",
+      "subscribed_user_details.total_delivered_quantity",
+      // "subscribed_user_details.subscription_delivered_quantity",
+    )
+    .from("subscribed_user_details")
+    .where({user_id: id})
+    // console.log(getuser)
+  const rider = await knex('daily_orders')
+  .join("routes","routes.id","=","daily_orders.router_id")
+  .join("rider_details","rider_details.id","=","routes.rider_id")
+  .select(
+    "rider_details.id",
+    "rider_details.name",
+    "rider_details.tour_status as status",
+    
+  )
+  .where({user_id: id})
+
+  // console.log(rider)
+
   try {
-    return { status: responseCode.SUCCESS, body: getuser };
+    return { status: responseCode.SUCCESS, body: getuser,rider,bill,sub };
   } catch (error) {
     console.log(error);
     return { status: responseCode.FAILURE.INTERNAL_SERVER_ERROR, error };
@@ -331,6 +365,6 @@ else{
 }
 } catch (error) {
   console.log(error);
-    return { status: responseCode.FAILURE.INTERNAL_SERVER_ERROR, error };
+    return { status: responseCode.FAILURE.DATA_NOT_FOUND, error };
 }
 }

@@ -128,8 +128,8 @@ var edit_address = /*#__PURE__*/function () {
 }();
 exports.edit_address = edit_address;
 var get_user = /*#__PURE__*/function () {
-  var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(id) {
-    var getuser;
+  var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(id, userId) {
+    var getuser, bill, sub, rider;
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
@@ -140,27 +140,50 @@ var get_user = /*#__PURE__*/function () {
             });
           case 2:
             getuser = _context3.sent;
-            _context3.prev = 3;
+            _context3.next = 5;
+            return _db["default"].select("bill_history_details.subscription_price", "bill_history_details.additional_price", "bill_history_details.total_price", "bill_history_details.additional_qty", "bill_history_details.total_qty", "bill_history_details.subscription_qty").from("bill_history_details").where({
+              id: id
+            });
+          case 5:
+            bill = _context3.sent;
+            _context3.next = 8;
+            return _db["default"].select("subscribed_user_details.subscription_delivered_quantity", "subscribed_user_details.additional_delivered_quantity", "subscribed_user_details.total_delivered_quantity"
+            // "subscribed_user_details.subscription_delivered_quantity",
+            ).from("subscribed_user_details").where({
+              user_id: id
+            });
+          case 8:
+            sub = _context3.sent;
+            _context3.next = 11;
+            return (0, _db["default"])('daily_orders').join("routes", "routes.id", "=", "daily_orders.router_id").join("rider_details", "rider_details.id", "=", "routes.rider_id").select("rider_details.id", "rider_details.name", "rider_details.tour_status as status").where({
+              user_id: id
+            });
+          case 11:
+            rider = _context3.sent;
+            _context3.prev = 12;
             return _context3.abrupt("return", {
               status: _responseCode["default"].SUCCESS,
-              body: getuser
+              body: getuser,
+              rider: rider,
+              bill: bill,
+              sub: sub
             });
-          case 7:
-            _context3.prev = 7;
-            _context3.t0 = _context3["catch"](3);
+          case 16:
+            _context3.prev = 16;
+            _context3.t0 = _context3["catch"](12);
             console.log(_context3.t0);
             return _context3.abrupt("return", {
               status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
               error: _context3.t0
             });
-          case 11:
+          case 20:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3, null, [[3, 7]]);
+    }, _callee3, null, [[12, 16]]);
   }));
-  return function get_user(_x11) {
+  return function get_user(_x11, _x12) {
     return _ref3.apply(this, arguments);
   };
 }();
@@ -201,7 +224,7 @@ var delete_user_address = /*#__PURE__*/function () {
       }
     }, _callee4, null, [[3, 7]]);
   }));
-  return function delete_user_address(_x12, _x13) {
+  return function delete_user_address(_x13, _x14) {
     return _ref4.apply(this, arguments);
   };
 }();
@@ -239,7 +262,7 @@ var remove_order = /*#__PURE__*/function () {
       }
     }, _callee5, null, [[3, 7]]);
   }));
-  return function remove_order(_x14) {
+  return function remove_order(_x15) {
     return _ref5.apply(this, arguments);
   };
 }();
@@ -280,7 +303,7 @@ var edit = /*#__PURE__*/function () {
       }
     }, _callee6, null, [[3, 7]]);
   }));
-  return function edit(_x15, _x16, _x17) {
+  return function edit(_x16, _x17, _x18) {
     return _ref6.apply(this, arguments);
   };
 }();
@@ -397,7 +420,7 @@ var change_plan = /*#__PURE__*/function () {
       }
     }, _callee7, null, [[0, 37]]);
   }));
-  return function change_plan(_x18, _x19, _x20) {
+  return function change_plan(_x19, _x20, _x21) {
     return _ref7.apply(this, arguments);
   };
 }();
@@ -435,7 +458,7 @@ var checkAddress = /*#__PURE__*/function () {
       }
     }, _callee8, null, [[3, 7]]);
   }));
-  return function checkAddress(_x21) {
+  return function checkAddress(_x22) {
     return _ref8.apply(this, arguments);
   };
 }();
@@ -474,7 +497,7 @@ var get_user_bill = /*#__PURE__*/function () {
       }
     }, _callee9, null, [[4, 8]]);
   }));
-  return function get_user_bill(_x22) {
+  return function get_user_bill(_x23) {
     return _ref9.apply(this, arguments);
   };
 }();
@@ -523,7 +546,7 @@ var get_single_bill = /*#__PURE__*/function () {
       }
     }, _callee10, null, [[0, 13]]);
   }));
-  return function get_single_bill(_x23, _x24) {
+  return function get_single_bill(_x24, _x25) {
     return _ref10.apply(this, arguments);
   };
 }();
@@ -571,7 +594,7 @@ var rider_location = /*#__PURE__*/function () {
             _context11.t0 = _context11["catch"](0);
             console.log(_context11.t0);
             return _context11.abrupt("return", {
-              status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
+              status: _responseCode["default"].FAILURE.DATA_NOT_FOUND,
               error: _context11.t0
             });
           case 18:
@@ -581,7 +604,7 @@ var rider_location = /*#__PURE__*/function () {
       }
     }, _callee11, null, [[0, 14]]);
   }));
-  return function rider_location(_x25) {
+  return function rider_location(_x26) {
     return _ref11.apply(this, arguments);
   };
 }();

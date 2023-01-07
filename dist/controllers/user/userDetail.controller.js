@@ -9,6 +9,7 @@ var _responseCode = _interopRequireDefault(require("../../constants/responseCode
 var _jwt = require("../../services/jwt.service");
 var _validator = require("../../services/validator.service");
 var _db = _interopRequireDefault(require("../../services/db.service"));
+var _message = require("../../notifications/message.sender");
 var _moment = _interopRequireDefault(require("moment"));
 var _user_details = require("../../models/user/user_details.model");
 var _messages = _interopRequireDefault(require("../../constants/messages"));
@@ -111,14 +112,14 @@ var getAddress = /*#__PURE__*/function () {
 exports.getAddress = getAddress;
 var editAddress = /*#__PURE__*/function () {
   var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(req, res) {
-    var _req$body, userId, address_id, title, address, landmark, type, alternate_mobile, latitude, longitude;
+    var _req$body, userId, address_id, title, address, landmark, type, alternate_mobile, _latitude, _longitude;
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.prev = 0;
-            _req$body = req.body, userId = _req$body.userId, address_id = _req$body.address_id, title = _req$body.title, address = _req$body.address, landmark = _req$body.landmark, type = _req$body.type, alternate_mobile = _req$body.alternate_mobile, latitude = _req$body.latitude, longitude = _req$body.longitude;
-            if (!(!latitude && !longitude)) {
+            _req$body = req.body, userId = _req$body.userId, address_id = _req$body.address_id, title = _req$body.title, address = _req$body.address, landmark = _req$body.landmark, type = _req$body.type, alternate_mobile = _req$body.alternate_mobile, _latitude = _req$body.latitude, _longitude = _req$body.longitude;
+            if (!(!_latitude && !_longitude)) {
               _context3.next = 4;
               break;
             }
@@ -128,7 +129,7 @@ var editAddress = /*#__PURE__*/function () {
             }));
           case 4:
             _context3.next = 6;
-            return (0, _user_details.edit_address)(userId, address_id, title, address, landmark, type, alternate_mobile, latitude, longitude);
+            return (0, _user_details.edit_address)(userId, address_id, title, address, landmark, type, alternate_mobile, _latitude, _longitude);
           case 6:
             res.status(_responseCode["default"].SUCCESS).json({
               status: true,
@@ -158,7 +159,7 @@ var editAddress = /*#__PURE__*/function () {
 exports.editAddress = editAddress;
 var getUser = /*#__PURE__*/function () {
   var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(req, res) {
-    var userId, user, get_user_detail;
+    var userId, user, get_user_detail, status;
     return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
@@ -169,50 +170,61 @@ var getUser = /*#__PURE__*/function () {
             return (0, _user_details.get_user)(userId);
           case 4:
             user = _context4.sent;
+            console.log(user);
             if (!(user.body.length === 0)) {
-              _context4.next = 7;
+              _context4.next = 8;
               break;
             }
             return _context4.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
               message: "User Not Found"
             }));
-          case 7:
+          case 8:
             get_user_detail = {};
+            status = [];
+            if (user.rider[0].status == 0) {
+              status.push("rider is assigned");
+            } else if (user.rider[0].status == 1) {
+              status.push("rider can start the tour and delivered soon");
+            } else if (user.rider[0].status == 2) {
+              status.push("rider can end the tour");
+            } else {
+              status.push("no rider can assigned");
+            }
             user.body.map(function (data) {
               get_user_detail.user_id = data.id;
               get_user_detail.name = data.name;
               get_user_detail.image = data.image ? process.env.BASE_URL + data.image : null;
               get_user_detail.mobile_number = data.mobile_number;
               get_user_detail.email = data.email;
-              get_user_detail.total_bill_due_Amount = 'Bill due amount ₹0';
-              get_user_detail.total_bill_count = '0 bills';
-              get_user_detail.total_address_count = '0 Saved Address';
-              get_user_detail.total_subcription_count = '0 subscriptions';
-              get_user_detail.total_delivered_product_count = '0 Product Delivery';
-              get_user_detail.rider_status = 'No rider Assign';
-              get_user_detail.rider_status = '0 empty bottles in hand';
+              get_user_detail.rider_name = user.rider[0].name;
+              get_user_detail.rider_status = status;
+              get_user_detail.total_bill_due_Amount = user.bill[0].subscription_price;
+              get_user_detail.total_bill_count = user.bill[0].additional_price;
+              get_user_detail.total_address_count = user.sub[0].additional_delivered_quantity;
+              get_user_detail.total_subcription_count = user.sub[0].subscription_delivered_quantity;
+              get_user_detail.total_delivered_product_count = user.sub[0].total_delivered_quantity;
             });
             res.status(_responseCode["default"].SUCCESS).json({
               status: true,
               data: get_user_detail
             });
-            _context4.next = 16;
+            _context4.next = 19;
             break;
-          case 12:
-            _context4.prev = 12;
+          case 15:
+            _context4.prev = 15;
             _context4.t0 = _context4["catch"](0);
             console.log(_context4.t0);
             res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: "no user"
             });
-          case 16:
+          case 19:
           case "end":
             return _context4.stop();
         }
       }
-    }, _callee4, null, [[0, 12]]);
+    }, _callee4, null, [[0, 15]]);
   }));
   return function getUser(_x7, _x8) {
     return _ref4.apply(this, arguments);
@@ -299,6 +311,19 @@ var deleteUseraddress = /*#__PURE__*/function () {
             return (0, _user_details.delete_user_address)(address_id, userId);
           case 6:
             addresses = _context6.sent;
+            // await sendNotification({
+            //   include_external_user_ids: [userId],
+            //   contents: { en: `Addon Products Created notificaiton` },
+            //   headings: { en: "Addon Products Notification" },
+            //   name: "Addon Products",
+            //   data: {
+            //     status: "new_order",
+            //     type: 2,
+            //     // appointment_id: user._id,
+            //     // appointment_chat_id: user_chat._id
+            //   },
+            // });
+
             res.status(_responseCode["default"].SUCCESS).json({
               status: true,
               message: "delete successfully"
@@ -338,6 +363,19 @@ var RemoveOrder = /*#__PURE__*/function () {
             return (0, _user_details.remove_order)(user_id);
           case 4:
             remove = _context7.sent;
+            // await sendNotification({
+            //   include_external_user_ids: [userId],
+            //   contents: { en: `Addon Products Created notificaiton` },
+            //   headings: { en: "Addon Products Notification" },
+            //   name: "Addon Products",
+            //   data: {
+            //     status: "new_order",
+            //     type: 2,
+            //     // appointment_id: user._id,
+            //     // appointment_chat_id: user_chat._id
+            //   },
+            // });
+
             res.status(_responseCode["default"].SUCCESS).json({
               status: true,
               message: "remove successfully"
@@ -425,6 +463,19 @@ var changePlan = /*#__PURE__*/function () {
             return (0, _user_details.change_plan)(changeplan_name, start_date, subscribe_type_id);
           case 6:
             plan = _context9.sent;
+            // await sendNotification({
+            //   include_external_user_ids: [userId],
+            //   contents: { en: `Addon Products Created notificaiton` },
+            //   headings: { en: "Addon Products Notification" },
+            //   name: "Addon Products",
+            //   data: {
+            //     status: "new_order",
+            //     type: 2,
+            //     // appointment_id: user._id,
+            //     // appointment_chat_id: user_chat._id
+            //   },
+            // });
+
             res.status(_responseCode["default"].SUCCESS).json({
               status: true,
               message: "updated successfully"
@@ -466,16 +517,19 @@ var checkDeliveryAddress = /*#__PURE__*/function () {
           case 4:
             check_address = _context10.sent;
             console.log(check_address.body[0].latitude);
-            console.log(check_address.body[0].longitude);
-            if (!(check_address.body[0].latitude <= 15.9165 || check_address.body[0].latitude <= 80.24965323507786)) {
-              _context10.next = 11;
+            if (!(check_address.body[0].latitude <= 12.9165 || check_address.body[0].longitude <= 79.1325)) {
+              _context10.next = 10;
               break;
             }
             return _context10.abrupt("return", res.status(200).json({
               status: true,
               message: "successfully delivery"
             }));
-          case 11:
+          case 10:
+            if (!(!latitude <= 12.9165 && !longitude <= 79.1325)) {
+              _context10.next = 12;
+              break;
+            }
             return _context10.abrupt("return", res.status(200).json({
               status: true,
               message: "out of locations"
@@ -862,7 +916,8 @@ var RiderLocation = /*#__PURE__*/function () {
             _context17.t0 = _context17["catch"](0);
             console.log(_context17.t0);
             res.status(500).json({
-              status: false
+              status: false,
+              message: "no order placed today SORRY!!!!!"
             });
           case 16:
           case "end":

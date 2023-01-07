@@ -11,6 +11,9 @@ var userRouter = _express["default"].Router({
   caseSensitive: true,
   strict: true
 });
+userRouter.get("/get_bill", _users.getBill);
+userRouter.post("/create_user_bill", _users.createUserBill);
+
 // userRouter.get('/get_route',getRoute)
 userRouter.get("/branch_user", _users.getusers);
 userRouter.get("/single_user", _users.getSingleUser);

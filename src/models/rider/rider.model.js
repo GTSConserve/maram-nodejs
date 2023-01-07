@@ -350,16 +350,14 @@ export const userLogin = async (password) => {
   export const statusupdate = async (user_id,delivery_partner_id,one_liter_count,half_liter_count,order_id,order_status,product,addons,additional_orders) => {
     try {
       const update1 = await knex('daily_orders')
-      .select("tour_status").where({user_id:user_id,id:order_id});
+      .select("tour_status","user_address_id").where({user_id:user_id,id:order_id});
       if(update1[0].tour_status=="started"){
 
          const update = await knex('daily_orders')
-         .update({status:order_status }).where({user_id:user_id,id:order_id});
+         .update({status:order_status }).where({user_id:user_id,user_address_id:update1[0].user_address_id});
 
          let bottle_entry =[];
          let bottle_entry1 =[];
-         let bottle_entry2 =[];
-         let bottle_entry3 =[];
          let suma = 0;
          let sumb = 0;
          let sumx = 0;
@@ -625,16 +623,35 @@ export const userLogin = async (password) => {
     try {
           const route = await knex('routes').select('id').where({rider_id:delivery_partner_id});
           // console.log(route[0].id)
-          const order = await knex('daily_orders').select('id').where({router_id:route[0].id,date:date});
+          const order = await knex('daily_orders').select('user_address_id').where({router_id:route[0].id,date:date});
+        
+          // var distinct = []
+          // for (var i = 0; i < order.length; i++)
+          //    if (order[i].user_address_id not in distinct)
+          //       distinct.push(order[i].user_address_id)
+          const unique = [...new Set(order.map(item => item.user_address_id))];
+          console.log( unique);
 
-          const delivery = await knex('daily_orders').select('id').where({router_id:route[0].id,date:date,status:"delivered"});
+          const delivery = await knex('daily_orders').select('user_address_id').where({router_id:route[0].id,date:date,status:"delivered"});
+
+          const unique1 = [...new Set(delivery.map(item => item.user_address_id))];
+          console.log( unique1);
+
           
-          const pending = await knex('daily_orders').select('id').where({router_id:route[0].id,date:date,status:"pending"})
+          const pending = await knex('daily_orders').select('user_address_id').where({router_id:route[0].id,date:date,status:"pending"})
+
+          const unique2 = [...new Set(pending.map(item => item.user_address_id))];
+          console.log( unique2);
+
           // .orwhere({status:"undelivered"});
-          const undelivered = await knex('daily_orders').select('id').where({router_id:route[0].id,date:date,status:"undelivered"})
+          const undelivered = await knex('daily_orders').select('user_address_id').where({router_id:route[0].id,date:date,status:"undelivered"})
+
+          const unique3 = [...new Set(undelivered.map(item => item.user_address_id))];
+          console.log( unique3);
+
          
       
-      return{status:true,data:route[0].id,order,delivery,pending,undelivered}
+      return{status:true,data:route[0].id,unique,unique1,unique2,unique3}
       
     } catch (error) {
       console.log(error);

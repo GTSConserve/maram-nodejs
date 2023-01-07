@@ -14,13 +14,22 @@ import {
   createPaused,
   editPaused,
   changeUserPlan,
-  updateQty
+  updateQty,
+  getBill,
+  createUserBill
 } from "../../controllers/branch_admin/users/users.controller";
 
 const userRouter = express.Router({
   caseSensitive: true,
   strict: true,
 });
+
+
+userRouter.get("/get_bill", getBill);
+userRouter.post("/create_user_bill", createUserBill);
+
+
+
 // userRouter.get('/get_route',getRoute)
 userRouter.get("/branch_user", getusers);
 userRouter.get("/single_user", getSingleUser);

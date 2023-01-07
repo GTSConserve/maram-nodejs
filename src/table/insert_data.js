@@ -62,7 +62,7 @@ export const insertData = async (req, res) => {
     // for (let i = 0; i < category.length; i++) {
     //   category[i].product_type_id = get_random_id(product_type_id);
     // }
-    await knex("categories").insert(category);
+    // await knex("categories").insert(category);
 
     // const category_id = await knex("categories").select("id");
     // products

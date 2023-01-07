@@ -8,6 +8,8 @@ exports.searchProducts = exports.removeAddOnOrder = exports.nextDayProduct = exp
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 var _messages = _interopRequireDefault(require("../../constants/messages"));
 var _helper = require("../../utils/helper.util");
+var _message = require("../../notifications/message.sender");
+var _axios = _interopRequireDefault(require("axios"));
 var _moment = _interopRequireDefault(require("moment"));
 var _product = require("../../models/user/product.model");
 var _jwt = require("../../services/jwt.service");
@@ -330,11 +332,11 @@ var getAddOnProducts = /*#__PURE__*/function () {
           case 10:
             _context6.prev = 10;
             _context6.t0 = _context6["catch"](0);
-            console.log(_context6.t0);
+            // console.log(error);
             res.status(500).json({
               status: false
             });
-          case 14:
+          case 13:
           case "end":
             return _context6.stop();
         }

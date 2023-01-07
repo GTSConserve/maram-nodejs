@@ -8,6 +8,7 @@ exports.userMappingAssign = exports.updateSubscribedExistUser = exports.updateSu
 var _db = _interopRequireDefault(require("../../../services/db.service"));
 var _helper = require("../../../utils/helper.util");
 var _moment = _interopRequireDefault(require("moment"));
+var _message = require("../../../notifications/message.sender");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -125,14 +126,14 @@ var updateSubscribedExistUser = /*#__PURE__*/function () {
 exports.updateSubscribedExistUser = updateSubscribedExistUser;
 var updateSubscribed = /*#__PURE__*/function () {
   var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(req, res) {
-    var _req$body2, router_id, date, add_on_order_id, address_id, sub_id, _req$query, is_exist, is_user_mapping_assign, i, users, arr_users, get_users;
+    var _req$body2, router_id, date, add_on_order_id, address_id, sub_id, user_id, _req$query, is_exist, is_user_mapping_assign, i, users, arr_users, get_users;
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.prev = 0;
             // const { sub_id, router_id, date, add_on_id, user_id } = req.body;
-            _req$body2 = req.body, router_id = _req$body2.router_id, date = _req$body2.date, add_on_order_id = _req$body2.add_on_order_id, address_id = _req$body2.address_id, sub_id = _req$body2.sub_id;
+            _req$body2 = req.body, router_id = _req$body2.router_id, date = _req$body2.date, add_on_order_id = _req$body2.add_on_order_id, address_id = _req$body2.address_id, sub_id = _req$body2.sub_id, user_id = _req$body2.user_id;
             _req$query = req.query, is_exist = _req$query.is_exist, is_user_mapping_assign = _req$query.is_user_mapping_assign;
             if (!add_on_order_id) {
               _context3.next = 16;
@@ -170,7 +171,7 @@ var updateSubscribed = /*#__PURE__*/function () {
             break;
           case 16:
             if (!sub_id) {
-              _context3.next = 19;
+              _context3.next = 21;
               break;
             }
             _context3.next = 19;
@@ -184,47 +185,67 @@ var updateSubscribed = /*#__PURE__*/function () {
             });
           case 19:
             _context3.next = 21;
+            return (0, _message.sendNotification)({
+              include_external_user_ids: [user_id.toString()],
+              contents: {
+                en: "Your Subsciption Was Placed, Your Susbcription Start From ".concat((0, _moment["default"])(date).format("DD-MM-YYYY"))
+              },
+              headings: {
+                en: "Subscription Notification"
+              },
+              name: "Appoinment Request",
+              data: {
+                subscription_status: "subscribed",
+                category_id: 0,
+                product_type_id: 0,
+                type: 2,
+                subscription_id: sub_id,
+                bill_id: 0
+              }
+            });
+          case 21:
+            _context3.next = 23;
             return (0, _db["default"])("routes").select("user_mapping").where({
               id: router_id
             });
-          case 21:
+          case 23:
             users = _context3.sent;
             if (!(users.length === 0 || users[0].user_mapping === null)) {
-              _context3.next = 28;
+              _context3.next = 30;
               break;
             }
             arr_users = [Number(address_id)];
-            _context3.next = 26;
+            _context3.next = 28;
             return (0, _db["default"])("routes").update({
               user_mapping: JSON.stringify(arr_users)
             }).where({
               id: router_id
             });
-          case 26:
-            _context3.next = 34;
-            break;
           case 28:
-            _context3.next = 30;
+            _context3.next = 36;
+            break;
+          case 30:
+            _context3.next = 32;
             return (0, _db["default"])("routes").select("user_mapping").where({
               id: router_id
             });
-          case 30:
+          case 32:
             get_users = _context3.sent;
             get_users[0].user_mapping.push(Number(address_id));
-            _context3.next = 34;
+            _context3.next = 36;
             return (0, _db["default"])("routes").update({
               user_mapping: JSON.stringify(get_users[0].user_mapping)
             }).where({
               id: router_id
             });
-          case 34:
-            _context3.next = 36;
+          case 36:
+            _context3.next = 38;
             return (0, _db["default"])("user_address").update({
               router_id: router_id
             }).where({
               id: address_id
             });
-          case 36:
+          case 38:
             // this below call from user mapping assign
 
             // // if (!date) {
@@ -282,25 +303,25 @@ var updateSubscribed = /*#__PURE__*/function () {
 
             req.flash("success", "subscribed successfully");
             if (!is_exist) {
-              _context3.next = 39;
+              _context3.next = 41;
               break;
             }
             return _context3.abrupt("return", res.redirect("/branch_admin/subscription/get_exist_users"));
-          case 39:
+          case 41:
             res.redirect("/branch_admin/subscription/get_new_users");
-            _context3.next = 46;
+            _context3.next = 48;
             break;
-          case 42:
-            _context3.prev = 42;
+          case 44:
+            _context3.prev = 44;
             _context3.t0 = _context3["catch"](0);
             console.log(_context3.t0);
             res.redirect("/home");
-          case 46:
+          case 48:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3, null, [[0, 42]]);
+    }, _callee3, null, [[0, 44]]);
   }));
   return function updateSubscribed(_x5, _x6) {
     return _ref3.apply(this, arguments);
@@ -411,7 +432,7 @@ var getNewUsers = /*#__PURE__*/function () {
               break;
             }
             _context4.next = 53;
-            return _db["default"].raw("SELECT sub.id , sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n        user_address.address,user_address.id as user_address_id ,user_address.landmark,products.name as product_name,products.price,products.unit_value,products.image,\n        unit_types.value,categories.name as category_name\n        FROM subscribed_user_details AS sub \n        JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id \n        JOIN users ON users.id = sub.user_id \n        JOIN user_address ON user_address.id = sub.user_address_id\n        JOIN products ON products.id = sub.product_id\n        JOIN unit_types ON unit_types.id = products.unit_type_id\n        JOIN categories ON categories.id = products.category_id\n        WHERE sub.subscription_status = \"assigned\" AND sub.branch_id = ".concat(admin_id, "\n        AND users.user_unique_id LIKE '%").concat(searchKeyword, "%'"));
+            return _db["default"].raw("SELECT sub.id ,sub.user_id, sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n        user_address.address,user_address.id as user_address_id ,user_address.landmark,products.name as product_name,products.price,products.unit_value,products.image,\n        unit_types.value,categories.name as category_name\n        FROM subscribed_user_details AS sub \n        JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id \n        JOIN users ON users.id = sub.user_id \n        JOIN user_address ON user_address.id = sub.user_address_id\n        JOIN products ON products.id = sub.product_id\n        JOIN unit_types ON unit_types.id = products.unit_type_id\n        JOIN categories ON categories.id = products.category_id\n        WHERE sub.subscription_status = \"assigned\" AND sub.branch_id = ".concat(admin_id, "\n        AND users.user_unique_id LIKE '%").concat(searchKeyword, "%'"));
           case 53:
             results = _context4.sent;
             is_search = true;
@@ -419,13 +440,14 @@ var getNewUsers = /*#__PURE__*/function () {
             break;
           case 57:
             _context4.next = 59;
-            return _db["default"].raw("SELECT sub.id ,sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n        user_address.address,user_address.id as user_address_id ,user_address.landmark,products.name as product_name,products.price,products.unit_value,products.image,\n        unit_types.value,categories.name as category_name\n        FROM subscribed_user_details AS sub \n        JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id \n        JOIN users ON users.id = sub.user_id \n        JOIN user_address ON user_address.id = sub.user_address_id\n        JOIN products ON products.id = sub.product_id\n        JOIN unit_types ON unit_types.id = products.unit_type_id\n        JOIN categories ON categories.id = products.category_id\n        WHERE sub.subscription_status = \"assigned\" AND sub.branch_id = ".concat(admin_id));
+            return _db["default"].raw("SELECT sub.id ,sub.user_id,sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n        user_address.address,user_address.id as user_address_id ,user_address.landmark,products.name as product_name,products.price,products.unit_value,products.image,\n        unit_types.value,categories.name as category_name\n        FROM subscribed_user_details AS sub \n        JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id \n        JOIN users ON users.id = sub.user_id \n        JOIN user_address ON user_address.id = sub.user_address_id\n        JOIN products ON products.id = sub.product_id\n        JOIN unit_types ON unit_types.id = products.unit_type_id\n        JOIN categories ON categories.id = products.category_id\n        WHERE sub.subscription_status = \"assigned\" AND sub.branch_id = ".concat(admin_id));
           case 59:
             results = _context4.sent;
           case 60:
             subscription_users = results[0];
             for (i = 0; i < subscription_users.length; i++) {
               subscription_users[i].start_date = (0, _moment["default"])(subscription_users[i].start_date).format("DD-MM-YYYY");
+              subscription_users[i].default_show_start_date = (0, _moment["default"])(subscription_users[i].start_date).format("YYYY-DD-MM");
               subscription_users[i].image = process.env.BASE_URL + subscription_users[i].image;
             }
           case 62:

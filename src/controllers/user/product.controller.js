@@ -1,6 +1,8 @@
 import responseCode from "../../constants/responseCode";
 import messages from "../../constants/messages";
 import { GetProduct } from "../../utils/helper.util";
+import { sendNotification } from "../../notifications/message.sender";
+import axios from 'axios';
 import moment from "moment";
 
 import {
@@ -189,13 +191,13 @@ export const getAddOnProducts = async (req, res) => {
         .status(responseCode.FAILURE.DATA_NOT_FOUND)
         .json({ status: false, message: product.message });
     }
-
+ 
     return res.status(responseCode.SUCCESS).json({
       status: true,
       data: product.data,
     });
   } catch (error) {
-    console.log(error);
+   // console.log(error);
     res.status(500).json({ status: false });
   }
 };
@@ -255,7 +257,8 @@ export const addon_Order = async (req, res) => {
       delivery_date,
       products,
       address_id
-    );
+      );
+    
     return res.status(responseCode.SUCCESS).json({
       status: true,
       message: "order added",

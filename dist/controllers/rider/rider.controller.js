@@ -11,10 +11,9 @@ var _rider = require("../../models/rider/rider.model");
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 var _db = _interopRequireDefault(require("../../services/db.service"));
 var _validator = require("../../services/validator.service");
-var _index = _interopRequireDefault(require("date-fns/locale/id/index"));
-var _jwt = require("../../services/jwt.service");
 var _bcrypt = _interopRequireDefault(require("bcrypt"));
 var _haversineDistance = _interopRequireDefault(require("haversine-distance"));
+var _riderMessage = require("../../notifications/rider.message.sender");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -29,6 +28,8 @@ function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o =
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+// import { riderSendNotification } from '../../notifications/rider.message.sender';
+
 //  rider app controls
 var getAppControls = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(req, res) {
@@ -230,29 +231,47 @@ var updateRiderstatus = /*#__PURE__*/function () {
             return (0, _rider.update_riderstatus)(delivery_partner_id, status);
           case 6:
             riderstatus = _context4.sent;
+            _context4.next = 9;
+            return (0, _riderMessage.riderSendNotification)({
+              include_external_user_ids: [delivery_partner_id],
+              contents: {
+                en: "Addon Products Created notificaiton"
+              },
+              headings: {
+                en: "RIDER CAN UPDATED"
+              },
+              name: "Addon Products",
+              data: {
+                status: "pending",
+                type: 4
+                // appointment_id: user._id,
+                // appointment_chat_id: user_chat._id
+              }
+            });
+          case 9:
             if (!riderstatus.status) {
-              _context4.next = 11;
+              _context4.next = 13;
               break;
             }
             return _context4.abrupt("return", res.status(_responseCode["default"].SUCCESS).json(riderstatus));
-          case 11:
+          case 13:
             return _context4.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json(riderstatus));
-          case 12:
-            _context4.next = 18;
-            break;
           case 14:
-            _context4.prev = 14;
+            _context4.next = 20;
+            break;
+          case 16:
+            _context4.prev = 16;
             _context4.t0 = _context4["catch"](0);
             console.log(_context4.t0);
             res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false
             });
-          case 18:
+          case 20:
           case "end":
             return _context4.stop();
         }
       }
-    }, _callee4, null, [[0, 14]]);
+    }, _callee4, null, [[0, 16]]);
   }));
   return function updateRiderstatus(_x7, _x8) {
     return _ref4.apply(this, arguments);
@@ -283,23 +302,41 @@ var updeteRiderLocation = /*#__PURE__*/function () {
             return (0, _rider.update_location)(delivery_partner_id, latitude, longitude);
           case 6:
             location = _context5.sent;
+            _context5.next = 9;
+            return (0, _riderMessage.riderSendNotification)({
+              include_external_user_ids: [delivery_partner_id],
+              contents: {
+                en: "Rider Location Updated notificaiton"
+              },
+              headings: {
+                en: "RIDER CAN UPDATED"
+              },
+              name: "Addon Products",
+              data: {
+                status: "pending",
+                type: 4
+                // appointment_id: user._id,
+                // appointment_chat_id: user_chat._id
+              }
+            });
+          case 9:
             return _context5.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               status: true,
               message: "ok"
             }));
-          case 10:
-            _context5.prev = 10;
+          case 12:
+            _context5.prev = 12;
             _context5.t0 = _context5["catch"](0);
             console.log(_context5.t0);
             res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
               status: false
             });
-          case 14:
+          case 16:
           case "end":
             return _context5.stop();
         }
       }
-    }, _callee5, null, [[0, 10]]);
+    }, _callee5, null, [[0, 12]]);
   }));
   return function updeteRiderLocation(_x9, _x10) {
     return _ref5.apply(this, arguments);
@@ -330,45 +367,63 @@ var updateStartTour = /*#__PURE__*/function () {
             return (0, _rider.update_starttour)(delivery_partner_id, tour_id, tour_status);
           case 6:
             starttour = _context6.sent;
+            _context6.next = 9;
+            return (0, _riderMessage.riderSendNotification)({
+              include_external_user_ids: [delivery_partner_id],
+              contents: {
+                en: "Rider Start Tour Updated notificaiton"
+              },
+              headings: {
+                en: "RIDER CAN UPDATED"
+              },
+              name: "Addon Products",
+              data: {
+                status: "new_order",
+                type: 4
+                // appointment_id: user._id,
+                // appointment_chat_id: user_chat._id
+              }
+            });
+          case 9:
             if (!starttour.status) {
-              _context6.next = 18;
+              _context6.next = 20;
               break;
             }
-            _context6.next = 10;
+            _context6.next = 12;
             return (0, _db["default"])('routes').select('id').where({
               rider_id: delivery_partner_id
             });
-          case 10:
+          case 12:
             route = _context6.sent;
-            _context6.next = 13;
+            _context6.next = 15;
             return (0, _db["default"])("daily_orders").update({
               tour_status: "started"
             }).where({
               router_id: route[0].id
             });
-          case 13:
+          case 15:
             status = _context6.sent;
             console.log(status);
             return _context6.abrupt("return", res.status(_responseCode["default"].SUCCESS).json(starttour));
-          case 18:
+          case 20:
             return _context6.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json(starttour));
-          case 19:
-            _context6.next = 25;
-            break;
           case 21:
-            _context6.prev = 21;
+            _context6.next = 27;
+            break;
+          case 23:
+            _context6.prev = 23;
             _context6.t0 = _context6["catch"](0);
             console.log(_context6.t0);
             return _context6.abrupt("return", res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
-          case 25:
+          case 27:
           case "end":
             return _context6.stop();
         }
       }
-    }, _callee6, null, [[0, 21]]);
+    }, _callee6, null, [[0, 23]]);
   }));
   return function updateStartTour(_x11, _x12) {
     return _ref6.apply(this, arguments);
@@ -399,44 +454,62 @@ var updateEndtour = /*#__PURE__*/function () {
             return (0, _rider.update_endtour)(delivery_partner_id, tour_id, tour_status);
           case 6:
             endtour = _context7.sent;
+            _context7.next = 9;
+            return (0, _riderMessage.riderSendNotification)({
+              include_external_user_ids: [delivery_partner_id],
+              contents: {
+                en: "Rider Rider End Tour Updated notificaiton"
+              },
+              headings: {
+                en: "RIDER CAN UPDATED"
+              },
+              name: "Addon Products",
+              data: {
+                status: "pending",
+                type: 4
+                // appointment_id: user._id,
+                // appointment_chat_id: user_chat._id
+              }
+            });
+          case 9:
             if (!endtour.status) {
-              _context7.next = 17;
+              _context7.next = 19;
               break;
             }
-            _context7.next = 10;
+            _context7.next = 12;
             return (0, _db["default"])('routes').select('id').where({
               rider_id: delivery_partner_id
             });
-          case 10:
+          case 12:
             route = _context7.sent;
-            _context7.next = 13;
+            _context7.next = 15;
             return (0, _db["default"])("daily_orders").update({
               tour_status: "completed"
             }).where({
               router_id: route[0].id
             });
-          case 13:
+          case 15:
             status = _context7.sent;
             return _context7.abrupt("return", res.status(_responseCode["default"].SUCCESS).json(endtour));
-          case 17:
+          case 19:
             return _context7.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json(endtour));
-          case 18:
-            _context7.next = 24;
-            break;
           case 20:
-            _context7.prev = 20;
+            _context7.next = 26;
+            break;
+          case 22:
+            _context7.prev = 22;
             _context7.t0 = _context7["catch"](0);
             console.log(_context7.t0);
             return _context7.abrupt("return", res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
-          case 24:
+          case 26:
           case "end":
             return _context7.stop();
         }
       }
-    }, _callee7, null, [[0, 20]]);
+    }, _callee7, null, [[0, 22]]);
   }));
   return function updateEndtour(_x13, _x14) {
     return _ref7.apply(this, arguments);
@@ -599,23 +672,41 @@ var orderStatusUpdate = /*#__PURE__*/function () {
             });
           case 13:
             collect_bottle1 = _context9.sent;
+            _context9.next = 16;
+            return (0, _riderMessage.riderSendNotification)({
+              include_external_user_ids: [delivery_partner_id],
+              contents: {
+                en: "Order Status Updated notificaiton"
+              },
+              headings: {
+                en: "RIDER CAN UPDATED"
+              },
+              name: "Addon Products",
+              data: {
+                status: "pending",
+                type: 4
+                // appointment_id: user._id,
+                // appointment_chat_id: user_chat._id
+              }
+            });
+          case 16:
             return _context9.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               data: orderstatus
             }));
-          case 17:
-            _context9.prev = 17;
+          case 19:
+            _context9.prev = 19;
             _context9.t0 = _context9["catch"](0);
             console.log(_context9.t0);
             return _context9.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
-          case 21:
+          case 23:
           case "end":
             return _context9.stop();
         }
       }
-    }, _callee9, null, [[0, 17]]);
+    }, _callee9, null, [[0, 19]]);
   }));
   return function orderStatusUpdate(_x17, _x18) {
     return _ref9.apply(this, arguments);
@@ -658,9 +749,9 @@ var riderDashboard = /*#__PURE__*/function () {
               sum += Number(bottle[i].total_collective_bottle);
             }
             _query2 = {
-              "total_orders": total.order.length,
-              "delivered_orders": total.delivery.length,
-              "undelivered_orders": total.pending.length + total.undelivered.length,
+              "total_orders": total.unique.length,
+              "delivered_orders": total.unique1.length,
+              "undelivered_orders": total.unique2.length + total.unique3.length,
               "empty_bottle": sum
             };
             console.log(_query2);
@@ -724,24 +815,42 @@ var cancelOrder = /*#__PURE__*/function () {
             });
           case 9:
             order = _context11.sent;
+            _context11.next = 12;
+            return (0, _riderMessage.riderSendNotification)({
+              include_external_user_ids: [delivery_partner_id],
+              contents: {
+                en: "order cancelled by rider"
+              },
+              headings: {
+                en: "RIDER CAN UPDATED"
+              },
+              name: "order cancelled by rider",
+              data: {
+                status: "pending",
+                type: 4
+                // appointment_id: user._id,
+                // appointment_chat_id: user_chat._id
+              }
+            });
+          case 12:
             return _context11.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               status: true,
               message: "order cancelled by rider"
             }));
-          case 13:
-            _context11.prev = 13;
+          case 15:
+            _context11.prev = 15;
             _context11.t0 = _context11["catch"](0);
             console.log(_context11.t0);
             return _context11.abrupt("return", res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
-          case 17:
+          case 19:
           case "end":
             return _context11.stop();
         }
       }
-    }, _callee11, null, [[0, 13]]);
+    }, _callee11, null, [[0, 15]]);
   }));
   return function cancelOrder(_x21, _x22) {
     return _ref11.apply(this, arguments);

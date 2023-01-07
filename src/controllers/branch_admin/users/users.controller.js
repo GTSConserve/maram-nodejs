@@ -1,6 +1,188 @@
 import moment from "moment";
 import knex from "../../../services/db.service";
 import { getPageNumber } from "../../../utils/helper.util";
+import {sendNotification} from "../../../notifications/message.sender"
+
+export const createUserBill = async (req, res) => {
+  const { add_on, sub, user_id, sub_total, discount } = req.body;
+
+  const sub_product = JSON.parse(sub);
+  const add_on_product = JSON.parse(add_on);
+
+  const bill_no = "MA" + Date.now();
+
+  const bill = await knex("bill_history").insert({
+    bill_no,
+    user_id,
+    sub_total,
+    discount : discount ? discount : null,
+    grand_total: Number(sub_total) - (discount ?  Number(discount) : Number(0)),
+    date: moment().format("YYYY-MM-DD"),
+  });
+
+  if (sub_product.length !== 0) {
+    sub_product.map(async (data) => {
+      await knex("bill_history_details").insert({
+        bill_history_id: bill[0],
+        subscription_id: data.id,
+        subscription_price: data.subscription_monthly_price,
+        additional_price: data.additional_monthly_price,
+        total_price: data.total_monthly_price,
+        subscription_qty: data.subscription_delivered_quantity,
+        additional_qty: data.additional_delivered_quantity,
+        total_qty: data.total_delivered_quantity,
+      });
+
+      await knex("subscribed_user_details")
+        .update({
+          subscription_monthly_price: null,
+          additional_monthly_price: null,
+          total_monthly_price: null,
+          subscription_delivered_quantity: null,
+          additional_delivered_quantity: null,
+          total_delivered_quantity: null,
+        })
+        .where({ id: data.id });
+    });
+  }
+  if (add_on_product.length !== 0) {
+    add_on_product.map(async (data) => {
+      await knex("bill_history_details").insert({
+        bill_history_id: bill[0],
+        add_on_order_id: data.id,
+        total_price: data.sub_total,
+      });
+
+      await knex("add_on_orders")
+        .update({ is_bill_generated: "1" })
+        .where({ id: data.id });
+    });
+  }
+
+  // await  swal("Done", "New Add On Order Placed", "success");
+  req.flash("success", "Bill Generated SuccessFully");
+  res.redirect(`/branch_admin/user/get_bill?user_id=${user_id}`);
+};
+
+// get bill
+export const getBill = async (req, res) => {
+  try {
+    const { admin_id } = req.body;
+    const { user_id } = req.query;
+
+    const { searchKeyword } = req.query;
+    let loading = false;
+    let data_length = [];
+
+    // get generate bill details
+    const get_subscription_price = await knex("subscribed_user_details")
+      .select(
+        "total_monthly_price",
+        "subscription_monthly_price",
+        "additional_monthly_price",
+        "id",
+        "subscription_delivered_quantity",
+        "additional_delivered_quantity",
+        "total_delivered_quantity"
+      )
+      .where({ user_id })
+      .whereNot({ total_monthly_price: null });
+
+    const get_add_on_price = await knex("add_on_orders")
+      .select("sub_total", "id")
+      .where({ user_id, status: "delivered", is_bill_generated: "0" });
+
+    let sub_total = 0;
+
+    if (get_subscription_price.length !== 0) {
+      get_subscription_price.map((data) => {
+        sub_total += Number(data.total_monthly_price);
+      });
+    }
+    if (get_add_on_price.length !== 0) {
+      get_add_on_price.map((data) => {
+        sub_total += Number(data.sub_total);
+      });
+    }
+
+
+    if (searchKeyword) {
+      const search_data_length = await knex.raw(
+        `SELECT id,bill_no FROM bill_history WHERE user_id = ${user_id} AND bill_no LIKE '%${searchKeyword}%'`
+      );
+      data_length = search_data_length[0];
+
+      if (data_length.length === 0) {
+        loading = false;
+        req.query.searchKeyword = "";
+        req.flash("error", "No Bill  Found");
+        return res.redirect("/branch_admin/user/get_bill");
+      }
+    } else {
+      data_length = await knex("bill_history").select("id").where({ user_id });
+    }
+
+    if (data_length.length === 0) {
+      loading = false;
+      return res.render("branch_admin/users/get_bill", {
+        data: data_length,
+        searchKeyword,
+        sub_total,
+        get_subscription_price,
+        get_add_on_price,
+        user_id,
+      });
+    }
+
+    let {
+      startingLimit,
+      page,
+      resultsPerPage,
+      numberOfPages,
+      iterator,
+      endingLink,
+    } = await getPageNumber(req, res, data_length, "user/get_bill");
+
+    let results;
+
+    let is_search = false;
+    if (searchKeyword) {
+      results =
+        await knex.raw(`SELECT bill_no,user_id,sub_total,discount,grand_total,date,payment_status FROM bill_history WHERE user_id = ${user_id} AND bill_no LIKE '%${searchKeyword}%' 
+      LIMIT ${startingLimit},${resultsPerPage}`);
+      is_search = true;
+    } else {
+      results =
+        await knex.raw(`SELECT bill_no,user_id,sub_total,discount,grand_total,date,payment_status FROM bill_history WHERE user_id = ${user_id}
+      LIMIT ${startingLimit},${resultsPerPage}`);
+    }
+
+    const data = results[0];
+    loading = false;
+
+    data.map((d) => {
+      d.date = moment(d.date).format("DD-MM-YYYY");
+    });
+
+    res.render("branch_admin/users/get_bill", {
+      data,
+      page,
+      iterator,
+      endingLink,
+      numberOfPages,
+      is_search,
+      searchKeyword,
+      loading,
+      sub_total,
+      get_subscription_price,
+      get_add_on_price,
+      user_id,
+    });
+  } catch (error) {
+    console.log(error);
+    res.redirect("/home");
+  }
+};
 
 export const getusers = async (req, res) => {
   try {
@@ -590,7 +772,22 @@ export const newSubscription = async (req, res) => {
       sub_product_query.customized_days = JSON.stringify(store_weekdays);
     }
 
-    await knex("subscribed_user_details").insert(sub_product_query);
+   const sub_id =  await knex("subscribed_user_details").insert(sub_product_query);
+
+    await sendNotification({
+      include_external_user_ids: [ user.user_id.toString()],
+      contents: { en: `New Subsciption Was Placed By Maram Admin, Your Susbcription Start From ${moment(data.sub_start_date).format("DD-MM-YYYY")}` },
+      headings: { en: "Subscription Notification" },
+      name: "Appoinment Request",
+      data: {
+        subscription_status: "subscribed",
+        category_id: 0,
+        product_type_id: 0,
+        type: 2,
+        subscription_id: sub_id[0],
+        bill_id: 0,
+      },
+    });
 
     return res.status(200).json({ status: true });
   } catch (error) {
@@ -640,6 +837,21 @@ export const newAddOn = async (req, res) => {
 
     await knex("add_on_orders").update({ sub_total }).where({ id: order_id });
 
+    await sendNotification({
+      include_external_user_ids: [ user.user_id.toString()],
+      contents: { en: `New Add on Order Was Placed By Maram Admin, Your Add On Will be delivered On ${moment(data.delivery_date).format("DD-MM-YYYY")}` },
+      headings: { en: "Add On Notification" },
+      name: "New Add On ",
+      data: {
+        subscription_status: 0,
+        category_id: 0,
+        product_type_id: 0,
+        type: 2,
+        subscription_id: 0,
+        bill_id: 0,
+      },
+    });
+
     return res.status(200).json({ status: true });
   } catch (error) {
     console.log(error);
@@ -652,8 +864,6 @@ export const newAddOn = async (req, res) => {
 export const createAdditional = async (req, res) => {
   try {
     const { data } = req.body;
-    console.log("hitting");
-    console.log(data);
 
     for (let i = 0; i < data.dates.length; i++) {
       await knex("additional_orders").insert({
@@ -664,6 +874,21 @@ export const createAdditional = async (req, res) => {
       });
     }
 
+    await sendNotification({
+      include_external_user_ids: [ data.user_id.toString()],
+      contents: { en: `Additional Order was Placed for Your Subscription` },
+      headings: { en: "Subscription Notification" },
+      name: "Subscription Updated",
+      data: {
+        subscription_status: "subscribed",
+        category_id: 0,
+        product_type_id: 0,
+        type: 2,
+        subscription_id: data.sub_id,
+        bill_id: 0,
+      },
+    });
+
     return res.status(200).json({ status: true });
   } catch (error) {
     console.log(error);
@@ -673,8 +898,7 @@ export const createAdditional = async (req, res) => {
 export const editAdditional = async (req, res) => {
   try {
     const { data } = req.body;
-    console.log("hitting");
-    console.log(data);
+
 
     await knex("additional_orders")
       .where({
@@ -692,6 +916,20 @@ export const editAdditional = async (req, res) => {
         date: data.dates[i],
       });
     }
+    await sendNotification({
+      include_external_user_ids: [ data.user_id.toString()],
+      contents: { en: `Additional Order was Updated for Your Subscription` },
+      headings: { en: "Subscription Notification" },
+      name: "Subscription Updated",
+      data: {
+        subscription_status: "subscribed",
+        category_id: 0,
+        product_type_id: 0,
+        type: 2,
+        subscription_id: data.sub_id,
+        bill_id: 0,
+      },
+    });
 
     return res.status(200).json({ status: true });
   } catch (error) {
@@ -707,6 +945,21 @@ export const cancelAdditional = async (req, res) => {
     await knex("additional_orders")
       .update({ status: "cancelled", is_cancelled: "1" })
       .where({ subscription_id: sub_id, user_id });
+
+      await sendNotification({
+        include_external_user_ids: [ user_id.toString()],
+        contents: { en: `Additional Order was Cancelled for Your Subscription` },
+        headings: { en: "Subscription Notification" },
+        name: "Subscription Updated",
+        data: {
+          subscription_status: "subscribed",
+          category_id: 0,
+          product_type_id: 0,
+          type: 2,
+          subscription_id: sub_id,
+          bill_id: 0,
+        },
+      });
 
     req.flash("success", "SuccessFully Additional Orders Cancelled");
     res.redirect(
@@ -727,6 +980,23 @@ export const unsubscribeSubscription = async (req, res) => {
       .update({ subscription_status: "unsubscribed" })
       .where({ id: sub_id, user_id });
 
+
+      await sendNotification({
+        include_external_user_ids: [ user_id.toString()],
+        contents: { en: `Your Subscription Was UnSubscribed` },
+        headings: { en: "Subscription Notification" },
+        name: "Subscription Updated",
+        data: {
+          subscription_status: "subscribed",
+          category_id: 0,
+          product_type_id: 0,
+          type: 2,
+          subscription_id: sub_id,
+          bill_id: 0,
+        },
+      });
+
+
     req.flash("success", "UnSubscribed SuccessFully");
     res.redirect(
       `/branch_admin/user/single_user?user_address_id=${user_address_id}`
@@ -744,6 +1014,21 @@ export const subscribeSubscription = async (req, res) => {
     await knex("subscribed_user_details")
       .update({ subscription_status: "subscribed" })
       .where({ id: sub_id, user_id });
+
+      await sendNotification({
+        include_external_user_ids: [ user_id.toString()],
+        contents: { en: `Your Subscription Was Re Subscribed SuccessFully` },
+        headings: { en: "Subscription Notification" },
+        name: "Subscription Updated",
+        data: {
+          subscription_status: "subscribed",
+          category_id: 0,
+          product_type_id: 0,
+          type: 2,
+          subscription_id: sub_id,
+          bill_id: 0,
+        },
+      });
 
     req.flash("success", "Subscribed SuccessFully");
     res.redirect(
@@ -770,6 +1055,21 @@ export const createPaused = async (req, res) => {
       });
     }
 
+    await sendNotification({
+      include_external_user_ids: [ data.user_id.toString()],
+      contents: { en: `Paused Dates Created for Your Subscription` },
+      headings: { en: "Subscription Notification" },
+      name: "Subscription Updated",
+      data: {
+        subscription_status: "subscribed",
+        category_id: 0,
+        product_type_id: 0,
+        type: 2,
+        subscription_id: data.sub_id,
+        bill_id: 0,
+      },
+    });
+
     return res.status(200).json({ status: true });
   } catch (error) {
     console.log(error);
@@ -781,14 +1081,11 @@ export const editPaused = async (req, res) => {
   try {
     const { data } = req.body;
 
-
     await knex("pause_dates")
       .where({ subscription_id: data.sub_id, user_id: data.user_id })
       .del();
 
-
-
-    if ( data.dates[0] != "" ) {
+    if (data.dates[0] != "") {
       for (let i = 0; i < data.dates.length; i++) {
         await knex("pause_dates").insert({
           subscription_id: data.sub_id,
@@ -798,6 +1095,21 @@ export const editPaused = async (req, res) => {
       }
     }
 
+    await sendNotification({
+      include_external_user_ids: [ data.user_id.toString()],
+      contents: { en: `Paused Dates Updated for Your Subscription` },
+      headings: { en: "Subscription Notification" },
+      name: "Subscription Updated",
+      data: {
+        subscription_status: "subscribed",
+        category_id: 0,
+        product_type_id: 0,
+        type: 2,
+        subscription_id: data.sub_id,
+        bill_id: 0,
+      },
+    });
+
     return res.status(200).json({ status: true });
   } catch (error) {
     console.log(error);
@@ -805,33 +1117,43 @@ export const editPaused = async (req, res) => {
   }
 };
 
-
-
-// change user plan 
-export const changeUserPlan = async (req,res) => {
+// change user plan
+export const changeUserPlan = async (req, res) => {
   try {
-      const {data} = req.body
-      console.log(data)
-
-
+    const { data } = req.body;
+    console.log(data);
   } catch (error) {
-    console.log(error)
-    res.redirect("/home")
+    console.log(error);
+    res.redirect("/home");
   }
-}
+};
 
-
-
-export const updateQty = async (req,res) => {
+export const updateQty = async (req, res) => {
   try {
-    
-    const {data} = req.body
-    console.log(data)
-    await knex("subscribed_user_details").update({quantity : data.qty}).where({user_id : data.user_id , id : data.sub_id})
-    return res.status(200).json({status : true})
+    const { data } = req.body;
+    console.log(data);
+    await knex("subscribed_user_details")
+      .update({ quantity: data.qty })
+      .where({ user_id: data.user_id, id: data.sub_id });
 
+      await sendNotification({
+        include_external_user_ids: [ data.user_id.toString()],
+        contents: { en: `Subscription Quantity Updated` },
+        headings: { en: "Subscription Notification" },
+        name: "Subscription Updated",
+        data: {
+          subscription_status: "subscribed",
+          category_id: 0,
+          product_type_id: 0,
+          type: 2,
+          subscription_id: data.sub_id,
+          bill_id: 0,
+        },
+      });
+
+    return res.status(200).json({ status: true });
   } catch (error) {
-      console.log(error)
-      res.redirect("/home")
+    console.log(error);
+    res.redirect("/home");
   }
-}
+};
