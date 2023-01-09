@@ -8,6 +8,7 @@ exports.getVerifyPaymentMethod = exports.getRazorpayMethod = exports.getPaymentS
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 var _messages = _interopRequireDefault(require("../../constants/messages"));
 var _message = require("../../notifications/message.sender");
+var _payment = require("../../models/user/payment.model");
 var _crypto = _interopRequireWildcard(require("crypto"));
 var _db = _interopRequireDefault(require("../../services/db.service"));
 var _razorpay = _interopRequireDefault(require("razorpay"));
@@ -204,7 +205,7 @@ var getRazorpayMethod = /*#__PURE__*/function () {
               }
             });
           case 13:
-            // const payment_list = await PaymentMethod(user_id)
+            // const payment_list = await PaymentMethod(order_id)
             // console.log(response.id);
             res.status(200).json({
               status: true,

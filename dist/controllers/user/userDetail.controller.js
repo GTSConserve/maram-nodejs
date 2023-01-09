@@ -516,7 +516,7 @@ var checkDeliveryAddress = /*#__PURE__*/function () {
           case 4:
             check_address = _context10.sent;
             console.log(check_address.body[0].latitude);
-            if (!(check_address.body[0].latitude <= 12.9165 || check_address.body[0].longitude <= 79.1325)) {
+            if (!(check_address.body[0].latitude <= 15.9165 || check_address.body[0].longitude <= 80.1325)) {
               _context10.next = 10;
               break;
             }
@@ -525,7 +525,7 @@ var checkDeliveryAddress = /*#__PURE__*/function () {
               message: "successfully delivery"
             }));
           case 10:
-            if (!(!latitude <= 12.9165 && !longitude <= 79.1325)) {
+            if (!(!latitude <= 15.9165 && !longitude <= 80.1325)) {
               _context10.next = 12;
               break;
             }
