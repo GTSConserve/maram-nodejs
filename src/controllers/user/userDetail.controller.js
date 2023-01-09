@@ -161,11 +161,11 @@ export const getUser = async (req, res) => {
       get_user_detail.email = data.email;
       get_user_detail.rider_name = user.rider[0].name;
       get_user_detail.rider_status = status;
-      get_user_detail.total_bill_due_Amount = "Bill due amount"+ ' ' +user.bill[0].subscription_price.toString();
-      get_user_detail.total_bill_count = user.bill[0].additional_price.toString()+ ' ' + "bills";
-      get_user_detail.total_address_count = user.sub[0].additional_delivered_quantity.toString()+ ' ' + "address count";
-      get_user_detail.total_subcription_count = user.sub[0].subscription_delivered_quantity.toString()+ ' ' + "subcription";
-      get_user_detail.total_delivered_product_count = user.sub[0].total_delivered_quantity.toString()+ ' ' + "Product Delivery" ;
+      get_user_detail.total_bill_due_Amount = "Bill due amount"+ ' ' +user.bill[0].total_price.toString();
+      get_user_detail.total_bill_count = user.bill.length.toString()+ ' ' + "bills";
+      get_user_detail.total_address_count = user.address.length.toString()+ ' ' + "address count";
+      get_user_detail.total_subcription_count = user.subscription.length.toString()+ ' ' + "subcription";
+      get_user_detail.total_delivered_product_count = user.subscription1.length +user.additional.length +user.addon.length .toString()+ ' ' + "Product Delivery" ;
     });
 
     res

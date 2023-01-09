@@ -133,9 +133,16 @@ export const get_user = async (id,userId) => {
   .where({user_id: id})
 
   // console.log(rider)
+   const address = await knex('user_address').select('id').where({user_id: id})
 
-  try {
-    return { status: responseCode.SUCCESS, body: getuser,rider,bill,sub };
+   const subscription = await knex('subscribed_user_details').select('id').where({user_id: id})
+   const additional = await knex('additional_orders').select('id').where({user_id: id,status:"delivered"})
+
+   const subscription1 = await knex('subscribed_user_details').select('product_id').where({user_id: id,rider_status:"delivered"})
+
+   const addon = await knex('add_on_order_items').select('product_id').where({user_id: id,status:"delivered"})
+   try {
+    return { status: responseCode.SUCCESS, body: getuser,rider,bill,sub,address,subscription,additional,subscription1,addon };
   } catch (error) {
     console.log(error);
     return { status: responseCode.FAILURE.INTERNAL_SERVER_ERROR, error };
