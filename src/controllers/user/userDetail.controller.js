@@ -136,18 +136,18 @@ export const getUser = async (req, res) => {
     }
 
     let get_user_detail = {};
-     let status = [];
+     let status;
     if(user.rider[0].status==0){
-      status.push("rider is assigned")
+      status = "rider is assigned"
     }
     else if(user.rider[0].status==1){
-      status.push("rider can start the tour and delivered soon")
+      status = "rider can start the tour and delivered soon"
     }
     else if(user.rider[0].status==2){
-      status.push("rider can end the tour")
+      status ="rider can end the tour"
     }
     else{
-      status.push("no rider can assigned")
+      status = "no rider can assigned"
     }
 
     user.body.map((data) => {
@@ -161,11 +161,11 @@ export const getUser = async (req, res) => {
       get_user_detail.email = data.email;
       get_user_detail.rider_name = user.rider[0].name;
       get_user_detail.rider_status = status;
-      get_user_detail.total_bill_due_Amount = user.bill[0].subscription_price;
-      get_user_detail.total_bill_count = user.bill[0].additional_price;
-      get_user_detail.total_address_count = user.sub[0].additional_delivered_quantity;
-      get_user_detail.total_subcription_count = user.sub[0].subscription_delivered_quantity;
-      get_user_detail.total_delivered_product_count = user.sub[0].total_delivered_quantity;
+      get_user_detail.total_bill_due_Amount = "Bill due amount"+ ' ' +user.bill[0].subscription_price.toString();
+      get_user_detail.total_bill_count = user.bill[0].additional_price.toString()+ ' ' + "bills";
+      get_user_detail.total_address_count = user.sub[0].additional_delivered_quantity.toString()+ ' ' + "address count";
+      get_user_detail.total_subcription_count = user.sub[0].subscription_delivered_quantity.toString()+ ' ' + "subcription";
+      get_user_detail.total_delivered_product_count = user.sub[0].total_delivered_quantity.toString()+ ' ' + "Product Delivery" ;
     });
 
     res
