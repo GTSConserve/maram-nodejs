@@ -181,15 +181,14 @@ var getUser = /*#__PURE__*/function () {
             }));
           case 8:
             get_user_detail = {};
-            status = [];
             if (user.rider[0].status == 0) {
-              status.push("rider is assigned");
+              status = "rider is assigned";
             } else if (user.rider[0].status == 1) {
-              status.push("rider can start the tour and delivered soon");
+              status = "rider can start the tour and delivered soon";
             } else if (user.rider[0].status == 2) {
-              status.push("rider can end the tour");
+              status = "rider can end the tour";
             } else {
-              status.push("no rider can assigned");
+              status = "no rider can assigned";
             }
             user.body.map(function (data) {
               get_user_detail.user_id = data.id;
@@ -199,32 +198,32 @@ var getUser = /*#__PURE__*/function () {
               get_user_detail.email = data.email;
               get_user_detail.rider_name = user.rider[0].name;
               get_user_detail.rider_status = status;
-              get_user_detail.total_bill_due_Amount = user.bill[0].subscription_price;
-              get_user_detail.total_bill_count = user.bill[0].additional_price;
-              get_user_detail.total_address_count = user.sub[0].additional_delivered_quantity;
-              get_user_detail.total_subcription_count = user.sub[0].subscription_delivered_quantity;
-              get_user_detail.total_delivered_product_count = user.sub[0].total_delivered_quantity;
+              get_user_detail.total_bill_due_Amount = "Bill due amount" + ' ' + user.bill[0].subscription_price.toString();
+              get_user_detail.total_bill_count = user.bill[0].additional_price.toString() + ' ' + "bills";
+              get_user_detail.total_address_count = user.sub[0].additional_delivered_quantity.toString() + ' ' + "address count";
+              get_user_detail.total_subcription_count = user.sub[0].subscription_delivered_quantity.toString() + ' ' + "subcription";
+              get_user_detail.total_delivered_product_count = user.sub[0].total_delivered_quantity.toString() + ' ' + "Product Delivery";
             });
             res.status(_responseCode["default"].SUCCESS).json({
               status: true,
               data: get_user_detail
             });
-            _context4.next = 19;
+            _context4.next = 18;
             break;
-          case 15:
-            _context4.prev = 15;
+          case 14:
+            _context4.prev = 14;
             _context4.t0 = _context4["catch"](0);
             console.log(_context4.t0);
             res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: "no user"
             });
-          case 19:
+          case 18:
           case "end":
             return _context4.stop();
         }
       }
-    }, _callee4, null, [[0, 15]]);
+    }, _callee4, null, [[0, 14]]);
   }));
   return function getUser(_x7, _x8) {
     return _ref4.apply(this, arguments);
