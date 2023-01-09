@@ -289,7 +289,7 @@ export const singleSubscription = async (req, res) => {
         .status(responseCode.FAILURE.DATA_NOT_FOUND)
         .json({ status: false, message: sub.message });
     }
-    console.log( sub.add_product[0])
+    // console.log( sub.add_product[0])
     for (let i = 0; i < sub.data.length; i++) {
       
       sub.data[i].image = process.env.BASE_URL + sub.data[i].image;
@@ -300,7 +300,7 @@ export const singleSubscription = async (req, res) => {
       sub.data[i].price = sub.data[i].price;
       sub.data[i].date = [moment().format("YYYY-MM-DD")];
 
-      for (let j = 0; j < sub.add_product[0].length; j++) {  
+      for (let j = 0; j < sub.add_product.length; j++) {  
         console.log( sub.add_product[0][j].id)    
       sub.add_product[0][j].id = sub.add_product[0][j].id;
       sub.add_product[0][j].image = sub.add_product[0][j].image;

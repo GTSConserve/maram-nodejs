@@ -58,7 +58,7 @@ export const new_subscription = async (
     include_external_user_ids: [userId.toString()],
     contents: { en: `Your Subscription Placed SuccessFully` },
     headings: { en: "Subscription Notification" },
-    name: "Appoinment Request",
+    name: "Subscription Notification",
     data: {
       subscription_status: "pending",
       category_id: 0,
@@ -184,7 +184,7 @@ export const single_subscription = async (userId, sub_id) => {
     return { status: true, data: products,add_product,this_month_item_detail  };
   } catch (error) {
     console.log(error);
-    return { status: false, message: error };
+    return { status: false, message: "No Subscription Found"};
   }
 };
 
@@ -296,7 +296,7 @@ export const change_quantity = async (userId,subscription_id,quantity,) => {
         include_external_user_ids: [userId].toString(),
         contents: { en: `Your Subscription Placed SuccessFully` },
         headings: { en: "Subscription Notification" },
-        name: "Appoinment Request",
+        name: "Subscription Notification",
         data: {
           subscription_status: "change_plan",
           category_id: 0,

@@ -21,6 +21,21 @@ export const get_subscription_or_add_on_products = async (id,userId) => {
       
     const response = await GetProduct(product, userId);
 
+    // await sendNotification({
+    //   include_external_user_ids: [userId.toString()],
+    //   contents: { en: `Your Add On Product Placed SuccessFully` },
+    //   headings: { en: "Add On Notification" },
+    //   name: "Add On Request",
+    //   data: {
+    //     subscription_status: "pending",
+    //     category_id: 0,
+    //     product_type_id: 0,
+    //     type: 2,
+    //     subscription_id: sub_id[0],
+    //     bill_id: 0,
+    //   },
+    // });
+
     if (response.status) {
       return { status: true, data: response.data };
     } else {
@@ -173,7 +188,7 @@ export const addon_order = async (
         category_id: 0,
         product_type_id: 0,
         type: 2,
-        // subscription_id: sub_id[0],
+        subscription_id: query.id[0],
         bill_id: 0,
       },
     });
@@ -222,7 +237,7 @@ export const remove_addonorders = async (product_id , delivery_date) => {
         category_id: 0,
         product_type_id: 0,
         type: 2,
-        // subscription_id: status[0],
+        subscription_id: select1.id[0],
         bill_id: 0,
       },
     });

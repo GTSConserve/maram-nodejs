@@ -120,7 +120,7 @@ export const sendNotification = async (data) => {
       },
     });
     
-    data.small_icon = "notify_icon"
+    data.small_icon = "ic_stat_one_signal_default"
     data.large_icon = "https://pickneats.com/yummychopps/dashboard/assets/img/favicon.png";
 
     const response = await instance.post(

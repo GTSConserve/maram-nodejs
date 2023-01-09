@@ -1,24 +1,37 @@
 import responseCode from "../../constants/responseCode";
 import messages from "../../constants/messages"
 import { sendNotification } from "../../notifications/message.sender";
-import { PaymentMethod } from '../../models/user/payment.model';
+// import { PaymentMethod } from '../../models/user/payment.model';
 import crypto from "crypto";
 
 import { hmac } from "crypto";
 
-
-
 import knex from "../../services/db.service";
 
 import Razorpay from "razorpay"
+
+import schedule from "node-schedule";
 
 import shortid from "shortid"
 
 export const getPaymentReminder = async (req, res) => {
     try {
 
+        const rule = new schedule.RecurrenceRule();
+        rule.dayOfWeek = [0, new schedule.Range(4, 6)];
+        rule.hour = 17;
+        rule.minute = 0;
+
+        const job = schedule.scheduleJob(rule, function () {
+            console.log('Please Pay Your Bill Amount....!');
+        });
+
+        const reminder = await knex('bill_history').select('user_id').where({payment_status:"success"})
+
+        job.cancel();
+
         await sendNotification({
-            include_external_user_ids: [order_id],
+            include_external_user_ids: [reminder.user_id].toString(),
             contents: { en: `Your Payment Reminder` },
             headings: { en: "Your Payment Reminder" },
             name: "Your Payment Reminder",
@@ -27,6 +40,8 @@ export const getPaymentReminder = async (req, res) => {
               category_id: 0,
               product_type_id: 0,
               type: 3,
+              messages: job,
+              reminder_id: reminder.user_id
             //   amount: options.amount,
             },
           });
@@ -60,23 +75,46 @@ export const getPaymentMethod = async (req, res) => {
 
 export const getPaymentStatusUpdate = async (req, res) => {
     try {
-        const { 
-            order_id, 
-            payment_status, 
-            payment_type, 
-            payment_method_id, 
-            razorpay_order_id, 
-            razorpay_payment_id, 
-            razorpay_signature, 
-            token 
+        const {
+            userId,
+            order_id,
+            payment_status,
+            payment_type,
+            payment_method_id,
+            razorpay_order_id,
+            razorpay_payment_id,
+            razorpay_signature,
+            token
         } = req.body
 
-        // const response = await knex('')
+        console.log(req.body)
+
+        if (!order_id &&
+            !payment_type &&
+            !payment_status &&
+            !razorpay_signature &&
+            !payment_method_id &&
+            !razorpay_order_id &&
+            !razorpay_payment_id
+        ) {
+            return res
+                .status(responseCode.FAILURE.DATA_NOT_FOUND)
+                .json({ status: false, message: messages.MANDATORY_ERROR });
+        }
+
+        const response = await knex('bill_history').update({
+            payment_status: payment_status
+        })
+        .where({user_id:userId})
+
+        const type = await knex('payment_gateways').update({
+            gatewayname: payment_type
+        })
+        .where({user_id:userId})
 
 
         res.status(200).json({ status: true, message: "Ok" })
 
-        // res.status(200).json({ status: true,data: settings.body }) 
     }
     catch (error) {
         console.log(error);
@@ -113,31 +151,21 @@ export const getRazorpayMethod = async (req, res) => {
         };
         const response = await razorpay.orders.create(options);
 
-        // console.log(response.id)
-
-        //     const payment = await knex('bill_history_details').insert({"razorpay_bill_id":response.id})
-        //     .where({id: order_id})
-     
-
-        // console.log(payment)
-
         await sendNotification({
             include_external_user_ids: [order_id.toString()],
-            contents: { en: `Your Order Placed SuccessFully` },
-            headings: { en: "Order Notification" },
-            name: "Order Notification",
+            contents: { en: `Your Razorpay Placed SuccessFully` },
+            headings: { en: "Razorpay Notification" },
+            name: "Razorpay Notification",
             data: {
-              status: "pending",
-              category_id: 0,
-              product_type_id: 0,
-              type: 3,
-              amount: options.amount,
+                status: "pending",
+                category_id: 0,
+                product_type_id: 0,
+                type: 3,
+                receipt: response.receipt[0],
+                amount: options.amount[0],
             },
-          });
-          
-          
-        // const payment_list = await PaymentMethod(order_id)
-        // console.log(response.id);
+        });
+
         res.status(200).json({
             status: true, data: response
 
@@ -146,7 +174,7 @@ export const getRazorpayMethod = async (req, res) => {
     }
     catch (error) {
         console.log(error);
-        res.status(500).json({ status: false, error })
+        res.status(500).json({ status: false, message: "Razorpay method failed..." })
     }
 }
 
@@ -159,8 +187,8 @@ export const getVerifyPaymentMethod = async (req, res) => {
 
         if (!order_id && !payment_id) {
             return res
-            .status(responseCode.FAILURE.DATA_NOT_FOUND)
-            .json({ status: false, message: messages.MANDATORY_ERROR });
+                .status(responseCode.FAILURE.DATA_NOT_FOUND)
+                .json({ status: false, message: messages.MANDATORY_ERROR });
         }
 
         const secret = "razorpaysecret";
@@ -171,7 +199,7 @@ export const getVerifyPaymentMethod = async (req, res) => {
 
         console.log(digest, req.headers["x-razorpay-signature"]);
 
-        if (digest===req.headers["x-razorpay-signature"]) {
+        if (digest === req.headers["x-razorpay-signature"]) {
             console.log("request is properly");
             res.status(200).json({
                 message: "Payment has been verified",
