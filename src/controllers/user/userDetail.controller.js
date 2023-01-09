@@ -368,12 +368,12 @@ export const checkDeliveryAddress = async (req, res) => {
     const check_address = await checkAddress(address_id);
     console.log(check_address.body[0].latitude)
 
-    if (check_address.body[0].latitude <= 12.9165 || check_address.body[0].longitude <= 79.1325) {
+    if (check_address.body[0].latitude <= 15.9165 || check_address.body[0].longitude <= 80.1325) {
       return res
         .status(200)
         .json({ status: true, message: "successfully delivery" });
     }
-    else if (!latitude <= 12.9165 && !longitude <= 79.1325) {
+    else if (!latitude <= 15.9165 && !longitude <=  80.1325) {
       return res
         .status(200)
         .json({ status: true, message: "out of locations" });

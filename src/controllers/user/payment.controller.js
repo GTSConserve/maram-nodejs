@@ -1,7 +1,7 @@
 import responseCode from "../../constants/responseCode";
 import messages from "../../constants/messages"
 import { sendNotification } from "../../notifications/message.sender";
-// import { PaymentMethod } from '../../models/user/payment.model';
+import { PaymentMethod } from '../../models/user/payment.model';
 import crypto from "crypto";
 
 import { hmac } from "crypto";
@@ -113,6 +113,14 @@ export const getRazorpayMethod = async (req, res) => {
         };
         const response = await razorpay.orders.create(options);
 
+        // console.log(response.id)
+
+        //     const payment = await knex('bill_history_details').insert({"razorpay_bill_id":response.id})
+        //     .where({id: order_id})
+     
+
+        // console.log(payment)
+
         await sendNotification({
             include_external_user_ids: [order_id.toString()],
             contents: { en: `Your Order Placed SuccessFully` },
@@ -126,8 +134,9 @@ export const getRazorpayMethod = async (req, res) => {
               amount: options.amount,
             },
           });
-
-        // const payment_list = await PaymentMethod(user_id)
+          
+          
+        // const payment_list = await PaymentMethod(order_id)
         // console.log(response.id);
         res.status(200).json({
             status: true, data: response

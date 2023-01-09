@@ -2,8 +2,8 @@
 
 // import knex from "../../services/db.service";
 
-// export const PaymentMethod = async () => {
-//     const payment = await knex()
+// export const PaymentMethod = async (order_id) => {
+//     const payment = await knex('bill_history_details').insert({razorpay_bill_id:})
 //     // knex.select('key','value').from('app_settings')
     
 //     try {
