@@ -613,6 +613,7 @@ var createTable = /*#__PURE__*/function () {
                   t.integer("grand_total").nullable();
                   t.date("date").nullable();
                   t.enu("payment_status", ["pending", "success", "payment_failed"]).defaultTo("pending");
+                  t.string("razorpay_bill_id", 255);
                   t.timestamps(true, true);
                 });
               }

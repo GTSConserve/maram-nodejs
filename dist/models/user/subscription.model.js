@@ -78,7 +78,7 @@ var new_subscription = /*#__PURE__*/function () {
               headings: {
                 en: "Subscription Notification"
               },
-              name: "Appoinment Request",
+              name: "Subscription Notification",
               data: {
                 subscription_status: "pending",
                 category_id: 0,
@@ -226,7 +226,7 @@ var single_subscription = /*#__PURE__*/function () {
             console.log(_context3.t0);
             return _context3.abrupt("return", {
               status: false,
-              message: _context3.t0
+              message: "No Subscription Found"
             });
           case 29:
           case "end":
@@ -443,7 +443,7 @@ var change_subscriptionplan = /*#__PURE__*/function () {
               headings: {
                 en: "Subscription Notification"
               },
-              name: "Appoinment Request",
+              name: "Subscription Notification",
               data: {
                 subscription_status: "change_plan",
                 category_id: 0,

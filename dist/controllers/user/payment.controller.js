@@ -8,10 +8,10 @@ exports.getVerifyPaymentMethod = exports.getRazorpayMethod = exports.getPaymentS
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 var _messages = _interopRequireDefault(require("../../constants/messages"));
 var _message = require("../../notifications/message.sender");
-var _payment = require("../../models/user/payment.model");
 var _crypto = _interopRequireWildcard(require("crypto"));
 var _db = _interopRequireDefault(require("../../services/db.service"));
 var _razorpay = _interopRequireDefault(require("razorpay"));
+var _nodeSchedule = _interopRequireDefault(require("node-schedule"));
 var _shortid = _interopRequireDefault(require("shortid"));
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -21,14 +21,29 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 var getPaymentReminder = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(req, res) {
+    var rule, job, reminder;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             _context.prev = 0;
-            _context.next = 3;
+            rule = new _nodeSchedule["default"].RecurrenceRule();
+            rule.dayOfWeek = [0, new _nodeSchedule["default"].Range(4, 6)];
+            rule.hour = 17;
+            rule.minute = 0;
+            job = _nodeSchedule["default"].scheduleJob(rule, function () {
+              console.log('Please Pay Your Bill Amount....!');
+            });
+            _context.next = 8;
+            return (0, _db["default"])('bill_history').select('user_id').where({
+              payment_status: "success"
+            });
+          case 8:
+            reminder = _context.sent;
+            job.cancel();
+            _context.next = 12;
             return (0, _message.sendNotification)({
-              include_external_user_ids: [order_id],
+              include_external_user_ids: [reminder.user_id].toString(),
               contents: {
                 en: "Your Payment Reminder"
               },
@@ -40,33 +55,35 @@ var getPaymentReminder = /*#__PURE__*/function () {
                 status: "pending",
                 category_id: 0,
                 product_type_id: 0,
-                type: 3
+                type: 3,
+                messages: job,
+                reminder_id: reminder.user_id
                 //   amount: options.amount,
               }
             });
-          case 3:
+          case 12:
             res.status(200).json({
               status: true,
               message: "Ok"
             });
 
             // res.status(200).json({ status: true,data: settings.body }) 
-            _context.next = 10;
+            _context.next = 19;
             break;
-          case 6:
-            _context.prev = 6;
+          case 15:
+            _context.prev = 15;
             _context.t0 = _context["catch"](0);
             console.log(_context.t0);
             res.status(500).json({
               status: false,
               error: _context.t0
             });
-          case 10:
+          case 19:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 6]]);
+    }, _callee, null, [[0, 15]]);
   }));
   return function getPaymentReminder(_x, _x2) {
     return _ref.apply(this, arguments);
@@ -114,32 +131,59 @@ var getPaymentMethod = /*#__PURE__*/function () {
 exports.getPaymentMethod = getPaymentMethod;
 var getPaymentStatusUpdate = /*#__PURE__*/function () {
   var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(req, res) {
-    var _req$body, _order_id, payment_status, payment_type, payment_method_id, razorpay_order_id, razorpay_payment_id, razorpay_signature, token;
+    var _req$body, userId, order_id, payment_status, payment_type, payment_method_id, razorpay_order_id, razorpay_payment_id, razorpay_signature, token, response, type;
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
-            try {
-              _req$body = req.body, _order_id = _req$body.order_id, payment_status = _req$body.payment_status, payment_type = _req$body.payment_type, payment_method_id = _req$body.payment_method_id, razorpay_order_id = _req$body.razorpay_order_id, razorpay_payment_id = _req$body.razorpay_payment_id, razorpay_signature = _req$body.razorpay_signature, token = _req$body.token; // const response = await knex('')
-              res.status(200).json({
-                status: true,
-                message: "Ok"
-              });
-
-              // res.status(200).json({ status: true,data: settings.body }) 
-            } catch (error) {
-              console.log(error);
-              res.status(500).json({
-                status: false,
-                error: error
-              });
+            _context3.prev = 0;
+            _req$body = req.body, userId = _req$body.userId, order_id = _req$body.order_id, payment_status = _req$body.payment_status, payment_type = _req$body.payment_type, payment_method_id = _req$body.payment_method_id, razorpay_order_id = _req$body.razorpay_order_id, razorpay_payment_id = _req$body.razorpay_payment_id, razorpay_signature = _req$body.razorpay_signature, token = _req$body.token;
+            console.log(req.body);
+            if (!(!order_id && !payment_type && !payment_status && !razorpay_signature && !payment_method_id && !razorpay_order_id && !razorpay_payment_id)) {
+              _context3.next = 5;
+              break;
             }
-          case 1:
+            return _context3.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
+              status: false,
+              message: _messages["default"].MANDATORY_ERROR
+            }));
+          case 5:
+            _context3.next = 7;
+            return (0, _db["default"])('bill_history').update({
+              payment_status: payment_status
+            }).where({
+              user_id: userId
+            });
+          case 7:
+            response = _context3.sent;
+            _context3.next = 10;
+            return (0, _db["default"])('payment_gateways').update({
+              gatewayname: payment_type
+            }).where({
+              user_id: userId
+            });
+          case 10:
+            type = _context3.sent;
+            res.status(200).json({
+              status: true,
+              message: "Ok"
+            });
+            _context3.next = 18;
+            break;
+          case 14:
+            _context3.prev = 14;
+            _context3.t0 = _context3["catch"](0);
+            console.log(_context3.t0);
+            res.status(500).json({
+              status: false,
+              error: _context3.t0
+            });
+          case 18:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3);
+    }, _callee3, null, [[0, 14]]);
   }));
   return function getPaymentStatusUpdate(_x5, _x6) {
     return _ref3.apply(this, arguments);
@@ -148,14 +192,14 @@ var getPaymentStatusUpdate = /*#__PURE__*/function () {
 exports.getPaymentStatusUpdate = getPaymentStatusUpdate;
 var getRazorpayMethod = /*#__PURE__*/function () {
   var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(req, res) {
-    var _req$body2, amount, _order_id2, razorpay, options, response;
+    var _req$body2, amount, order_id, razorpay, options, response;
     return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
             _context4.prev = 0;
-            _req$body2 = req.body, amount = _req$body2.amount, _order_id2 = _req$body2.order_id;
-            if (!(!amount && !_order_id2)) {
+            _req$body2 = req.body, amount = _req$body2.amount, order_id = _req$body2.order_id;
+            if (!(!amount && !order_id)) {
               _context4.next = 4;
               break;
             }
@@ -180,7 +224,7 @@ var getRazorpayMethod = /*#__PURE__*/function () {
             options = {
               amount: amount,
               currency: "INR",
-              receipt: _order_id2
+              receipt: order_id
             };
             _context4.next = 10;
             return razorpay.orders.create(options);
@@ -188,25 +232,24 @@ var getRazorpayMethod = /*#__PURE__*/function () {
             response = _context4.sent;
             _context4.next = 13;
             return (0, _message.sendNotification)({
-              include_external_user_ids: [_order_id2.toString()],
+              include_external_user_ids: [order_id.toString()],
               contents: {
-                en: "Your Order Placed SuccessFully"
+                en: "Your Razorpay Placed SuccessFully"
               },
               headings: {
-                en: "Order Notification"
+                en: "Razorpay Notification"
               },
-              name: "Order Notification",
+              name: "Razorpay Notification",
               data: {
                 status: "pending",
                 category_id: 0,
                 product_type_id: 0,
                 type: 3,
-                amount: options.amount
+                receipt: response.receipt[0],
+                amount: options.amount[0]
               }
             });
           case 13:
-            // const payment_list = await PaymentMethod(order_id)
-            // console.log(response.id);
             res.status(200).json({
               status: true,
               data: response
@@ -219,7 +262,7 @@ var getRazorpayMethod = /*#__PURE__*/function () {
             console.log(_context4.t0);
             res.status(500).json({
               status: false,
-              error: _context4.t0
+              message: "Razorpay method failed..."
             });
           case 20:
           case "end":
@@ -235,14 +278,14 @@ var getRazorpayMethod = /*#__PURE__*/function () {
 exports.getRazorpayMethod = getRazorpayMethod;
 var getVerifyPaymentMethod = /*#__PURE__*/function () {
   var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(req, res) {
-    var _req$body3, _order_id3, payment_id, secret, shasum, digest;
+    var _req$body3, order_id, payment_id, secret, shasum, digest;
     return _regeneratorRuntime().wrap(function _callee5$(_context5) {
       while (1) {
         switch (_context5.prev = _context5.next) {
           case 0:
             _context5.prev = 0;
-            _req$body3 = req.body, _order_id3 = _req$body3.order_id, payment_id = _req$body3.payment_id;
-            if (!(!_order_id3 && !payment_id)) {
+            _req$body3 = req.body, order_id = _req$body3.order_id, payment_id = _req$body3.payment_id;
+            if (!(!order_id && !payment_id)) {
               _context5.next = 4;
               break;
             }
@@ -253,7 +296,7 @@ var getVerifyPaymentMethod = /*#__PURE__*/function () {
           case 4:
             secret = "razorpaysecret";
             shasum = _crypto["default"].createHmac("sha256", secret);
-            shasum.update(_order_id3 + "|" + payment_id);
+            shasum.update(order_id + "|" + payment_id);
             digest = shasum.digest('hex');
             console.log(digest, req.headers["x-razorpay-signature"]);
             if (digest === req.headers["x-razorpay-signature"]) {

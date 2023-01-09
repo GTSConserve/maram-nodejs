@@ -301,7 +301,7 @@ var addon_order = /*#__PURE__*/function () {
                 category_id: 0,
                 product_type_id: 0,
                 type: 2,
-                // subscription_id: sub_id[0],
+                subscription_id: query.id[0],
                 bill_id: 0
               }
             });
@@ -405,7 +405,7 @@ var remove_addonorders = /*#__PURE__*/function () {
                 category_id: 0,
                 product_type_id: 0,
                 type: 2,
-                // subscription_id: status[0],
+                subscription_id: select1.id[0],
                 bill_id: 0
               }
             });

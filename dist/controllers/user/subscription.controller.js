@@ -465,11 +465,10 @@ var singleSubscription = /*#__PURE__*/function () {
               message: sub.message
             }));
           case 9:
-            console.log(sub.add_product[0]);
             i = 0;
-          case 11:
+          case 10:
             if (!(i < sub.data.length)) {
-              _context9.next = 25;
+              _context9.next = 24;
               break;
             }
             sub.data[i].image = process.env.BASE_URL + sub.data[i].image;
@@ -479,7 +478,7 @@ var singleSubscription = /*#__PURE__*/function () {
             sub.data[i].quantity = sub.data[i].quantity;
             sub.data[i].price = sub.data[i].price;
             sub.data[i].date = [(0, _moment["default"])().format("YYYY-MM-DD")];
-            for (j = 0; j < sub.add_product[0].length; j++) {
+            for (j = 0; j < sub.add_product.length; j++) {
               console.log(sub.add_product[0][j].id);
               sub.add_product[0][j].id = sub.add_product[0][j].id;
               sub.add_product[0][j].image = sub.add_product[0][j].image;
@@ -500,27 +499,27 @@ var singleSubscription = /*#__PURE__*/function () {
               status: true,
               data: _objectSpread(_objectSpread({}, sub.data[0]), response)
             }));
-          case 22:
+          case 21:
             i++;
-            _context9.next = 11;
+            _context9.next = 10;
             break;
-          case 25:
-            _context9.next = 31;
+          case 24:
+            _context9.next = 30;
             break;
-          case 27:
-            _context9.prev = 27;
+          case 26:
+            _context9.prev = 26;
             _context9.t0 = _context9["catch"](0);
             console.log(_context9.t0);
             return _context9.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
               message: _messages["default"].DATA_NOT_FOUND
             }));
-          case 31:
+          case 30:
           case "end":
             return _context9.stop();
         }
       }
-    }, _callee9, null, [[0, 27]]);
+    }, _callee9, null, [[0, 26]]);
   }));
   return function singleSubscription(_x15, _x16) {
     return _ref9.apply(this, arguments);
