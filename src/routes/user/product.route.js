@@ -1,5 +1,5 @@
 import express from "express";
-import { authenticateJWT } from "../../middlewares/authToken.middleware";
+import { authenticateJWT, nonMandatoryToken } from "../../middlewares/authToken.middleware";
 import {
   getProducts,
   getCategories,
@@ -17,21 +17,24 @@ const productRouter = express.Router({
   strict: true,
 });
 
-productRouter.post("/get_categories", getCategories);
-productRouter.post("/get_products", authenticateJWT,getProducts);
-productRouter.post("/search_products",authenticateJWT,searchProducts);
 
-productRouter.get("/get_subscription_product",getSubscriptionProducts);
-productRouter.get("/get_add_on_product", getAddOnProducts);
+productRouter.post("/get_categories",nonMandatoryToken,authenticateJWT,getCategories);
+productRouter.post("/get_products", nonMandatoryToken,authenticateJWT,getProducts);
+productRouter.post("/search_products",nonMandatoryToken,authenticateJWT,searchProducts);
 
-productRouter.post("/get_single_product",authenticateJWT,getSingleProduct);
+productRouter.get("/get_subscription_product",nonMandatoryToken,authenticateJWT,getSubscriptionProducts);
+productRouter.get("/get_add_on_product", nonMandatoryToken,authenticateJWT,getAddOnProducts);
 
-productRouter.post("/create_add_on_products", authenticateJWT, addon_Order);
-productRouter.post("/remove_add_on_products",authenticateJWT, removeAddOnOrder);
+productRouter.post("/get_single_product",nonMandatoryToken,authenticateJWT,getSingleProduct);
 
-// next day delivery product api for static
 
-productRouter.post("/next_day_product", authenticateJWT,nextDayProduct);
+productRouter.post("/create_add_on_products", authenticateJWT,nonMandatoryToken,addon_Order);
+productRouter.post("/remove_add_on_products",authenticateJWT,nonMandatoryToken,removeAddOnOrder);
+
+
+// next day delivery product api
+
+productRouter.post("/next_day_product",authenticateJWT,nonMandatoryToken,nextDayProduct);
 
 
 export default productRouter;

@@ -16,9 +16,11 @@ var subscriptionRouter = _express["default"].Router({
 subscriptionRouter.get('/get_new_users', _pending.getNewUsers);
 subscriptionRouter.get('/get_exist_users', _pending.getExistUsers);
 subscriptionRouter.post('/subscribed', _pending.updateSubscribed);
+subscriptionRouter.post('/subscribed_exist_user', _pending.updateSubscribedExistUser);
+subscriptionRouter.post('/unassign_user', _pending.unassignUser);
 
-// subscriptionRouter.post('/subscribed_exist_user',updateSubscribedExistUser)
-
+// user mapping assing
+subscriptionRouter.post('/user_mapping_assign', _pending.userMappingAssign);
 subscriptionRouter.post('/cancel', _pending.updateCancel);
 subscriptionRouter.get('/subscribed', _subscribed.getSubscription);
 subscriptionRouter.get('/cancelled', _cancelled.getCancelled);

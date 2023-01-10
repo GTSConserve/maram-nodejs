@@ -336,9 +336,9 @@ var userMobileNumberChange = /*#__PURE__*/function () {
             _context5.prev = 8;
             _context5.t0 = _context5["catch"](0);
             console.log(_context5.t0);
-            return _context5.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
+            return _context5.abrupt("return", res.status(_responseCode["default"].FAILURE.INVALID).json({
               status: false,
-              message: _messages["default"].SERVER_ERROR
+              message: "Please check mobile number"
             }));
           case 12:
           case "end":

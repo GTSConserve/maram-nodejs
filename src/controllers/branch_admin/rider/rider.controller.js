@@ -176,3 +176,28 @@ export const getRiders = async (req, res) => {
     res.redirect("/home");
   }
 };
+
+
+
+export const changePasswordRider  = async (req,res) => {
+  try {
+      const {new_password,confirm_new_password,rider_id} = req.body
+
+      if(new_password != confirm_new_password){
+        req.flash("error","Password Should Be Same")
+        return res.redirect("/branch_admin/rider/get_rider")
+      }
+
+      let hash_password = await bcrypt.hash(new_password, 10);
+
+      await knex("rider_details").update({password : hash_password}).where({id : rider_id})
+
+      req.flash("success","Password Updated")
+      res.redirect("/branch_admin/rider/get_rider")
+
+  } catch (error) {
+    console.log(error)
+    res.redirect("/home")
+  }
+}
+

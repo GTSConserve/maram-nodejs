@@ -4,11 +4,13 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.userAddressChange = exports.updateUser = exports.getUser = exports.getSingleCalendar = exports.getEmptyBottle = exports.getAddress = exports.editAddress = exports.deleteUseraddress = exports.checkDeliveryAddress = exports.changePlan = exports.addUserAddress = exports.RemoveOrder = exports.Edit = void 0;
+exports.userAddressChange = exports.updateUser = exports.getUser = exports.getSingleCalendar = exports.getSingleBillList = exports.getOverallCalendar = exports.getEmptyBottle = exports.getBillList = exports.getAddress = exports.editAddress = exports.deleteUseraddress = exports.checkDeliveryAddress = exports.changePlan = exports.addUserAddress = exports.RiderLocation = exports.RemoveOrder = exports.Edit = void 0;
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 var _jwt = require("../../services/jwt.service");
 var _validator = require("../../services/validator.service");
 var _db = _interopRequireDefault(require("../../services/db.service"));
+var _message = require("../../notifications/message.sender");
+var _moment = _interopRequireDefault(require("moment"));
 var _user_details = require("../../models/user/user_details.model");
 var _messages = _interopRequireDefault(require("../../constants/messages"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -110,36 +112,45 @@ var getAddress = /*#__PURE__*/function () {
 exports.getAddress = getAddress;
 var editAddress = /*#__PURE__*/function () {
   var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(req, res) {
-    var _req$body, userId, title, address, landmark, type, address_id;
+    var _req$body, userId, address_id, title, address, landmark, type, alternate_mobile, _latitude, _longitude;
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.prev = 0;
-            _req$body = req.body, userId = _req$body.userId, title = _req$body.title, address = _req$body.address, landmark = _req$body.landmark, type = _req$body.type, address_id = _req$body.address_id;
-            _context3.next = 4;
-            return (0, _user_details.edit_address)(userId, address_id, title, address, landmark, type);
+            _req$body = req.body, userId = _req$body.userId, address_id = _req$body.address_id, title = _req$body.title, address = _req$body.address, landmark = _req$body.landmark, type = _req$body.type, alternate_mobile = _req$body.alternate_mobile, _latitude = _req$body.latitude, _longitude = _req$body.longitude;
+            if (!(!_latitude && !_longitude)) {
+              _context3.next = 4;
+              break;
+            }
+            return _context3.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
+              status: false,
+              message: _messages["default"].MANDATORY_ERROR
+            }));
           case 4:
+            _context3.next = 6;
+            return (0, _user_details.edit_address)(userId, address_id, title, address, landmark, type, alternate_mobile, _latitude, _longitude);
+          case 6:
             res.status(_responseCode["default"].SUCCESS).json({
               status: true,
               message: "updated successfully"
             });
-            _context3.next = 11;
+            _context3.next = 13;
             break;
-          case 7:
-            _context3.prev = 7;
+          case 9:
+            _context3.prev = 9;
             _context3.t0 = _context3["catch"](0);
             console.log(_context3.t0);
             res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
               status: false,
               error: _context3.t0
             });
-          case 11:
+          case 13:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3, null, [[0, 7]]);
+    }, _callee3, null, [[0, 9]]);
   }));
   return function editAddress(_x5, _x6) {
     return _ref3.apply(this, arguments);
@@ -148,7 +159,7 @@ var editAddress = /*#__PURE__*/function () {
 exports.editAddress = editAddress;
 var getUser = /*#__PURE__*/function () {
   var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(req, res) {
-    var userId, user, get_user_detail;
+    var userId, user, get_user_detail, status;
     return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
@@ -159,52 +170,60 @@ var getUser = /*#__PURE__*/function () {
             return (0, _user_details.get_user)(userId);
           case 4:
             user = _context4.sent;
+            console.log(user);
             if (!(user.body.length === 0)) {
-              _context4.next = 7;
+              _context4.next = 8;
               break;
             }
             return _context4.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
               message: "User Not Found"
             }));
-          case 7:
+          case 8:
             get_user_detail = {};
+            if (user.rider[0].status == 0) {
+              status = "rider is assigned";
+            } else if (user.rider[0].status == 1) {
+              status = "rider can start the tour and delivered soon";
+            } else if (user.rider[0].status == 2) {
+              status = "rider can end the tour";
+            } else {
+              status = "no rider can assigned";
+            }
             user.body.map(function (data) {
               get_user_detail.user_id = data.id;
               get_user_detail.name = data.name;
-              get_user_detail.image = data.image;
-              // ? process.env.BASE_URL + data.image
-              // : null;
+              get_user_detail.image = data.image ? process.env.BASE_URL + data.image : null;
               get_user_detail.mobile_number = data.mobile_number;
               get_user_detail.email = data.email;
-              get_user_detail.total_bill_due_Amount = 'Bill due amount ₹0';
-              get_user_detail.total_bill_count = '0 bills';
-              get_user_detail.total_address_count = '0 Saved Address';
-              get_user_detail.total_subcription_count = '0 subscriptions';
-              get_user_detail.total_delivered_product_count = '0 Product Delivery';
-              get_user_detail.rider_status = 'No rider Assign';
-              get_user_detail.rider_status = '0 empty bottles in hand';
+              get_user_detail.rider_name = user.rider[0].name;
+              get_user_detail.rider_status = status;
+              get_user_detail.total_bill_due_Amount = "Bill due amount" + ' ' + user.bill[0].total_price.toString();
+              get_user_detail.total_bill_count = user.bill.length.toString() + ' ' + "bills";
+              get_user_detail.total_address_count = user.address.length.toString() + ' ' + "address count";
+              get_user_detail.total_subcription_count = user.subscription.length.toString() + ' ' + "subcription";
+              get_user_detail.total_delivered_product_count = user.subscription1.length + user.additional.length + user.addon.length.toString() + ' ' + "Product Delivery";
             });
             res.status(_responseCode["default"].SUCCESS).json({
               status: true,
               data: get_user_detail
             });
-            _context4.next = 16;
+            _context4.next = 18;
             break;
-          case 12:
-            _context4.prev = 12;
+          case 14:
+            _context4.prev = 14;
             _context4.t0 = _context4["catch"](0);
             console.log(_context4.t0);
             res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: "no user"
             });
-          case 16:
+          case 18:
           case "end":
             return _context4.stop();
         }
       }
-    }, _callee4, null, [[0, 12]]);
+    }, _callee4, null, [[0, 14]]);
   }));
   return function getUser(_x7, _x8) {
     return _ref4.apply(this, arguments);
@@ -291,6 +310,19 @@ var deleteUseraddress = /*#__PURE__*/function () {
             return (0, _user_details.delete_user_address)(address_id, userId);
           case 6:
             addresses = _context6.sent;
+            // await sendNotification({
+            //   include_external_user_ids: [userId],
+            //   contents: { en: `Addon Products Created notificaiton` },
+            //   headings: { en: "Addon Products Notification" },
+            //   name: "Addon Products",
+            //   data: {
+            //     status: "new_order",
+            //     type: 2,
+            //     // appointment_id: user._id,
+            //     // appointment_chat_id: user_chat._id
+            //   },
+            // });
+
             res.status(_responseCode["default"].SUCCESS).json({
               status: true,
               message: "delete successfully"
@@ -330,6 +362,19 @@ var RemoveOrder = /*#__PURE__*/function () {
             return (0, _user_details.remove_order)(user_id);
           case 4:
             remove = _context7.sent;
+            // await sendNotification({
+            //   include_external_user_ids: [userId],
+            //   contents: { en: `Addon Products Created notificaiton` },
+            //   headings: { en: "Addon Products Notification" },
+            //   name: "Addon Products",
+            //   data: {
+            //     status: "new_order",
+            //     type: 2,
+            //     // appointment_id: user._id,
+            //     // appointment_chat_id: user_chat._id
+            //   },
+            // });
+
             res.status(_responseCode["default"].SUCCESS).json({
               status: true,
               message: "remove successfully"
@@ -417,6 +462,19 @@ var changePlan = /*#__PURE__*/function () {
             return (0, _user_details.change_plan)(changeplan_name, start_date, subscribe_type_id);
           case 6:
             plan = _context9.sent;
+            // await sendNotification({
+            //   include_external_user_ids: [userId],
+            //   contents: { en: `Addon Products Created notificaiton` },
+            //   headings: { en: "Addon Products Notification" },
+            //   name: "Addon Products",
+            //   data: {
+            //     status: "new_order",
+            //     type: 2,
+            //     // appointment_id: user._id,
+            //     // appointment_chat_id: user_chat._id
+            //   },
+            // });
+
             res.status(_responseCode["default"].SUCCESS).json({
               status: true,
               message: "updated successfully"
@@ -458,31 +516,40 @@ var checkDeliveryAddress = /*#__PURE__*/function () {
           case 4:
             check_address = _context10.sent;
             console.log(check_address.body[0].latitude);
-            if (!(check_address.body[0].latitude <= 10.9956 || check_address.body[0].longitude <= 77.2852)) {
-              _context10.next = 8;
+            if (!(check_address.body[0].latitude <= 15.9165 || check_address.body[0].longitude <= 80.1325)) {
+              _context10.next = 10;
               break;
             }
             return _context10.abrupt("return", res.status(200).json({
               status: true,
               message: "successfully delivery"
             }));
-          case 8:
-            _context10.next = 14;
-            break;
           case 10:
-            _context10.prev = 10;
+            if (!(!latitude <= 15.9165 && !longitude <= 80.1325)) {
+              _context10.next = 12;
+              break;
+            }
+            return _context10.abrupt("return", res.status(200).json({
+              status: true,
+              message: "out of locations"
+            }));
+          case 12:
+            _context10.next = 18;
+            break;
+          case 14:
+            _context10.prev = 14;
             _context10.t0 = _context10["catch"](0);
             console.log(_context10.t0);
             res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
               status: false,
               error: _context10.t0
             });
-          case 14:
+          case 18:
           case "end":
             return _context10.stop();
         }
       }
-    }, _callee10, null, [[0, 10]]);
+    }, _callee10, null, [[0, 14]]);
   }));
   return function checkDeliveryAddress(_x19, _x20) {
     return _ref10.apply(this, arguments);
@@ -491,7 +558,7 @@ var checkDeliveryAddress = /*#__PURE__*/function () {
 exports.checkDeliveryAddress = checkDeliveryAddress;
 var getEmptyBottle = /*#__PURE__*/function () {
   var _ref11 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11(req, res) {
-    var userId, get_user_bottle_detail;
+    var userId, this_month_item_detail, empty_bottle_in_hand, empty_bottle_in_return;
     return _regeneratorRuntime().wrap(function _callee11$(_context11) {
       while (1) {
         switch (_context11.prev = _context11.next) {
@@ -499,43 +566,50 @@ var getEmptyBottle = /*#__PURE__*/function () {
             _context11.prev = 0;
             userId = req.body.userId;
             if (!userId) {
-              _context11.next = 7;
+              _context11.next = 11;
               break;
             }
-            get_user_bottle_detail = {
-              "empty_bottle_in_hand_1_litre": "0",
-              "empty_bottle_in_hand_0.5_litre": "30",
-              "empty_bottle_return_1_litre": "0",
-              "empty_bottle_return_0.5_litre": "30"
+            _context11.next = 5;
+            return (0, _db["default"])("users").select("one_liter_in_hand as delivered_orders", "half_liter_in_hand as additional_delivered_orders", "one_liter_in_return as remaining_orders", "one_liter_in_return as additional_remaining_orders");
+          case 5:
+            this_month_item_detail = _context11.sent;
+            empty_bottle_in_hand = {
+              one_liter: this_month_item_detail[0].delivered_orders,
+              half_liter: this_month_item_detail[0].additional_delivered_orders
+            };
+            empty_bottle_in_return = {
+              one_liter: this_month_item_detail[0].remaining_orders,
+              half_liter: this_month_item_detail[0].additional_remaining_orders
             };
             res.status(_responseCode["default"].SUCCESS).json({
               status: true,
-              this_month_item_detail: get_user_bottle_detail
+              empty_bottle_in_hand: empty_bottle_in_hand,
+              empty_bottle_in_return: empty_bottle_in_return
             });
-            _context11.next = 8;
+            _context11.next = 12;
             break;
-          case 7:
+          case 11:
             return _context11.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
               message: "Bottle Not Found"
             }));
-          case 8:
-            _context11.next = 14;
+          case 12:
+            _context11.next = 18;
             break;
-          case 10:
-            _context11.prev = 10;
+          case 14:
+            _context11.prev = 14;
             _context11.t0 = _context11["catch"](0);
             console.log(_context11.t0);
             res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: "no user"
             });
-          case 14:
+          case 18:
           case "end":
             return _context11.stop();
         }
       }
-    }, _callee11, null, [[0, 10]]);
+    }, _callee11, null, [[0, 14]]);
   }));
   return function getEmptyBottle(_x21, _x22) {
     return _ref11.apply(this, arguments);
@@ -627,3 +701,232 @@ var getSingleCalendar = /*#__PURE__*/function () {
   };
 }();
 exports.getSingleCalendar = getSingleCalendar;
+var getOverallCalendar = /*#__PURE__*/function () {
+  var _ref14 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee14(req, res) {
+    var date, overall_calendar_data;
+    return _regeneratorRuntime().wrap(function _callee14$(_context14) {
+      while (1) {
+        switch (_context14.prev = _context14.next) {
+          case 0:
+            try {
+              date = req.body.date;
+              overall_calendar_data = {
+                "date": date,
+                "products": {
+                  "subscription": {
+                    "1-liter": 1,
+                    "0.5-liter": 0,
+                    "packed-milk": 0
+                  },
+                  "addons-products": 0,
+                  "is_delivered": 0
+                }
+              }; // await edit_address(userId, address_id, title, address, landmark, type);
+              res.status(_responseCode["default"].SUCCESS).json({
+                status: true,
+                data: overall_calendar_data
+              });
+            } catch (error) {
+              console.log(error);
+              res.status(_responseCode["default"].FAILURE.BAD_REQUEST).json({
+                status: false,
+                error: error
+              });
+            }
+          case 1:
+          case "end":
+            return _context14.stop();
+        }
+      }
+    }, _callee14);
+  }));
+  return function getOverallCalendar(_x27, _x28) {
+    return _ref14.apply(this, arguments);
+  };
+}();
+exports.getOverallCalendar = getOverallCalendar;
+var getBillList = /*#__PURE__*/function () {
+  var _ref15 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee15(req, res) {
+    var userId, user;
+    return _regeneratorRuntime().wrap(function _callee15$(_context15) {
+      while (1) {
+        switch (_context15.prev = _context15.next) {
+          case 0:
+            _context15.prev = 0;
+            userId = req.body.userId;
+            _context15.next = 4;
+            return (0, _user_details.get_user_bill)(userId);
+          case 4:
+            user = _context15.sent;
+            if (!(user.body.length === 0)) {
+              _context15.next = 7;
+              break;
+            }
+            return _context15.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
+              status: false,
+              message: "User Not Found"
+            }));
+          case 7:
+            // let get_bill = {};
+            // user.body.map((data) => {
+            //   get_bill.id = data.id;
+            //   get_bill.user_id = data.user_id;
+            //   get_bill.payment_id = data.id // payment id set to id
+            //   // ? process.env.BASE_URL + data.image
+            //   // : null;
+            //   get_bill.items = data.items;
+            //   get_bill.bill_no = data.bill_no
+            //   get_bill.bill_value = data.bill_value;
+            //   get_bill.status = data.status;
+            // });
+
+            res.status(_responseCode["default"].SUCCESS).json({
+              status: true,
+              data: user.body
+            });
+            _context15.next = 14;
+            break;
+          case 10:
+            _context15.prev = 10;
+            _context15.t0 = _context15["catch"](0);
+            console.log(_context15.t0);
+            res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
+              status: false,
+              message: "no user"
+            });
+          case 14:
+          case "end":
+            return _context15.stop();
+        }
+      }
+    }, _callee15, null, [[0, 10]]);
+  }));
+  return function getBillList(_x29, _x30) {
+    return _ref15.apply(this, arguments);
+  };
+}();
+exports.getBillList = getBillList;
+var getSingleBillList = /*#__PURE__*/function () {
+  var _ref16 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee16(req, res) {
+    var bill_id, list, i;
+    return _regeneratorRuntime().wrap(function _callee16$(_context16) {
+      while (1) {
+        switch (_context16.prev = _context16.next) {
+          case 0:
+            _context16.prev = 0;
+            bill_id = req.body.bill_id;
+            if (bill_id) {
+              _context16.next = 4;
+              break;
+            }
+            return _context16.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
+              status: false,
+              message: "Cannot find bill list"
+            }));
+          case 4:
+            _context16.next = 6;
+            return (0, _user_details.get_single_bill)(bill_id);
+          case 6:
+            list = _context16.sent;
+            if (list) {
+              _context16.next = 9;
+              break;
+            }
+            return _context16.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
+              status: false,
+              message: "Cannot find bill list"
+            }));
+          case 9:
+            for (i = 0; i < list.data.length; i++) {
+              console.log(list);
+              list.data[i].id = list.data[i].id;
+              list.data[i].bill_value = list.data[i].bill_value;
+              list.data[i].date = (0, _moment["default"])().format("DD-MM-YYYY");
+            }
+            return _context16.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
+              status: true,
+              data: list
+            }));
+          case 13:
+            _context16.prev = 13;
+            _context16.t0 = _context16["catch"](0);
+            console.log(_context16.t0);
+            res.status(500).json({
+              status: false
+            });
+          case 17:
+          case "end":
+            return _context16.stop();
+        }
+      }
+    }, _callee16, null, [[0, 13]]);
+  }));
+  return function getSingleBillList(_x31, _x32) {
+    return _ref16.apply(this, arguments);
+  };
+}();
+
+// rider location 
+exports.getSingleBillList = getSingleBillList;
+var RiderLocation = /*#__PURE__*/function () {
+  var _ref17 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee17(req, res) {
+    var userId, rider1, data, user, branch, rider;
+    return _regeneratorRuntime().wrap(function _callee17$(_context17) {
+      while (1) {
+        switch (_context17.prev = _context17.next) {
+          case 0:
+            _context17.prev = 0;
+            userId = req.body.userId;
+            _context17.next = 4;
+            return (0, _user_details.rider_location)(userId);
+          case 4:
+            rider1 = _context17.sent;
+            data = [];
+            user = {
+              'id': rider1.location[0].user_id,
+              'name': rider1.location[0].user_name,
+              'address': rider1.location[0].user_address,
+              'latitude': rider1.location[0].user_latitude,
+              'longitude': rider1.location[0].user_longitude
+            };
+            branch = {
+              'id': rider1.location[0].admin_id,
+              'name': rider1.location[0].admin_name,
+              'address': rider1.location[0].admin_address,
+              'latitude': rider1.location[0].admin_latitude,
+              'longitude': rider1.location[0].admin_longitude
+            };
+            rider = {
+              'id': rider1.location[0].rider_id,
+              'name': rider1.location[0].rider_name,
+              'latitude': rider1.location[0].rider_latitude,
+              'longitude': rider1.location[0].rider_longitude
+            };
+            return _context17.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
+              status: true,
+              data: {
+                user: user,
+                branch: branch,
+                rider: rider
+              }
+            }));
+          case 12:
+            _context17.prev = 12;
+            _context17.t0 = _context17["catch"](0);
+            console.log(_context17.t0);
+            res.status(500).json({
+              status: false,
+              message: "no order placed today SORRY!!!!!"
+            });
+          case 16:
+          case "end":
+            return _context17.stop();
+        }
+      }
+    }, _callee17, null, [[0, 12]]);
+  }));
+  return function RiderLocation(_x33, _x34) {
+    return _ref17.apply(this, arguments);
+  };
+}();
+exports.RiderLocation = RiderLocation;

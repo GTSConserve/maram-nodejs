@@ -30,6 +30,7 @@
 
             </div>
         </div>
+  
         <% if(data.length === 0){ %> 
             <h2>No Data Found</h2>
             <% }else if(loading) { %>
@@ -43,38 +44,104 @@
                 </div>
     
                 <% } else {  %>
-        
+                    <div class="statbox widget box box-shadow">
+                        <div class="widget-header">
+                            <!-- <div class="row">
+                                <div class="col-xl-12 col-md-12 col-sm-12 col-12">
+                                    <h4>Dragula</h4>
+                                </div>           
+                            </div> -->
+                        </div>
                     <div class="widget-content widget-content-area">
-
+                        <!-- <div id="timelineBasic" class="col-lg-12 layout-spacing"> -->
+                            
+                            
+                        <!-- </div> -->
                         <div class='parent ex-1'>
                             <div class="row">
-                                <div class="col-2"></div>
-                                <div class="col-sm-8" style="box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;">
-                                    <div id='left-defaults' class='dragula'>
+                                <!-- <div class="col-1"></div> -->
+                                <!-- <div class="col-10" style="box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;"> -->
+                                    <div id='left-defaults' class='dragula timeline-line row'>
 
+                                  
+                                        
                                         <% for(let i = 0 ; i< data.length; i++ ){ %> 
-
-                                        <div class="media  d-md-flex d-block text-sm-left text-center" style="border-width:2px ;border-color:#2196f3" >
-                                            <h4 class="pr-5"><%= i + 1 %>.</h4>
-                                            <!-- <img alt="avatar" src="assets/img/90x90.jpg" class="img-fluid "> -->
-                                            <div class="media-body" >
-                                                <div class="d-xl-flex d-block justify-content-between">
-                                                    <div class="viewMappingValue" data-value="<%= data[i].id %>">
-                                                        <h4 class="">  <%= data[i].user_name %>   (<%= data[i].user_unique_id %>)  </h4>
-                                                        <p class=""> <span style="font-size:14px;font-weight : bold ;color: black;"><%= data[i].address %></span> </p>
-                                                        <!-- <p class=""> Landmark - <%= user.landmark %> </p> -->
-                                                    </div>
-                                                    <div>
-                                                        <button class="btn btn-info btn-sm">UnAssign</button>
+                                        
+                                            <div class="media col-5  d-md-flex d-block text-sm-left text-center" style="border-width:3px ;border-color:#80C659 ;">
+                                                <!-- <img alt="avatar" src="assets/img/90x90.jpg" class="img-fluid "> -->
+                                                <div class="media-body">
+                                                    <div class="d-xl-flex d-block justify-content-between">
+                                                        <div class="viewMappingValue" data-value="<%= data[i].id %>">
+                                                            <h4 class=""><%= i + 1 %>.  <%= data[i].user_name %>   (<%= data[i].user_unique_id %>)  </h4>
+                                                            <p class=""> <span style="font-size:14px;font-weight : bold ;color: black;"><%= data[i].address %></span> </p>
+                                                            <!-- <p class=""> Landmark - <%= user.landmark %> </p> -->
+                                                        </div>
+                                                        <!-- <div>
+                                                            <button class="btn btn-primary btn-sm">View</button>
+                                                        </div> -->
                                                     </div>
                                                 </div>
                                             </div>
+                                            
+                                            
+                                           
+                                               
+
+                                        <!-- <div class="media  d-md-flex d-block text-sm-left text-center" style="border-width:2px ;border-color:#2196f3" > -->
+                                        
+
+                                            <div wire:ignore.self="" class="modal fade" id="unassign<%= data[i].id %>" tabindex="-1"
+                            aria-labelledby="addCategoryTitle" style="display: none;" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalCenterTitle">UnAssign The User</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                                height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                class="feather feather-x">
+                                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                    <div class="widget-content widget-content-area br-6">
+                                        <div class="row m-2 ">
+                                            <!-- <h4 class="modal-title" id="exampleModalLabel"> Add Admin</h4> -->
+                                            <div class="col-sm-3  ml-auto">
+
+                                            </div>
+
+                                        
                                         </div>
 
-                                        <% } %> 
 
+                                        <form action="/branch_admin/subscription/unassign_user" method="post">
+
+                                        <div class="form-row mb-4">
+                                            <h4>Are You Sure Want UnAssign The User?</h4>
+
+                                            <input type="hidden" name="address_id" value="<%= data[i].id %>" >
+                                            <input type="hidden" name="router_id" value="<%=router_id %>" >
                                     </div>
+                                    <div class="modal-footer">
+
+                                        <button type="button" class="btn btn-danger" id="addmodalClose" data-dismiss="modal"><i
+                                                class="flaticon-cancel-12"></i>Discard</button>
+                                        <button type="submit" wire:click="save" class="btn btn-success">Proceed</button>
+                                    </div>
+                                </form>
                                 </div>
+                            </div>
+                        </div>
+
+                                            
+                        
+                        
+                    </div>
+                    <% } %> 
 
                                 <script>
                                     async function submitHandler(){
@@ -107,7 +174,7 @@
 
                                 <div class="col-2"></div>
 
-                            </div>
+                            <!-- </div> -->
                         </div>
 
                         
@@ -130,5 +197,7 @@
         </div>
     </div>
     </div>
+</div>
+
     </div>
     </div>

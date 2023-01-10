@@ -51,7 +51,10 @@ export const edit_address = async (
   title,
   address,
   landmark,
-  type
+  type,
+  alternate_mobile,
+  latitude,
+  longitude
 ) => {
   let query = {};
 
@@ -67,10 +70,20 @@ export const edit_address = async (
   if (type) {
     query.type = type;
   }
+  if (alternate_mobile) {
+    query.alternate_mobile = alternate_mobile;
+  }
+  if (latitude) {
+    query.latitude = latitude
+  }
+  if (longitude) {
+    query.longitude = longitude
+  }
 
   const user = await knex("user_address")
     .update(query)
-    .where({ user_id: user_id, id: address_id });
+    .where({ user_id: user_id , id : address_id });
+    console.log(user)
   try {
     return { status: responseCode.SUCCESS, body: user };
   } catch (error) {
@@ -82,13 +95,54 @@ export const edit_address = async (
   }
 };
 
-export const get_user = async (id) => {
+export const get_user = async (id,userId) => {
   const getuser = await knex
     .select("id", "name", "image", "mobile_number", "email","total_bill_due_Amount","total_bill_count","total_address_count","total_subcription_count",'total_delivered_product_count','rider_status')
     .from("users")
     .where({ id });
-  try {
-    return { status: responseCode.SUCCESS, body: getuser };
+
+    const bill = await knex.select(
+    "bill_history_details.subscription_price",
+    "bill_history_details.additional_price",
+    "bill_history_details.total_price",
+    "bill_history_details.additional_qty",
+    "bill_history_details.total_qty",
+    "bill_history_details.subscription_qty"
+    )
+    .from("bill_history_details")
+    .where({id})
+
+    const sub = await knex.select(
+      "subscribed_user_details.subscription_delivered_quantity",
+      "subscribed_user_details.additional_delivered_quantity",
+      "subscribed_user_details.total_delivered_quantity",
+      // "subscribed_user_details.subscription_delivered_quantity",
+    )
+    .from("subscribed_user_details")
+    .where({user_id: id})
+    // console.log(getuser)
+  const rider = await knex('daily_orders')
+  .join("routes","routes.id","=","daily_orders.router_id")
+  .join("rider_details","rider_details.id","=","routes.rider_id")
+  .select(
+    "rider_details.id",
+    "rider_details.name",
+    "rider_details.tour_status as status",
+    
+  )
+  .where({user_id: id})
+
+  // console.log(rider)
+   const address = await knex('user_address').select('id').where({user_id: id})
+
+   const subscription = await knex('subscribed_user_details').select('id').where({user_id: id})
+   const additional = await knex('additional_orders').select('id').where({user_id: id,status:"delivered"})
+
+   const subscription1 = await knex('subscribed_user_details').select('product_id').where({user_id: id,rider_status:"delivered"})
+
+   const addon = await knex('add_on_order_items').select('product_id').where({user_id: id,status:"delivered"})
+   try {
+    return { status: responseCode.SUCCESS, body: getuser,rider,bill,sub,address,subscription,additional,subscription1,addon };
   } catch (error) {
     console.log(error);
     return { status: responseCode.FAILURE.INTERNAL_SERVER_ERROR, error };
@@ -211,3 +265,113 @@ export const checkAddress = async (id) => {
     };
   }
 };
+
+export const get_user_bill = async (userId) => {
+  const getuser = await knex
+    .select("id", "items","bill_no", "bill_value", "status")
+    .from("bill_history")
+    .where({ user_id: userId });
+    console.log(getuser)
+  try {
+    return { status: responseCode.SUCCESS, body: getuser };
+  } catch (error) {
+    console.log(error);
+    return { status: responseCode.FAILURE.INTERNAL_SERVER_ERROR, error };
+  }
+};
+
+export const get_single_bill = async (bill_id,userId) => {
+  try {
+    const getSingleBillList = await knex("bill_history")
+    .select(
+      "bill_history.id",
+      "bill_history.bill_no",
+      "bill_history.bill_value",
+      "bill_history.date",
+      "payment_gateways.id as payment_id",
+      "payment_gateways.status as payment_status",
+      "add_on_orders.sub_total as sub_total",
+    )
+    .join("payment_gateways","payment_gateways.user_id","=","bill_history.user_id")
+    .join("add_on_orders","add_on_orders.user_id","=","payment_gateways.user_id")
+    // .where({user_id: bill_id})
+   
+
+    const sub_products = await knex("subscribed_user_details as sub").select(
+      "sub.product_id",
+      "sub.quantity",
+      "unit_types.name",
+      "unit_types.id",
+      "products.price"
+    )
+    .join("products","products.id","=","sub.user_id")
+    .join("unit_types","unit_types.id","=","unit_type_id")
+    .where({ user_id: bill_id })
+
+
+    const add_on_products = await knex("add_on_order_items as add").select(
+      "add.product_id",
+      "add.quantity",
+      "unit_types.id as variation_id",
+      "unit_types.name as variation_type",
+      "products.unit_value",
+      "add.total_price",
+    )
+    .join("products","products.id","=","add.user_id")
+    .join("unit_types","unit_types.id","=","products.unit_type_id")
+    .where({ user_id: bill_id })
+    
+
+    // console.log(sub_products)
+      return { data: getSingleBillList, sub_products, add_on_products };
+  } catch (error) {
+    console.log(error);
+    return { status: responseCode.FAILURE.INTERNAL_SERVER_ERROR, error };
+  }
+}
+
+// rider location 
+export const rider_location = async (userId) => {
+try {
+     const router = await knex('daily_orders')
+     .join("routes","routes.id","=","daily_orders.router_id")
+     .join("rider_details","rider_details.id","=","routes.rider_id")
+     .select('rider_details.tour_status as status')
+     .where({user_id:userId});
+      // console.log(router)
+
+    if(router[0].status==1){
+    const location = await knex('daily_orders')
+    .join("users","users.id","=","daily_orders.user_id")
+    .join("user_address","user_address.user_id","=","daily_orders.user_id")  
+    .join("admin_users","admin_users.id","=","daily_orders.branch_id")
+    .join("routes","routes.id","=","daily_orders.router_id")
+    .join("rider_details","rider_details.id","=","routes.rider_id")
+    .select(
+      'users.id as user_id',
+      'users.name as user_name',
+      'user_address.address as user_address',
+      'user_address.latitude as user_latitude',
+      'user_address.longitude as user_longitude',
+      'admin_users.id as admin_id',
+      'admin_users.first_name as admin_name',
+      'admin_users.address as admin_address',
+      'admin_users.latitude as admin_latitude',
+      'admin_users.longitude as admin_longitude',
+      'rider_details.id as rider_id',
+      'rider_details.name as rider_name',
+      'rider_details.latitude as rider_latitude',
+      'rider_details.longitude as rider_longitude',
+      )
+     .where({'daily_orders.user_id':userId});
+    //  console.log(location)
+    return { status: responseCode.SUCCESS, location };
+    }
+else{
+  return { status: false, message:"no order placed today SORRY!!!!!" };
+}
+} catch (error) {
+  console.log(error);
+    return { status: responseCode.FAILURE.DATA_NOT_FOUND, error };
+}
+}

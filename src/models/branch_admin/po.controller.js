@@ -21,16 +21,16 @@ export const getBothProducts = async (daily_orders) => {
         .where({ add_on_order_id: daily_orders[i].add_on_order_id });
 
       for (let i = 0; i < add_product_id.length; i++) {
+       
         add_products_id.push({
           product_id: add_product_id[i].product_id,
-          qty: Number(add_product_id[0].quantity),
+          qty: Number(add_product_id[i].quantity),
         });
       }
     }
   }
 
-  console.log(sub_products_id);
-  console.log(add_products_id);
+
 
   //////////////////////////////////////////////////////////////////////////////// get products id (sub)
   if (sub_products_id.length !== 0) {
@@ -77,7 +77,7 @@ export const getBothProducts = async (daily_orders) => {
   ///////////////////////////////////////////////////////////////////////// get subscription product
   let subscription_products = [];
 
-  console.log(sub_products_id, "products");
+
 
   for (let i = 0; i < sub_products_id.length; i++) {
     const product = await knex("products")
@@ -192,10 +192,6 @@ export const getBothProducts = async (daily_orders) => {
           }
         }
       }
-
-
-      console.log(add_on_products_id)
-      console.log(excess_add_on_product)
 
   return { add_on_products, subscription_products,excess_add_on_products : excess_add_on_product };
 };

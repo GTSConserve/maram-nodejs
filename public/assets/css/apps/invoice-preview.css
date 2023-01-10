@@ -152,7 +152,7 @@
     border: none;
     border-top: 1px solid #e0e6ed;
     border-bottom: 1px solid #e0e6ed;
-    color: #515365 !important; }
+    color: #515365 ; }
     .invoice .content-section .inv--product-table-section th:first-child {
       padding-left: 35px; }
     .invoice .content-section .inv--product-table-section th:last-child {

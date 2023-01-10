@@ -6,6 +6,7 @@ import fs from "fs";
 import flash from "connect-flash";
 import session from "express-session";
 import nodemailer from "nodemailer"
+import axios from "axios";
 
 import knex from "./services/db.service";
 import { parseJwtPayload } from "./services/jwt.service";

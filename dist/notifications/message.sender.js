@@ -25,7 +25,7 @@ var sendNotification = /*#__PURE__*/function () {
                 authorization: "Basic ".concat(process.env.ONE_SIGNAL_REST_API_KEY)
               }
             });
-            data.small_icon = "notify_icon";
+            data.small_icon = "ic_stat_one_signal_default";
             data.large_icon = "https://pickneats.com/yummychopps/dashboard/assets/img/favicon.png";
             _context.next = 6;
             return instance.post("?app_id=".concat(process.env.ONESIGNAL_APP_ID), data);

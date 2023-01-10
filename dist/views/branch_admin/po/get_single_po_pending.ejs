@@ -1,0 +1,268 @@
+<% layout('layouts/boilerPlate') %>
+
+<div class="layout-px-spacing">
+    <div class="page-header">
+        <nav class="breadcrumb-one" aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <!-- <li class="breadcrumb-item"><a href="javascript:void(0);">Apps</a></li> -->
+                <li class="breadcrumb-item"><a href="javascript:void(0);">Pending PO</a></li>
+                <!-- <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Preview</a></li> -->
+            </ol>
+        </nav>
+        <a href="/branch_admin/po/get_po_pending"  style="cursor: pointer;" class="badge badge-info p-2"> Go Back </a>
+    </div>
+    
+    <div class="row invoice  layout-spacing layout-top-spacing">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+            
+            <div class="doc-container">
+
+                <!-- <form action="/branch_admin/po/create_po" method="post"> -->
+                <div class="row">
+                    <div class="col-xl-9">
+
+                        <div class="invoice-container">
+                            <div class="invoice-inbox">
+                                
+                                <div id="ct" class="">
+                                    
+                                    <div class="invoice-00001">
+                                        <div class="content-section">
+
+                                            <div class="inv--head-section inv--detail-section">
+                                            
+                                                <div class="row">
+                                                
+                                                    <div class="col-sm-6 col-12 mr-auto">
+                                                        <div class="d-flex">
+                                                            <!-- <p class="inv-to">Invoice</p> -->
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-sm-6 text-sm-right">
+                                                        <!-- <p class="inv-list-number"><span class="inv-title">Invoice : </span> <span class="inv-number">#0001</span></p> -->
+                                                    </div>
+
+                                                    <div class="col-sm-6 align-self-center mt-3">
+                                                        <p class="inv-customer-name"><%= branch_name %> </p>
+                                                        <!-- <p class="inv-street-addr">405 Mulberry Rd. Mc Grady, NC, 28649</p>
+                                                        <p class="inv-email-address">redq@company.com</p>
+                                                        <p class="inv-email-address">(128) 666 070</p> -->
+                                                    </div>
+                                                    <div class="col-sm-6 align-self-center mt-3 text-sm-right">
+                                                        <p class="inv-created-date"><span class="inv-title"> Date : </span> <span class="inv-date"><%= po_details.date %> </span></p>
+                                                        <!-- <p class="inv-due-date"><span class="inv-title">Due Date : </span> <span class="inv-date">26 Aug 2020</span></p> -->
+                                                    </div>
+                                                
+                                                </div>
+                                                
+                                            </div>
+
+                                                            <style>
+                                                                input[type=number]::-webkit-inner-spin-button, 
+                                                            input[type=number]::-webkit-outer-spin-button { 
+                                                                -webkit-appearance: none;
+                                                                -moz-appearance: none;
+                                                                appearance: none;
+                                                                margin: 0; 
+                                                            }
+                                                            </style>
+                                                            
+                                            <div class="inv--product-table-section">
+                                                <h6 class="ml-2 pb-2" style="font-weight: 900;">Subscription Products : </h6>
+                                                <% if(subscription_products.length ===0){ %> 
+                                                    <h6 class="ml-4">No Subscription Products Found</h6>
+                                                    <% }else{ %> 
+                                                <div class="table-responsive alterateTable">
+                                                    <table class="table">
+                                                        <thead class="">
+                                                            <tr>
+                                                                <!-- <th class="checkbox-column dt-no-sorting"> Choose</th> -->
+                                                                <th scope="col" >Name</th>
+                                                                <th scope="col">Unit</th>
+                                                                <th class="text-right" scope="col">Price</th>
+                                                                <th class="text-right" scope="col">Qty</th>
+                                                                <th class="text-right" scope="col">Excess Qty</th>
+                                                                <th class="text-right" scope="col">Total Qty</th>
+                                                                <th class="text-right" scope="col">Amount</th>
+                                                            </tr>
+                                                        </thead>  
+                                                        <tbody>
+
+                                                            
+
+                                                            
+                                                                     <% for(sub_products of subscription_products){ %>
+                                                               
+                                                                <tr>
+                                                                    <!-- <td  class="checkbox-column"> <input style="cursor: pointer;" value="<%= sub_products.id %>" name="product_id" type="checkbox" class="new-checkbox checkbox-primary"> </td> -->
+                                                                    <td name="name"><%= sub_products.name %></td>
+                                                                    <td><%= sub_products.value %></td> 
+                                                                    <td class="text-right"><%= sub_products.price %></td>
+                                                                    <td class="text-right"><%= sub_products.qty %></td>
+                                                                    <td class="text-right"><%=sub_products.excess_qty  %> </td>
+                                                                    <td class="text-right"><%=sub_products.total_qty  %> </td>
+                                                                    <td class="text-right"><%= sub_products.total_price %> </td>
+                                                                </tr>
+                                                                <% }  %> 
+                                                                
+                                                                
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <% }  %> 
+                                                </div>
+
+
+
+                                            <div class="inv--product-table-section">
+                                                <h6 class="ml-2 pb-2" style="font-weight: 900;">Add On Products : </h6>
+                                                <% if(add_on_products.length ===0){ %> 
+                                                    <h6 class="ml-4">No Add On Products Found</h6>
+                                                    <% }else{ %> 
+                                                <div class="table-responsive">
+                                                    <table class="table alterateTable">
+                                                        <thead class="">
+                                                            <tr>
+                                                                <!-- <th class="checkbox-column dt-no-sorting"> Choose</th> -->
+                                                                <th scope="col" >Name</th>
+                                                                <th scope="col">Unit</th>
+                                                                <th class="text-right" scope="col">Price</th>
+                                                                <th class="text-right" scope="col">Qty</th>
+                                                                <th class="text-right" scope="col">Excess Qty</th>
+                                                                <th class="text-right" scope="col">Total Qty</th>
+                                                                <th class="text-right" scope="col">Amount</th>
+                                                            </tr>
+                                                        </thead>  
+                                                        <tbody>
+
+
+                                                          
+                                                            <% for(add_on_products of add_on_products){ %>
+                                                               
+                                                                <tr>
+                                                                    <!-- <td  class="checkbox-column"> <input style="cursor: pointer;" value="<%= add_on_products.id %>" name="product_id" type="checkbox" class="new-checkbox checkbox-primary"> </td> -->
+                                                                    <td><%= add_on_products.name %></td>
+                                                                    <td><%= add_on_products.value %></td> 
+                                                                    <td class="text-right"><%= add_on_products.price %></td>
+                                                                    <td class="text-right"><%= add_on_products.qty %></td>
+                                                                    <td class="text-right"><%= add_on_products.excess_qty %></td>
+                                                                    <td class="text-right"><%= add_on_products.total_qty %></td>
+                                                                   
+                                                                    <td class="text-right"><%= add_on_products.total_price %></td>
+                                                                </tr>
+                                                                <% }  %> 
+                                                                
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <% }  %> 
+                                            </div>
+                                       
+                                            <div class="inv--total-amounts">
+                                            
+                                                <div class="row mt-4">
+                                                    <div class="col-sm-5 col-12 order-sm-0 order-1">
+                                                    </div>
+                                                    <div class="col-sm-7 col-12 order-sm-1 order-0">
+                                                        <div class="text-sm-right">
+                                                            <div class="row">
+                                                                <!-- <div class="col-sm-8 col-7">
+                                                                    <p class="">Sub Total: </p>
+                                                                </div>
+                                                                <div class="col-sm-4 col-5">
+                                                                    <p class="">$3155</p>
+                                                                </div>
+                                                                <div class="col-sm-8 col-7">
+                                                                    <p class="">Tax Amount: </p>
+                                                                </div>
+                                                                <div class="col-sm-4 col-5">
+                                                                    <p class="">$700</p>
+                                                                </div>
+                                                                <div class="col-sm-8 col-7">
+                                                                    <p class=" discount-rate">Discount : <span class="discount-percentage">5%</span> </p>
+                                                                </div>
+                                                                <div class="col-sm-4 col-5">
+                                                                    <p class="">$10</p>
+                                                                </div> -->
+
+
+                                                               
+
+                                                                <div class="col-sm-8 col-7 grand-total-title">
+                                                                    <h4 class="">Grand Total : </h4>
+                                                                </div>
+                                                                <div class="col-sm-4 col-5 grand-total-amount">
+                                                                    <h4 class=""><%= po_details.grand_total %>  </h4>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="inv--note">
+
+                                                <div class="row mt-4">
+                                                    <div class="col-sm-12 col-12 order-sm-0 order-1">
+                                                        <p>Note: Thank you for doing Business with us.</p>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div> 
+                                    
+                                </div>
+
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="col-xl-3">
+
+                        <div class="invoice-actions-btn">
+
+                            <div class="invoice-action-btn">
+
+                                
+
+                                <div class="row">
+                                  
+                                     <div class="col-xl-12 col-md-3 col-sm-6">
+                                        <a href="javascript:void(0);" class="btn btn-secondary btn-print  action-print">Print / Download</a>
+                                    </div> 
+                                     <!-- <div class="col-xl-12 col-md-3 col-sm-6">
+                                        <a href="javascript:void(0);" class="btn btn-info btn-download">Download</a>
+                                    </div>  -->
+                                    <!-- <div class="col-xl-12 col-md-3 col-sm-6">
+                                        <a href="apps_invoice-edit.html" class="btn btn-dark btn-edit">Edit</a>
+                                    </div> --> 
+                                </div> 
+                            </div>
+                            
+                        </div>
+                        
+                    </div>
+
+                    
+                    </div>
+
+
+                    
+                </form>
+
+                </div>
+                
+                
+            </div>
+
+        </div>
+    </div>
+    
+</div>

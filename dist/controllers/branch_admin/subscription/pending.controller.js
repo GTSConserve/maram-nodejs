@@ -4,10 +4,11 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updateSubscribed = exports.updateCancel = exports.getNewUsers = exports.getExistUsers = void 0;
+exports.userMappingAssign = exports.updateSubscribedExistUser = exports.updateSubscribed = exports.updateCancel = exports.unassignUser = exports.getNewUsers = exports.getExistUsers = void 0;
 var _db = _interopRequireDefault(require("../../../services/db.service"));
 var _helper = require("../../../utils/helper.util");
 var _moment = _interopRequireDefault(require("moment"));
+var _message = require("../../../notifications/message.sender");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -69,159 +70,32 @@ var updateCancel = /*#__PURE__*/function () {
     return _ref.apply(this, arguments);
   };
 }();
-
-// export const updateSubscribedExistUser = async (req,res) => {
-//   try {
-//     const {router_id,user_id,date} = req.body
-
-//   } catch (error) {
-//     console.log(error)
-//     return res.redirect("/home")
-//   }
-// }
 exports.updateCancel = updateCancel;
-var updateSubscribed = /*#__PURE__*/function () {
+var updateSubscribedExistUser = /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(req, res) {
-    var _req$body, sub_id, router_id, date, add_on_id, user_id, _req$query, is_exist, is_user_mapping_assign, _address_id, users, arr_users, get_users, address_id, get_add_on_address_id, get_address_id, _users, _arr_users, _get_users;
+    var _req$body, router_id, date, add_on_order_id, address_id, sub_id;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
             _context2.prev = 0;
-            _req$body = req.body, sub_id = _req$body.sub_id, router_id = _req$body.router_id, date = _req$body.date, add_on_id = _req$body.add_on_id, user_id = _req$body.user_id;
-            _req$query = req.query, is_exist = _req$query.is_exist, is_user_mapping_assign = _req$query.is_user_mapping_assign; // this below call from user mapping assign
-            if (!is_user_mapping_assign) {
-              _context2.next = 24;
+            _req$body = req.body, router_id = _req$body.router_id, date = _req$body.date, add_on_order_id = _req$body.add_on_order_id, address_id = _req$body.address_id, sub_id = _req$body.sub_id;
+            if (!add_on_order_id) {
+              _context2.next = 5;
               break;
             }
-            // is_user_mapping_assign - is a router id
-            _address_id = req.body.address_id;
-            _context2.next = 7;
-            return (0, _db["default"])("routes").select("user_mapping").where({
-              id: is_user_mapping_assign
-            });
-          case 7:
-            users = _context2.sent;
-            if (!(users.length === 0 || users[0].user_mapping === null)) {
-              _context2.next = 14;
-              break;
-            }
-            arr_users = [Number(_address_id)];
-            _context2.next = 12;
-            return (0, _db["default"])("routes").update({
-              user_mapping: JSON.stringify(arr_users)
-            }).where({
-              id: is_user_mapping_assign
-            });
-          case 12:
-            _context2.next = 20;
-            break;
-          case 14:
-            _context2.next = 16;
-            return (0, _db["default"])("routes").select("user_mapping").where({
-              id: is_user_mapping_assign
-            });
-          case 16:
-            get_users = _context2.sent;
-            get_users[0].user_mapping.push(Number(_address_id));
-            _context2.next = 20;
-            return (0, _db["default"])("routes").update({
-              user_mapping: JSON.stringify(get_users[0].user_mapping)
-            }).where({
-              id: is_user_mapping_assign
-            });
-          case 20:
-            _context2.next = 22;
-            return (0, _db["default"])("user_address").update({
-              router_id: is_user_mapping_assign
-            }).where({
-              id: _address_id
-            });
-          case 22:
-            req.flash("success", "Route Assigned Successfully");
-            // return res.redirect(`/branch_admin/route/user_mapping?route_id=${is_user_mapping_assign}`)
-            return _context2.abrupt("return", res.redirect("/branch_admin/route/get_route"));
-          case 24:
-            if (!add_on_id) {
-              _context2.next = 33;
-              break;
-            }
-            _context2.next = 27;
+            _context2.next = 5;
             return (0, _db["default"])("add_on_orders").update({
               status: "new_order"
             }).where({
-              id: add_on_id
+              id: add_on_order_id
             });
-          case 27:
-            _context2.next = 29;
-            return (0, _db["default"])("add_on_orders").select("address_id").where({
-              id: add_on_id
-            });
-          case 29:
-            get_add_on_address_id = _context2.sent;
-            address_id = get_add_on_address_id[0].address_id;
-            _context2.next = 37;
-            break;
-          case 33:
-            _context2.next = 35;
-            return (0, _db["default"])("subscribed_user_details").select("user_address_id").where({
-              id: sub_id
-            });
-          case 35:
-            get_address_id = _context2.sent;
-            address_id = get_address_id[0].user_address_id;
-          case 37:
-            if (is_exist) {
-              _context2.next = 55;
-              break;
-            }
-            _context2.next = 40;
-            return (0, _db["default"])("routes").select("user_mapping").where({
-              id: router_id
-            });
-          case 40:
-            _users = _context2.sent;
-            if (!(_users.length === 0 || _users[0].user_mapping === null)) {
-              _context2.next = 47;
-              break;
-            }
-            _arr_users = [Number(address_id)];
-            _context2.next = 45;
-            return (0, _db["default"])("routes").update({
-              user_mapping: JSON.stringify(_arr_users)
-            }).where({
-              id: router_id
-            });
-          case 45:
-            _context2.next = 53;
-            break;
-          case 47:
-            _context2.next = 49;
-            return (0, _db["default"])("routes").select("user_mapping").where({
-              id: router_id
-            });
-          case 49:
-            _get_users = _context2.sent;
-            _get_users[0].user_mapping.push(Number(address_id));
-            _context2.next = 53;
-            return (0, _db["default"])("routes").update({
-              user_mapping: JSON.stringify(_get_users[0].user_mapping)
-            }).where({
-              id: router_id
-            });
-          case 53:
-            _context2.next = 55;
-            return (0, _db["default"])("user_address").update({
-              router_id: router_id
-            }).where({
-              id: address_id
-            });
-          case 55:
+          case 5:
             if (!sub_id) {
-              _context2.next = 58;
+              _context2.next = 8;
               break;
             }
-            _context2.next = 58;
+            _context2.next = 8;
             return (0, _db["default"])("subscribed_user_details").update({
               subscription_status: "subscribed",
               router_id: router_id,
@@ -230,336 +104,241 @@ var updateSubscribed = /*#__PURE__*/function () {
             }).where({
               id: sub_id
             });
-          case 58:
-            req.flash("success", "subscribed successfully");
-            if (!is_exist) {
-              _context2.next = 61;
-              break;
-            }
+          case 8:
+            req.flash("success", "Approved successfully");
             return _context2.abrupt("return", res.redirect("/branch_admin/subscription/get_exist_users"));
-          case 61:
-            res.redirect("/branch_admin/subscription/get_new_users");
-            _context2.next = 68;
-            break;
-          case 64:
-            _context2.prev = 64;
+          case 12:
+            _context2.prev = 12;
             _context2.t0 = _context2["catch"](0);
             console.log(_context2.t0);
-            res.redirect("/home");
-          case 68:
+            return _context2.abrupt("return", res.redirect("/home"));
+          case 16:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[0, 64]]);
+    }, _callee2, null, [[0, 12]]);
   }));
-  return function updateSubscribed(_x3, _x4) {
+  return function updateSubscribedExistUser(_x3, _x4) {
     return _ref2.apply(this, arguments);
   };
 }();
-exports.updateSubscribed = updateSubscribed;
-var getNewUsers = /*#__PURE__*/function () {
+exports.updateSubscribedExistUser = updateSubscribedExistUser;
+var updateSubscribed = /*#__PURE__*/function () {
   var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(req, res) {
-    var admin_id, loading, searchKeyword, data_length, data_length_2, search_data_length, search_data_2_length, routes, both_data, _yield$getPageNumber, startingLimit, page, resultsPerPage, numberOfPages, iterator, endingLink, results, is_search, data, i, search_query, add_on_order_query, get_user_products_query, _i, j;
+    var _req$body2, router_id, date, add_on_order_id, address_id, sub_id, user_id, _req$query, is_exist, is_user_mapping_assign, i, users, arr_users, get_users;
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.prev = 0;
-            admin_id = req.body.admin_id;
-            loading = true;
-            searchKeyword = req.query.searchKeyword;
-            data_length = [];
-            data_length_2 = [];
-            if (!searchKeyword) {
-              _context3.next = 22;
+            // const { sub_id, router_id, date, add_on_id, user_id } = req.body;
+            _req$body2 = req.body, router_id = _req$body2.router_id, date = _req$body2.date, add_on_order_id = _req$body2.add_on_order_id, address_id = _req$body2.address_id, sub_id = _req$body2.sub_id, user_id = _req$body2.user_id;
+            _req$query = req.query, is_exist = _req$query.is_exist, is_user_mapping_assign = _req$query.is_user_mapping_assign;
+            if (!add_on_order_id) {
+              _context3.next = 16;
               break;
             }
-            _context3.next = 9;
-            return _db["default"].raw("SELECT subscribed_user_details.id FROM subscribed_user_details JOIN users ON users.id = subscribed_user_details.user_id WHERE subscribed_user_details.branch_id = ".concat(admin_id, " AND subscribed_user_details.subscription_status = \"assigned\" AND users.user_unique_id LIKE '%").concat(searchKeyword, "%'"));
+            if (!(typeof add_on_order_id == "string")) {
+              _context3.next = 9;
+              break;
+            }
+            _context3.next = 7;
+            return (0, _db["default"])("add_on_orders").update({
+              status: "new_order"
+            }).where({
+              id: add_on_order_id
+            });
+          case 7:
+            _context3.next = 16;
+            break;
           case 9:
-            search_data_length = _context3.sent;
-            _context3.next = 12;
-            return _db["default"].raw("SELECT adds.id,adds.user_id ,adds.delivery_date,adds.sub_total,\n        users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n          user_address.address,user_address.id as user_address_id ,user_address.landmark\n          FROM add_on_orders as adds \n          JOIN users ON users.id = adds.user_id \n          JOIN user_address ON user_address.id = adds.address_id\n          WHERE adds.branch_id = ".concat(admin_id, " AND adds.status = \"assigned\" AND  users.user_unique_id LIKE '%").concat(searchKeyword, "%'"));
-          case 12:
-            search_data_2_length = _context3.sent;
-            data_length = search_data_length[0];
-            data_length_2 = search_data_2_length[0];
-            if (!(data_length.length === 0 && data_length_2.length === 0)) {
-              _context3.next = 20;
+            i = 0;
+          case 10:
+            if (!(i < add_on_order_id.length)) {
+              _context3.next = 16;
               break;
             }
-            loading = false;
-            req.query.searchKeyword = "";
-            req.flash("error", "No User Found");
-            return _context3.abrupt("return", res.redirect("/branch_admin/subscription/get_new_users"));
-          case 20:
+            _context3.next = 13;
+            return (0, _db["default"])("add_on_orders").update({
+              status: "new_order"
+            }).where({
+              id: add_on_order_id[i]
+            });
+          case 13:
+            i++;
+            _context3.next = 10;
+            break;
+          case 16:
+            if (!sub_id) {
+              _context3.next = 21;
+              break;
+            }
+            _context3.next = 19;
+            return (0, _db["default"])("subscribed_user_details").update({
+              subscription_status: "subscribed",
+              router_id: router_id,
+              subscription_start_date: new Date().toISOString().slice(0, 19).replace("T", " "),
+              date: date
+            }).where({
+              id: sub_id
+            });
+          case 19:
+            _context3.next = 21;
+            return (0, _message.sendNotification)({
+              include_external_user_ids: [user_id.toString()],
+              contents: {
+                en: "Your Subsciption Was Placed, Your Susbcription Start From ".concat((0, _moment["default"])(date).format("DD-MM-YYYY"))
+              },
+              headings: {
+                en: "Subscription Notification"
+              },
+              name: "Appoinment Request",
+              data: {
+                subscription_status: "subscribed",
+                category_id: 0,
+                product_type_id: 0,
+                type: 2,
+                subscription_id: sub_id,
+                bill_id: 0
+              }
+            });
+          case 21:
+            _context3.next = 23;
+            return (0, _db["default"])("routes").select("user_mapping").where({
+              id: router_id
+            });
+          case 23:
+            users = _context3.sent;
+            if (!(users.length === 0 || users[0].user_mapping === null)) {
+              _context3.next = 30;
+              break;
+            }
+            arr_users = [Number(address_id)];
             _context3.next = 28;
-            break;
-          case 22:
-            _context3.next = 24;
-            return (0, _db["default"])("subscribed_user_details").select("id").where({
-              subscription_status: "assigned"
+            return (0, _db["default"])("routes").update({
+              user_mapping: JSON.stringify(arr_users)
+            }).where({
+              id: router_id
             });
-          case 24:
-            data_length = _context3.sent;
-            _context3.next = 27;
-            return (0, _db["default"])("add_on_orders").select("id").where({
-              branch_id: admin_id,
-              status: "assigned"
-            });
-          case 27:
-            data_length_2 = _context3.sent;
           case 28:
-            _context3.next = 30;
-            return (0, _db["default"])("routes").select("name", "id").where({
-              status: "1",
-              branch_id: admin_id
-            });
+            _context3.next = 36;
+            break;
           case 30:
-            routes = _context3.sent;
-            if (!(data_length.length === 0 && data_length_2.length === 0)) {
-              _context3.next = 34;
-              break;
-            }
-            loading = false;
-            return _context3.abrupt("return", res.render("branch_admin/subscription/pending", {
-              data: data_length,
-              searchKeyword: searchKeyword,
-              routes: routes
-            }));
-          case 34:
-            both_data = [];
-            if (data_length.length === 0 && data_length_2.length !== 0) {
-              both_data = data_length_2;
-            } else if (data_length.length !== 0 && data_length_2.length === 0) {
-              both_data = data_length;
-            } else {
-              both_data = [].concat(_toConsumableArray(data_length), _toConsumableArray(data_length_2));
-            }
-            console.log(both_data);
-            _context3.next = 39;
-            return (0, _helper.getPageNumber)(req, res, both_data, "subscription/get_new_users");
-          case 39:
-            _yield$getPageNumber = _context3.sent;
-            startingLimit = _yield$getPageNumber.startingLimit;
-            page = _yield$getPageNumber.page;
-            resultsPerPage = _yield$getPageNumber.resultsPerPage;
-            numberOfPages = _yield$getPageNumber.numberOfPages;
-            iterator = _yield$getPageNumber.iterator;
-            endingLink = _yield$getPageNumber.endingLink;
-            is_search = false;
-            data = [];
-            if (!(data_length !== 0)) {
-              _context3.next = 61;
-              break;
-            }
-            if (!searchKeyword) {
-              _context3.next = 56;
-              break;
-            }
-            _context3.next = 52;
-            return _db["default"].raw("SELECT sub.id , sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n        user_address.address,user_address.id as user_address_id ,user_address.landmark,products.name as product_name,products.price,products.unit_value,products.image,\n        unit_types.value,categories.name as category_name\n        FROM subscribed_user_details AS sub \n        JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id \n        JOIN users ON users.id = sub.user_id \n        JOIN user_address ON user_address.id = sub.user_address_id\n        JOIN products ON products.id = sub.product_id\n        JOIN unit_types ON unit_types.id = products.unit_type_id\n        JOIN categories ON categories.id = products.category_id\n        WHERE sub.subscription_status = \"assigned\" AND sub.branch_id = ".concat(admin_id, " \n        AND users.user_unique_id LIKE '%").concat(searchKeyword, "%'"));
-          case 52:
-            results = _context3.sent;
-            is_search = true;
-            _context3.next = 59;
-            break;
-          case 56:
-            _context3.next = 58;
-            return _db["default"].raw("SELECT sub.id ,sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n        user_address.address,user_address.id as user_address_id ,user_address.landmark,products.name as product_name,products.price,products.unit_value,products.image,\n        unit_types.value,categories.name as category_name\n        FROM subscribed_user_details AS sub \n        JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id \n        JOIN users ON users.id = sub.user_id \n        JOIN user_address ON user_address.id = sub.user_address_id\n        JOIN products ON products.id = sub.product_id\n        JOIN unit_types ON unit_types.id = products.unit_type_id\n        JOIN categories ON categories.id = products.category_id\n        WHERE sub.subscription_status = \"assigned\" AND sub.branch_id = ".concat(admin_id));
-          case 58:
-            results = _context3.sent;
-          case 59:
-            data = results[0];
-            for (i = 0; i < data.length; i++) {
-              data[i].start_date = (0, _moment["default"])(data[i].start_date).format("YYYY-MM-DD");
-              data[i].image = process.env.BASE_URL + data[i].image;
-            }
-          case 61:
-            if (searchKeyword) {
-              search_query = "AND  users.user_unique_id LIKE '%".concat(searchKeyword, "%'");
-            }
-            _context3.next = 64;
-            return _db["default"].raw("SELECT adds.id,adds.user_id ,adds.delivery_date,adds.sub_total,\n    users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n      user_address.address,user_address.id as user_address_id ,user_address.landmark\n      FROM add_on_orders as adds \n      JOIN users ON users.id = adds.user_id \n      JOIN user_address ON user_address.id = adds.address_id\n      WHERE adds.branch_id = ".concat(admin_id, " AND adds.status = \"assigned\" ").concat(searchKeyword ? search_query : ""));
-          case 64:
-            add_on_order_query = _context3.sent;
-            if (!(add_on_order_query[0].length !== 0)) {
-              _context3.next = 79;
-              break;
-            }
-            _i = 0;
-          case 67:
-            if (!(_i < add_on_order_query[0].length)) {
-              _context3.next = 79;
-              break;
-            }
-            _context3.next = 70;
-            return (0, _db["default"])("add_on_order_items as adds").select("adds.add_on_order_id", "adds.quantity", "adds.price", "adds.total_price", "products.name as product_name", "products.image", "products.unit_value", "unit_types.value").join("products", "products.id", "=", "adds.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").where({
-              "adds.add_on_order_id": add_on_order_query[0][_i].id
+            _context3.next = 32;
+            return (0, _db["default"])("routes").select("user_mapping").where({
+              id: router_id
             });
-          case 70:
-            get_user_products_query = _context3.sent;
-            for (j = 0; j < get_user_products_query.length; j++) {
-              get_user_products_query[j].image = process.env.BASE_URL + get_user_products_query[j].image;
-            }
-            add_on_order_query[0][_i].is_add_on = true;
-            add_on_order_query[0][_i].add_on_products = get_user_products_query;
-            add_on_order_query[0][_i].delivery_date = add_on_order_query[0][_i].delivery_date.toString().slice(4, 16);
-            data.push(add_on_order_query[0][_i]);
-          case 76:
-            _i++;
-            _context3.next = 67;
-            break;
-          case 79:
-            loading = false;
-            res.render("branch_admin/subscription/pending", {
-              data: data,
-              page: page,
-              iterator: iterator,
-              endingLink: endingLink,
-              numberOfPages: 1,
-              is_search: is_search,
-              searchKeyword: searchKeyword,
-              loading: loading,
-              routes: routes
+          case 32:
+            get_users = _context3.sent;
+            get_users[0].user_mapping.push(Number(address_id));
+            _context3.next = 36;
+            return (0, _db["default"])("routes").update({
+              user_mapping: JSON.stringify(get_users[0].user_mapping)
+            }).where({
+              id: router_id
             });
-            // try {
-            //   const { admin_id } = req.body;
-            //   let loading = true;
-            //   const { searchKeyword } = req.query;
+          case 36:
+            _context3.next = 38;
+            return (0, _db["default"])("user_address").update({
+              router_id: router_id
+            }).where({
+              id: address_id
+            });
+          case 38:
+            // this below call from user mapping assign
 
-            //   let data_length = [];
+            // // if (!date) {
+            // //   req.flash("error", "Please Choose a Date ");
+            // //   return res.redirect("/branch_admin/subscription/get_new_users");
+            // // }
 
-            //   if (searchKeyword) {
-            //     const search_data_length = await knex.raw(
-            //       `SELECT subscribed_user_details.id FROM subscribed_user_details JOIN users ON users.id = subscribed_user_details.user_id WHERE subscribed_user_details.branch_id = ${admin_id} AND subscribed_user_details.subscription_status = "assigned" AND users.user_unique_id LIKE '%${searchKeyword}%'`
-            //     );
+            // // add on new new_user
+            // // let address_id;
+            // if (add_on_id) {
+            //   await knex("add_on_orders")
+            //     .update({ status: "new_order" })
+            //     .where({ id: add_on_id });
 
-            //     data_length = search_data_length[0];
+            //   const get_add_on_address_id = await knex("add_on_orders")
+            //     .select("address_id")
+            //     .where({ id: add_on_id });
 
-            //     if (data_length.length === 0) {
-            //       loading = false;
-            //       req.query.searchKeyword = "";
-            //       req.flash("error", "No Subscription  Found");
-            //       return res.redirect("/branch_admin/subscription/get_new_users");
-            //     }
+            //   address_id = get_add_on_address_id[0].address_id;
+            // } else {
+            //   // else subscribed new_user
+            //   const get_address_id = await knex("subscribed_user_details")
+            //     .select("user_address_id")
+            //     .where({ id: sub_id });
+
+            //   address_id = get_address_id[0].user_address_id;
+            // }
+
+            // // check if is not exist user(this api call in both new user and exist user)
+            // if (!is_exist) {
+            //   const users = await knex("routes")
+            //     .select("user_mapping")
+            //     .where({ id: router_id });
+
+            //   if (users.length === 0 || users[0].user_mapping === null) {
+            //     let arr_users = [Number(address_id)];
+            //     await knex("routes")
+            //       .update({ user_mapping: JSON.stringify(arr_users) })
+            //       .where({ id: router_id });
             //   } else {
-            //     data_length = await knex("subscribed_user_details")
-            //       .select("id")
-            //       .where({ subscription_status: "assigned", branch_id: admin_id });
+            //     const get_users = await knex("routes")
+            //       .select("user_mapping")
+            //       .where({ id: router_id });
+            //     get_users[0].user_mapping.push(Number(address_id));
+
+            //     await knex("routes")
+            //       .update({ user_mapping: JSON.stringify(get_users[0].user_mapping) })
+            //       .where({ id: router_id });
             //   }
 
-            //   const routes = await knex("routes")
-            //     .select("name", "id")
-            //     .where({ status: "1", branch_id: admin_id });
+            //   await knex("user_address")
+            //     .update({ router_id })
+            //     .where({ id: address_id });
+            // }
 
-            //   if (data_length.length === 0) {
-            //     loading = false;
-            //     return res.render("branch_admin/subscription/pending", {
-            //       data: data_length,
-            //       searchKeyword,
-            //       routes,
-            //     });
-            //   }
-
-            //   let {
-            //     startingLimit,
-            //     page,
-            //     resultsPerPage,
-            //     numberOfPages,
-            //     iterator,
-            //     endingLink,
-            //   } = await getPageNumber(
-            //     req,
-            //     res,
-            //     data_length,
-            //     "subscription/get_new_users"
-            //   );
-
-            //   let results;
-            //   let is_search = false;
-            //   if (searchKeyword) {
-            //     results = await knex.raw(
-            //       `SELECT sub.id , sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,users.id as user_id,
-            //         user_address.address,user_address.landmark,products.name as product_name,products.price,products.unit_value,
-            //         unit_types.value,categories.name as category_name,products.image
-            //         FROM subscribed_user_details AS sub
-            //         JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id
-            //         JOIN users ON users.id = sub.user_id
-            //         JOIN user_address ON user_address.id = sub.user_address_id
-            //         JOIN products ON products.id = sub.product_id
-            //         JOIN unit_types ON unit_types.id = products.unit_type_id
-            //         JOIN categories ON categories.id = products.category_id
-            //         WHERE sub.subscription_status = "assigned" AND sub.branch_id = ${admin_id}
-            //         AND users.user_unique_id LIKE '%${searchKeyword}%' LIMIT ${startingLimit},${resultsPerPage}`
-            //     );
-            //     is_search = true;
-            //   } else {
-            //     results = await knex.raw(
-            //       `SELECT sub.id ,sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,users.id as user_id,
-            //         user_address.address,user_address.landmark,products.name as product_name,products.price,products.unit_value,
-            //         unit_types.value,categories.name as category_name,products.image
-            //         FROM subscribed_user_details AS sub
-            //         JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id
-            //         JOIN users ON users.id = sub.user_id
-            //         JOIN user_address ON user_address.id = sub.user_address_id
-            //         JOIN products ON products.id = sub.product_id
-            //         JOIN unit_types ON unit_types.id = products.unit_type_id
-            //         JOIN categories ON categories.id = products.category_id
-            //         WHERE sub.subscription_status = "assigned" AND sub.branch_id = ${admin_id} LIMIT ${startingLimit},${resultsPerPage}`
-            //     );
-            //   }
-
-            //   const data = results[0];
-
-            //   for (let i = 0; i < data.length; i++) {
-            //     data[i].start_date = moment(data[i].start_date).format("YYYY-MM-DD");
-            //     data[i].image = process.env.BASE_URL + data[i].image
-            //   }
-
-            //   loading = false;
-            //   res.render("branch_admin/subscription/pending", {
-            //     data: data,
-            //     page,
-            //     iterator,
-            //     endingLink,
-            //     numberOfPages,
-            //     is_search,
-            //     searchKeyword,
-            //     loading,
-            //     routes,
-            //   });
-            _context3.next = 87;
+            req.flash("success", "subscribed successfully");
+            if (!is_exist) {
+              _context3.next = 41;
+              break;
+            }
+            return _context3.abrupt("return", res.redirect("/branch_admin/subscription/get_exist_users"));
+          case 41:
+            res.redirect("/branch_admin/subscription/get_new_users");
+            _context3.next = 48;
             break;
-          case 83:
-            _context3.prev = 83;
+          case 44:
+            _context3.prev = 44;
             _context3.t0 = _context3["catch"](0);
             console.log(_context3.t0);
             res.redirect("/home");
-          case 87:
+          case 48:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3, null, [[0, 83]]);
+    }, _callee3, null, [[0, 44]]);
   }));
-  return function getNewUsers(_x5, _x6) {
+  return function updateSubscribed(_x5, _x6) {
     return _ref3.apply(this, arguments);
   };
 }();
-exports.getNewUsers = getNewUsers;
-var getExistUsers = /*#__PURE__*/function () {
+exports.updateSubscribed = updateSubscribed;
+var getNewUsers = /*#__PURE__*/function () {
   var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(req, res) {
-    var admin_id, loading, searchKeyword, data_length, data_length_2, search_data_length, search_data_2_length, routes, both_data, _yield$getPageNumber2, startingLimit, page, resultsPerPage, numberOfPages, iterator, endingLink, results, is_search, data, i, search_query, add_on_order_query, get_user_products_query, _i2, j;
+    var loading, searchKeyword, admin_id, data_length, data_length_2, search_data_length, search_data_2_length, routes, both_data, _yield$getPageNumber, startingLimit, page, resultsPerPage, numberOfPages, iterator, endingLink, results, is_search, data, subscription_users, add_on_users, i, search_query, add_on_order_query, get_user_products_query, _i, j, view_add_on_products, _i2, _j, _i3, _j2;
     return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
             _context4.prev = 0;
-            admin_id = req.body.admin_id;
             loading = true;
             searchKeyword = req.query.searchKeyword;
+            admin_id = req.body.admin_id;
             data_length = [];
             data_length_2 = [];
             if (!searchKeyword) {
@@ -567,11 +346,11 @@ var getExistUsers = /*#__PURE__*/function () {
               break;
             }
             _context4.next = 9;
-            return _db["default"].raw("SELECT subscribed_user_details.id FROM subscribed_user_details JOIN users ON users.id = subscribed_user_details.user_id WHERE subscribed_user_details.branch_id = ".concat(admin_id, " AND subscribed_user_details.subscription_status = \"branch_pending\" AND users.user_unique_id LIKE '%").concat(searchKeyword, "%'"));
+            return _db["default"].raw("SELECT subscribed_user_details.id FROM subscribed_user_details JOIN users ON users.id = subscribed_user_details.user_id WHERE subscribed_user_details.branch_id = ".concat(admin_id, " AND subscribed_user_details.subscription_status = \"assigned\" AND users.user_unique_id LIKE '%").concat(searchKeyword, "%'"));
           case 9:
             search_data_length = _context4.sent;
             _context4.next = 12;
-            return _db["default"].raw("SELECT adds.id,adds.user_id ,adds.delivery_date,adds.sub_total,\n        users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n          user_address.address,user_address.id as user_address_id ,user_address.landmark\n          FROM add_on_orders as adds \n          JOIN users ON users.id = adds.user_id \n          JOIN user_address ON user_address.id = adds.address_id\n          WHERE adds.branch_id = ".concat(admin_id, " AND adds.status = \"branch_pending\" AND  users.user_unique_id LIKE '%").concat(searchKeyword, "%'"));
+            return _db["default"].raw("SELECT adds.id,adds.user_id ,adds.delivery_date,adds.sub_total,\n        users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n          user_address.address,user_address.id as user_address_id ,user_address.landmark\n          FROM add_on_orders as adds \n          JOIN users ON users.id = adds.user_id \n          JOIN user_address ON user_address.id = adds.address_id\n          WHERE adds.branch_id = ".concat(admin_id, " AND adds.status = \"assigned\" AND  users.user_unique_id LIKE '%").concat(searchKeyword, "%'"));
           case 12:
             search_data_2_length = _context4.sent;
             data_length = search_data_length[0];
@@ -583,21 +362,22 @@ var getExistUsers = /*#__PURE__*/function () {
             loading = false;
             req.query.searchKeyword = "";
             req.flash("error", "No User Found");
-            return _context4.abrupt("return", res.redirect("/branch_admin/subscription/get_exist_users"));
+            return _context4.abrupt("return", res.redirect("/branch_admin/subscription/get_new_users"));
           case 20:
             _context4.next = 28;
             break;
           case 22:
             _context4.next = 24;
             return (0, _db["default"])("subscribed_user_details").select("id").where({
-              subscription_status: "branch_pending"
+              subscription_status: "assigned",
+              branch_id: admin_id
             });
           case 24:
             data_length = _context4.sent;
             _context4.next = 27;
             return (0, _db["default"])("add_on_orders").select("id").where({
               branch_id: admin_id,
-              status: "branch_pending"
+              status: "assigned"
             });
           case 27:
             data_length_2 = _context4.sent;
@@ -614,8 +394,9 @@ var getExistUsers = /*#__PURE__*/function () {
               break;
             }
             loading = false;
-            return _context4.abrupt("return", res.render("branch_admin/subscription/exist_user", {
-              data: data_length,
+            return _context4.abrupt("return", res.render("branch_admin/subscription/pending", {
+              subscription_users: data_length,
+              add_on_users: data_length_2,
               searchKeyword: searchKeyword,
               routes: routes
             }));
@@ -628,84 +409,141 @@ var getExistUsers = /*#__PURE__*/function () {
             } else {
               both_data = [].concat(_toConsumableArray(data_length), _toConsumableArray(data_length_2));
             }
-            console.log(both_data);
-            _context4.next = 39;
-            return (0, _helper.getPageNumber)(req, res, both_data, "subscription/get_exist_users");
-          case 39:
-            _yield$getPageNumber2 = _context4.sent;
-            startingLimit = _yield$getPageNumber2.startingLimit;
-            page = _yield$getPageNumber2.page;
-            resultsPerPage = _yield$getPageNumber2.resultsPerPage;
-            numberOfPages = _yield$getPageNumber2.numberOfPages;
-            iterator = _yield$getPageNumber2.iterator;
-            endingLink = _yield$getPageNumber2.endingLink;
+            _context4.next = 38;
+            return (0, _helper.getPageNumber)(req, res, both_data, "subscription/get_new_users");
+          case 38:
+            _yield$getPageNumber = _context4.sent;
+            startingLimit = _yield$getPageNumber.startingLimit;
+            page = _yield$getPageNumber.page;
+            resultsPerPage = _yield$getPageNumber.resultsPerPage;
+            numberOfPages = _yield$getPageNumber.numberOfPages;
+            iterator = _yield$getPageNumber.iterator;
+            endingLink = _yield$getPageNumber.endingLink;
             is_search = false;
             data = [];
+            subscription_users = [];
+            add_on_users = [];
             if (!(data_length !== 0)) {
-              _context4.next = 61;
+              _context4.next = 62;
               break;
             }
             if (!searchKeyword) {
-              _context4.next = 56;
+              _context4.next = 57;
               break;
             }
-            _context4.next = 52;
-            return _db["default"].raw("SELECT sub.id , sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n        user_address.address,user_address.id as user_address_id ,user_address.landmark,products.name as product_name,products.price,products.unit_value,products.image,\n        unit_types.value,categories.name as category_name,routes.name as route_name ,routes.id as route_id\n        FROM subscribed_user_details AS sub \n        JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id \n        JOIN users ON users.id = sub.user_id \n        JOIN user_address ON user_address.id = sub.user_address_id\n        JOIN routes ON routes.id = user_address.router_id\n        JOIN products ON products.id = sub.product_id\n        JOIN unit_types ON unit_types.id = products.unit_type_id\n        JOIN categories ON categories.id = products.category_id\n        WHERE sub.subscription_status = \"branch_pending\" AND sub.branch_id = ".concat(admin_id, " \n        AND users.user_unique_id LIKE '%").concat(searchKeyword, "%'"));
-          case 52:
+            _context4.next = 53;
+            return _db["default"].raw("SELECT sub.id ,sub.user_id, sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n        user_address.address,user_address.id as user_address_id ,user_address.landmark,products.name as product_name,products.price,products.unit_value,products.image,\n        unit_types.value,categories.name as category_name\n        FROM subscribed_user_details AS sub \n        JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id \n        JOIN users ON users.id = sub.user_id \n        JOIN user_address ON user_address.id = sub.user_address_id\n        JOIN products ON products.id = sub.product_id\n        JOIN unit_types ON unit_types.id = products.unit_type_id\n        JOIN categories ON categories.id = products.category_id\n        WHERE sub.subscription_status = \"assigned\" AND sub.branch_id = ".concat(admin_id, "\n        AND users.user_unique_id LIKE '%").concat(searchKeyword, "%'"));
+          case 53:
             results = _context4.sent;
             is_search = true;
-            _context4.next = 59;
+            _context4.next = 60;
             break;
-          case 56:
-            _context4.next = 58;
-            return _db["default"].raw("SELECT sub.id ,sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n        user_address.address,user_address.id as user_address_id ,user_address.landmark,products.name as product_name,products.price,products.unit_value,products.image,\n        unit_types.value,categories.name as category_name,routes.name as route_name ,routes.id as route_id\n        FROM subscribed_user_details AS sub \n        JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id \n        JOIN users ON users.id = sub.user_id \n        JOIN user_address ON user_address.id = sub.user_address_id\n        JOIN routes ON routes.id = user_address.router_id\n        JOIN products ON products.id = sub.product_id\n        JOIN unit_types ON unit_types.id = products.unit_type_id\n        JOIN categories ON categories.id = products.category_id\n        WHERE sub.subscription_status = \"branch_pending\" AND sub.branch_id = ".concat(admin_id));
-          case 58:
-            results = _context4.sent;
+          case 57:
+            _context4.next = 59;
+            return _db["default"].raw("SELECT sub.id ,sub.user_id,sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n        user_address.address,user_address.id as user_address_id ,user_address.landmark,products.name as product_name,products.price,products.unit_value,products.image,\n        unit_types.value,categories.name as category_name\n        FROM subscribed_user_details AS sub \n        JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id \n        JOIN users ON users.id = sub.user_id \n        JOIN user_address ON user_address.id = sub.user_address_id\n        JOIN products ON products.id = sub.product_id\n        JOIN unit_types ON unit_types.id = products.unit_type_id\n        JOIN categories ON categories.id = products.category_id\n        WHERE sub.subscription_status = \"assigned\" AND sub.branch_id = ".concat(admin_id));
           case 59:
-            data = results[0];
-            for (i = 0; i < data.length; i++) {
-              data[i].start_date = (0, _moment["default"])(data[i].start_date).format("YYYY-MM-DD");
-              data[i].image = process.env.BASE_URL + data[i].image;
+            results = _context4.sent;
+          case 60:
+            subscription_users = results[0];
+            for (i = 0; i < subscription_users.length; i++) {
+              subscription_users[i].start_date = (0, _moment["default"])(subscription_users[i].start_date).format("DD-MM-YYYY");
+              subscription_users[i].default_show_start_date = (0, _moment["default"])(subscription_users[i].start_date).format("YYYY-DD-MM");
+              subscription_users[i].image = process.env.BASE_URL + subscription_users[i].image;
             }
-          case 61:
+          case 62:
             if (searchKeyword) {
               search_query = "AND  users.user_unique_id LIKE '%".concat(searchKeyword, "%'");
             }
-            _context4.next = 64;
-            return _db["default"].raw("SELECT adds.id,adds.user_id ,adds.delivery_date,adds.sub_total,\n    users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n      user_address.address,user_address.id as user_address_id ,user_address.landmark\n      FROM add_on_orders as adds \n      JOIN users ON users.id = adds.user_id \n      JOIN user_address ON user_address.id = adds.address_id\n      WHERE adds.branch_id = ".concat(admin_id, " AND adds.status = \"branch_pending\" ").concat(searchKeyword ? search_query : ""));
-          case 64:
+            _context4.next = 65;
+            return _db["default"].raw("SELECT adds.id,adds.user_id ,adds.delivery_date,adds.sub_total,\n    users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n      user_address.address,user_address.id as user_address_id ,user_address.landmark\n      FROM add_on_orders as adds \n      JOIN users ON users.id = adds.user_id \n      JOIN user_address ON user_address.id = adds.address_id\n      WHERE adds.branch_id = ".concat(admin_id, " AND adds.status = \"assigned\" ").concat(searchKeyword ? search_query : ""));
+          case 65:
             add_on_order_query = _context4.sent;
+            console.log(add_on_order_query[0]);
             if (!(add_on_order_query[0].length !== 0)) {
-              _context4.next = 79;
+              _context4.next = 82;
               break;
             }
-            _i2 = 0;
-          case 67:
-            if (!(_i2 < add_on_order_query[0].length)) {
-              _context4.next = 79;
+            _i = 0;
+          case 69:
+            if (!(_i < add_on_order_query[0].length)) {
+              _context4.next = 82;
               break;
             }
-            _context4.next = 70;
+            _context4.next = 72;
             return (0, _db["default"])("add_on_order_items as adds").select("adds.add_on_order_id", "adds.quantity", "adds.price", "adds.total_price", "products.name as product_name", "products.image", "products.unit_value", "unit_types.value").join("products", "products.id", "=", "adds.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").where({
-              "adds.add_on_order_id": add_on_order_query[0][_i2].id
+              "adds.add_on_order_id": add_on_order_query[0][_i].id
             });
-          case 70:
+          case 72:
             get_user_products_query = _context4.sent;
             for (j = 0; j < get_user_products_query.length; j++) {
               get_user_products_query[j].image = process.env.BASE_URL + get_user_products_query[j].image;
             }
-            add_on_order_query[0][_i2].is_add_on = true;
-            add_on_order_query[0][_i2].add_on_products = get_user_products_query;
-            add_on_order_query[0][_i2].delivery_date = add_on_order_query[0][_i2].delivery_date.toString().slice(4, 16);
-            data.push(add_on_order_query[0][_i2]);
-          case 76:
-            _i2++;
-            _context4.next = 67;
-            break;
+            add_on_order_query[0][_i].is_add_on = true;
+            add_on_order_query[0][_i].add_on_order_id = add_on_order_query[0][_i].id;
+            add_on_order_query[0][_i].add_on_products = get_user_products_query;
+            add_on_order_query[0][_i].delivery_date = (0, _moment["default"])(add_on_order_query[0][_i].delivery_date).format("DD-MM-YYYY");
+            add_on_users.push(add_on_order_query[0][_i]);
           case 79:
+            _i++;
+            _context4.next = 69;
+            break;
+          case 82:
+            // check that new user did the sub and add on at same time (like if he did the add on while pending the subscription)
+            view_add_on_products = [];
+            for (_i2 = 0; _i2 < subscription_users.length; _i2++) {
+              for (_j = 0; _j < add_on_users.length; _j++) {
+                if (add_on_users[_j].user_address_id == subscription_users[_i2].user_address_id) {
+                  add_on_users[_j].is_subscription_pending = true;
+                  subscription_users[_i2].is_add_on_pending = true;
+                  view_add_on_products.push({
+                    add_on_order_id: add_on_users[_j].add_on_order_id,
+                    delivery_date: add_on_users[_j].delivery_date,
+                    sub_total: add_on_users[_j].sub_total,
+                    add_on_products: add_on_users[_j].add_on_products
+                  });
+                }
+              }
+              subscription_users[_i2].add_on_details = view_add_on_products;
+              view_add_on_products = [];
+            }
+
+            // if new user did the two add on orders
+
+            for (_i3 = 0; _i3 < add_on_users.length; _i3++) {
+              if (add_on_users[_i3].is_subscription_pending != true) {
+                for (_j2 = 0; _j2 < add_on_users.length; _j2++) {
+                  if (add_on_users[_i3].user_address_id == add_on_users[_j2].user_address_id && add_on_users[_i3].id != add_on_users[_j2].id) {
+                    add_on_users[_i3].is_add_on_duplicate = true;
+                    add_on_users[_j2].is_add_on_duplicate = true;
+                    if (add_on_users[_j2].add_on_duplicate_details) {
+                      add_on_users[_j2].add_on_duplicate_details.push({
+                        add_on_order_id: add_on_users[_i3].add_on_order_id,
+                        delivery_date: add_on_users[_i3].delivery_date,
+                        sub_total: add_on_users[_i3].sub_total,
+                        add_on_products: add_on_users[_i3].add_on_products
+                      });
+                    } else {
+                      add_on_users[_j2].add_on_duplicate_details = [{
+                        add_on_order_id: add_on_users[_j2].add_on_order_id,
+                        delivery_date: add_on_users[_j2].delivery_date,
+                        sub_total: add_on_users[_j2].sub_total,
+                        add_on_products: add_on_users[_j2].add_on_products
+                      }, {
+                        add_on_order_id: add_on_users[_i3].add_on_order_id,
+                        delivery_date: add_on_users[_i3].delivery_date,
+                        sub_total: add_on_users[_i3].sub_total,
+                        add_on_products: add_on_users[_i3].add_on_products
+                      }];
+                    }
+                  }
+                }
+              }
+            }
             loading = false;
-            res.render("branch_admin/subscription/exist_user", {
+            res.render("branch_admin/subscription/pending", {
               data: data,
+              subscription_users: subscription_users,
+              add_on_users: add_on_users,
               page: page,
               iterator: iterator,
               endingLink: endingLink,
@@ -715,22 +553,541 @@ var getExistUsers = /*#__PURE__*/function () {
               loading: loading,
               routes: routes
             });
-            _context4.next = 87;
+            _context4.next = 93;
             break;
-          case 83:
-            _context4.prev = 83;
+          case 89:
+            _context4.prev = 89;
             _context4.t0 = _context4["catch"](0);
             console.log(_context4.t0);
             res.redirect("/home");
-          case 87:
+          case 93:
           case "end":
             return _context4.stop();
         }
       }
-    }, _callee4, null, [[0, 83]]);
+    }, _callee4, null, [[0, 89]]);
   }));
-  return function getExistUsers(_x7, _x8) {
+  return function getNewUsers(_x7, _x8) {
     return _ref4.apply(this, arguments);
   };
 }();
+exports.getNewUsers = getNewUsers;
+var getExistUsers = /*#__PURE__*/function () {
+  var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(req, res) {
+    var loading, searchKeyword, admin_id, data_length, data_length_2, search_data_length, search_data_2_length, routes, both_data, _yield$getPageNumber2, startingLimit, page, resultsPerPage, numberOfPages, iterator, endingLink, results, is_search, data, subscription_users, add_on_users, i, search_query, add_on_order_query, get_user_products_query, _i4, j;
+    return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+      while (1) {
+        switch (_context5.prev = _context5.next) {
+          case 0:
+            _context5.prev = 0;
+            loading = true;
+            searchKeyword = req.query.searchKeyword;
+            admin_id = req.body.admin_id;
+            data_length = [];
+            data_length_2 = [];
+            if (!searchKeyword) {
+              _context5.next = 22;
+              break;
+            }
+            _context5.next = 9;
+            return _db["default"].raw("SELECT subscribed_user_details.id FROM subscribed_user_details JOIN users ON users.id = subscribed_user_details.user_id WHERE subscribed_user_details.branch_id = ".concat(admin_id, " AND subscribed_user_details.subscription_status = \"branch_pending\" AND users.user_unique_id LIKE '%").concat(searchKeyword, "%'"));
+          case 9:
+            search_data_length = _context5.sent;
+            _context5.next = 12;
+            return _db["default"].raw("SELECT adds.id,adds.user_id ,adds.delivery_date,adds.sub_total,\n        users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n          user_address.address,user_address.id as user_address_id ,user_address.landmark\n          FROM add_on_orders as adds \n          JOIN users ON users.id = adds.user_id \n          JOIN user_address ON user_address.id = adds.address_id\n          WHERE adds.branch_id = ".concat(admin_id, " AND adds.status = \"branch_pending\" AND  users.user_unique_id LIKE '%").concat(searchKeyword, "%'"));
+          case 12:
+            search_data_2_length = _context5.sent;
+            data_length = search_data_length[0];
+            data_length_2 = search_data_2_length[0];
+            if (!(data_length.length === 0 && data_length_2.length === 0)) {
+              _context5.next = 20;
+              break;
+            }
+            loading = false;
+            req.query.searchKeyword = "";
+            req.flash("error", "No User Found");
+            return _context5.abrupt("return", res.redirect("/branch_admin/subscription/get_exist_users"));
+          case 20:
+            _context5.next = 28;
+            break;
+          case 22:
+            _context5.next = 24;
+            return (0, _db["default"])("subscribed_user_details").select("id").where({
+              subscription_status: "branch_pending",
+              branch_id: admin_id
+            });
+          case 24:
+            data_length = _context5.sent;
+            _context5.next = 27;
+            return (0, _db["default"])("add_on_orders").select("id").where({
+              branch_id: admin_id,
+              status: "branch_pending"
+            });
+          case 27:
+            data_length_2 = _context5.sent;
+          case 28:
+            _context5.next = 30;
+            return (0, _db["default"])("routes").select("name", "id").where({
+              status: "1",
+              branch_id: admin_id
+            });
+          case 30:
+            routes = _context5.sent;
+            if (!(data_length.length === 0 && data_length_2.length === 0)) {
+              _context5.next = 34;
+              break;
+            }
+            loading = false;
+            return _context5.abrupt("return", res.render("branch_admin/subscription/exist_user", {
+              subscription_users: data_length,
+              add_on_users: data_length_2,
+              searchKeyword: searchKeyword,
+              routes: routes
+            }));
+          case 34:
+            both_data = [];
+            if (data_length.length === 0 && data_length_2.length !== 0) {
+              both_data = data_length_2;
+            } else if (data_length.length !== 0 && data_length_2.length === 0) {
+              both_data = data_length;
+            } else {
+              both_data = [].concat(_toConsumableArray(data_length), _toConsumableArray(data_length_2));
+            }
+            _context5.next = 38;
+            return (0, _helper.getPageNumber)(req, res, both_data, "subscription/get_exist_users");
+          case 38:
+            _yield$getPageNumber2 = _context5.sent;
+            startingLimit = _yield$getPageNumber2.startingLimit;
+            page = _yield$getPageNumber2.page;
+            resultsPerPage = _yield$getPageNumber2.resultsPerPage;
+            numberOfPages = _yield$getPageNumber2.numberOfPages;
+            iterator = _yield$getPageNumber2.iterator;
+            endingLink = _yield$getPageNumber2.endingLink;
+            is_search = false;
+            data = [];
+            subscription_users = [];
+            add_on_users = [];
+            if (!(data_length !== 0)) {
+              _context5.next = 62;
+              break;
+            }
+            if (!searchKeyword) {
+              _context5.next = 57;
+              break;
+            }
+            _context5.next = 53;
+            return _db["default"].raw("SELECT sub.id , sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n        user_address.address,user_address.id as user_address_id ,user_address.landmark,products.name as product_name,products.price,products.unit_value,products.image,\n        unit_types.value,categories.name as category_name\n        FROM subscribed_user_details AS sub \n        JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id \n        JOIN users ON users.id = sub.user_id \n        JOIN user_address ON user_address.id = sub.user_address_id\n        JOIN products ON products.id = sub.product_id\n        JOIN unit_types ON unit_types.id = products.unit_type_id\n        JOIN categories ON categories.id = products.category_id\n        WHERE sub.subscription_status = \"branch_pending\" AND sub.branch_id = ".concat(admin_id, "\n        AND users.user_unique_id LIKE '%").concat(searchKeyword, "%'"));
+          case 53:
+            results = _context5.sent;
+            is_search = true;
+            _context5.next = 60;
+            break;
+          case 57:
+            _context5.next = 59;
+            return _db["default"].raw("SELECT sub.id ,sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n        user_address.address,user_address.id as user_address_id ,user_address.landmark,products.name as product_name,products.price,products.unit_value,products.image,\n        unit_types.value,categories.name as category_name\n        FROM subscribed_user_details AS sub \n        JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id \n        JOIN users ON users.id = sub.user_id \n        JOIN user_address ON user_address.id = sub.user_address_id\n        JOIN products ON products.id = sub.product_id\n        JOIN unit_types ON unit_types.id = products.unit_type_id\n        JOIN categories ON categories.id = products.category_id\n        WHERE sub.subscription_status = \"branch_pending\" AND sub.branch_id = ".concat(admin_id));
+          case 59:
+            results = _context5.sent;
+          case 60:
+            subscription_users = results[0];
+            for (i = 0; i < subscription_users.length; i++) {
+              subscription_users[i].start_date = (0, _moment["default"])(subscription_users[i].start_date).format("DD-MM-YYYY");
+              subscription_users[i].image = process.env.BASE_URL + subscription_users[i].image;
+            }
+          case 62:
+            if (searchKeyword) {
+              search_query = "AND  users.user_unique_id LIKE '%".concat(searchKeyword, "%'");
+            }
+            _context5.next = 65;
+            return _db["default"].raw("SELECT adds.id,adds.user_id ,adds.delivery_date,adds.sub_total,\n    users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,\n      user_address.address,user_address.id as user_address_id ,user_address.landmark\n      FROM add_on_orders as adds \n      JOIN users ON users.id = adds.user_id \n      JOIN user_address ON user_address.id = adds.address_id\n      WHERE adds.branch_id = ".concat(admin_id, " AND adds.status = \"branch_pending\" ").concat(searchKeyword ? search_query : ""));
+          case 65:
+            add_on_order_query = _context5.sent;
+            if (!(add_on_order_query[0].length !== 0)) {
+              _context5.next = 81;
+              break;
+            }
+            _i4 = 0;
+          case 68:
+            if (!(_i4 < add_on_order_query[0].length)) {
+              _context5.next = 81;
+              break;
+            }
+            _context5.next = 71;
+            return (0, _db["default"])("add_on_order_items as adds").select("adds.add_on_order_id", "adds.quantity", "adds.price", "adds.total_price", "products.name as product_name", "products.image", "products.unit_value", "unit_types.value").join("products", "products.id", "=", "adds.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").where({
+              "adds.add_on_order_id": add_on_order_query[0][_i4].id
+            });
+          case 71:
+            get_user_products_query = _context5.sent;
+            for (j = 0; j < get_user_products_query.length; j++) {
+              get_user_products_query[j].image = process.env.BASE_URL + get_user_products_query[j].image;
+            }
+            add_on_order_query[0][_i4].is_add_on = true;
+            add_on_order_query[0][_i4].add_on_order_id = add_on_order_query[0][_i4].id;
+            add_on_order_query[0][_i4].add_on_products = get_user_products_query;
+            add_on_order_query[0][_i4].delivery_date = (0, _moment["default"])(add_on_order_query[0][_i4].delivery_date).format("DD-MM-YYYY");
+            add_on_users.push(add_on_order_query[0][_i4]);
+          case 78:
+            _i4++;
+            _context5.next = 68;
+            break;
+          case 81:
+            console.log(subscription_users);
+            console.log(add_on_users);
+            loading = false;
+            res.render("branch_admin/subscription/exist_user", {
+              data: data,
+              subscription_users: subscription_users,
+              add_on_users: add_on_users,
+              page: page,
+              iterator: iterator,
+              endingLink: endingLink,
+              numberOfPages: 1,
+              is_search: is_search,
+              searchKeyword: searchKeyword,
+              loading: loading,
+              routes: routes
+            });
+            _context5.next = 91;
+            break;
+          case 87:
+            _context5.prev = 87;
+            _context5.t0 = _context5["catch"](0);
+            console.log(_context5.t0);
+            res.redirect("/home");
+          case 91:
+          case "end":
+            return _context5.stop();
+        }
+      }
+    }, _callee5, null, [[0, 87]]);
+  }));
+  return function getExistUsers(_x9, _x10) {
+    return _ref5.apply(this, arguments);
+  };
+}();
 exports.getExistUsers = getExistUsers;
+var userMappingAssign = /*#__PURE__*/function () {
+  var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(req, res) {
+    var _req$body3, router_id, address_id, users, arr_users, get_users;
+    return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+      while (1) {
+        switch (_context6.prev = _context6.next) {
+          case 0:
+            _context6.prev = 0;
+            _req$body3 = req.body, router_id = _req$body3.router_id, address_id = _req$body3.address_id;
+            _context6.next = 4;
+            return (0, _db["default"])("routes").select("user_mapping").where({
+              id: router_id
+            });
+          case 4:
+            users = _context6.sent;
+            if (!(users.length === 0 || users[0].user_mapping === null)) {
+              _context6.next = 11;
+              break;
+            }
+            arr_users = [Number(address_id)];
+            _context6.next = 9;
+            return (0, _db["default"])("routes").update({
+              user_mapping: JSON.stringify(arr_users)
+            }).where({
+              id: router_id
+            });
+          case 9:
+            _context6.next = 17;
+            break;
+          case 11:
+            _context6.next = 13;
+            return (0, _db["default"])("routes").select("user_mapping").where({
+              id: router_id
+            });
+          case 13:
+            get_users = _context6.sent;
+            get_users[0].user_mapping.push(Number(address_id));
+            _context6.next = 17;
+            return (0, _db["default"])("routes").update({
+              user_mapping: JSON.stringify(get_users[0].user_mapping)
+            }).where({
+              id: router_id
+            });
+          case 17:
+            _context6.next = 19;
+            return (0, _db["default"])("user_address").update({
+              router_id: router_id
+            }).where({
+              id: address_id
+            });
+          case 19:
+            req.flash("success", "Route Assigned Successfully");
+            // return res.redirect(`/branch_admin/route/user_mapping?route_id=${is_user_mapping_assign}`)
+            return _context6.abrupt("return", res.redirect("/branch_admin/route/get_route"));
+          case 23:
+            _context6.prev = 23;
+            _context6.t0 = _context6["catch"](0);
+            console.log(_context6.t0);
+            res.redirect("/home");
+          case 27:
+          case "end":
+            return _context6.stop();
+        }
+      }
+    }, _callee6, null, [[0, 23]]);
+  }));
+  return function userMappingAssign(_x11, _x12) {
+    return _ref6.apply(this, arguments);
+  };
+}();
+exports.userMappingAssign = userMappingAssign;
+var unassignUser = /*#__PURE__*/function () {
+  var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7(req, res) {
+    var _req$body4, address_id, router_id, users, user_mapping, i;
+    return _regeneratorRuntime().wrap(function _callee7$(_context7) {
+      while (1) {
+        switch (_context7.prev = _context7.next) {
+          case 0:
+            _context7.prev = 0;
+            _req$body4 = req.body, address_id = _req$body4.address_id, router_id = _req$body4.router_id;
+            _context7.next = 4;
+            return (0, _db["default"])("routes").select("user_mapping").where({
+              id: router_id
+            });
+          case 4:
+            users = _context7.sent;
+            user_mapping = users[0].user_mapping;
+            if (!(user_mapping.length == 1)) {
+              _context7.next = 11;
+              break;
+            }
+            _context7.next = 9;
+            return (0, _db["default"])("routes").update({
+              user_mapping: null
+            }).where({
+              id: router_id
+            });
+          case 9:
+            _context7.next = 12;
+            break;
+          case 11:
+            for (i = 0; i < user_mapping.length; i++) {
+              if (user_mapping[i] == address_id) {
+                user_mapping.splice(i, 1);
+              }
+            }
+          case 12:
+            _context7.next = 14;
+            return (0, _db["default"])("user_address").update({
+              router_id: null
+            }).where({
+              id: address_id
+            });
+          case 14:
+            req.flash("success", "SuccessFully UnAssigned");
+            return _context7.abrupt("return", res.redirect("/branch_admin/route/get_route"));
+          case 18:
+            _context7.prev = 18;
+            _context7.t0 = _context7["catch"](0);
+            console.log(_context7.t0);
+            return _context7.abrupt("return", res.redirect("/home"));
+          case 22:
+          case "end":
+            return _context7.stop();
+        }
+      }
+    }, _callee7, null, [[0, 18]]);
+  }));
+  return function unassignUser(_x13, _x14) {
+    return _ref7.apply(this, arguments);
+  };
+}();
+
+// export const getExistUsers = async (req, res) => {
+//   try {
+//     const { admin_id } = req.body;
+//     let loading = true;
+//     const { searchKeyword } = req.query;
+
+//     let data_length = [];
+//     let data_length_2 = [];
+
+//     if (searchKeyword) {
+//       const search_data_length = await knex.raw(
+//         `SELECT subscribed_user_details.id FROM subscribed_user_details JOIN users ON users.id = subscribed_user_details.user_id WHERE subscribed_user_details.branch_id = ${admin_id} AND subscribed_user_details.subscription_status = "branch_pending" AND users.user_unique_id LIKE '%${searchKeyword}%'`
+//       );
+
+//       const search_data_2_length = await knex.raw(
+//         `SELECT adds.id,adds.user_id ,adds.delivery_date,adds.sub_total,
+//         users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,
+//           user_address.address,user_address.id as user_address_id ,user_address.landmark
+//           FROM add_on_orders as adds
+//           JOIN users ON users.id = adds.user_id
+//           JOIN user_address ON user_address.id = adds.address_id
+//           WHERE adds.branch_id = ${admin_id} AND adds.status = "branch_pending" AND  users.user_unique_id LIKE '%${searchKeyword}%'`
+//       );
+
+//       data_length = search_data_length[0];
+//       data_length_2 = search_data_2_length[0];
+//       if (data_length.length === 0 && data_length_2.length === 0) {
+//         loading = false;
+//         req.query.searchKeyword = "";
+//         req.flash("error", "No User Found");
+//         return res.redirect("/branch_admin/subscription/get_exist_users");
+//       }
+//     } else {
+//       data_length = await knex("subscribed_user_details")
+//         .select("id")
+//         .where({ subscription_status: "branch_pending" });
+
+//       data_length_2 = await knex("add_on_orders")
+//         .select("id")
+//         .where({ branch_id: admin_id, status: "branch_pending" });
+//     }
+
+//     const routes = await knex("routes")
+//       .select("name", "id")
+//       .where({ status: "1", branch_id: admin_id });
+
+//     if (data_length.length === 0 && data_length_2.length === 0) {
+//       loading = false;
+//       return res.render("branch_admin/subscription/exist_user", {
+//         data: data_length,
+//         searchKeyword,
+//         routes,
+//       });
+//     }
+
+//     let both_data = [];
+//     if (data_length.length === 0 && data_length_2.length !== 0) {
+//       both_data = data_length_2;
+//     } else if (data_length.length !== 0 && data_length_2.length === 0) {
+//       both_data = data_length;
+//     } else {
+//       both_data = [...data_length, ...data_length_2];
+//     }
+
+//     console.log(both_data);
+
+//     let {
+//       startingLimit,
+//       page,
+//       resultsPerPage,
+//       numberOfPages,
+//       iterator,
+//       endingLink,
+//     } = await getPageNumber(
+//       req,
+//       res,
+//       both_data,
+//       "subscription/get_exist_users"
+//     );
+
+//     let results;
+//     let is_search = false;
+//     let data = [];
+//     if (data_length !== 0) {
+//       if (searchKeyword) {
+//         results = await knex.raw(
+//           `SELECT sub.id , sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,
+//         user_address.address,user_address.id as user_address_id ,user_address.landmark,products.name as product_name,products.price,products.unit_value,products.image,
+//         unit_types.value,categories.name as category_name,routes.name as route_name ,routes.id as route_id
+//         FROM subscribed_user_details AS sub
+//         JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id
+//         JOIN users ON users.id = sub.user_id
+//         JOIN user_address ON user_address.id = sub.user_address_id
+//         JOIN routes ON routes.id = user_address.router_id
+//         JOIN products ON products.id = sub.product_id
+//         JOIN unit_types ON unit_types.id = products.unit_type_id
+//         JOIN categories ON categories.id = products.category_id
+//         WHERE sub.subscription_status = "branch_pending" AND sub.branch_id = ${admin_id}
+//         AND users.user_unique_id LIKE '%${searchKeyword}%'`
+//         );
+//         is_search = true;
+//       } else {
+//         results = await knex.raw(
+//           `SELECT sub.id ,sub.start_date,sub.quantity,sub.customized_days,sub.status,subscription_type.name as subscription_name,users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,
+//         user_address.address,user_address.id as user_address_id ,user_address.landmark,products.name as product_name,products.price,products.unit_value,products.image,
+//         unit_types.value,categories.name as category_name,routes.name as route_name ,routes.id as route_id
+//         FROM subscribed_user_details AS sub
+//         JOIN subscription_type ON subscription_type.id = sub.subscribe_type_id
+//         JOIN users ON users.id = sub.user_id
+//         JOIN user_address ON user_address.id = sub.user_address_id
+//         JOIN routes ON routes.id = user_address.router_id
+//         JOIN products ON products.id = sub.product_id
+//         JOIN unit_types ON unit_types.id = products.unit_type_id
+//         JOIN categories ON categories.id = products.category_id
+//         WHERE sub.subscription_status = "branch_pending" AND sub.branch_id = ${admin_id}`
+//         );
+//       }
+//       data = results[0];
+//       for (let i = 0; i < data.length; i++) {
+//         data[i].start_date = moment(data[i].start_date).format("DD-MM-YYYY");
+//         data[i].image = process.env.BASE_URL + data[i].image;
+//       }
+//     }
+//     let search_query;
+//     if (searchKeyword) {
+//       search_query = `AND  users.user_unique_id LIKE '%${searchKeyword}%'`;
+//     }
+
+//     const add_on_order_query =
+//       await knex.raw(`SELECT adds.id,adds.user_id ,adds.delivery_date,adds.sub_total,
+//     users.user_unique_id as customer_id,users.mobile_number,users.name as user_name,
+//       user_address.address,user_address.id as user_address_id ,user_address.landmark
+//       FROM add_on_orders as adds
+//       JOIN users ON users.id = adds.user_id
+//       JOIN user_address ON user_address.id = adds.address_id
+//       WHERE adds.branch_id = ${admin_id} AND adds.status = "branch_pending" ${
+//         searchKeyword ? search_query : ""
+//       }`);
+
+//     // console.log(add_on_order_query[0]);
+
+//     let get_user_products_query;
+//     if (add_on_order_query[0].length !== 0) {
+//       for (let i = 0; i < add_on_order_query[0].length; i++) {
+//         get_user_products_query = await knex("add_on_order_items as adds")
+//           .select(
+//             "adds.add_on_order_id",
+//             "adds.quantity",
+//             "adds.price",
+//             "adds.total_price",
+//             "products.name as product_name",
+//             "products.image",
+//             "products.unit_value",
+//             "unit_types.value"
+//           )
+//           .join("products", "products.id", "=", "adds.product_id")
+//           .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
+//           .where({ "adds.add_on_order_id": add_on_order_query[0][i].id });
+
+//         for (let j = 0; j < get_user_products_query.length; j++) {
+//           get_user_products_query[j].image =
+//             process.env.BASE_URL + get_user_products_query[j].image;
+//         }
+//         add_on_order_query[0][i].is_add_on = true;
+//         add_on_order_query[0][i].add_on_products = get_user_products_query;
+//         add_on_order_query[0][i].delivery_date = add_on_order_query[0][
+//           i
+//         ].delivery_date
+//           .toString()
+//           .slice(4, 16);
+//         data.push(add_on_order_query[0][i]);
+//       }
+//       // console.log(get_user_products_query)
+//     }
+
+//     loading = false;
+//     res.render("branch_admin/subscription/exist_user", {
+//       data: data,
+//       page,
+//       iterator,
+//       endingLink,
+//       numberOfPages: 1,
+//       is_search,
+//       searchKeyword,
+//       loading,
+//       routes,
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     res.redirect("/home");
+//   }
+// };
+exports.unassignUser = unassignUser;

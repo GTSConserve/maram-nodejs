@@ -8,6 +8,9 @@ exports.searchProducts = exports.removeAddOnOrder = exports.nextDayProduct = exp
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 var _messages = _interopRequireDefault(require("../../constants/messages"));
 var _helper = require("../../utils/helper.util");
+var _message = require("../../notifications/message.sender");
+var _axios = _interopRequireDefault(require("axios"));
+var _moment = _interopRequireDefault(require("moment"));
 var _product = require("../../models/user/product.model");
 var _jwt = require("../../services/jwt.service");
 var _db = _interopRequireDefault(require("../../services/db.service"));
@@ -17,14 +20,14 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 var removeAddOnOrder = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(req, res) {
-    var _req$body, userId, product_id, delivery_date, addon_id, remove;
+    var _req$body, userId, product_id, delivery_date, remove;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             _context.prev = 0;
-            _req$body = req.body, userId = _req$body.userId, product_id = _req$body.product_id, delivery_date = _req$body.delivery_date, addon_id = _req$body.addon_id;
-            if (!(!product_id || !delivery_date || !addon_id)) {
+            _req$body = req.body, userId = _req$body.userId, product_id = _req$body.product_id, delivery_date = _req$body.delivery_date;
+            if (!(!product_id || !delivery_date)) {
               _context.next = 4;
               break;
             }
@@ -33,29 +36,28 @@ var removeAddOnOrder = /*#__PURE__*/function () {
               message: _messages["default"].MANDATORY_ERROR
             }));
           case 4:
-            console.log(userId, product_id, delivery_date, addon_id);
-            _context.next = 7;
-            return (0, _product.remove_addonorders)(product_id, delivery_date, addon_id, userId);
-          case 7:
+            _context.next = 6;
+            return (0, _product.remove_addonorders)(product_id, delivery_date, userId);
+          case 6:
             remove = _context.sent;
             return _context.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               status: true,
-              body: remove.status
+              body: remove
             }));
-          case 11:
-            _context.prev = 11;
+          case 10:
+            _context.prev = 10;
             _context.t0 = _context["catch"](0);
             console.log(_context.t0);
             return _context.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
-          case 15:
+          case 14:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 11]]);
+    }, _callee, null, [[0, 10]]);
   }));
   return function removeAddOnOrder(_x, _x2) {
     return _ref.apply(this, arguments);
@@ -102,7 +104,7 @@ var getSingleProduct = /*#__PURE__*/function () {
             product[0].image = process.env.BASE_URL + product[0].image;
             return _context2.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               status: true,
-              data: response.data
+              data: response.data[0]
             }));
           case 16:
             _context2.prev = 16;
@@ -154,7 +156,7 @@ var getProducts = /*#__PURE__*/function () {
             }));
           case 10:
             _context3.next = 12;
-            return (0, _product.get_products)(category_id, product_type_id, userId);
+            return (0, _product.get_products)(category_id, product_type_id);
           case 12:
             product = _context3.sent;
             if (product.status) {
@@ -330,11 +332,11 @@ var getAddOnProducts = /*#__PURE__*/function () {
           case 10:
             _context6.prev = 10;
             _context6.t0 = _context6["catch"](0);
-            console.log(_context6.t0);
+            // console.log(error);
             res.status(500).json({
               status: false
             });
-          case 14:
+          case 13:
           case "end":
             return _context6.stop();
         }
@@ -376,7 +378,9 @@ var searchProducts = /*#__PURE__*/function () {
             userId = user.user_id;
           case 10:
             _context7.next = 12;
-            return (0, _product.search_products)(product_type_id, search_keyword, userId);
+            return (0, _product.search_products)(product_type_id, search_keyword
+            // userId
+            );
           case 12:
             product = _context7.sent;
             if (product.status) {
@@ -458,48 +462,77 @@ var addon_Order = /*#__PURE__*/function () {
 exports.addon_Order = addon_Order;
 var nextDayProduct = /*#__PURE__*/function () {
   var _ref9 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9(req, res) {
-    var userId, static_response;
+    var userId, static_response, date1, date2, tommorow_date, query, _query;
     return _regeneratorRuntime().wrap(function _callee9$(_context9) {
       while (1) {
         switch (_context9.prev = _context9.next) {
           case 0:
             _context9.prev = 0;
             userId = req.body.userId;
-            static_response = [{
-              "product_id": "18",
-              "product_name": "Farm Fresh Natural Milk",
-              "product_image": "https://i.pinimg.com/originals/af/31/cf/af31cff157e5304e32a3777c8245ae8c.jpg",
-              "product_status": 1,
-              "product_variation": "1.5 litres",
-              "Product price": 100
-            }];
-            if (static_response) {
-              _context9.next = 5;
+            _context9.next = 4;
+            return (0, _product.nextday_product)(userId);
+          case 4:
+            static_response = _context9.sent;
+            date1 = (0, _moment["default"])(static_response.product[0].date, "YYYY-MM-DD").format("YYYY-MM-DD");
+            date2 = (0, _moment["default"])(static_response.product[0].date, "YYYY-MM-DD").format("YYYY-MM-DD");
+            tommorow_date = (0, _moment["default"])(new Date(), "YYYY-MM-DD").add(1, "days").format("YYYY-MM-DD");
+            console.log(tommorow_date, date1, date2);
+            if (!(tommorow_date === date1)) {
+              _context9.next = 14;
               break;
             }
+            query = [{
+              "product_id": static_response.product[0].product_id,
+              "product_name": static_response.product[0].product_name,
+              "product_image": static_response.product[0].product_image,
+              "product_status": static_response.product[0].product_status,
+              "product_variation": static_response.product[0].value + static_response.product[0].unit_type,
+              "Product price": static_response.product[0].price
+            }]; // tommorow_date = moment().format("YYYY-MM-DD")
+            return _context9.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
+              status: true,
+              data: query,
+              "date": (0, _moment["default"])(static_response.product[0].date, "YYYY-MM-DD").format("DD-MM-YYYY")
+            }));
+          case 14:
+            if (!(tommorow_date === date2)) {
+              _context9.next = 19;
+              break;
+            }
+            _query = {
+              "product_id": static_response.product[0].product_id,
+              "product_name": static_response.product[0].product_name,
+              "product_image": static_response.product[0].product_image,
+              "product_status": static_response.product[0].product_status,
+              "product_variation": static_response.product[0].value + static_response.product[0].unit_type,
+              "Product price": static_response.product[0].price
+            }; // tommorow_date = moment().format("YYYY-MM-DD")
+            return _context9.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
+              status: true,
+              data: _query,
+              "date": static_response.date[0].date
+            }));
+          case 19:
             return _context9.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
               message: "No Product Available"
             }));
-          case 5:
-            return _context9.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
-              status: true,
-              data: static_response,
-              "date": "25 Oct | Mon"
-            }));
-          case 8:
-            _context9.prev = 8;
+          case 20:
+            _context9.next = 26;
+            break;
+          case 22:
+            _context9.prev = 22;
             _context9.t0 = _context9["catch"](0);
             console.log(_context9.t0);
             res.status(500).json({
               status: false
             });
-          case 12:
+          case 26:
           case "end":
             return _context9.stop();
         }
       }
-    }, _callee9, null, [[0, 8]]);
+    }, _callee9, null, [[0, 22]]);
   }));
   return function nextDayProduct(_x17, _x18) {
     return _ref9.apply(this, arguments);

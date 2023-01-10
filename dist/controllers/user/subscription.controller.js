@@ -7,7 +7,9 @@ Object.defineProperty(exports, "__esModule", {
 exports.singleSubscription = exports.removeAdditionalOrder = exports.pauseSubscription = exports.newSubscription = exports.getSubscriptionPlan = exports.getSubcription_order = exports.getAllSubscription = exports.editAdditionalOrder = exports.createAdditionalOrder = exports.changeSubscriptionplan = exports.changeQuantity = exports.Remove_Subscription = void 0;
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 var _messages = _interopRequireDefault(require("../../constants/messages"));
+var _axios = _interopRequireDefault(require("axios"));
 var _moment = _interopRequireDefault(require("moment"));
+var _message = require("../../notifications/message.sender");
 var _subscription = require("../../models/user/subscription.model");
 var _db = _interopRequireDefault(require("../../services/db.service"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -21,14 +23,14 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 var removeAdditionalOrder = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(req, res) {
-    var _req$body, userId, subscription_id, additional_order_id;
+    var _req$body, userId, subscription_id;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             _context.prev = 0;
-            _req$body = req.body, userId = _req$body.userId, subscription_id = _req$body.subscription_id, additional_order_id = _req$body.additional_order_id;
-            if (!(!subscription_id || !additional_order_id)) {
+            _req$body = req.body, userId = _req$body.userId, subscription_id = _req$body.subscription_id;
+            if (subscription_id) {
               _context.next = 4;
               break;
             }
@@ -38,12 +40,13 @@ var removeAdditionalOrder = /*#__PURE__*/function () {
             }));
           case 4:
             _context.next = 6;
-            return (0, _db["default"])("additional_orders").where({
+            return (0, _db["default"])("additional_orders").update({
+              status: "cancelled"
+            }).where({
               subscription_id: subscription_id,
               status: "pending",
-              user_id: userId,
-              id: additional_order_id
-            }).del();
+              user_id: userId
+            });
           case 6:
             res.status(_responseCode["default"].SUCCESS).json({
               status: true,
@@ -73,14 +76,14 @@ var removeAdditionalOrder = /*#__PURE__*/function () {
 exports.removeAdditionalOrder = removeAdditionalOrder;
 var editAdditionalOrder = /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(req, res) {
-    var _req$body2, userId, subscription_id, dates, qty, additional_order_id;
+    var _req$body2, userId, subscription_id, dates, qty, current_month, addditional_parent_id;
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.prev = 0;
-            _req$body2 = req.body, userId = _req$body2.userId, subscription_id = _req$body2.subscription_id, dates = _req$body2.dates, qty = _req$body2.qty, additional_order_id = _req$body2.additional_order_id;
-            if (!(!subscription_id || dates.length === 0 || !qty || !additional_order_id)) {
+            _req$body2 = req.body, userId = _req$body2.userId, subscription_id = _req$body2.subscription_id, dates = _req$body2.dates, qty = _req$body2.qty;
+            if (!(!subscription_id || dates.length === 0 || !qty)) {
               _context3.next = 4;
               break;
             }
@@ -89,13 +92,22 @@ var editAdditionalOrder = /*#__PURE__*/function () {
               message: _messages["default"].MANDATORY_ERROR
             }));
           case 4:
-            _context3.next = 6;
+            current_month = (0, _moment["default"])().format("M");
+            _context3.next = 7;
+            return (0, _db["default"])("additional_orders_parent").select("id").where({
+              subscription_id: subscription_id,
+              user_id: userId,
+              month: current_month
+            });
+          case 7:
+            addditional_parent_id = _context3.sent;
+            _context3.next = 10;
             return (0, _db["default"])("additional_orders").where({
               subscription_id: subscription_id,
               status: "pending",
               user_id: userId
             }).del();
-          case 6:
+          case 10:
             dates.map( /*#__PURE__*/function () {
               var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(data) {
                 return _regeneratorRuntime().wrap(function _callee2$(_context2) {
@@ -104,6 +116,7 @@ var editAdditionalOrder = /*#__PURE__*/function () {
                       case 0:
                         _context2.next = 2;
                         return (0, _db["default"])("additional_orders").insert({
+                          additional_orders_parent_id: addditional_parent_id[0].id,
                           user_id: userId,
                           subscription_id: subscription_id,
                           quantity: qty,
@@ -124,22 +137,22 @@ var editAdditionalOrder = /*#__PURE__*/function () {
               status: true,
               message: "SuccessFully Updated"
             });
-            _context3.next = 14;
+            _context3.next = 18;
             break;
-          case 10:
-            _context3.prev = 10;
+          case 14:
+            _context3.prev = 14;
             _context3.t0 = _context3["catch"](0);
             console.log(_context3.t0);
             res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             });
-          case 14:
+          case 18:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3, null, [[0, 10]]);
+    }, _callee3, null, [[0, 14]]);
   }));
   return function editAdditionalOrder(_x3, _x4) {
     return _ref2.apply(this, arguments);
@@ -148,7 +161,7 @@ var editAdditionalOrder = /*#__PURE__*/function () {
 exports.editAdditionalOrder = editAdditionalOrder;
 var createAdditionalOrder = /*#__PURE__*/function () {
   var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(req, res) {
-    var _req$body3, userId, subscription_id, qty, dates;
+    var _req$body3, userId, subscription_id, qty, dates, current_month, addditional_parent_id;
     return _regeneratorRuntime().wrap(function _callee5$(_context5) {
       while (1) {
         switch (_context5.prev = _context5.next) {
@@ -164,6 +177,15 @@ var createAdditionalOrder = /*#__PURE__*/function () {
               message: _messages["default"].MANDATORY_ERROR
             }));
           case 4:
+            current_month = (0, _moment["default"])().format("M");
+            _context5.next = 7;
+            return (0, _db["default"])("additional_orders_parent").insert({
+              subscription_id: subscription_id,
+              user_id: userId,
+              month: current_month
+            });
+          case 7:
+            addditional_parent_id = _context5.sent;
             dates.map( /*#__PURE__*/function () {
               var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(data) {
                 return _regeneratorRuntime().wrap(function _callee4$(_context4) {
@@ -172,6 +194,7 @@ var createAdditionalOrder = /*#__PURE__*/function () {
                       case 0:
                         _context4.next = 2;
                         return (0, _db["default"])("additional_orders").insert({
+                          additional_orders_parent_id: addditional_parent_id[0],
                           user_id: userId,
                           subscription_id: subscription_id,
                           quantity: qty,
@@ -188,24 +211,44 @@ var createAdditionalOrder = /*#__PURE__*/function () {
                 return _ref5.apply(this, arguments);
               };
             }());
+            _context5.next = 11;
+            return (0, _message.sendNotification)({
+              include_external_user_ids: [userId.toString()],
+              contents: {
+                en: "Your Additional Order Placed SuccessFully"
+              },
+              headings: {
+                en: "Subscription Notification"
+              },
+              name: "Additional Order",
+              data: {
+                subscription_status: "pending",
+                category_id: 0,
+                product_type_id: 0,
+                type: 2,
+                subscription_id: subscription_id[0],
+                bill_id: 0
+              }
+            });
+          case 11:
             return _context5.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               status: true,
               message: "Additional Order Added SuccessFully"
             }));
-          case 8:
-            _context5.prev = 8;
+          case 14:
+            _context5.prev = 14;
             _context5.t0 = _context5["catch"](0);
             console.log(_context5.t0);
             res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             });
-          case 12:
+          case 18:
           case "end":
             return _context5.stop();
         }
       }
-    }, _callee5, null, [[0, 8]]);
+    }, _callee5, null, [[0, 14]]);
   }));
   return function createAdditionalOrder(_x6, _x7) {
     return _ref4.apply(this, arguments);
@@ -294,36 +337,37 @@ var newSubscription = /*#__PURE__*/function () {
             return (0, _subscription.new_subscription)(userId, subscription_plan_id, product_id, user_address_id, start_date, qty, customized_days);
           case 9:
             subscription = _context7.sent;
+            console.log(userId);
             if (!subscription.status) {
-              _context7.next = 14;
+              _context7.next = 15;
               break;
             }
             return _context7.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               status: true,
               message: "Subscription Starts Successfully"
             }));
-          case 14:
+          case 15:
             return _context7.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               status: false,
               message: subscription.message
             }));
-          case 15:
-            _context7.next = 21;
+          case 16:
+            _context7.next = 22;
             break;
-          case 17:
-            _context7.prev = 17;
+          case 18:
+            _context7.prev = 18;
             _context7.t0 = _context7["catch"](0);
             console.log(_context7.t0);
             return _context7.abrupt("return", res.status(_responseCode["default"].FAILURE).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
-          case 21:
+          case 22:
           case "end":
             return _context7.stop();
         }
       }
-    }, _callee7, null, [[0, 17]]);
+    }, _callee7, null, [[0, 18]]);
   }));
   return function newSubscription(_x11, _x12) {
     return _ref7.apply(this, arguments);
@@ -392,7 +436,7 @@ var getAllSubscription = /*#__PURE__*/function () {
 exports.getAllSubscription = getAllSubscription;
 var singleSubscription = /*#__PURE__*/function () {
   var _ref9 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9(req, res) {
-    var _req$body5, userId, subscription_id, sub, i, bottle_tracker, response;
+    var _req$body5, userId, subscription_id, sub, i, j, response;
     return _regeneratorRuntime().wrap(function _callee9$(_context9) {
       while (1) {
         switch (_context9.prev = _context9.next) {
@@ -421,53 +465,61 @@ var singleSubscription = /*#__PURE__*/function () {
               message: sub.message
             }));
           case 9:
-            for (i = 0; i < sub.data.length; i++) {
-              sub.data[i].image = process.env.BASE_URL + sub.data[i].image;
-              sub.data[i].customized_days = sub.data[i].customized_days;
-              sub.data[i].quantity = sub.data[i].quantity;
-              sub.data[i].price = sub.data[i].price;
-              sub.data[i].address_id = sub.data[i].address_id;
-              sub.query[i].date = [(0, _moment["default"])().format("YYYY-MM-DD")];
-              sub.data[i].subscription_start_date = (0, _moment["default"])().format("YYYY-MM-DD");
-              sub.data[i].date = [(0, _moment["default"])().format("YYYY-MM-DD")];
+            i = 0;
+          case 10:
+            if (!(i < sub.data.length)) {
+              _context9.next = 24;
+              break;
+            }
+            sub.data[i].image = process.env.BASE_URL + sub.data[i].image;
+            sub.data[i].subscription_start_date = (0, _moment["default"])().format("YYYY-MM-DD");
+            sub.data[i].customized_days = sub.data[i].customized_days;
+            sub.data[i].address_id = sub.data[i].address_id;
+            sub.data[i].quantity = sub.data[i].quantity;
+            sub.data[i].price = sub.data[i].price;
+            sub.data[i].date = [(0, _moment["default"])().format("YYYY-MM-DD")];
+            for (j = 0; j < sub.add_product.length; j++) {
+              console.log(sub.add_product[0][j].id);
+              sub.add_product[0][j].id = sub.add_product[0][j].id;
+              sub.add_product[0][j].image = sub.add_product[0][j].image;
+              sub.add_product[0][j].date = [(0, _moment["default"])().format("YYYY-MM-DD")];
               if (sub.data[i].unit_value >= 500) {
                 sub.data[i].unit = sub.data[i].unit_value / 1000 + " " + (sub.data[i].unit_type === "ml" ? "litre" : sub.data[i].unit_type);
               } else {
-                sub.data[i].unit = sub.data[i].unit_value + " " + sub.data[i].unit_type.toString();
+                sub.data[i].unit = sub.data[i].unit_value + " " + sub.data[i].unit_type;
               }
               delete sub.data[i].unit_value;
               delete sub.data[i].unit_type;
             }
-
-            // const query = [{data: sub.data[0],additional_orders: sub.additional_orders[0]}]
-            bottle_tracker = {
-              "delivered_orders": 25,
-              "remaining_orders": 5,
-              "additional_delivered_orders": 5,
-              "additional_remaining_orders": 25
-            };
             response = {
-              additional_orders: [sub.query[0]],
-              this_month_item_detail: bottle_tracker
+              additional_orders: [sub.add_product[0]],
+              this_month_item_detail: sub.this_month_item_detail[0]
             };
             return _context9.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               status: true,
               data: _objectSpread(_objectSpread({}, sub.data[0]), response)
             }));
-          case 15:
-            _context9.prev = 15;
+          case 21:
+            i++;
+            _context9.next = 10;
+            break;
+          case 24:
+            _context9.next = 30;
+            break;
+          case 26:
+            _context9.prev = 26;
             _context9.t0 = _context9["catch"](0);
             console.log(_context9.t0);
-            return _context9.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
+            return _context9.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
-              message: _messages["default"].SERVER_ERROR
+              message: _messages["default"].DATA_NOT_FOUND
             }));
-          case 19:
+          case 30:
           case "end":
             return _context9.stop();
         }
       }
-    }, _callee9, null, [[0, 15]]);
+    }, _callee9, null, [[0, 26]]);
   }));
   return function singleSubscription(_x15, _x16) {
     return _ref9.apply(this, arguments);
@@ -581,7 +633,7 @@ var Remove_Subscription = /*#__PURE__*/function () {
   };
 }();
 
-// change  subscription quantity 
+// change  subscription quantity
 exports.Remove_Subscription = Remove_Subscription;
 var changeQuantity = /*#__PURE__*/function () {
   var _ref12 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee12(req, res) {

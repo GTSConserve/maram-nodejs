@@ -706,20 +706,20 @@ select.form-control.form-custom {
 /*      Default Buttons       */
 .btn-primary {
   color: #fff !important;
-  background-color: #198754 !important;
-  border-color: #198754;
-  box-shadow: 0 10px 20px -10px #198754; }
+  background-color: #80C659 !important;
+  border-color: #80C659;
+  box-shadow: 0 10px 20px -10px #80C659; }
   .btn-primary:hover, .btn-primary:focus {
     color: #fff !important;
-    background-color: #198754;
+    background-color: #80C659;
     box-shadow: none;
-    border-color: #198754; }
+    border-color: #80C659; }
   .btn-primary:active, .btn-primary.active {
-    background-color: #198754;
-    border-top: 1px solid #198754; }
+    background-color: #80C659;
+    border-top: 1px solid #80C659; }
   .btn-primary.disabled, .btn-primary.btn[disabled], .btn-primary:disabled {
-    background-color: #198754;
-    border-color: #198754;
+    background-color: #80C659;
+    border-color: #80C659;
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     box-shadow: none; }

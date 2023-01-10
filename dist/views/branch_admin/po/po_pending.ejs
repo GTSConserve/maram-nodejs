@@ -79,6 +79,7 @@
                                                                 <th class="text-right" scope="col">Price</th>
                                                                 <th class="text-right" scope="col">Qty</th>
                                                                 <th class="text-right" scope="col">Excess Qty</th>
+                                                                <th class="text-right" scope="col">Total Qty</th>
                                                                 <th class="text-right" scope="col">Amount</th>
                                                             </tr>
                                                         </thead>  
@@ -91,23 +92,16 @@
                                                             <% for(sub_products of subscription_products){ %>
                                                                 <% sub_product_total = sub_product_total + (sub_products.total_qty * sub_products.price )  %> 
                                                                 <tr>
-                                                                    <!-- <td  class="checkbox-column"> <input style="cursor: pointer;" value="<%= sub_products.id %>" name="product_id" type="checkbox" class="new-checkbox checkbox-primary"> </td> -->
                                                                     <td name="name"><%= sub_products.name %></td>
                                                                     <td><%= sub_products.value %></td> 
                                                                     <td class="text-right"><%= sub_products.price %></td>
+                                                                    <td class="text-right"><%= sub_products.qty ? sub_products.qty : 0%></td>
+                                                                    <td class="text-right"><%= sub_products.excess_qty ? sub_products.excess_qty : 0 %></td>
                                                                     <td class="text-right"><%= sub_products.total_qty %></td>
-                                                                    <td class="text-right"><input style="width: 45px;" value="<%= add_on_products.excess_qty %>"  name="excess_qty" type="number" onchange="subChange(this)"></td>
-                                                                    <td class="text-right"><%= sub_products.total_qty * sub_products.price %> </td>
+                                                                    <td class="text-right"><%= sub_products.total_price %> </td>
                                                                 </tr>
                                                                 <% }  %> 
                                        
-                                                                    <script>
-                                                                        async function subChange(event){
-                                                                            console.log(sub_excess_qty , "sasda")
-                                                                            "<%= %>"
-                                                                           
-                                                                        }
-                                                                    </script>
 
                                                           
                                                         </tbody>
@@ -129,6 +123,7 @@
                                                                 <th class="text-right" scope="col">Price</th>
                                                                 <th class="text-right" scope="col">Qty</th>
                                                                 <th class="text-right" scope="col">Excess Qty</th>
+                                                                <th class="text-right" scope="col">Total Qty</th>
                                                                 <th class="text-right" scope="col">Amount</th>
                                                             </tr>
                                                         </thead>  
@@ -139,13 +134,13 @@
                                                             <% for(add_on_products of add_on_products){ %>
                                                                 <% add_on_product_total = add_on_product_total + (add_on_products.total_qty * add_on_products.price )  %> 
                                                                 <tr>
-                                                                    <!-- <td  class="checkbox-column"> <input style="cursor: pointer;" value="<%= add_on_products.id %>" name="product_id" type="checkbox" class="new-checkbox checkbox-primary"> </td> -->
                                                                     <td><%= add_on_products.name %></td>
                                                                     <td><%= add_on_products.value %></td> 
                                                                     <td class="text-right"><%= add_on_products.price %></td>
+                                                                    <td class="text-right"><%= add_on_products.qty ? add_on_products.qty : null %></td>
+                                                                    <td class="text-right"><%= add_on_products.excess_qty ? add_on_products.excess_qty : 0 %></td>
                                                                     <td class="text-right"><%= add_on_products.total_qty %></td>
-                                                                    <td class="text-right"><input style="width: 45px;"name="excess_qty" value="<%= add_on_products.excess_qty %>" type="number"></td>
-                                                                    <td class="text-right"><%= add_on_products.total_qty * add_on_products.price %></td>
+                                                                    <td class="text-right"><%= add_on_products.total_price  %></td>
                                                                 </tr>
                                                                 <% }  %> 
                                                           

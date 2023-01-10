@@ -110,6 +110,8 @@ export const getBanners = async (req, res) => {
       data[i].image = process.env.BASE_URL + data[i].image;
     }
 
+    console.log(data)
+
     loading = false;
     res.render("super_admin/settings/banner", {
       data: data,

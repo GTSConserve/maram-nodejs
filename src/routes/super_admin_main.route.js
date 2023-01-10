@@ -10,6 +10,7 @@ import ordersRouter from "./super_admin/orders.route";
 import users_subscriptionRouter from "./super_admin/users_subscription.route";
 import reportsRouter from "./super_admin/reports.route";
 import poRouter from "./super_admin/po.route";
+import userRouter from "./super_admin/user.route";
 
 const mainRouter = express.Router({
   caseSensitive: true,
@@ -49,6 +50,10 @@ const defaultRoutes = [
   {
     path: "/po",
     route: poRouter,
+  },
+  {
+    path: "/user",
+    route: userRouter,
   }
 ];
 

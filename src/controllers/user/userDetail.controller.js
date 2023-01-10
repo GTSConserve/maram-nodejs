@@ -2,6 +2,8 @@ import responseCode from "../../constants/responseCode";
 import { parseJwtPayload } from "../../services/jwt.service";
 import { userAddressValidator } from "../../services/validator.service";
 import knex from "../../services/db.service";
+import { sendNotification } from "../../notifications/message.sender";
+import moment from "moment";
 import {
   change_plan,
   delete_user_address,
@@ -10,16 +12,23 @@ import {
   get_address,
   get_user,
   remove_order,
-  checkAddress
+  checkAddress,
+  get_user_bill,
+  get_single_bill,
+  rider_location
 } from "../../models/user/user_details.model";
 import messages from "../../constants/messages";
 
 export const addUserAddress = async (req, res) => {
   try {
     const payload = userAddressValidator(req.body);
+
     const { userId } = req.body;
+
     if (payload.status) {
+
       await knex("user_address")
+
         .insert({
           user_id: userId,
 
@@ -41,7 +50,7 @@ export const addUserAddress = async (req, res) => {
         })
         .where({ user_id: payload.user_id });
 
-     return res
+      return res
         .status(responseCode.SUCCESS)
 
         .json({ status: true, message: "address added successfully" });
@@ -74,9 +83,36 @@ export const getAddress = async (req, res) => {
 
 export const editAddress = async (req, res) => {
   try {
-    const { userId, title, address, landmark, type, address_id } = req.body;
+    const { 
+      userId, 
+      address_id, 
+      title, 
+      address, 
+      landmark, 
+      type, 
+      alternate_mobile, 
+      latitude, 
+      longitude 
+    } = req.body;
 
-    await edit_address(userId, address_id, title, address, landmark, type);
+    if (!latitude && !longitude) {
+      return res
+        .status(responseCode.FAILURE.DATA_NOT_FOUND)
+        .json({ status: false, message: messages.MANDATORY_ERROR });
+    }
+
+    // console.log(userId, address_id, title, address, landmark, type, alternate_mobile, latitude, longitude)
+
+    await edit_address(
+      userId, 
+      address_id, 
+      title, 
+      address, 
+      landmark, 
+      type, 
+      alternate_mobile, 
+      latitude, 
+      longitude);
 
     res
       .status(responseCode.SUCCESS)
@@ -93,6 +129,8 @@ export const getUser = async (req, res) => {
     const { userId } = req.body;
 
     const user = await get_user(userId);
+
+    console.log(user)
     if (user.body.length === 0) {
       return res
         .status(responseCode.FAILURE.DATA_NOT_FOUND)
@@ -100,21 +138,36 @@ export const getUser = async (req, res) => {
     }
     
     let get_user_detail = {};
+     let status;
+    if(user.rider[0].status==0){
+      status = "rider is assigned"
+    }
+    else if(user.rider[0].status==1){
+      status = "rider can start the tour and delivered soon"
+    }
+    else if(user.rider[0].status==2){
+      status ="rider can end the tour"
+    }
+    else{
+      status = "no rider can assigned"
+    }
+
     user.body.map((data) => {
+
       get_user_detail.user_id = data.id;
       get_user_detail.name = data.name;
       get_user_detail.image = data.image
-      // ? process.env.BASE_URL + data.image
-      // : null;
+      ? process.env.BASE_URL + data.image
+      : null;
       get_user_detail.mobile_number = data.mobile_number;
       get_user_detail.email = data.email;
-      get_user_detail.total_bill_due_Amount = 'Bill due amount ₹0'
-      get_user_detail.total_bill_count = '0 bills'
-      get_user_detail.total_address_count = '0 Saved Address'
-      get_user_detail.total_subcription_count = '0 subscriptions'
-      get_user_detail.total_delivered_product_count = '0 Product Delivery'
-      get_user_detail.rider_status = 'No rider Assign'
-      get_user_detail.rider_status = '0 empty bottles in hand'
+      get_user_detail.rider_name = user.rider[0].name;
+      get_user_detail.rider_status = status;
+      get_user_detail.total_bill_due_Amount = "Bill due amount"+ ' ' +user.bill[0].total_price.toString();
+      get_user_detail.total_bill_count = user.bill.length.toString()+ ' ' + "bills";
+      get_user_detail.total_address_count = user.address.length.toString()+ ' ' + "address count";
+      get_user_detail.total_subcription_count = user.subscription.length.toString()+ ' ' + "subcription";
+      get_user_detail.total_delivered_product_count = user.subscription1.length +user.additional.length +user.addon.length .toString()+ ' ' + "Product Delivery" ;
     });
 
     res
@@ -154,6 +207,19 @@ export const updateUser = async (req, res) => {
     console.log(query);
     await knex("users").update(query).where({ id: user.user_id });
 
+    // await sendNotification({
+      //   include_external_user_ids: [userId],
+      //   contents: { en: `Addon Products Created notificaiton` },
+      //   headings: { en: "Addon Products Notification" },
+      //   name: "Addon Products",
+      //   data: {
+      //     status: "new_order",
+      //     type: 2,
+      //     // appointment_id: user._id,
+      //     // appointment_chat_id: user_chat._id
+      //   },
+      // });
+
     return res
       .status(responseCode.SUCCESS)
       .json({ status: true, message: "User Profile Updated" });
@@ -176,6 +242,18 @@ export const deleteUseraddress = async (req, res) => {
 
     const addresses = await delete_user_address(address_id, userId);
 
+    // await sendNotification({
+      //   include_external_user_ids: [userId],
+      //   contents: { en: `Addon Products Created notificaiton` },
+      //   headings: { en: "Addon Products Notification" },
+      //   name: "Addon Products",
+      //   data: {
+      //     status: "new_order",
+      //     type: 2,
+      //     // appointment_id: user._id,
+      //     // appointment_chat_id: user_chat._id
+      //   },
+      // });
 
     res
       .status(responseCode.SUCCESS)
@@ -193,10 +271,25 @@ export const RemoveOrder = async (req, res) => {
 
     const remove = await remove_order(user_id);
 
+    // await sendNotification({
+      //   include_external_user_ids: [userId],
+      //   contents: { en: `Addon Products Created notificaiton` },
+      //   headings: { en: "Addon Products Notification" },
+      //   name: "Addon Products",
+      //   data: {
+      //     status: "new_order",
+      //     type: 2,
+      //     // appointment_id: user._id,
+      //     // appointment_chat_id: user_chat._id
+      //   },
+      // });
+
     res
       .status(responseCode.SUCCESS)
       .json({ status: true, message: "remove successfully" });
+
   } catch (error) {
+
     console.log(error);
 
     res.status(responseCode.FAILURE.BAD_REQUEST).json({ status: false, error });
@@ -244,6 +337,20 @@ export const changePlan = async (req, res) => {
       start_date,
       subscribe_type_id
     );
+
+    // await sendNotification({
+      //   include_external_user_ids: [userId],
+      //   contents: { en: `Addon Products Created notificaiton` },
+      //   headings: { en: "Addon Products Notification" },
+      //   name: "Addon Products",
+      //   data: {
+      //     status: "new_order",
+      //     type: 2,
+      //     // appointment_id: user._id,
+      //     // appointment_chat_id: user_chat._id
+      //   },
+      // });
+
     res
       .status(responseCode.SUCCESS)
       .json({ status: true, message: "updated successfully" });
@@ -263,12 +370,15 @@ export const checkDeliveryAddress = async (req, res) => {
     const check_address = await checkAddress(address_id);
     console.log(check_address.body[0].latitude)
 
-    if (check_address.body[0].latitude <= 10.9956 || check_address.body[0].longitude <= 77.2852) {
-
-
+    if (check_address.body[0].latitude <= 15.9165 || check_address.body[0].longitude <= 80.1325) {
       return res
         .status(200)
         .json({ status: true, message: "successfully delivery" });
+    }
+    else if (!latitude <= 15.9165 && !longitude <=  80.1325) {
+      return res
+        .status(200)
+        .json({ status: true, message: "out of locations" });
     }
 
   } catch (error) {
@@ -284,18 +394,27 @@ export const getEmptyBottle = async (req, res) => {
 
     if (userId) {
 
-      let get_user_bottle_detail =
-      {
-        "empty_bottle_in_hand_1_litre": "0",
-        "empty_bottle_in_hand_0.5_litre": "30",
-        "empty_bottle_return_1_litre": "0",
-        "empty_bottle_return_0.5_litre": "30"
-      }
+
+      const this_month_item_detail = await knex("users").select(
+          "one_liter_in_hand as delivered_orders",
+          "half_liter_in_hand as additional_delivered_orders",
+          "one_liter_in_return as remaining_orders",
+          "one_liter_in_return as additional_remaining_orders"
+        )
+        let empty_bottle_in_hand= {
+                 one_liter : this_month_item_detail[0].delivered_orders,
+                 half_liter : this_month_item_detail[0].additional_delivered_orders
+        }
+      let empty_bottle_in_return = {
+                 one_liter : this_month_item_detail[0].remaining_orders,
+                 half_liter : this_month_item_detail[0].additional_remaining_orders
+                }
+   
 
       res
         .status(responseCode.SUCCESS)
-        .json({ status: true, this_month_item_detail: get_user_bottle_detail });
-    }
+        .json({ status: true,empty_bottle_in_hand,empty_bottle_in_return });
+      }
     else {
       return res
         .status(responseCode.FAILURE.DATA_NOT_FOUND)
@@ -313,7 +432,14 @@ export const getEmptyBottle = async (req, res) => {
 
 export const userAddressChange = async (req, res) => {
   try {
-    const { userId, title, address, landmark, type, address_id } = req.body;
+    const { 
+      userId, 
+      title, 
+      address, 
+      landmark, 
+      type, 
+      address_id 
+    } = req.body;
 
     // await edit_address(userId, address_id, title, address, landmark, type);
 
@@ -331,32 +457,63 @@ export const getSingleCalendar = async (req, res) => {
   try {
     const { date } = req.body;
 
-    const single_calendar_data = 
-      {
-        "subscription_products": [
-          {
-            "subscription_id": 1,
-            "product_name": "Farm Fresh Natural Milk",
-            "product_image": "https://i.pinimg.com/originals/e1/e3/e6/e1e3e608910263114b0f03560bdcd966.jpg",
-            "product_variation": 1,
-            "product_price": 130,
-            "product_quantity": 2,
-            "subcription_status": "1",
-            "subcription_mode": "Daily Order",
-          },
-        ],
-        "addons_products": [
-          {
-            "product_id": 1,
-            "product_name": "Farm Fresh Natural Milk",
-            "product_image": "https://i.pinimg.com/originals/e1/e3/e6/e1e3e608910263114b0f03560bdcd966.jpg",
-            "product_variation": "1 liter",
-            "product_price": 130,
-            "product_quantity": 2,
-            "remove_status": 0
-          },
-        ],
+    const single_calendar_data =
+    {
+      "subscription_products": [
+        {
+          "subscription_id": 1,
+          "product_name": "Farm Fresh Natural Milk",
+          "product_image": "https://i.pinimg.com/originals/e1/e3/e6/e1e3e608910263114b0f03560bdcd966.jpg",
+          "product_variation": 1,
+          "product_price": 130,
+          "product_quantity": 2,
+          "subcription_status": "1",
+          "subcription_mode": "Daily Order",
+        },
+      ],
+      "addons_products": [
+        {
+          "product_id": 1,
+          "product_name": "Farm Fresh Natural Milk",
+          "product_image": "https://i.pinimg.com/originals/e1/e3/e6/e1e3e608910263114b0f03560bdcd966.jpg",
+          "product_variation": "1 liter",
+          "product_price": 130,
+          "product_quantity": 2,
+          "remove_status": 0
+        },
+      ],
 
+    }
+
+
+    // await edit_address(userId, address_id, title, address, landmark, type);
+
+    res
+      .status(responseCode.SUCCESS)
+      .json({ status: true, data: single_calendar_data });
+  } catch (error) {
+    console.log(error);
+
+    res.status(responseCode.FAILURE.BAD_REQUEST).json({ status: false, error });
+  }
+};
+
+export const getOverallCalendar = async (req, res) => {
+  try {
+    const { date } = req.body;
+
+    const overall_calendar_data = 
+      {
+        "date": date,
+        "products": {
+          "subscription": {
+            "1-liter": 1,
+            "0.5-liter": 0,
+            "packed-milk": 0
+          },
+          "addons-products": 0,
+          "is_delivered": 0
+        }
       }
     
 
@@ -364,11 +521,135 @@ export const getSingleCalendar = async (req, res) => {
 
     res
       .status(responseCode.SUCCESS)
-      .json({ status: true, data:single_calendar_data});
+      .json({ status: true, data: overall_calendar_data });
   } catch (error) {
     console.log(error);
 
     res.status(responseCode.FAILURE.BAD_REQUEST).json({ status: false, error });
   }
 };
+
+
+export const getBillList = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    const user = await get_user_bill(userId);
+
+    // await sendNotification({
+      //   include_external_user_ids: [userId],
+      //   contents: { en: `Addon Products Created notificaiton` },
+      //   headings: { en: "Addon Products Notification" },
+      //   name: "Addon Products",
+      //   data: {
+      //     status: "new_order",
+      //     type: 2,
+      //     // appointment_id: user._id,
+      //     // appointment_chat_id: user_chat._id
+      //   },
+      // });
+      
+    if (user.body.length === 0) {
+      return res
+        .status(responseCode.FAILURE.DATA_NOT_FOUND)
+        .json({ status: false, message: "User Not Found" });
+    }
+
+    // let get_bill = {};
+    // user.body.map((data) => {
+    //   get_bill.id = data.id;
+    //   get_bill.user_id = data.user_id;
+    //   get_bill.payment_id = data.id // payment id set to id
+    //   // ? process.env.BASE_URL + data.image
+    //   // : null;
+    //   get_bill.items = data.items;
+    //   get_bill.bill_no = data.bill_no
+    //   get_bill.bill_value = data.bill_value;
+    //   get_bill.status = data.status;
+    // });
+
+    res
+      .status(responseCode.SUCCESS)
+      .json({ status: true, data: user.body });
+  } catch (error) {
+    console.log(error);
+
+    res
+      .status(responseCode.FAILURE.INTERNAL_SERVER_ERROR)
+      .json({ status: false, message: "no user" });
+  }
+};
+
+export const getSingleBillList = async (req, res) => {
+  try {
+    const { bill_id } = req.body;
+
+    if (!bill_id) {
+      return res
+        .status(responseCode.FAILURE.DATA_NOT_FOUND)
+        .json({ status: false, message: "Cannot find bill list" });
+    }
+
+    const list = await get_single_bill(bill_id);
+
+    if (!list) {
+      return res
+        .status(responseCode.FAILURE.DATA_NOT_FOUND)
+        .json({ status: false, message: "Cannot find bill list" });
+    }
+    for (let i = 0; i < list.data.length; i++) {
+      console.log(list)
+      
+      list.data[i].id = list.data[i].id;
+      list.data[i].bill_value = list.data[i].bill_value;
+      list.data[i].date = moment().format("DD-MM-YYYY"); 
+    }
+    return res.status(responseCode.SUCCESS).json({ status: true, data: list });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({ status: false });
+  }
+};
+
+
+// rider location 
+export const RiderLocation = async (req,res) => {
+  try{
+      const { userId } = req.body;
+    
+    const rider1= await rider_location(userId)
+    let data =[];
+
+    let user ={
+      'id':rider1.location[0].user_id,
+      'name':rider1.location[0].user_name,
+      'address':rider1.location[0].user_address,
+      'latitude':rider1.location[0].user_latitude,
+      'longitude':rider1.location[0].user_longitude,
+
+    }
+
+    let branch ={
+      'id':rider1.location[0].admin_id,
+      'name':rider1.location[0].admin_name,
+      'address':rider1.location[0].admin_address,
+      'latitude':rider1.location[0].admin_latitude,
+      'longitude':rider1.location[0].admin_longitude,
+    }
+
+    let rider ={
+      'id':rider1.location[0].rider_id,
+      'name':rider1.location[0].rider_name,
+      'latitude':rider1.location[0].rider_latitude,
+      'longitude':rider1.location[0].rider_longitude,
+    }
+    return res.status(responseCode.SUCCESS).json({ status: true, data:{user,branch,rider} });
+
+  }
+  catch(error){
+    console.log(error);
+    res.status(500).json({ status: false, message:"no order placed today SORRY!!!!!" });
+  }
+}
 

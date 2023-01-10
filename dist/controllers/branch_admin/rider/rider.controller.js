@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updateRiderStatus = exports.updateRider = exports.getRiders = exports.createRider = void 0;
+exports.updateRiderStatus = exports.updateRider = exports.getRiders = exports.createRider = exports.changePasswordRider = void 0;
 var _db = _interopRequireDefault(require("../../../services/db.service"));
 var _helper = require("../../../utils/helper.util");
 var _bcrypt = _interopRequireDefault(require("bcrypt"));
@@ -303,3 +303,51 @@ var getRiders = /*#__PURE__*/function () {
   };
 }();
 exports.getRiders = getRiders;
+var changePasswordRider = /*#__PURE__*/function () {
+  var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(req, res) {
+    var _req$body4, new_password, confirm_new_password, rider_id, hash_password;
+    return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+      while (1) {
+        switch (_context5.prev = _context5.next) {
+          case 0:
+            _context5.prev = 0;
+            _req$body4 = req.body, new_password = _req$body4.new_password, confirm_new_password = _req$body4.confirm_new_password, rider_id = _req$body4.rider_id;
+            if (!(new_password != confirm_new_password)) {
+              _context5.next = 5;
+              break;
+            }
+            req.flash("error", "Password Should Be Same");
+            return _context5.abrupt("return", res.redirect("/branch_admin/rider/get_rider"));
+          case 5:
+            _context5.next = 7;
+            return _bcrypt["default"].hash(new_password, 10);
+          case 7:
+            hash_password = _context5.sent;
+            _context5.next = 10;
+            return (0, _db["default"])("rider_details").update({
+              password: hash_password
+            }).where({
+              id: rider_id
+            });
+          case 10:
+            req.flash("success", "Password Updated");
+            res.redirect("/branch_admin/rider/get_rider");
+            _context5.next = 18;
+            break;
+          case 14:
+            _context5.prev = 14;
+            _context5.t0 = _context5["catch"](0);
+            console.log(_context5.t0);
+            res.redirect("/home");
+          case 18:
+          case "end":
+            return _context5.stop();
+        }
+      }
+    }, _callee5, null, [[0, 14]]);
+  }));
+  return function changePasswordRider(_x9, _x10) {
+    return _ref5.apply(this, arguments);
+  };
+}();
+exports.changePasswordRider = changePasswordRider;

@@ -2,25 +2,24 @@
 
     <div class="widget-content widget-content-area br-6">
         <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
-            <div class="dt--top-section">
-                <div class="row">
-                    <div class="col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center">
-                        <div class="dataTables_length" id="DataTables_Table_0_length">
-                            <h4>Category</h4>
-                        </div>
-                    </div>
-
-                    <div class="col-1"></div>
-                    <div class="col-3  filtered-list-search mx-auto">
-                        <div class="form-inline my-2 my-lg-0 justify-content-center">
-                            <div class="w-100 row">
-
-                                <div class="w-100">
-                                    <input type="text" name="searchKeyword" oninput="onChangeSearch()" value="<%=searchKeyword? searchKeyword : ""  %>" class="w-100 form-control product-search br-30 col-7" id="searchText" placeholder="Search...">
-                                    <button class="btn btn-primary" type="submit" onclick="onSearch()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
+                    <div class="row">
+                         <div class="col-8">
+                                <h3 class="mt-2">Category</h3>
                                 </div>
-
-
+                                <div class="col-4">
+                                     <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="searchKeyword" oninput="onChangeSearch()" value="<%=searchKeyword ? searchKeyword : ""  %>"  id="searchText" placeholder="search..."  aria-describedby="basic-addon2">
+                                    <div class="input-group-append" style="cursor: pointer;"  onclick="onSearch()" >
+                                      <span style="background-color: #80C659;" class="input-group-text " id="basic-addon2"><svg style="color: #fff;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button></span>
+                                    </div>
+                                  </div>
+                                  </div>     
+                     
+                     
+    
+                    </div>
+            </div>
+            
 
                     
                                 <script>
@@ -45,14 +44,12 @@
                                  
                                 };
                                 </script>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group col-md-1">
+                      
+                    <div class="form-group col-md-1 float-right">
                             <button class="btn btn-sm btn-primary" data-toggle="modal"
                                 data-target="#addbarcategory">Add</button>
                             <!-- __category add__ -->
-                            <div wire:ignore.self="" class="modal fade" id="addbarcategory" tabindex="-1"
+                            <div wire:ignore.self="" data-backdrop="static" class="modal fade" id="addbarcategory" tabindex="-1"
                                 aria-labelledby="addCategoryTitle" style="display: none;" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered" role="document">
                                     <div class="modal-content">
@@ -122,10 +119,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    
-                </div>
-            </div>
+            
 
             <% if(data.length === 0){ %> 
                 <h2>No Data Found</h2>
@@ -168,18 +162,18 @@
 
                         <tr role="row">
 
-                            <% for(category of data){ %>
-                                    <td class="sorting_1"><%=category.id %></td>
-                                    <td><%=category.name %></td>
-                                    <td><img style="width: 150px;height : 120px" src="<%=category.image %>"></td>
+                            <% for(let i = 0 ; i < data.length ; i++){ %>
+                                    <td class="sorting_1"><%=data[i].id %></td>
+                                    <td><%=data[i].name %></td>
+                                    <td><img style="width: 150px;height : 120px" src="<%=data[i].image %>"></td>
                                   
 
                                     <div>
                                         <td style="text-align: center; vertical-align: middle;">
                                             <div class="custom-control custom-switch">
-                                                    <input <%= category.status == "1" ? "checked"  :""  %>  type="checkbox"   class="custom-control-input" name="status" 
-                                                    value="<%=category.status %>"  onChange="onToDochange(this)" id=<%=category.id %>>
-                                                    <label class="custom-control-label"  for=<%=category.id %>></label>
+                                                    <input <%= data[i].status == "1" ? "checked"  :""  %>  type="checkbox"   class="custom-control-input" name="status" 
+                                                    value="<%=data[i].status %>"  onChange="onToDochange(this)" id=<%=data[i].id %>>
+                                                    <label class="custom-control-label"  for=<%=data[i].id %>></label>
                                                 
                                                     <script >
                                                         async function onToDochange(event) {
@@ -192,6 +186,8 @@
                                                         body: JSON.stringify({"id": event.id , "status" : event.value})
                                                         })
                                                      
+                                                        await  swal("Done", "Status Updated", "success");
+
                                                         window.location.reload("/super_admin/product/get_category")
                                                     };
                                                     </script>
@@ -199,16 +195,16 @@
                                             </div>
                                         </td>
                                         <td class="text-center"> <button class="btn btn-sm btn-primary" data-toggle="modal"
-                                            data-target="#editCategory<%=category.id %>">edit</button> </td>
+                                            data-target="#editCategory<%=data[i].id %>">edit</button> </td>
                                     </div>
                                     
                                 </tr>
-                                <div wire:ignore.self="" class="modal fade" id="editCategory<%=category.id %>" tabindex="-1"
+                                <div wire:ignore.self="" data-backdrop="static" class="modal fade" id="editCategory<%=data[i].id %>" tabindex="-1"
                         aria-labelledby="addCategoryTitle" style="display: none;" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalCenterTitle">Edit Product Type</h5>
+                                    <h5 class="modal-title" id="exampleModalCenterTitle">Edit Category</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
                                             height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -220,55 +216,53 @@
                                     </button>
                                 </div>
 
+                                <form method="post" action="/super_admin/product/update_category"  enctype="multipart/form-data">
                                 <div class="modal-body">
-                                    <form method="post" action="/super_admin/product/update_category"  enctype="multipart/form-data">
-                                        <div class="form-row mb-4">
-                                            <div class="col-sm-6">
+                                        <div class="row pl-3">
+                                            <div class="form-row mb-4">
+                                                <div class="col-sm-6">
                                                 <label>Name</label>
                                                 <input type="text" class="form-control" wire:model="name"
-                                                    placeholder="Name" name="name" value="<%=category.name %>" required>
+                                                    placeholder="Name" name="name" value="<%=data[i].name %>" required>
 
-                                            </div>
-                                            <div class="form-row mb-4">
-                                                <div class="row">
-                                                    <div class="col-xl-12 col-md-12 col-sm-12 col-12">
+                                                </div>
+                                                    <div class="col-12 mt-3">
                                                         <h6>Product Types</h6>
                                                     </div>
-                                                </div>
-                                                <div class="n-chk col-12">
-                                                    <label for="subscription"  class="new-control new-checkbox checkbox-primary"
-                                                     style="font-weight:900 ;">
-                                                      <input type="checkbox" id="subscription" name="subscription" checked 
-                                                      class="new-control-input ">
-                                                      <span class="new-control-indicator"></span>Subscription
-                                                    </label>
-                                                </div>
-                                                <div class="n-chk col-12">
-                                                    <label for="addon" class="new-control new-checkbox checkbox-primary" 
-                                                    style="font-weight:900 ;">
-                                                      <input type="checkbox" id="addon" name="addon" class="new-control-input">
-                                                      <span class="new-control-indicator"></span>Add On
-                                                    </label>
-                                                </div>
-                                                </div>
-                                        </div>
-                                        <div class="form-row mb-4">
+                                               
+                                                    <div class="n-chk col-12">
+                                                        <label for="subscriptions<%= data[i].id %>"  class="new-control new-checkbox checkbox-primary" style="font-weight:900 ;">
+                                                          <input type="checkbox" id="subscriptions<%= data[i].id %>" name="subscription" <%= data[i].is_subscription == true ? "checked" : "" %>  class="new-control-input ">
+                                                          <span class="new-control-indicator"></span>Subscription
+                                                        </label>
+                                                    </div>
+                                                    <div class="n-chk col-12">
+                                                        <label for="addons<%= data[i].id %>" class="new-control new-checkbox checkbox-primary" style="font-weight:900 ;">
+                                                          <input <%= data[i].is_add_on == true ? "checked" : "" %> type="checkbox" id="addons<%= data[i].id %>" name="addon" class="new-control-input">
+                                                          <span class="new-control-indicator"></span>Add On
+                                                        </label>
+                                                    </div>
+                                                
+                                          
+                                        
                                             <div class="col-sm-10">
                                                 <label>Image (Old Image)</label>
                                                 <div>
-                                                    <img style="width: 150px;height : 120px" class="pb-3" src="<%=category.image %>">
+                                                    <img style="width: 150px;height : 120px" class="pb-3" src="<%=data[i].image %>">
                                                     <input type="file" wire:model="image" placeholder="Image" name="image"
                                                     
                                                     class="form-control">
                                                 </div>
-                                            </div>
+                                          
                                         </div>
+                                    </div>
+                                     </div>
                                      </div>
                                         <div class="modal-footer">
                                             
-                                            <button type="button" name="id" value="<%=category.id %>" class="btn btn-danger" id="addmodalClose" data-dismiss="modal"><i
+                                            <button type="button" name="id" value="<%=data[i].id %>" class="btn btn-danger" id="addmodalClose" data-dismiss="modal"><i
                                                 class="flaticon-cancel-12"></i>Discard</button>
-                                                <button wire:click="save" name="id" value="<%=category.id %>"  type="submit" class="btn btn-success">Save</button>
+                                                <button wire:click="save" name="id" value="<%=data[i].id %>"  type="submit" class="btn btn-success">Save</button>
                                         </div>
                                 </form>
                             </div>

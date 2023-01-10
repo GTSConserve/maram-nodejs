@@ -15,5 +15,6 @@ riderRouter.get('/get_rider', _rider.getRiders);
 riderRouter.post('/create_rider', _rider.createRider);
 riderRouter.post('/update_rider', _rider.updateRider);
 riderRouter.post('/update_rider_status', _rider.updateRiderStatus);
+riderRouter.post('/change_password_rider', _rider.changePasswordRider);
 var _default = riderRouter;
 exports["default"] = _default;

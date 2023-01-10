@@ -1,5 +1,6 @@
 import knex from "../../../services/db.service";
 import { getPageNumber } from "../../../utils/helper.util";
+import moment from "moment";
 
 export const updateProductStatus = async (req, res) => {
   try {
@@ -89,6 +90,11 @@ export const updateProduct = async (req, res) => {
 
 export const getProductList = async (req, res) => {
   try {
+
+    // console.log("Current month is:", moment().format("M"))
+    //   var endOfMonth   = moment().clone().endOf('month').format('YYYY-MM-DD');
+    // console.log(endOfMonth , "end");
+
     let loading = true;
     const { searchKeyword } = req.query;
 

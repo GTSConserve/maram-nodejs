@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.verifyOtpValidator = exports.userValidator = exports.userAddressValidator = exports.profileUpdateValidator = exports.loginValidator = exports.latLongValidator = exports.NumberValidator = void 0;
+exports.verifyOtpValidator = exports.userValidator = exports.userProfileValidator = exports.userAddressValidator = exports.profileUpdateValidator = exports.loginValidator = exports.latLongValidator = exports.NumberValidator = void 0;
 var _helper = require("../utils/helper.util");
 var _messages = _interopRequireDefault(require("../constants/messages"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -196,3 +196,28 @@ var userAddressValidator = function userAddressValidator(payload) {
   }
 };
 exports.userAddressValidator = userAddressValidator;
+var userProfileValidator = function userProfileValidator(payload) {
+  var _payload$name2, _payload$email2;
+  var name = (_payload$name2 = payload.name) !== null && _payload$name2 !== void 0 ? _payload$name2 : null;
+  var email = (_payload$email2 = payload.email) !== null && _payload$email2 !== void 0 ? _payload$email2 : null;
+  if (name && email) {
+    if ((0, _helper.integerValidator)(name && email)) {
+      return {
+        status: true,
+        name: name,
+        email: email
+      };
+    } else {
+      return {
+        status: false,
+        message: "please set unique name and email"
+      };
+    }
+  } else {
+    return {
+      status: false,
+      message: "Mandatory fields missing"
+    };
+  }
+};
+exports.userProfileValidator = userProfileValidator;

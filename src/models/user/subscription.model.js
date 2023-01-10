@@ -2,7 +2,7 @@
 import knex from "../../services/db.service";
 import moment from "moment";
 import messages from "../../constants/messages";
-
+import { sendNotification } from "../../notifications/message.sender";
 
 export const new_subscription = async (
   userId,
@@ -29,7 +29,7 @@ export const new_subscription = async (
       for (let i = 0; i < customized_days.length; i++) {
         for (let j = 0; j < weekdays.length; j++) {
           if (weekdays[j].id == customized_days[i]) {
-            store_weekdays.push(weekdays[j].id);
+            store_weekdays.push(weekdays[j].name);
           }
         }
       }
@@ -52,19 +52,23 @@ export const new_subscription = async (
       }
     }
 
-    // const branch_id = await knex("subscribed_user_details")
-    //   .select("branch_id", "router_id")
-    //   .where({
-    //     user_id: userId,
-    //     subscription_status: "subscribed",
-    //     user_address_id,
-    //   });
-    // if (branch_id.length !== 0) {
-    //   query.branch_id = branch_id[0].branch_id;
-    //   query.subscription_status = "branch_pending";
-    // }
+   const sub_id =  await knex("subscribed_user_details").insert(query);
 
-    await knex("subscribed_user_details").insert(query);
+   await sendNotification({
+    include_external_user_ids: [userId.toString()],
+    contents: { en: `Your Subscription Placed SuccessFully` },
+    headings: { en: "Subscription Notification" },
+    name: "Subscription Notification",
+    data: {
+      subscription_status: "pending",
+      category_id: 0,
+      product_type_id: 0,
+      type: 2,
+      subscription_id: sub_id[0],
+      bill_id: 0,
+    },
+  });
+
 
     return { status: true };
   } catch (error) {
@@ -110,24 +114,21 @@ export const get_subscription_product = async (userId) => {
 
 export const single_subscription = async (userId, sub_id) => {
   try {
+
+    let add_product = []
     const products = await knex("subscribed_user_details AS sub")
       .select(
         "sub.id as subscription_id",
-        "sub.subscription_start_date",
         "sub.customized_days",
+        "sub.subscription_start_date",
         "sub.subscription_status",
         "sub.quantity",
-        // "product.id",
         "products.name as product_name",
         "products.image",
-        "products.price",
         "products.unit_value",
         "unit_types.value as unit_type",
         "subscription_type.name as subscription_name",
-        "user_address.address",
-        "user_address.id as address_id",
-        "sub.date as date"
-      
+        "user_address.address"
       )
       .join("products", "products.id", "=", "sub.product_id")
       .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
@@ -140,35 +141,48 @@ export const single_subscription = async (userId, sub_id) => {
       .join("user_address", "user_address.id", "=", "sub.user_address_id")
       .where({ "sub.user_id": userId, "sub.id": sub_id });
 
-      // const query1 = await knex("additional_orders").select("date")
-      // console.log(query1[0].date)
-      // // .moment(query1[0].additional_orders.date).format('YYYY-MM-DD');
+      // console.log(products)
+     const additional = await knex('additional_orders').select('id','subscription_id','user_id').where({subscription_id: sub_id})
 
-      const query = await knex("additional_orders")
-      .select(
+    
+
+     for (let i=0;i<additional.length;i++){
+      
+      const query = await knex("subscribed_user_details AS sub").select(
         "additional_orders.id",
-        "additional_orders.date",
+        "additional_orders.id as id", 
+        "additional_orders.date ",
         "additional_orders.quantity",
+        "additional_orders.status",
         "products.name as product_name",
         "products.image",
         "products.unit_value",
         "unit_types.value as unit_type",
-        // "user_address.address",
-    
       )
-      .join("products", "products.id", "=", "additional_orders.id")
+      .join("additional_orders","additional_orders.user_id","=","sub.user_id")
+      .join("products", "products.id", "=", "sub.product_id")
       .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
-      .join("user_address", "user_address.id", "=", "additional_orders.subscription_id")
-      // .where({ "add_on_orders.user_id": userId, "add_on_orders.id": add_on_orders.user_id });
+      .where({'additional_orders.user_id':additional[i].user_id})
+      
+
+     add_product.push(query)
+      }
+      //  console.log(add_product)
+      const this_month_item_detail = await knex("users").select(
+        "one_liter_in_hand as delivered_orders",
+        "one_liter_in_return as remaining_orders",
+        "half_liter_in_hand as additional_delivered_orders",
+        "one_liter_in_return as additional_remaining_orders"
+      ).where({id: userId })
 
     if (products.length === 0) {
       return { status: false, message: "No Subscription Found" };
     }
 
-    return { status: true, data: products, query};
+    return { status: true, data: products,add_product,this_month_item_detail  };
   } catch (error) {
     console.log(error);
-    return { status: false, message: error };
+    return { status: false, message: "No Subscription Found"};
   }
 };
 
@@ -204,6 +218,22 @@ export const remove_subscription = async (user_id, subscription_id) => {
     const remove = await knex("subscribed_user_details")
       .update({ subscription_status: "unsubscribed" })
       .where({ user_id: user_id, id: subscription_id });
+
+      await sendNotification({
+        include_external_user_ids: [user_id.toString()],
+        contents: { en: `Your Additional Order Placed SuccessFully` },
+        headings: { en: "Subscription Notification" },
+        name: "Remove Subscription",
+        data: {
+          subscription_status: "unsubscribed",
+          category_id: 0,
+          product_type_id: 0,
+          type: 2,
+          subscription_status: subscription_status[0],
+          bill_id: 0,
+        },
+      });
+
     return { status: true, message: "SuccessFully Updated" };
   } catch (error) {
     console.log(error);
@@ -216,6 +246,21 @@ export const remove_subscription = async (user_id, subscription_id) => {
 export const change_quantity = async (userId,subscription_id,quantity,) => {
   try {
        const change = await knex('subscribed_user_details').update({quantity:quantity}).where({id:subscription_id,user_id:userId});
+
+       await sendNotification({
+        include_external_user_ids: [user_id.toString()],
+        contents: { en: `Your Additional Order Placed SuccessFully` },
+        headings: { en: "Subscription Notification" },
+        name: "Remove Subscription",
+        data: {
+          subscription_status: "pending",
+          category_id: 0,
+          product_type_id: 0,
+          type: 2,
+          bill_id: 0,
+        },
+      });
+
        return { status: true, message: "SuccessFully Updated" };
 
   } catch (error) {
@@ -242,7 +287,23 @@ export const change_quantity = async (userId,subscription_id,quantity,) => {
 
       const subscription_status = await knex('subscribed_user_details').update({subscription_status:"change_plan"}).where({id:subscription_id});
       
+      
       const previous = await knex('subscribed_user_details').select("subscribe_type_id").where({id:subscription_id});
+
+      await sendNotification({
+        include_external_user_ids: [userId].toString(),
+        contents: { en: `Your Subscription Placed SuccessFully` },
+        headings: { en: "Subscription Notification" },
+        name: "Subscription Notification",
+        data: {
+          subscription_status: "change_plan",
+          category_id: 0,
+          product_type_id: 0,
+          type: 2,
+          subscription_id: previous[0],
+          bill_id: 0,
+        },
+      });
       // console.log(previous)
 
       let weekdays = await knex("weekdays").select("id");

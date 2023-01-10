@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.remove_order = exports.get_user = exports.get_address = exports.edit_address = exports.edit = exports.delete_user_address = exports.checkAddress = exports.change_plan = void 0;
+exports.rider_location = exports.remove_order = exports.get_user_bill = exports.get_user = exports.get_single_bill = exports.get_address = exports.edit_address = exports.edit = exports.delete_user_address = exports.checkAddress = exports.change_plan = void 0;
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 var _db = _interopRequireDefault(require("../../services/db.service"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -66,7 +66,7 @@ var get_address = /*#__PURE__*/function () {
 }();
 exports.get_address = get_address;
 var edit_address = /*#__PURE__*/function () {
-  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(user_id, address_id, title, address, landmark, type) {
+  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(user_id, address_id, title, address, landmark, type, alternate_mobile, latitude, longitude) {
     var query, user;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) {
@@ -85,41 +85,51 @@ var edit_address = /*#__PURE__*/function () {
             if (type) {
               query.type = type;
             }
-            _context2.next = 7;
+            if (alternate_mobile) {
+              query.alternate_mobile = alternate_mobile;
+            }
+            if (latitude) {
+              query.latitude = latitude;
+            }
+            if (longitude) {
+              query.longitude = longitude;
+            }
+            _context2.next = 10;
             return (0, _db["default"])("user_address").update(query).where({
               user_id: user_id,
               id: address_id
             });
-          case 7:
+          case 10:
             user = _context2.sent;
-            _context2.prev = 8;
+            console.log(user);
+            _context2.prev = 12;
             return _context2.abrupt("return", {
               status: _responseCode["default"].SUCCESS,
               body: user
             });
-          case 12:
-            _context2.prev = 12;
-            _context2.t0 = _context2["catch"](8);
+          case 16:
+            _context2.prev = 16;
+            _context2.t0 = _context2["catch"](12);
             console.log(_context2.t0);
             return _context2.abrupt("return", {
               status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
               error: _context2.t0
             });
-          case 16:
+          case 20:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[8, 12]]);
+    }, _callee2, null, [[12, 16]]);
   }));
-  return function edit_address(_x2, _x3, _x4, _x5, _x6, _x7) {
+  return function edit_address(_x2, _x3, _x4, _x5, _x6, _x7, _x8, _x9, _x10) {
     return _ref2.apply(this, arguments);
   };
 }();
 exports.edit_address = edit_address;
 var get_user = /*#__PURE__*/function () {
-  var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(id) {
-    var getuser;
+  var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(id, userId) {
+    var getuser, bill, sub, rider, address, subscription, additional, subscription1, addon;
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
@@ -130,27 +140,88 @@ var get_user = /*#__PURE__*/function () {
             });
           case 2:
             getuser = _context3.sent;
-            _context3.prev = 3;
+            _context3.next = 5;
+            return _db["default"].select("bill_history_details.subscription_price", "bill_history_details.additional_price", "bill_history_details.total_price", "bill_history_details.additional_qty", "bill_history_details.total_qty", "bill_history_details.subscription_qty").from("bill_history_details").where({
+              id: id
+            });
+          case 5:
+            bill = _context3.sent;
+            _context3.next = 8;
+            return _db["default"].select("subscribed_user_details.subscription_delivered_quantity", "subscribed_user_details.additional_delivered_quantity", "subscribed_user_details.total_delivered_quantity"
+            // "subscribed_user_details.subscription_delivered_quantity",
+            ).from("subscribed_user_details").where({
+              user_id: id
+            });
+          case 8:
+            sub = _context3.sent;
+            _context3.next = 11;
+            return (0, _db["default"])('daily_orders').join("routes", "routes.id", "=", "daily_orders.router_id").join("rider_details", "rider_details.id", "=", "routes.rider_id").select("rider_details.id", "rider_details.name", "rider_details.tour_status as status").where({
+              user_id: id
+            });
+          case 11:
+            rider = _context3.sent;
+            _context3.next = 14;
+            return (0, _db["default"])('user_address').select('id').where({
+              user_id: id
+            });
+          case 14:
+            address = _context3.sent;
+            _context3.next = 17;
+            return (0, _db["default"])('subscribed_user_details').select('id').where({
+              user_id: id
+            });
+          case 17:
+            subscription = _context3.sent;
+            _context3.next = 20;
+            return (0, _db["default"])('additional_orders').select('id').where({
+              user_id: id,
+              status: "delivered"
+            });
+          case 20:
+            additional = _context3.sent;
+            _context3.next = 23;
+            return (0, _db["default"])('subscribed_user_details').select('product_id').where({
+              user_id: id,
+              rider_status: "delivered"
+            });
+          case 23:
+            subscription1 = _context3.sent;
+            _context3.next = 26;
+            return (0, _db["default"])('add_on_order_items').select('product_id').where({
+              user_id: id,
+              status: "delivered"
+            });
+          case 26:
+            addon = _context3.sent;
+            _context3.prev = 27;
             return _context3.abrupt("return", {
               status: _responseCode["default"].SUCCESS,
-              body: getuser
+              body: getuser,
+              rider: rider,
+              bill: bill,
+              sub: sub,
+              address: address,
+              subscription: subscription,
+              additional: additional,
+              subscription1: subscription1,
+              addon: addon
             });
-          case 7:
-            _context3.prev = 7;
-            _context3.t0 = _context3["catch"](3);
+          case 31:
+            _context3.prev = 31;
+            _context3.t0 = _context3["catch"](27);
             console.log(_context3.t0);
             return _context3.abrupt("return", {
               status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
               error: _context3.t0
             });
-          case 11:
+          case 35:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3, null, [[3, 7]]);
+    }, _callee3, null, [[27, 31]]);
   }));
-  return function get_user(_x8) {
+  return function get_user(_x11, _x12) {
     return _ref3.apply(this, arguments);
   };
 }();
@@ -191,7 +262,7 @@ var delete_user_address = /*#__PURE__*/function () {
       }
     }, _callee4, null, [[3, 7]]);
   }));
-  return function delete_user_address(_x9, _x10) {
+  return function delete_user_address(_x13, _x14) {
     return _ref4.apply(this, arguments);
   };
 }();
@@ -229,7 +300,7 @@ var remove_order = /*#__PURE__*/function () {
       }
     }, _callee5, null, [[3, 7]]);
   }));
-  return function remove_order(_x11) {
+  return function remove_order(_x15) {
     return _ref5.apply(this, arguments);
   };
 }();
@@ -270,7 +341,7 @@ var edit = /*#__PURE__*/function () {
       }
     }, _callee6, null, [[3, 7]]);
   }));
-  return function edit(_x12, _x13, _x14) {
+  return function edit(_x16, _x17, _x18) {
     return _ref6.apply(this, arguments);
   };
 }();
@@ -387,7 +458,7 @@ var change_plan = /*#__PURE__*/function () {
       }
     }, _callee7, null, [[0, 37]]);
   }));
-  return function change_plan(_x15, _x16, _x17) {
+  return function change_plan(_x19, _x20, _x21) {
     return _ref7.apply(this, arguments);
   };
 }();
@@ -425,8 +496,154 @@ var checkAddress = /*#__PURE__*/function () {
       }
     }, _callee8, null, [[3, 7]]);
   }));
-  return function checkAddress(_x18) {
+  return function checkAddress(_x22) {
     return _ref8.apply(this, arguments);
   };
 }();
 exports.checkAddress = checkAddress;
+var get_user_bill = /*#__PURE__*/function () {
+  var _ref9 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9(userId) {
+    var getuser;
+    return _regeneratorRuntime().wrap(function _callee9$(_context9) {
+      while (1) {
+        switch (_context9.prev = _context9.next) {
+          case 0:
+            _context9.next = 2;
+            return _db["default"].select("id", "items", "bill_no", "bill_value", "status").from("bill_history").where({
+              user_id: userId
+            });
+          case 2:
+            getuser = _context9.sent;
+            console.log(getuser);
+            _context9.prev = 4;
+            return _context9.abrupt("return", {
+              status: _responseCode["default"].SUCCESS,
+              body: getuser
+            });
+          case 8:
+            _context9.prev = 8;
+            _context9.t0 = _context9["catch"](4);
+            console.log(_context9.t0);
+            return _context9.abrupt("return", {
+              status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
+              error: _context9.t0
+            });
+          case 12:
+          case "end":
+            return _context9.stop();
+        }
+      }
+    }, _callee9, null, [[4, 8]]);
+  }));
+  return function get_user_bill(_x23) {
+    return _ref9.apply(this, arguments);
+  };
+}();
+exports.get_user_bill = get_user_bill;
+var get_single_bill = /*#__PURE__*/function () {
+  var _ref10 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10(bill_id, userId) {
+    var getSingleBillList, sub_products, add_on_products;
+    return _regeneratorRuntime().wrap(function _callee10$(_context10) {
+      while (1) {
+        switch (_context10.prev = _context10.next) {
+          case 0:
+            _context10.prev = 0;
+            _context10.next = 3;
+            return (0, _db["default"])("bill_history").select("bill_history.id", "bill_history.bill_no", "bill_history.bill_value", "bill_history.date", "payment_gateways.id as payment_id", "payment_gateways.status as payment_status", "add_on_orders.sub_total as sub_total").join("payment_gateways", "payment_gateways.user_id", "=", "bill_history.user_id").join("add_on_orders", "add_on_orders.user_id", "=", "payment_gateways.user_id");
+          case 3:
+            getSingleBillList = _context10.sent;
+            _context10.next = 6;
+            return (0, _db["default"])("subscribed_user_details as sub").select("sub.product_id", "sub.quantity", "unit_types.name", "unit_types.id", "products.price").join("products", "products.id", "=", "sub.user_id").join("unit_types", "unit_types.id", "=", "unit_type_id").where({
+              user_id: bill_id
+            });
+          case 6:
+            sub_products = _context10.sent;
+            _context10.next = 9;
+            return (0, _db["default"])("add_on_order_items as add").select("add.product_id", "add.quantity", "unit_types.id as variation_id", "unit_types.name as variation_type", "products.unit_value", "add.total_price").join("products", "products.id", "=", "add.user_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").where({
+              user_id: bill_id
+            });
+          case 9:
+            add_on_products = _context10.sent;
+            return _context10.abrupt("return", {
+              data: getSingleBillList,
+              sub_products: sub_products,
+              add_on_products: add_on_products
+            });
+          case 13:
+            _context10.prev = 13;
+            _context10.t0 = _context10["catch"](0);
+            console.log(_context10.t0);
+            return _context10.abrupt("return", {
+              status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
+              error: _context10.t0
+            });
+          case 17:
+          case "end":
+            return _context10.stop();
+        }
+      }
+    }, _callee10, null, [[0, 13]]);
+  }));
+  return function get_single_bill(_x24, _x25) {
+    return _ref10.apply(this, arguments);
+  };
+}();
+
+// rider location 
+exports.get_single_bill = get_single_bill;
+var rider_location = /*#__PURE__*/function () {
+  var _ref11 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11(userId) {
+    var router, location;
+    return _regeneratorRuntime().wrap(function _callee11$(_context11) {
+      while (1) {
+        switch (_context11.prev = _context11.next) {
+          case 0:
+            _context11.prev = 0;
+            _context11.next = 3;
+            return (0, _db["default"])('daily_orders').join("routes", "routes.id", "=", "daily_orders.router_id").join("rider_details", "rider_details.id", "=", "routes.rider_id").select('rider_details.tour_status as status').where({
+              user_id: userId
+            });
+          case 3:
+            router = _context11.sent;
+            if (!(router[0].status == 1)) {
+              _context11.next = 11;
+              break;
+            }
+            _context11.next = 7;
+            return (0, _db["default"])('daily_orders').join("users", "users.id", "=", "daily_orders.user_id").join("user_address", "user_address.user_id", "=", "daily_orders.user_id").join("admin_users", "admin_users.id", "=", "daily_orders.branch_id").join("routes", "routes.id", "=", "daily_orders.router_id").join("rider_details", "rider_details.id", "=", "routes.rider_id").select('users.id as user_id', 'users.name as user_name', 'user_address.address as user_address', 'user_address.latitude as user_latitude', 'user_address.longitude as user_longitude', 'admin_users.id as admin_id', 'admin_users.first_name as admin_name', 'admin_users.address as admin_address', 'admin_users.latitude as admin_latitude', 'admin_users.longitude as admin_longitude', 'rider_details.id as rider_id', 'rider_details.name as rider_name', 'rider_details.latitude as rider_latitude', 'rider_details.longitude as rider_longitude').where({
+              'daily_orders.user_id': userId
+            });
+          case 7:
+            location = _context11.sent;
+            return _context11.abrupt("return", {
+              status: _responseCode["default"].SUCCESS,
+              location: location
+            });
+          case 11:
+            return _context11.abrupt("return", {
+              status: false,
+              message: "no order placed today SORRY!!!!!"
+            });
+          case 12:
+            _context11.next = 18;
+            break;
+          case 14:
+            _context11.prev = 14;
+            _context11.t0 = _context11["catch"](0);
+            console.log(_context11.t0);
+            return _context11.abrupt("return", {
+              status: _responseCode["default"].FAILURE.DATA_NOT_FOUND,
+              error: _context11.t0
+            });
+          case 18:
+          case "end":
+            return _context11.stop();
+        }
+      }
+    }, _callee11, null, [[0, 14]]);
+  }));
+  return function rider_location(_x26) {
+    return _ref11.apply(this, arguments);
+  };
+}();
+exports.rider_location = rider_location;

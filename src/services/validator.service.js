@@ -119,3 +119,19 @@ export const userAddressValidator = (payload) => {
     return { status: false, message: "error" };
   }
 };
+
+
+export const userProfileValidator = (payload) => {
+  const name = payload.name ?? null;
+  const email = payload.email ?? null;
+
+   if (name && email) {
+    if (integerValidator(name && email)) {
+      return { status: true, name, email };
+    } else {
+      return { status: false, message: "please set unique name and email" };
+    }
+  } else {
+    return { status: false, message: "Mandatory fields missing" };
+  }
+};

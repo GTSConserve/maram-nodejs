@@ -1,6 +1,10 @@
 import responseCode from "../../constants/responseCode";
 import messages from "../../constants/messages";
 import { GetProduct } from "../../utils/helper.util";
+import { sendNotification } from "../../notifications/message.sender";
+import axios from 'axios';
+import moment from "moment";
+
 import {
   get_products,
   get_categories,
@@ -8,6 +12,7 @@ import {
   search_products,
   addon_order,
   remove_addonorders,
+  nextday_product,
 } from "../../models/user/product.model";
 
 import { parseJwtPayload } from "../../services/jwt.service";
@@ -16,17 +21,17 @@ import knex from "../../services/db.service";
 export const removeAddOnOrder = async (req, res) => {
   try {
 
-    const { userId,product_id, delivery_date, addon_id } = req.body
+    const { userId,product_id, delivery_date } = req.body
 
-    if (!product_id || !delivery_date || !addon_id) {
+    if (!product_id || !delivery_date ) {
       return res.status(responseCode.FAILURE.BAD_REQUEST).json({ status: false, message: messages.MANDATORY_ERROR })
     }
-     console.log(userId,product_id, delivery_date, addon_id);
-    const remove = await remove_addonorders(product_id, delivery_date, addon_id,userId);
+    //  console.log(userId,product_id, delivery_date);
+    const remove = await remove_addonorders(product_id, delivery_date,userId);
 
     return res
       .status(responseCode.SUCCESS)
-      .json({ status: true, body: remove.status });
+      .json({ status: true, body: remove });
 
   } catch (error) {
     console.log(error);
@@ -72,7 +77,7 @@ export const getSingleProduct = async (req, res) => {
 
     return res
       .status(responseCode.SUCCESS)
-      .json({ status: true, data: response.data});
+      .json({ status: true, data: response.data[0] });
   } catch (error) {
     console.log(error);
     return res
@@ -99,7 +104,7 @@ export const getProducts = async (req, res) => {
         .json({ status: false, message: messages.MANDATORY_ERROR });
     }
 
-    const product = await get_products(category_id, product_type_id, userId);
+    const product = await get_products(category_id, product_type_id);
 
     if (!product.status) {
       return res
@@ -161,7 +166,7 @@ export const getSubscriptionProducts = async (req, res) => {
   try {
     const { userId } = req.body;
 
-    const products = await get_subscription_or_add_on_products( "1",userId );
+    const products = await get_subscription_or_add_on_products("1",userId );
     if (!products.status) {
       return res
         .status(responseCode.FAILURE.DATA_NOT_FOUND)
@@ -186,13 +191,13 @@ export const getAddOnProducts = async (req, res) => {
         .status(responseCode.FAILURE.DATA_NOT_FOUND)
         .json({ status: false, message: product.message });
     }
-
+ 
     return res.status(responseCode.SUCCESS).json({
       status: true,
       data: product.data,
     });
   } catch (error) {
-    console.log(error);
+   // console.log(error);
     res.status(500).json({ status: false });
   }
 };
@@ -218,7 +223,7 @@ export const searchProducts = async (req, res) => {
     const product = await search_products(
       product_type_id,
       search_keyword,
-      userId
+      // userId
     );
     if (!product.status) {
       return res
@@ -252,7 +257,8 @@ export const addon_Order = async (req, res) => {
       delivery_date,
       products,
       address_id
-    );
+      );
+    
     return res.status(responseCode.SUCCESS).json({
       status: true,
       message: "order added",
@@ -268,26 +274,59 @@ export const nextDayProduct = async (req, res) => {
   try {
     const { userId } = req.body;
 
-    const static_response = [{
-        
-          "product_id": "18",
-          "product_name": "Farm Fresh Natural Milk",
-          "product_image": "https://i.pinimg.com/originals/af/31/cf/af31cff157e5304e32a3777c8245ae8c.jpg",
-          "product_status": 1,
-          "product_variation": "1.5 litres",
-          "Product price": 100
-  }]
+    const static_response = await nextday_product(userId)
+    let date1=moment(static_response.product[0].date, "YYYY-MM-DD").format("YYYY-MM-DD");
+    let date2=moment(static_response.product[0].date, "YYYY-MM-DD").format("YYYY-MM-DD");
+    let tommorow_date = moment(new Date(), "YYYY-MM-DD").add(1, "days").format("YYYY-MM-DD");
+    console.log(tommorow_date,date1,date2)
      
-    if (!static_response) {
+    if(tommorow_date === date1){
+
+    let query =[{
+        
+          "product_id": static_response.product[0].product_id ,
+          "product_name": static_response.product[0].product_name,
+          "product_image": static_response.product[0].product_image,
+          "product_status":static_response.product[0].product_status,
+          "product_variation": static_response.product[0].value + static_response.product[0].unit_type,
+          "Product price": static_response.product[0].price
+  
+    }]
+    
+    // tommorow_date = moment().format("YYYY-MM-DD")
+   
+    return res.status(responseCode.SUCCESS).json({
+      status: true,
+      data: query,"date": moment(static_response.product[0].date, "YYYY-MM-DD").format("DD-MM-YYYY")
+    });
+  }
+
+  else if (tommorow_date === date2){
+    let query ={
+        
+      "product_id": static_response.product[0].product_id ,
+      "product_name": static_response.product[0].product_name,
+      "product_image": static_response.product[0].product_image,
+      "product_status":static_response.product[0].product_status,
+      "product_variation": static_response.product[0].value + static_response.product[0].unit_type,
+      "Product price": static_response.product[0].price
+
+}
+
+// tommorow_date = moment().format("YYYY-MM-DD")
+
+return res.status(responseCode.SUCCESS).json({
+  status: true,
+  data: query,"date": static_response.date[0].date
+});
+  }
+   else {
       return res
         .status(responseCode.FAILURE.DATA_NOT_FOUND)
         .json({ status: false, message: "No Product Available" });
     }
 
-    return res.status(responseCode.SUCCESS).json({
-      status: true,
-      data: static_response,"date": "25 Oct | Mon"
-    });
+
   } catch (error) {
     console.log(error);
     res.status(500).json({ status: false });
