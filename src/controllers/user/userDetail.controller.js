@@ -11,7 +11,7 @@ import {
   edit_address,
   get_address,
   get_user,
-  remove_order,
+  remove_order, 
   checkAddress,
   get_user_bill,
   get_single_bill,
