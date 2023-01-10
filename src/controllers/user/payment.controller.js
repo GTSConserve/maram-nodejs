@@ -126,11 +126,13 @@ export const getRazorpayMethod = async (req, res) => {
     try {
         const { amount, order_id } = req.body
 
-        if (!amount && !order_id) {
+        if (!amount || !order_id) {
             return res
                 .status(responseCode.FAILURE.DATA_NOT_FOUND)
                 .json({ status: false, message: messages.MANDATORY_ERROR });
         }
+
+        const pay = await knex('bill_history_details').select('bill_history_id')
 
         var razorpay = new Razorpay({
             key_id: process.env.RAZORPAY_KEY_ID,
@@ -146,11 +148,11 @@ export const getRazorpayMethod = async (req, res) => {
         const options = {
             amount,
             currency: "INR",
-            receipt: order_id,
+            receipt: pay.bill_history_id,
 
         };
         const response = await razorpay.orders.create(options);
-
+        console.log(response)
         await sendNotification({
             include_external_user_ids: [order_id.toString()],
             contents: { en: `Your Razorpay Placed SuccessFully` },
@@ -161,7 +163,8 @@ export const getRazorpayMethod = async (req, res) => {
                 category_id: 0,
                 product_type_id: 0,
                 type: 3,
-                receipt: response.receipt[0],
+                receipt: options.receipt,
+                // receipt: response.receipt[0],
                 amount: options.amount[0],
             },
         });
