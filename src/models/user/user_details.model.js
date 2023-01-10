@@ -98,7 +98,7 @@ export const get_user = async (id,userId) => {
     .from("users")
     .where({ id });
 
-    const bill = await knex.select(
+    const bill = await knex('bill_history_details').select(
     "bill_history_details.subscription_price",
     "bill_history_details.additional_price",
     "bill_history_details.total_price",
@@ -106,8 +106,9 @@ export const get_user = async (id,userId) => {
     "bill_history_details.total_qty",
     "bill_history_details.subscription_qty"
     )
-    .from("bill_history_details")
-    .where({id})
+    join("bill_history","bill_history.id","=","bill_history_details.bill_history_id")
+    .where({"bill_history.user_id":id})
+ 
 
     const sub = await knex.select(
       "subscribed_user_details.subscription_delivered_quantity",
