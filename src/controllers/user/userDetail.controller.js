@@ -43,10 +43,8 @@ export const addUserAddress = async (req, res) => {
           alternate_mobile: payload.alternate_mobile,
 
           latitude: payload.latitude,
-          
-          longitude: payload.longitude,
 
-
+          longitude: payload.longitude
         })
         .where({ user_id: payload.user_id });
 
@@ -136,7 +134,7 @@ export const getUser = async (req, res) => {
         .status(responseCode.FAILURE.DATA_NOT_FOUND)
         .json({ status: false, message: "User Not Found" });
     }
-    
+
     let get_user_detail = {};
      let status;
     if(user.rider[0].status==0){

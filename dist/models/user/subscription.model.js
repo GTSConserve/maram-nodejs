@@ -169,7 +169,7 @@ var single_subscription = /*#__PURE__*/function () {
             _context3.prev = 0;
             add_product = [];
             _context3.next = 4;
-            return (0, _db["default"])("subscribed_user_details AS sub").select("sub.id as subscription_id", "sub.customized_days", "sub.subscription_start_date", "sub.subscription_status", "sub.quantity", "products.name as product_name", "products.image", "products.unit_value", "unit_types.value as unit_type", "subscription_type.name as subscription_name", "user_address.address").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("subscription_type", "subscription_type.id", "=", "sub.subscribe_type_id").join("user_address", "user_address.id", "=", "sub.user_address_id").where({
+            return (0, _db["default"])("subscribed_user_details AS sub").select("sub.id as subscription_id", "sub.customized_days", "sub.subscription_start_date", "sub.subscription_status", "sub.quantity", "products.name as product_name", "products.image", "products.demo_price", "products.unit_value", "unit_types.value as unit_type", "subscription_type.name as subscription_name", "user_address.address").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("subscription_type", "subscription_type.id", "=", "sub.subscribe_type_id").join("user_address", "user_address.id", "=", "sub.user_address_id").where({
               "sub.user_id": userId,
               "sub.id": sub_id
             });
@@ -188,7 +188,7 @@ var single_subscription = /*#__PURE__*/function () {
               break;
             }
             _context3.next = 12;
-            return (0, _db["default"])("subscribed_user_details AS sub").select("additional_orders.id", "additional_orders.id as id", "additional_orders.date ", "additional_orders.quantity", "additional_orders.status", "products.name as product_name", "products.image", "products.unit_value", "unit_types.value as unit_type").join("additional_orders", "additional_orders.user_id", "=", "sub.user_id").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").where({
+            return (0, _db["default"])("subscribed_user_details AS sub").select("additional_orders.id", "additional_orders.id as id", "additional_orders.date ", "additional_orders.quantity", "additional_orders.status", "products.name as product_name", "products.image", "products.unit_value", "products.demo_price", "unit_types.value as unit_type").join("additional_orders", "additional_orders.user_id", "=", "sub.user_id").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").where({
               'additional_orders.user_id': additional[i].user_id
             });
           case 12:
