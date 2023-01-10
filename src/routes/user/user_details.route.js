@@ -64,7 +64,7 @@ userRouter.post("/single_calendar", authenticateJWT, getSingleCalendar);
 userRouter.post("/over_all_calendar", authenticateJWT, getOverallCalendar);
 
 userRouter.post("/single_calendar_event",authenticateJWT, getSingleCalendarEvent);
-userRouter.post("/over_all_calendar_event", getOverallCalendarEvent);
+userRouter.post("/over_all_calendar_event", authenticateJWT,getOverallCalendarEvent);
 
 
 // rider details 

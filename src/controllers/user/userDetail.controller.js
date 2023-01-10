@@ -16,7 +16,8 @@ import {
   get_user_bill,
   get_single_bill,
   single_calendar_data,
-  rider_location
+  rider_location,
+  getCalendar
 } from "../../models/user/user_details.model";
 import messages from "../../constants/messages";
 
@@ -672,35 +673,79 @@ export const getSingleCalendarEvent = async (req, res) => {
 
 export const getOverallCalendarEvent = async (req, res) => {
   try {
-    const { date } = req.body;  
+    const { date, userId } = req.body;  
 
-    const this_month_item_detail = await knex("users").select(
-      "one_liter_in_hand ",
-      "half_liter_in_hand ",
-    )
+    if (!date) {
+      return res
+        .status(responseCode.FAILURE.BAD_REQUEST)
+        .json({ status: false, message: messages.MANDATORY_ERROR });
+    }
 
-    console.log(this_month_item_detail)
+    const products = await knex("subscribed_user_details AS sub")
+      .select(  
+        "sub.date",
+      )
+      .where({ "sub.date": date });
 
-    const overall_calendar_data = 
-      { 
-        "date": date,
-        "products": {
-          "subscription": {
-            "1-liter": parseInt(this_month_item_detail[0].one_liter_in_hand),
-            "0.5-liter": parseInt(this_month_item_detail[0].half_liter_in_hand),
-            "packed-milk": 0
-          },
-          "addons-products": 0,
-          "is_delivered": 0
-        }
+
+    if (products.length == 0) {
+      return res
+        .status(responseCode.FAILURE.BAD_REQUEST)
+        .json({ status: false, message: "Please check date" });
+    }
+
+    // console.log(sub.data[0].date)
+    const diary = await knex('users').select('today_one_liter','today_half_liter')
+    .where({id:userId})
+
+    console.log(diary[0].today_one_liter)
+
+    let status;
+
+    if (diary[0].today_one_liter === 0 || null) {
+      status = 0;
+    } 
+    if (diary[0].today_half_liter === 0 || null) {
+      status =0;
+    }
+    else {
+      status = 1;
+    }
+
+    const add_on = await knex('add_on_orders').select('id','status')
+    .where({user_id:userId})
+
+    let add;
+    if (add_on[0].id === 0 || null) {
+      add = 0;
+    } else {
+      add = 1;
+    }
+
+    let delivered;
+
+    if (add_on[0].status == "delivered") {
+      delivered = 1;
+    } else {
+      delivered = 0;
+    }
+
+    const data =  {
+      "date": moment().format("DD-MM-YYYY"),
+      "products": {
+        "subscription": { 
+          "1-liter":status,
+          "0.5-liter": status,
+          "packed-milk": 0
+        },
+        "addons-products": add,
+        "is_delivered": delivered
       }
-    
-
-    // await edit_address(userId, address_id, title, address, landmark, type);
+    }
 
     res
       .status(responseCode.SUCCESS)
-      .json({ status: true, data: overall_calendar_data });
+      .json({ status: true, data: data });
   } catch (error) {
     console.log(error);
 
