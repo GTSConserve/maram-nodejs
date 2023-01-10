@@ -1,0 +1,319 @@
+<% layout('layouts/boilerPlate') %>
+    <div class="widget-content widget-content-area br-6">
+        <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+            <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+                <div class="row">
+                     <div class="col-8">
+                            <h3 class="mt-2">App Settings</h3>
+                            </div>
+                            <div class="col-4">
+                                 <div class="input-group mb-3">
+                                <input type="text" class="form-control" name="searchKeyword" oninput="onChangeSearch()" value="<%=searchKeyword ? searchKeyword : ""  %>"  id="searchText" placeholder="search by key"  aria-describedby="basic-addon2">
+                                <div class="input-group-append" style="cursor: pointer;"  onclick="onSearch()" >
+                                  <span style="background-color: #80C659;" class="input-group-text " id="basic-addon2"><svg style="color: #fff;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button></span>
+                                </div>
+                              </div>
+                              </div>     
+                 
+                 
+
+                </div>
+        </div>
+        </div>
+
+
+                    
+                                <script>
+
+                                    async function onChangeSearch(event){
+                                        const text = document.getElementById("searchText").value;
+                                        if(!text){
+
+                                            return window.location.href = `/super_admin//settings/app_settings`
+                                        }
+                                        // window.location.href = `/super_admin/product/get_category?searchKeyword=${text}`
+                                        // window.history.pushState("","",`/super_admin/product/get_category?searchKeyword=${text}`)
+
+                                    }
+
+                                    async function onSearch(event) {
+                                       
+                                        const text = document.getElementById("searchText").value;
+                            
+                                        window.location.href = `/super_admin/settings/app_settings?searchKeyword=${text}`
+                              
+                                 
+                                };
+                                </script>
+                      
+                    <!-- <div class="form-group col-md-1">
+                            <button class="btn btn-sm btn-primary" data-toggle="modal"
+                                data-target="#addbarcategory">Add</button>
+                          
+                            <div wire:ignore.self="" class="modal fade" id="addbarcategory" tabindex="-1"
+                                aria-labelledby="addCategoryTitle" style="display: none;" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalCenterTitle">Add App Settings</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                                    height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                    class="feather feather-x">
+                                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                </svg>
+                                            </button>
+                                        </div>
+
+                                        <div class="modal-body">
+                                            <form method="post" action="/super_admin/settings/create_appsettings" >
+                                                <div class="form-row mb-4">
+                                                    <div class="col-sm-6">
+                                                        <label>Name</label>
+                                                        <input type="text" class="form-control" wire:model="name" required
+                                                            placeholder="Name" name="name">
+
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <label>value</label>
+                                                        <input type="text" class="form-control" wire:model="name" 
+                                                            placeholder="value" name="value">
+                                                       
+                                                    </div>
+                                                </div>
+                                            
+                                                
+                                              
+                                                    <div class="col-sm-6">
+                                                        <label>key</label>
+                                                        <input type="text" class="form-control" wire:model="name" 
+                                                            placeholder="key" name="key">
+                                                       
+                                                    </div> 
+                                                   
+                                             
+                                                
+                                            </div>
+                                            <div class="modal-footer">
+                                                
+                                                <button class="btn btn-danger" id="addmodalClose" data-dismiss="modal"><i
+                                                    class="flaticon-cancel-12"></i>Discard</button>
+                                                    <button wire:click="save" type="submit" class="btn btn-success">Save</button>
+                                                </div>
+                                            </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+                    
+                
+
+            <% if(data.length === 0){ %> 
+                <h2>No App Settings Found</h2>
+                <% }else if(loading) { %>
+                    <div class="row">
+                        <div class="col-5">
+
+                        </div>
+                        <div class="col-2">
+                            <button class="btn btn-success btn-lg mb-3 mr-3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-loader spin mr-2"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg>  Loading</button>
+                        </div>
+                    </div>
+
+                    <% } else {  %>
+            <div class="table-responsive">
+                <table  class="table table-striped mb-4" style="width: 100%;  font-weight: bold; box-shadow: 8px 5px 5px 0px #aaa;" id="DataTables_Table_0"
+                    role="grid" aria-describedby="DataTables_Table_0_info">
+                    <thead>
+
+                        <tr role="row">
+                            <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                                colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
+                                style="width: 86px;">#</th>
+                            <!-- <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                                colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
+                                style="width: 86px;"> Name</th> -->
+                            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                                aria-label="NAME: activate to sort column ascending" style="width: 100px;">key</th>
+                            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                                aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">value</th>
+                            <!-- <th class="text-center sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                                colspan="1" aria-label="Status: activate to sort column ascending" style="width: 49px;">
+                                Status</th> -->
+                            <th class="text-center dt-no-sorting sorting" tabindex="0"
+                                aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                                aria-label="Action: activate to sort column ascending" style="width: 56px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr role="row">
+
+                            <% for(app_settings of data){ %>
+                                    <td class="sorting_1"><%=app_settings.id %></td>
+                                    <!-- <td><%=app_settings.name %></td> -->
+                                    <td><%=app_settings.key %> </td>
+                                    <td><%=app_settings.value %></td>
+                                   
+
+                                    <div>
+                                        <!-- <td style="text-align: center; vertical-align: middle;">
+                                            <div class="custom-control custom-switch">
+                                                    <input <%= app_settings.status == "1" ? "checked"  :""  %>  type="checkbox"   class="custom-control-input" name="status" 
+                                                    value="<%=app_settings.status %>"  onChange="onToDochange(this)" id=<%=app_settings.id %>>
+                                                    <label class="custom-control-label"  for=<%=app_settings.id %>></label>
+                                                
+                                                    <script >
+                                                        async function onToDochange(event) {
+                                                        await fetch('/super_admin/settings/update_settings_status', {
+                                                        method: 'POST',
+                                                        headers: {
+                                                            'Accept': 'application/json',
+                                                            'Content-Type': 'application/json'
+                                                        },
+                                                        body: JSON.stringify({"id": event.id , "status" : event.value})
+                                                        })
+                                                     
+                                                        window.location.reload("/super_admin/settings/app_settings")
+                                                    };
+                                                    </script>
+                                             
+                                            </div>
+                                        </td> -->
+                                        <td class="text-center"> <button class="btn btn-sm btn-primary" data-toggle="modal"
+                                            data-target="#editCategory<%=app_settings.id %>">edit</button> </td>
+                                    </div>
+                                    
+                                </tr>
+
+
+                                <div wire:ignore.self="" data-backdrop="static" class="modal fade" id="editCategory<%= app_settings.id %>" tabindex="-1"
+                                    aria-labelledby="editCategory<%= app_settings.id %>" style="display: none;" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalCenterTitle">Edit App Setting</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                                        height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                        class="feather feather-x">
+                                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                    </svg>
+                                                </button>
+                                            </div>
+            
+                                            
+                                            <div class="modal-body">
+                                                <form method="post" action="/super_admin/settings/update_appsettings">
+                                                    <div class="form-row mb-4">
+                                                        <!-- <div class="col-sm-6">
+                                                            <label> Name</label>
+                                                            <input type="text" class="form-control" wire:model="name"
+                                                                placeholder="Name" name="name" value="<%=app_settings.name %>" required>
+
+                                                        </div> -->
+                                                        <div class="col-12">
+                                                            <label>value</label>
+                                                            <input type="text" class="form-control" wire:model="name" 
+                                                                placeholder="value" name="value" value="<%= app_settings.value %>">
+                                                           
+                                                        </div>
+
+                                                    </div>
+                                                    
+                                                    
+                                                    <div class="form-row mb-4">
+                                                        
+                                                            <!-- <div class="col-6 ">
+                                                                <label>key</label>
+                                                                <input type="text" class="form-control" wire:model="name" 
+                                                                    placeholder="key" name="key" value="<%= app_settings.key %>">
+                                                               
+                                                            </div> -->
+                                                           
+                                                    </div>
+                                                </div>
+                                             
+                                                    <div class="modal-footer">
+                                                        
+                                                        <button type="button" name="id" value="<%=app_settings.id %>" class="btn btn-danger" id="addmodalClose" data-dismiss="modal"><i
+                                                            class="flaticon-cancel-12"></i>Discard</button>
+                                                            <button wire:click="save" name="id" value="<%=app_settings.id %>"  type="submit" class="btn btn-primary">Save</button>
+                                                    </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                
+
+
+                        <% } %>
+
+
+                        
+                    </tbody>
+
+                </table>
+            </div>
+            <% if(numberOfPages != 1){ %> 
+            <div class="dt--bottom-section d-sm-flex justify-content-sm-between text-center pt-4 ">
+                <div class="dt--pages-count  mb-sm-0 mb-3">
+                  <% let search_query =  is_search ? `&searchKeyword=${searchKeyword}` : "" %>
+                </div>
+                <div class="widget-content widget-content-area text-center">
+                <nav class="paginating-container " aria-label="...">
+                    <ul class="pagination-default pagination">
+                        <% if(page > 1) { %> 
+                            <li class="prev">
+                                <a href="/super_admin/settings/app_settings?page=<%=page-1%><%= search_query %>"  style="padding-left: 5px;">Prev</a>
+                      
+                             <% } %>
+                       
+                             <% for(let i = iterator==0 ? 1 : iterator; i <= endingLink; i++) { %>
+                                <% if(i === page) { %>
+                                    <li class="page-item active" style="padding-left: 5px;"><a  href="#"><%=i%></a></li>
+                                  
+                                    <% continue; %>
+                                    <% } %>
+              
+               
+               
+               
+            
+                                    <li class="page-item" style="padding-left: 5px;"><a  href="/super_admin/settings/app_settings?page=<%=i%><%= search_query %>"><%=i%></a></li>
+                            <% } %>
+                        
+                        <% if(page < numberOfPages) { %>
+                            <li class="next" style="padding-left: 5px;">
+                                <a  href="/super_admin/settings/app_settings?page=<%=page+1%><%= search_query %>">Next</a>
+                            </li>
+                          
+                             <% } %>
+                             
+                    </ul>
+                </nav>
+            </div>
+            </div>
+            <% } %>
+        </div>
+        <% } %>
+    <div id="DataTables_Table_1_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+        <div class="dt--top-section">
+            <div class="row">
+
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="multi-table table table-bordered table-hover non-hover dataTable" style="width: 100%;"
+                id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info">
+
+            </table>
+        </div>
+    </div>
+    </div>
+    </div>
+    </div>

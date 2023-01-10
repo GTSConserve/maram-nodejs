@@ -1,0 +1,790 @@
+<% layout('layouts/boilerPlate') %>
+    <div class="widget-content widget-content-area br-6">
+        <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+            <div class="row">
+                 <div class="col-8">
+                        <h3 class="mt-2">New User Orders</h3>
+                        </div>
+                        <div class="col-4">
+                             <div class="input-group mb-3">
+                            <input type="text" class="form-control" name="searchKeyword" oninput="onChangeSearch()" value="<%=searchKeyword ? searchKeyword : ""  %>"  id="searchText" placeholder="search..."  aria-describedby="basic-addon2">
+                            <div class="input-group-append" style="cursor: pointer;"  onclick="onSearch()" >
+                              <span style="background-color: #80C659;" class="input-group-text " id="basic-addon2"><svg style="color: #fff;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button></span>
+                            </div>
+                          </div>
+                          </div>     
+             
+             
+
+            </div>
+    </div>
+
+
+
+                    
+                                <script>
+
+                                    async function onChangeSearch(event){
+                                        const text = document.getElementById("searchText").value;
+                                        if(!text){
+
+                                            return window.location.href = `/branch_admin/subscription/get_new_users`
+                                        }
+
+                                    }
+
+                                    async function onSearch(event) {
+                                       
+                                        const text = document.getElementById("searchText").value;
+                            
+                                        window.location.href = `/branch_admin/subscription/get_new_users?searchKeyword=${text}`
+                              
+                                 
+                                };
+                                </script>
+               
+        <div class="col-lg-12 col-12 layout-spacing">
+            <div class="statbox widget box box-shadow">
+                <div class="widget-content widget-content-area pill-justify-right">
+                    
+                    <ul class="nav nav-tabs mb-3 mt-3 justify-content-start" id="justify-right-pills-tab" role="tablist" style="font-weight: 900;">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="justify-right-pills-home-tab" data-toggle="pill" href="#justify-right-pills-home" role="tab" aria-controls="justify-right-pills-home" aria-selected="true">Subscription User Orders</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="justify-right-pills-contact-tab" data-toggle="pill" href="#justify-right-pills-contact" role="tab" aria-controls="justify-right-pills-contact" aria-selected="false">Add On User Orders</a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content" id="justify-right-pills-tabContent">
+                        <div class="tab-pane fade show active" id="justify-right-pills-home" role="tabpanel" aria-labelledby="justify-right-pills-home-tab">
+                                  
+                            <% if(subscription_users.length ===0){ %> 
+                                <h6>No Subscription User Orders Found</h6>
+                                            <% }else{  %> 
+                                          
+                                            <div class="table-responsive">
+                                             <table  class="table table-striped mb-4" style="width: 100%;  font-weight: bold; box-shadow: 8px 5px 5px 0px #aaa;" id="DataTables_Table_0"
+                                                 role="grid" aria-describedby="DataTables_Table_0_info">
+                                                 <thead>
+                             
+                                                    <tr role="row"  >
+                                                        <th  class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                                                            colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
+                                                            style="width: 20px;">#</th>
+                                                        <th  class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                                                            colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
+                                                            style="width: 20px;">User Id</th>
+                                                        <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                                                            colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
+                                                            style="width: 50px;">User Name</th>
+                                                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                                                            aria-label="NAME: activate to sort column ascending" style="width: 20px;">Subscription Type</th>
+                                                        
+                                                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                                                            aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">Start Date </th>
+                                                            
+                                                        <th class="text-center dt-no-sorting sorting" tabindex="0"
+                                                            aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                                                            aria-label="Action: activate to sort column ascending" style="width: 64px;">Action</th>
+                                                    </tr>
+                                                 </thead>
+                                                 <tbody>
+                             
+                                                      <tr role="row" >
+                        
+                                                        <% for(user of subscription_users){ %>
+                                                                <td class="sorting_1"><%=user.user_address_id %></td>
+                                                                <td class="sorting_1"><%=user.customer_id %></td>
+                                                                <td class="sorting_1"><%=user.user_name ? user.user_name  : "N/A"  %></td></td>
+                                                                <td ><%=user.subscription_name ? user.subscription_name : "N/A"  %></td>
+                                                                <td><%=user.start_date ? user.start_date : "N/A" %></td>
+                                                             
+                                
+                                                              
+                                    
+                                                                <div>
+                                                                    
+                                                                    <td style="width: 200px;" class="text-center" > 
+                                                                        <button style="font-weight: bold;" class="btn  btn-md  btn-info" data-toggle="modal"
+                                                                        data-target="#view<%=user.user_address_id %>">view</button>
+                                                                         
+                                                                        <button style="font-weight: bold;" class="btn btn-md btn-primary" data-toggle="modal"
+                                                                        data-target="#transfer<%=user.user_address_id %>">Assign Route</button>
+                                                                        
+                                                                        <!-- <button style="font-weight: bold;" class="btn btn-md btn-warning" data-toggle="modal"
+                                                                        data-target="#cancel<%=user.user_address_id %>">Cancel</button> -->
+                                                                    </td>
+                                                                    </td>
+                                                                    
+                                                                </div>
+                                                                
+                                                            </tr>
+                                                            <div wire:ignore.self="" class="modal fade" id="view<%=user.user_address_id %>" tabindex="-1"
+                                                                aria-labelledby="addCategoryTitle"  style="display: none;" aria-hidden="true">
+                                                                <div class="modal-dialog modal-dialog-centered modal-lg" role="document" > 
+                                                                    <div class="modal-content" >
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title" id="exampleModalCenterTitle">User Details</h5>
+                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                                                                    height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                                                    class="feather feather-x">
+                                                                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                                                </svg>
+                                                                            </button>
+                                                                        </div>
+                                                
+                                                                        <div class="modal-body" >
+                                                                           
+                                                                                <div class="form-row mb-4" >
+                                                                                  
+                                                                                        <div class="col-sm-4 pb-4" >
+                                                                                            <label>User Id</label>
+                                                                                            <p style="font-weight: 900;"><%=user.customer_id %></p>
+                                                                                            
+                                                                                        </div>
+                                                                                        <div class="col-sm-4">
+                                                                                            <label>User Name</label>
+                                                                                            <p style="font-weight: 900;"><%=user.user_name %></p>
+                                                                                            
+                                                                                        </div>
+                                                                                        <div class="col-sm-4 ">
+                                                                                            <label>Mobile Number</label>
+                                                                                            <p style="font-weight: 900;"><%=user.mobile_number %></p>
+                                                                                           
+                                                                                            
+                                                                                        </div>
+                                                                                        <div class="col-sm-6 pb-4">
+                                                                                        <label>Address</label>
+                                                                                        <p style="font-weight: 900;"><%=user.address %></p>
+                                                                                        
+                                                                                    </div>
+                                                                                    <div class="col-sm-1"></div>
+                                                                                    <div class="col-sm-5 ">
+                                                                                        <label>Landmark</label>
+                                                                                        <p style="font-weight: 900;"><%=user.landmark %></p>
+                                                                                      
+                                                                                        
+                                                                                    </div>
+                                                                                    <% if(user.is_add_on === true){ %>
+                                                                                    <div class="col-4 " style="font-weight: 900;font-size: 20px; color: rgb(0, 0, 0);">Product Details</div>
+                                                                                    <div class="col-4" ></div>
+                                                                                    <div class="col-4" style="font-weight: 600;font-size: 16px; ">
+                                                                                        <div class="row">
+                                                                                            <div class="col-12">
+                                                                                                Delivery Date :<span style="color: rgb(77, 76, 76);"> <%= user.delivery_date %> </span>
+                                                                                            </div>
+                                                                                            <div class="col-12">
+                                                                                                Sub Total : <span style="color: rgb(77, 76, 76);"><%= user.sub_total %></span>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                        <% for(add_on of user.add_on_products){ %>
+                                            
+                                                                                            <div style="border-width:0 ;" class="card component-card_4 col-6 text-center">
+                                                                                                <div class="card-body ">
+                                                                                                    <div class="user-profile ">
+                                                                                                        <img style="width: 117px;height: 117px;" src="<%= add_on.image %> " class="" alt="...">
+                                                                                                    </div>
+                                                                                                    <div class="user-info ">
+                                                                                                        <h5 class="card-user_name pt-2"> <%= add_on.product_name %> </h5>
+                                                                                                        <p class="card-user_occupation"> <%=add_on.unit_value %> <%=add_on.value %> / Qty : <%=add_on.quantity %></p>
+                                                                                                        <p class="card-user_occupation">Price : ₹<%=add_on.price %></p>
+                                                                                                        <p class="card-user_occupation">Total Price : ₹<%=add_on.total_price %></p>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                            
+                                            
+                                                                                    <% } %>  
+                                                                                    <% }else{ %>  
+                                                                                        <div class="col-12 " style="font-weight: 900;font-size: 20px; color: black;">Product Details</div>
+                                                                                    <div style="border-width:0 ;" class="card component-card_4  text-left">
+                                                                                        <div class="card-body row ">
+                                                                                            <div class="user-profile col-4">
+                                                                                                <img style="width: 117px;height: 117px;" src="<%= user.image %> " class="" alt="...">
+                                                                                            </div>
+                                                                                            <div class="user-info col-8">
+                                                                                                <h5 class="card-user_name"> <%= user.product_name %> </h5>
+                                                                                                <p class="card-user_occupation"> <%=user.unit_value %> <%=user.value %> / Qty : <%=user.quantity %></p>
+                                                                                                <p class="card-user_occupation">Subscription Start From - <%=user.start_date%></p>
+                                                                                                <p class="card-user_occupation">User Plan : <%= user.subscription_name %>  </p>
+                                                                                                <p class="card-user_occupation">Price : ₹<%=user.price %></p>
+                                                                                                <% if(user.customized_days){ %> 
+                                                                                                <p class="card-user_occupation"> customized days :
+                                                                                                                    <% for(day of user.customized_days){ %> 
+                                                                                                                        <%= day%> ,
+                                                                                                                    <% } %> 
+                                                                                                    </p>
+                                                                                                        <% } %> 
+                                                                                                
+                                                                                                <!-- <p class="card-text"> Maecenas nec mi vel lacus condimentum rhoncus dignissim egestas orci. Integer blandit porta placerat. Vestibulum in ultricies. </p> -->
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                        
+                                                                                        <% } %> 
+                                                                                </div>
+                                                                                
+                                                                                <div class="modal-footer">
+                                                                                    
+                                                                                    <button type="button" name="id" value="<%=user.id %>" class="btn btn-danger" id="addmodalClose" data-dismiss="modal"><i
+                                                                                        class="flaticon-cancel-12"></i>Discard</button>
+                                                                                        
+                                                                                </div>
+                                                                       
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            </div>
+                                                
+                                                            <!-- Assign -->
+                                                            <div wire:ignore.self="" class="modal fade" id="transfer<%=user.user_address_id %>" tabindex="-1"
+                                                                aria-labelledby="addCategoryTitle"  style="display: none;" aria-hidden="true">
+                                                                <div class="modal-dialog modal-dialog-centered modal-lg" role="document" > 
+                                                                    <div class="modal-content" >
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title" id="exampleModalCenterTitle">Assign The User</h5>
+                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                                                                    height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                                                    class="feather feather-x">
+                                                                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                                                </svg>
+                                                                            </button>
+                                                                        </div>
+                                                        
+                                                                        <form action="/branch_admin/subscription/subscribed" method="post" >
+                                                                                    <div class="modal-body">
+                                                                                        <div class="form-row mb-4" >
+                                                                                            <div class="col-sm-6">
+                                                                                                <label>Choose a Route</label>
+                                                                                                <select required wire:model="countryid" class="form-control"         
+                                                                                                name="router_id" required>
+                                                                                                <option value="" disabled selected>Select your Route</option>
+                                                                                                    <% for(route of routes){ %>
+                                                
+                                                                                                        <option style="font-weight: bold;" value="<%=route.id %>"><%=route.name %>  </option>
+                                                                                                    <% } %>
+                                                
+                                                                                                </select>
+                                                                                            </div>
+                                                                                            <div class="col-sm-6">
+                                                                                               
+                                                                                                    <p style="font-weight: 700;">Choose A Date To Start Subscription</p>
+                                                                                                    <div class="form-group mb-0">
+                                                                                                        <input required id="basicFlatpickr" name="date" class="form-control flatpickr flatpickr-input active mb-2" type="date"  value="<%=user.default_show_start_date  %>" >
+                                                                                                        <span class="mt-2">User Start Date - <%=user.start_date  %> </span>
+                                                                                                    </div>
+                                                                                                
+                                                                                            </div>
+                                                                                        
+
+                                                                                            
+
+
+                                                                                        </div>
+
+
+
+                                                                                        <% if(user.add_on_details.length !==0){ %>
+                                                                                            <h6 style="font-weight: 700;font-size: 15px; color:#198754">Below Add On Products Also Approved !</h6>
+                                                                                            <hr>
+                                                                                            <% for(add_on_details of user.add_on_details){ %>
+                                                                                                <div class="form-row mb-4" >
+                                                                                            <div class="col-12 " style="font-weight: 900;font-size: 14px; color: rgb(0, 0, 0);">
+                                                                                                <div class="col-12">
+                                                                                                    Delivery Date :<span style="color: rgb(77, 76, 76);"> <%= add_on_details.delivery_date %> </span>
+                                                                                                </div>
+                                                                                                <div class="col-12">
+                                                                                                    Sub Total : <span style="color: rgb(77, 76, 76);"><%= add_on_details.sub_total %></span>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="col-4" ></div>
+                                                                                            <div class="col-4" ></div>
+                                                                                            <div class="col-4" style="font-weight: 600;font-size: 16px;">
+                                                                                               <input type="hidden" name="add_on_order_id" value="<%= add_on_details.add_on_order_id  %>">
+                                                                                            </div>
+                                                                                                <% for(add_on of add_on_details.add_on_products ){ %>
+                                                    
+                                                                                                    <div style="border-width:0 ;" class="card component-card_4 col-4 text-center">
+                                                                                                        <div class="card-body ">
+                                                                                                            <!-- <div class="user-profile ">
+                                                                                                                <img style="width: 117px;height: 117px;" src="<%= add_on.image %> " class="" alt="...">
+                                                                                                            </div> -->
+                                                                                                            <div class="user-info ">
+                                                                                                                <h5 class="card-user_name pt-2"> <%= add_on.product_name %> </h5>
+                                                                                                                <p class="card-user_occupation"> <%=add_on.unit_value %> <%=add_on.value %> / Qty : <%=add_on.quantity %></p>
+                                                                                                                <p class="card-user_occupation">Price : ₹<%=add_on.price %></p>
+                                                                                                                <p class="card-user_occupation">Total Price : ₹<%=add_on.total_price %></p>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                    
+                                                    
+                                                                                            <% } %>  
+                                                                                        </div> 
+                                                                                        <hr>
+                                                                                            <% } %>  
+                                                                                            <% } %> 
+
+
+
+
+                                                                                      
+
+                                                                                        <input type="hidden" id="custId" name="address_id" value="<%= user.user_address_id %>">
+                                                                                        <input type="hidden" id="custId" name="user_id" value="<%= user.user_id %>">
+
+
+
+
+                                                                                    </div>
+                                                                                    <div class="modal-footer">
+                                                                                        <button class="btn" type="button" style="border-color: #006E33;" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancel</button>
+                                                                                        <button type="submit" name="sub_id"  value="<%=user.id %>" class="btn btn-primary">Assign And Proceed</button>
+                                                                                    </div>
+                                                                                </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                            
+                                            
+                                            
+                                            
+                                                <!-- cancel -->
+                                                <!-- <div wire:ignore.self="" class="modal fade" id="cancel<%=user.user_address_id %>" tabindex="-1"
+                                                    aria-labelledby="addCategoryTitle"  style="display: none;" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered " role="document" > 
+                                                        <div class="modal-content" >
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalCenterTitle">Cancel The Subscription</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                                                        height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                                        class="feather feather-x">
+                                                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                                    </svg>
+                                                                </button>
+                                                            </div>
+                                            
+                                                                        <div class="modal-body">
+                                                                            <p class="modal-text" style="font-weight: bold;">Are You Sure To Cancel The Subscription?</p>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button class="btn" style="border-color: #006E33;" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancel</button>
+                                                                            <button type="button" onclick="onCancel(this)" value="<%=user.id %>" class="btn btn-primary">Proceed</button>
+                                                                        </div>
+                                                                        <script >
+                                                                            async function onCancel(event) {
+                                                                            await fetch('/super_admin/users_subscription/cancel_pending_list', {
+                                                                            method: 'POST',
+                                                                            headers: {
+                                                                                'Accept': 'application/json',
+                                                                                'Content-Type': 'application/json'
+                                                                            },
+                                                                            body: JSON.stringify({"id": event.value})
+                                                                            })
+                                                                            
+                                                                           
+                                                                         window.location.reload("/super_admin/users_subscription/get_new_users")
+                                            
+                                                                        };
+                                                                        </script>
+                                                                    
+                                                                 
+                                                           
+                                                        </div>
+                                                    </div>
+                                                </div> -->
+                                                <% } %>
+                                                </tbody>
+</table>
+                                            </div>
+                             <% } %> 
+                                                      
+                                                         </div>
+                                                
+                
+                    
+                       
+                    <div class="tab-pane fade" id="justify-right-pills-contact" role="tabpanel" aria-labelledby="justify-right-pills-contact-tab">
+                          <% if(add_on_users.length ===0){ %> 
+                            <h6>No Add On Users Found</h6>
+                                        <% }else{ %> 
+                                            
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped mb-4" style="width: 100%;  font-weight: bold; box-shadow: 8px 5px 5px 0px #aaa;" id="DataTables_Table_0"
+                                    role="grid" aria-describedby="DataTables_Table_0_info">
+                                    <thead >
+                        
+                                        <tr role="row"  >
+                                            <th  class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                                                colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
+                                                style="width: 20px;">#</th>
+                                            <th  class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                                                colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
+                                                style="width: 20px;">User Id</th>
+                                            <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                                                colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
+                                                style="width: 50px;">User Name</th>
+                                            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                                                aria-label="NAME: activate to sort column ascending" style="width: 20px;">Total Products</th>
+                                            
+                                            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                                                aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">Delivery Date </th>
+                                                
+                                            <th class="text-center dt-no-sorting sorting" tabindex="0"
+                                                aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                                                aria-label="Action: activate to sort column ascending" style="width: 64px;">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                        
+                                        <tr role="row" >
+                        
+                                            <% for(user of add_on_users){ %>
+                                                    <td class="sorting_1"><%=user.user_address_id %></td>
+                                                    <td class="sorting_1"><%=user.customer_id %></td>
+                                                    <td class="sorting_1"><%=user.user_name ? user.user_name  : "N/A"  %></td>
+                                                    <td class=""><%=user.add_on_products.length  %></td>
+                                                    <td><%=user.delivery_date ? user.delivery_date : "N/A" %></td>
+                                                 
+                    
+                                                  
+                        
+                                                    <div>
+                                                        
+                                                        <td style="width: 200px;" class="text-center" > 
+                                                            <button style="font-weight: bold;" class="btn  btn-md  btn-info" data-toggle="modal"
+                                                            data-target="#viewaddon<%=user.id %>">view</button>
+                                                             
+                                                            <button style="font-weight: bold;" class="btn btn-md btn-primary" data-toggle="modal"
+                                                            data-target="#transferaddon<%=user.id %>">Assign Route</button>
+<!--                                                             
+                                                            <button style="font-weight: bold;" class="btn btn-md btn-warning" data-toggle="modal"
+                                                            data-target="#canceladdon<%=user.id %>">Cancel</button> -->
+                                                        </td>
+                                                        </td>
+                                                        
+                                                    </div>
+                                                    
+                                                </tr>
+                        
+                        <!-- view -->
+                                    <div wire:ignore.self="" class="modal fade" id="viewaddon<%=user.id %>" tabindex="-1"
+                                        aria-labelledby="addCategoryTitle"  style="display: none;" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document" > 
+                                            <div class="modal-content" >
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalCenterTitle">User Details</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                                            height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                            class="feather feather-x">
+                                                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                        
+                                                <div class="modal-body" >
+                                                   
+                                                        <div class="form-row mb-4" >
+                                                          
+                                                                <div class="col-sm-4 pb-4" >
+                                                                    <label>User Id</label>
+                                                                    <p style="font-weight: 900;"><%=user.customer_id %></p>
+                                                                    
+                                                                </div>
+                                                                <div class="col-sm-4">
+                                                                    <label>User Name</label>
+                                                                    <p style="font-weight: 900;"><%=user.user_name %></p>
+                                                                    
+                                                                </div>
+                                                                <div class="col-sm-4 ">
+                                                                    <label>Mobile Number</label>
+                                                                    <p style="font-weight: 900;"><%=user.mobile_number %></p>
+                                                                   
+                                                                    
+                                                                </div>
+                                                                <div class="col-sm-6 pb-4">
+                                                                <label>Address</label>
+                                                                <p style="font-weight: 900;"><%=user.address %></p>
+                                                                
+                                                            </div>
+                                                            <div class="col-sm-1"></div>
+                                                            <div class="col-sm-5 ">
+                                                                <label>Landmark</label>
+                                                                <p style="font-weight: 900;"><%=user.landmark %></p>
+                                                              
+                                                                
+                                                            </div>
+                                                            <% if(user.is_add_on === true){ %>
+                                                            <div class="col-4 " style="font-weight: 900;font-size: 20px; color: rgb(0, 0, 0);">Product Details</div>
+                                                            <div class="col-4" ></div>
+                                                            <div class="col-4" style="font-weight: 600;font-size: 16px; ">
+                                                                <div class="row">
+                                                                    <div class="col-12">
+                                                                        Delivery Date :<span style="color: rgb(77, 76, 76);"> <%= user.delivery_date %> </span>
+                                                                    </div>
+                                                                    <div class="col-12">
+                                                                        Sub Total : <span style="color: rgb(77, 76, 76);"><%= user.sub_total %></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                                <% for(add_on of user.add_on_products){ %>
+                    
+                                                                    <div style="border-width:0 ;" class="card component-card_4 col-6 text-center">
+                                                                        <div class="card-body ">
+                                                                            <div class="user-profile ">
+                                                                                <img style="width: 117px;height: 117px;" src="<%= add_on.image %> " class="" alt="...">
+                                                                            </div>
+                                                                            <div class="user-info ">
+                                                                                <h5 class="card-user_name pt-2"> <%= add_on.product_name %> </h5>
+                                                                                <p class="card-user_occupation"> <%=add_on.unit_value %> <%=add_on.value %> / Qty : <%=add_on.quantity %></p>
+                                                                                <p class="card-user_occupation">Price : ₹<%=add_on.price %></p>
+                                                                                <p class="card-user_occupation">Total Price : ₹<%=add_on.total_price %></p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                    
+                    
+                                                            <% } %>  
+                                                            <% }else{ %>  
+                                                                <div class="col-12 " style="font-weight: 900;font-size: 20px; color: black;">Product Details</div>
+                                                            <div style="border-width:0 ;" class="card component-card_4  text-left">
+                                                                <div class="card-body row ">
+                                                                    <div class="user-profile col-4">
+                                                                        <img style="width: 117px;height: 117px;" src="<%= user.image %> " class="" alt="...">
+                                                                    </div>
+                                                                    <div class="user-info col-8">
+                                                                        <h5 class="card-user_name"> <%= user.product_name %> </h5>
+                                                                        <p class="card-user_occupation"> <%=user.unit_value %> <%=user.value %> / Qty : <%=user.quantity %></p>
+                                                                        <p class="card-user_occupation">Subscription Start From - <%=user.start_date%></p>
+                                                                        <p class="card-user_occupation">User Plan : <%= user.subscription_name %>  </p>
+                                                                        <p class="card-user_occupation">Price : ₹<%=user.price %></p>
+                                                                        <% if(user.customized_days){ %> 
+                                                                        <p class="card-user_occupation"> customized days :
+                                                                                            <% for(day of user.customized_days){ %> 
+                                                                                                <%= day%> ,
+                                                                                            <% } %> 
+                                                                            </p>
+                                                                                <% } %> 
+                                                                        
+                                                                        <!-- <p class="card-text"> Maecenas nec mi vel lacus condimentum rhoncus dignissim egestas orci. Integer blandit porta placerat. Vestibulum in ultricies. </p> -->
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                                
+                                                                <% } %> 
+                                                        </div>
+                                                        
+                                                        <div class="modal-footer">
+                                                            
+                                                            <button type="button" name="id" value="<%=user.id %>" class="btn btn-danger" id="addmodalClose" data-dismiss="modal"><i
+                                                                class="flaticon-cancel-12"></i>Discard</button>
+                                                                
+                                                        </div>
+                                               
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </div>
+                        
+                                    <!-- Assign -->
+                                    <div wire:ignore.self="" class="modal fade" id="transferaddon<%=user.id %>" tabindex="-1"
+                                        aria-labelledby="addCategoryTitle"  style="display: none;" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document" > 
+                                            <div class="modal-content" >
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalCenterTitle">Approve The User</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                                            height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                            class="feather feather-x">
+                                                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                
+                                                <form action="/branch_admin/subscription/subscribed" method="post" >
+                                                            <div class="modal-body">
+                                                                <% if(user.is_subscription_pending === true){ %> 
+                                                                    <p>Please Approve The Subscription First!</p>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button class="btn btn-primary" type="button"  data-dismiss="modal"><i class="flaticon-cancel-12"></i> Discard</button>
+                                                                   
+                                                                </div>
+
+                                                                    <% }else{ %> 
+                                                                        <div class="form-row mb-4" >
+                                                                            <div class="col-sm-6">
+                                                                                <label>Choose a Route</label>
+                                                                                <select required wire:model="countryid" class="form-control"         
+                                                                                name="router_id" required>
+                                                                                <option value="" disabled selected>Select your Route</option>
+                                                                                    <% for(route of routes){ %>
+                                
+                                                                                        <option style="font-weight: bold;" value="<%=route.id %>"><%=route.name %>  </option>
+                                                                                    <% } %>
+                                
+                                                                                </select>
+                                                                            </div>
+                                                                            <div  class="col-sm-3 ml-3">
+                                                                               
+                                                                                <p class="mt-2" style="font-weight: bold;"  >User Delivery Date  </p>
+                                                                                <span style="font-weight: bold;"> <%=user.delivery_date  %></span>
+                                                                                  
+                                                                                
+                                                                            </div>
+
+                                                                        </div>
+
+
+                                                                    <% if( user.is_add_on_duplicate== true && user.add_on_duplicate_details.length !==0){ %>
+                                                                        <h6 class="mt-4" style="font-weight: 700;font-size: 15px; color:#198754">Below Add On Products Also Approved !</h6>
+                                                                        <hr>
+                                                                        <% for(add_on_details of user.add_on_duplicate_details){ %>
+                                                                            <div class="form-row mb-4" >
+                                                                        <div class="col-12 " style="font-weight: 900;font-size: 14px; color: rgb(0, 0, 0);">
+                                                                            <div class="col-12">
+                                                                                Delivery Date :<span style="color: rgb(77, 76, 76);"> <%= add_on_details.delivery_date %> </span>
+                                                                            </div>
+                                                                            <div class="col-12">
+                                                                                Sub Total : <span style="color: rgb(77, 76, 76);"><%= add_on_details.sub_total %></span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-4" ></div>
+                                                                        <div class="col-4" ></div>
+                                                                        <div class="col-4" style="font-weight: 600;font-size: 16px;">
+                                                                           <input type="hidden" name="add_on_order_id" value="<%= add_on_details.add_on_order_id  %>">
+                                                                        </div>
+                                                                            <% for(add_on of add_on_details.add_on_products ){ %>
+                                
+                                                                                <div style="border-width:0 ;" class="card component-card_4 col-4 text-center">
+                                                                                    <div class="card-body ">
+                                                                                        <!-- <div class="user-profile ">
+                                                                                            <img style="width: 117px;height: 117px;" src="<%= add_on.image %> " class="" alt="...">
+                                                                                        </div> -->
+                                                                                        <div class="user-info ">
+                                                                                            <h5 class="card-user_name pt-2"> <%= add_on.product_name %> </h5>
+                                                                                            <p class="card-user_occupation"> <%=add_on.unit_value %> <%=add_on.value %> / Qty : <%=add_on.quantity %></p>
+                                                                                            <p class="card-user_occupation">Price : ₹<%=add_on.price %></p>
+                                                                                            <p class="card-user_occupation">Total Price : ₹<%=add_on.total_price %></p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                
+                                
+                                                                        <% } %>  
+                                                                    </div> 
+                                                                    <hr>
+                                                                        <% } %>  
+                                                                        <% }else{ %> 
+
+                                                                            <input type="hidden" id="custId" name="add_on_order_id" value="<%= user.id %>">
+                                                                            <% } %>  
+
+                                                                    <input type="hidden" id="custId" name="address_id" value="<%= user.user_address_id %>">
+                                                                   
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button class="btn" type="button" style="border-color: #006E33;" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancel</button>
+                                                                        <button type="submit"  class="btn btn-primary">Assign And Proceed</button>
+                                                                    </div>
+                                                                    <% } %> 
+                                                        </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                    
+                    
+                    
+                    
+                        <!-- cancel -->
+                        <!-- <div wire:ignore.self="" class="modal fade" id="canceladdon<%=user.id %>" tabindex="-1"
+                            aria-labelledby="addCategoryTitle"  style="display: none;" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered " role="document" > 
+                                <div class="modal-content" >
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalCenterTitle">Cancel The Subscription</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                                height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                class="feather feather-x">
+                                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                                            </svg>
+                                        </button>
+                                    </div>
+                    
+                                                <div class="modal-body">
+                                                    <p class="modal-text" style="font-weight: bold;">Are You Sure To Cancel The Subscription?</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button class="btn" style="border-color: #006E33;" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancel</button>
+                                                    <button type="button" onclick="onCancel(this)" value="<%=user.id %>" class="btn btn-primary">Proceed</button>
+                                                </div>
+                                                <script >
+                                                    async function onCancel(event) {
+                                                    await fetch('/super_admin/users_subscription/cancel_pending_list', {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'Accept': 'application/json',
+                                                        'Content-Type': 'application/json'
+                                                    },
+                                                    body: JSON.stringify({"id": event.value})
+                                                    })
+                                                    
+                                                   
+                                                 window.location.reload("/super_admin/users_subscription/get_new_users")
+                    
+                                                };
+                                                </script>
+                                            
+                                         
+                                   
+                                </div>
+                            </div>
+                        </div> -->
+                        
+                        <% } %>
+                            </tbody>
+                            </table>
+                        </div>
+                        <% } %> 
+                     </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+   
+    <div id="DataTables_Table_1_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+        <div class="dt--top-section">
+            <div class="row">
+
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="multi-table table table-bordered table-hover non-hover dataTable" style="width: 100%;"
+                id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info">
+
+            </table>
+        </div>
+    </div>
+ 

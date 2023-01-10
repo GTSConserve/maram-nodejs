@@ -1,0 +1,536 @@
+<% layout('layouts/boilerPlate') %>
+    <div class="widget-content widget-content-area br-6">
+        <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+            <div class="row">
+                 <div class="col-8">
+                        <h3 class="mt-2">Branch Admins</h3>
+                        </div>
+                        <div class="col-4">
+                             <div class="input-group mb-3">
+                            <input type="text" class="form-control" name="searchKeyword" oninput="onChangeSearch()" value="<%=searchKeyword ? searchKeyword : ""  %>"  id="searchText" placeholder="search..."  aria-describedby="basic-addon2">
+                            <div class="input-group-append" style="cursor: pointer;"  onclick="onSearch()" >
+                              <span style="background-color: #80C659;" class="input-group-text " id="basic-addon2"><svg style="color: #fff;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button></span>
+                            </div>
+                          </div>
+                          </div>     
+             
+             
+
+            </div>
+    </div>
+
+                    
+                                <script>
+
+                                    async function onChangeSearch(event){
+                                        const text = document.getElementById("searchText").value;
+                                        if(!text){
+
+                                            return window.location.href = `/super_admin/branch/get_branch_admin`
+                                        }
+
+                                    }
+
+                                    async function onSearch(event) {
+                                       
+                                        const text = document.getElementById("searchText").value;
+                            
+                                        window.location.href = `/super_admin/branch/get_branch_admin?searchKeyword=${text}`
+                              
+                                 
+                                };
+                                </script>
+                   
+                    <div class="form-group col-md-1 float-right">
+                        <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addbarcategory">Add</button>
+                        <!-- __category add__ -->
+                        <div wire:ignore.self="" data-backdrop="static" class="modal fade" id="addbarcategory" tabindex="-1"
+                            aria-labelledby="addCategoryTitle" style="display: none;" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalCenterTitle">Add Branch Admin</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                                height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                class="feather feather-x">
+                                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                    <div class="widget-content widget-content-area br-6">
+                                        <div class="row m-2 ">
+                                            <!-- <h4 class="modal-title" id="exampleModalLabel"> Add Admin</h4> -->
+                                            <div class="col-sm-3  ml-auto">
+
+                                            </div>
+
+                                        
+                                        </div>
+
+
+                                        <form action="/super_admin/branch/create_branch_admin" method="post">
+
+                                        <div class="form-row mb-4">
+                                            <div class="col-sm-6 p-1">
+                                                <label>Branch Name</label>
+                                                <input type="text" wire:model="name" placeholder="name" required name="name"
+                                                    class="form-control">
+                                            </div>
+                                            <div class="col-sm-6 p-1">
+                                                <label>Incharge Name</label>
+                                                <input type="text" wire:model="name" placeholder="Incharge name" required name="incharge_name"
+                                                    class="form-control">
+                                            </div>
+
+                                            <div class="col-sm-6 p-1">
+                                                <label>Email</label>
+                                                <input type="email" wire:model="email" placeholder="email@mail.com" required name="email"
+                                                    class="form-control">
+                                            </div>
+
+                                            <div class="col-sm-6 p-1">
+                                                <label>Password</label>
+                                                <input type="password" minlength="8" wire:model="password" name="password" placeholder="password" required
+                                                    class="form-control">
+                                            </div>
+
+                                            <div class="col-sm-6  p-1">
+                                                <label>Mobile Number</label>
+                                                <input type="number" wire:model="name" minlength="10" maxlength="10" name="mobile_number" placeholder="Enter 10 digit mobile number" required
+                                                    class="form-control">
+
+                                            </div>
+                                            <div class="col-sm-6  p-1">
+                                                <label>Zone</label>
+                                                <select wire:model="countryid" class="form-control" name="zone_id" required>
+                                                    <option name="" value="">Choose A Zone</option>
+                                                    <% for(zone of zones){ %>
+
+                                                        <option name="<%=zone.name %>" value="<%=zone.id %>"><%=zone.name %></option>
+                                                    <% } %>
+
+                                                </select>
+
+                                            </div>
+                                            <!-- <div class="col-sm-6  p-1">
+                                                <label>Location</label>
+                                                <input type="text" wire:model="name" placeholder="Brach Location" required name="location"
+                                                    class="form-control">
+
+                                            </div> -->
+
+
+
+
+                                        </div>
+                                       
+
+
+
+
+                                    </div>
+                                    <div class="modal-footer">
+
+                                        <button type="button" class="btn btn-danger" id="addmodalClose" data-dismiss="modal"><i
+                                                class="flaticon-cancel-12"></i>Discard</button>
+                                        <button type="submit" wire:click="save" class="btn btn-success">Save</button>
+                                    </div>
+                                </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+           
+        <% if(data.length === 0){ %> 
+            <h2>No Data Found</h2>
+            <% }else if(loading) { %>
+                <div class="row">
+                    <div class="col-5">
+    
+                    </div>
+                    <div class="col-2">
+                        <button class="btn btn-success btn-lg mb-3 mr-3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-loader spin mr-2"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg>  Loading</button>
+                    </div>
+                </div>
+    
+                <% } else {  %>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped mb-4" style="width: 100%;  font-weight: bold; box-shadow: 8px 5px 5px 0px #aaa;" id="DataTables_Table_0"
+                role="grid" aria-describedby="DataTables_Table_0_info">
+                <thead >
+    
+                    <tr role="row"  >
+                        <th  class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                            colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
+                            style="width: 20px;">#</th>
+                        <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                            colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
+                            style="width: 86px;">Branch Name</th>
+                        <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                            colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
+                            style="width: 86px;">Incharge Name</th>
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                            aria-label="NAME: activate to sort column ascending" style="width: 30px;">Email</th>
+                        
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                            aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">Mobile Number</th>
+                            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                            aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">Zone</th>
+                        <!-- <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                            aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">Location</th> -->
+                        <th class="text-center sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                            colspan="1" aria-label="Status: activate to sort column ascending" style="width: 49px;">
+                            Status</th>
+                        <th class="text-center dt-no-sorting sorting" tabindex="0"
+                            aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                            aria-label="Action: activate to sort column ascending" style="width: 64px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+    
+                    <tr role="row" >
+    
+                        <% for(user of data){ %>
+                                <td class="sorting_1"><%=user.id %></td>
+                                <td><%=user.first_name %></td>
+                                <td><%=user.incharge_name %></td>
+                                <td ><%=user.email %></td>
+                             
+                                <td><%=user.mobile_number %></td>
+                                <td><%=user.zone_name %></td>
+
+                                <!-- <td><%=user.location %></td> -->
+    
+                                <div>
+                                    <td style="text-align: center; vertical-align: middle;">
+                                        <div class="custom-control custom-switch" style="cursor: pointer;">
+                                                <input style="cursor: pointer;" <%= user.status == "1" ? "checked"  :""  %>   type="checkbox"   class="custom-control-input" name="status" 
+                                                value="<%=user.status %>"  onChange="onToDochange(this)" id=<%=user.id %>>
+                                                <label class="custom-control-label"  for=<%=user.id %>></label>
+                                            
+                                                <script >
+                                                    async function onToDochange(event) {
+                                                    await fetch('/super_admin/branch/update_branch_status', {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'Accept': 'application/json',
+                                                        'Content-Type': 'application/json'
+                                                    },
+                                                    body: JSON.stringify({"id": event.id , "status" : event.value})
+                                                    })
+                                                    
+                                                    await  swal("Done", "Status Updated", "success");
+
+                                                 window.location.reload("/super_admin/branch/get_branch_admin")
+                                                 
+    
+                                                    
+                                                };
+                                                </script>
+                                         
+                                        </div>
+                                    </td>
+                                    <td class="text-center"> <button class="btn mb-2 btn-sm  btn-primary" data-toggle="modal"
+                                        data-target="#editCategory<%=user.id %>">edit</button>
+                                         
+                                        <button class="btn mb-2 btn-sm btn-info" data-toggle="modal"
+                                        data-target="#viewCategory<%=user.id %>">View</button>
+
+                                        <button class="btn btn-sm btn-warning" data-toggle="modal"
+                                        data-target="#passwordCategory<%=user.id %>">Change password</button>
+                                    
+                                        <% if(user.sub_total != 0){ %> 
+                                        <button  class="btn btn-sm btn-secondary m-2" data-toggle="modal"
+                                        data-target="#billGenerate<%=user.id %>">Bill Generate</button>
+                                        <% } %> 
+                                    </td>
+                                    
+                                </div>
+                                
+                            </tr>
+    
+    <!-- edit -->
+                <div wire:ignore.self="" data-backdrop="static" class="modal fade" id="editCategory<%=user.id %>" tabindex="-1"
+                    aria-labelledby="addCategoryTitle" style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalCenterTitle">Edit Branch Admin</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                        height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                        class="feather feather-x">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </button>
+                            </div>
+    
+                            <div class="modal-body">
+                                <form method="post" action="/super_admin/branch/update_branch"  >
+                                    <div class="form-row mb-4">
+                                        <div class="col-sm-6">
+                                            <label>Incharge Name</label>
+                                            <input type="text" class="form-control" wire:model="name"
+                                                placeholder="Location" required  value="<%=user.incharge_name %>" name="incharge_name">
+    
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label>City</label>
+                                                <select wire:model="countryid" class="form-control" name="zone_id" required>
+                                                    <option value="<%=user.zone_id  %>" ><%=user.zone_name %></option>
+                                                    <% for(zone of zones){ %>
+
+                                                        <option name="<%=zone.name %>" value="<%=zone.id %>"><%=zone.name %></option>
+                                                    <% } %>
+
+                                                </select>
+    
+                                        </div>
+                                        <div class="col-6">
+                                            <label>Mobile Number</label>
+                                            <input type="text" class="form-control" wire:model="name"
+                                                placeholder="10 digit mobile number" minlength="10" maxlength="10" required  value="<%=user.mobile_number %>" name="mobile_number">
+    
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="modal-footer">
+                                        
+                                        <button type="button" name="id" value="<%=user.id %>" class="btn btn-danger" id="addmodalClose" data-dismiss="modal"><i
+                                            class="flaticon-cancel-12"></i>Discard</button>
+                                            <button wire:click="save" name="id" value="<%=user.id %>"  type="submit" class="btn btn-success">Save</button>
+                                    </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                </div>
+
+
+                <!-- bill generate -->
+                <div wire:ignore.self="" data-backdrop="static" class="modal fade" id="billGenerate<%=user.id %>" tabindex="-1"
+                    aria-labelledby="addCategoryTitle" style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalCenterTitle">Generate Bill</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                        height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                        class="feather feather-x">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </button>
+                            </div>
+    
+                            <div class="modal-body">
+                                <form method="post" action="/super_admin/branch/generate_bill"  >
+                                    <div class="form-row mb-4">
+                                        <div class="col-sm-12">
+                                            <h5>Generate Bill For <%= user.first_name %> ?</h5>
+                                            <p class="mt-4">Total Amount : <b><%= user.sub_total %></b> </p>
+                                        </div>
+                                       
+                                    </div>
+                                    
+                                    <div class="modal-footer">
+                                        
+                                        <button type="button"  class="btn btn-danger" id="addmodalClose" data-dismiss="modal"><i
+                                            class="flaticon-cancel-12"></i>Discard</button>
+                                            <button wire:click="save" name="branch_id" value="<%=user.id %>"  type="submit" class="btn btn-success">Generate</button>
+                                    </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                </div>
+
+
+                 <!-- PASSWORD CHANGE -->
+                 <div wire:ignore.self="" data-backdrop="static" class="modal fade" id="passwordCategory<%=user.id %>" tabindex="-1"
+                    aria-labelledby="addCategoryTitle" style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalCenterTitle">Change Password</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                        height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                        class="feather feather-x">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </button>
+                            </div>
+    
+                            <div class="modal-body">
+                                <form method="post" action="/super_admin/branch/update_change_password"  >
+                                    <div class="form-row mb-4">
+                                        <div class="col-sm-12">
+                                            <label>New Password</label>
+                                            <input type="text" class="form-control" minlength="8" wire:model="new_password"
+                                                placeholder="New Password" name="new_password">
+    
+                                        </div>
+                                        <div class="col-sm-12 mt-3">
+                                            <label>Confirm Password</label>
+                                            <input type="text" class="form-control" minlength="8" wire:model="confirm_new_password"
+                                            placeholder="Confirm Password" name="confirm_new_password">
+
+    
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="modal-footer">
+                                        
+                                        <button type="button" name="id" value="<%=user.id %>" class="btn btn-danger" id="addmodalClose" data-dismiss="modal"><i
+                                            class="flaticon-cancel-12"></i>Discard</button>
+                                            <button wire:click="save" name="id" value="<%=user.id %>"  type="submit" class="btn btn-primary">Save</button>
+                                    </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                </div>
+    
+    <!-- view -->
+    
+    
+    <div wire:ignore.self="" data-backdrop="static" class="modal fade" id="viewCategory<%=user.id %>" tabindex="-1"
+        aria-labelledby="addCategoryTitle" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">View Branch Admin</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                            height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="feather feather-x">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+    
+                <div class="modal-body">
+                    <div class="form-row mb-4">
+                        <div class="col-6 ">
+                            <label>Name</label>
+                            <p style="font-weight: 900;"><%=user.first_name %></p>
+                            <!-- <input type="text" class="form-control" wire:model="name"  
+                                placeholder="Name"  value="<%= user.first_name %>"> -->
+    
+                        </div>
+                        <div class="col-sm-6">
+                            <label>email</label>
+                            <p style="font-weight: 900;"><%=user.email %></p>
+                            
+                           
+                        </div>
+                        
+                        
+                    </div>
+    
+                    <div class="form-row mb-4">
+                        <!-- <div class="col-sm-6">
+                            <label>location</label>
+                            <p style="font-weight: 900;"><%=user.location %></p>
+
+    
+                        </div> -->
+                        <div class="col-sm-6  ">
+                            <label>Mobile Number</label>
+                            <p style="font-weight: 900;"><%=user.mobile_number %></p>
+                            <!-- <input type="text" class="form-control" wire:model="name"
+                            placeholder="price" value="<%= user.mobile_number %>" > -->
+    
+                        </div>
+                    </div>
+    
+                    
+                        <div class="modal-footer">
+                            
+                            <button type="button" name="id" value="<%=user.id %>" class="btn btn-danger" id="addmodalClose" data-dismiss="modal"><i
+                                class="flaticon-cancel-12"></i>Cancel</button>
+                      
+                      </div> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    <% } %>
+              
+                </tbody>
+    
+            </table>
+        </div>
+        <% if(numberOfPages != 1){ %> 
+        <div class="dt--bottom-section d-sm-flex justify-content-sm-between text-center pt-4 ">
+            <div class="dt--pages-count  mb-sm-0 mb-3">
+              <% let search_query =  is_search ? `&searchKeyword=${searchKeyword}` : "" %>
+            </div>
+            <div class="widget-content widget-content-area text-center">
+            <nav class="paginating-container " aria-label="...">
+                <ul class="pagination-default pagination">
+                    <% if(page > 1) { %> 
+                        <li class="prev">
+                            <a href="/super_admin/branch/get_branch_admin?page=<%=page-1%><%= search_query %>"  style="padding-left: 5px;">Prev</a>
+                  
+                         <% } %>
+                   
+                         <% for(let i = iterator==0 ? 1 : iterator; i <= endingLink; i++) { %>
+                            <% if(i === page) { %>
+                                <li class="page-item active" style="padding-left: 5px;"><a  href="#"><%=i%></a></li>
+                              
+                                <% continue; %>
+                                <% } %>
+                                <li class="page-item" style="padding-left: 5px;"><a  href="/super_admin/branch/get_branch_admin?page=<%=i%><%= search_query %>"><%=i%></a></li>
+                        <% } %>
+                    
+                    <% if(page < numberOfPages) { %>
+                        <li class="next" style="padding-left: 5px;">
+                            <a  href="/super_admin/branch/get_branch_admin?page=<%=page+1%><%= search_query %>">Next</a>
+                        </li>
+                      
+                         <% } %>
+                         
+                </ul>
+            </nav>
+        </div>
+        </div>
+        <% } %>
+    </div>
+    <% } %>
+    <div id="DataTables_Table_1_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+        <div class="dt--top-section">
+            <div class="row">
+
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="multi-table table table-bordered table-hover non-hover dataTable" style="width: 100%;"
+                id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info">
+
+            </table>
+        </div>
+    </div>
+    </div>
+    </div>
+    </div>

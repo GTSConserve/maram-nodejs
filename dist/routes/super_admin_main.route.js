@@ -12,6 +12,8 @@ var _product = _interopRequireDefault(require("./super_admin/product.route"));
 var _orders = _interopRequireDefault(require("./super_admin/orders.route"));
 var _users_subscription = _interopRequireDefault(require("./super_admin/users_subscription.route"));
 var _reports = _interopRequireDefault(require("./super_admin/reports.route"));
+var _po = _interopRequireDefault(require("./super_admin/po.route"));
+var _user = _interopRequireDefault(require("./super_admin/user.route"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 // Inner routes
 
@@ -40,6 +42,12 @@ var defaultRoutes = [{
 }, {
   path: "/reports",
   route: _reports["default"]
+}, {
+  path: "/po",
+  route: _po["default"]
+}, {
+  path: "/user",
+  route: _user["default"]
 }];
 defaultRoutes.forEach(function (route) {
   mainRouter.use(route.path, route.route);

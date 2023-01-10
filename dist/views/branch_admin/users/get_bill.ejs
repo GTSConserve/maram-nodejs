@@ -1,0 +1,228 @@
+<% layout('layouts/boilerPlate') %>
+
+  <div class="widget-content widget-content-area br-6">
+        <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+            <div class="dt--top-section">
+                <div class="row">
+                    <div class="col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center">
+                        <div class="dataTables_length mb-3" >
+                            <h4>User Bill</h4>
+                        </div>
+                    </div>
+                    <div class="col-1"></div>
+                    
+                    
+                </div>
+                <a href="/branch_admin/user/branch_user"  style="cursor: pointer;" class="badge badge-info p-2 mb-3"> Go Back </a>
+            </div>
+            <div>
+                <button class="btn btn-primary float-right mb-3" data-toggle="modal"
+                data-target="#billGenerate">Generate Bill</button>
+            </div>
+
+
+
+            <div wire:ignore.self="" class="modal fade" id="billGenerate" tabindex="-1"
+                aria-labelledby="addCategoryTitle"  style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered " role="document" > 
+                    <div class="modal-content" >
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalCenterTitle">Bill Generate</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                    height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    class="feather feather-x">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+        
+                        <% if(sub_total == 0 ){ %> 
+
+                            <div class="modal-body">
+                                
+                                <h4><b>No Bill Found!</b></h4>
+                            </div>
+
+                           
+                            <% }else{ %> 
+                                <form action="/branch_admin/user/create_user_bill" method="post">
+                                    <div class="modal-body">
+                                        <div class="form-row mb-4" >
+                                            <div class="col-6">
+
+                                                <label>Sub Total</label>
+                                                <p id="subTotal" style="font-weight: 900;"> ₹<%= sub_total %>  </p>
+                                            </div>
+                                            <div class="col-6">
+
+                                                <label>Discount  ₹</label>
+                                                <input class="form-control" id="discount" type="number" onkeyup="discoundChange(this)" max="<%= sub_total %>" name="discount" min="0">
+                                            </div>
+                                            <div class="col-6">
+
+                                                <label>Grand Total</label>
+                                                <p id="grandTotal" style="font-weight: 900;"> ₹<%= sub_total %>  </p>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" name="add_on" value=<%- JSON.stringify(get_add_on_price) %>>
+                                        <input type="hidden" name="sub"  value=<%- JSON.stringify(get_subscription_price) %>>
+                                        <input type="hidden" name="user_id" value="<%= user_id%>">
+                                        <input type="hidden" name="sub_total" value="<%= sub_total%>">
+
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-warning" type="button"  data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancel</button>
+                                        <button type="submit" class="btn btn-primary">Generate</button>
+                                    </div>
+                                <% } %> 
+                    </div>
+                </div>
+            </div>
+
+
+            
+            <!-- <div wire:ignore.self="" class="modal fade" id="proceedGenerate" tabindex="-1"
+                aria-labelledby="addCategoryTitle"  style="display: none;" aria-hidden="true">
+                <div class="modal-dialog  " role="document" > 
+                    <div class="modal-content" >
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalCenterTitle">Are You Sure?</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                    height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    class="feather feather-x">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                 
+
+                            <div class="modal-body">
+                                
+                                <h4><b>Generate The User Bill ?</b></h4>
+                            </div>
+                            
+                           
+                            <div class="modal-footer">
+                                <button class="btn btn-warning" type="button"  data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancel</button>
+                                <button type="submit" n class="btn btn-primary">procceed</button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div> -->
+
+
+
+
+            <script>
+                function discoundChange(event){
+                    console.log(event.value)
+                    const grandTotal = document.getElementById("grandTotal")
+                    const subTotal = document.getElementById("subTotal")
+                    console.log(grandTotal.innerText.substring(1))
+
+                    grandTotal.innerText = "₹"+ (Number(subTotal.innerText.substring(1)) - Number(event.value))
+
+                }
+            </script>
+
+
+            <% if(data.length === 0){ %> 
+                <h2>No Bills  Found</h2>
+                
+                    
+                    <% } else {  %>
+            <div class="table-responsive">
+                <table class="table table-striped mb-4" style="width: 100%;  font-weight: bold; box-shadow: 8px 5px 5px 0px #aaa;" id="DataTables_Table_0"
+                    role="grid" aria-describedby="DataTables_Table_0_info">
+                    <thead>
+
+                        <tr role="row">
+                            <!-- <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                                colspan="1"  aria-label="#: activate to sort column descending"
+                                style="width: 86px;">#</th> -->
+                            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                                aria-label="NAME: activate to sort column ascending" style="width: 161px;">Bill No</th>
+                            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                                aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">Date</th>
+                            <th class="text-center sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                                colspan="1" aria-label="Status: activate to sort column ascending" style="width: 49px;">
+                                Sub Total</th>
+                            <th class="text-center sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                                colspan="1" aria-label="Status: activate to sort column ascending" style="width: 49px;">
+                                discount</th>
+                            <th class="text-center sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                                colspan="1" aria-label="Status: activate to sort column ascending" style="width: 49px;">
+                                grand total</th>
+                            <th class="text-center sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                                colspan="1" aria-label="Status: activate to sort column ascending" style="width: 49px;">
+                                payment status</th>
+                            <!-- <th class="text-center dt-no-sorting sorting" tabindex="0"
+                                aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                                aria-label="Action: activate to sort column ascending" style="width: 56px;">Action</th> -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- start -->
+                       
+                        <% for(bill of data){ %>
+                            <tr role="row">
+                                <td class="sorting_1 font-weight: bold;"><%=bill.bill_no %></td>
+                            <td><%=bill.date %></td>
+                            <td class="text-center"><%=bill.sub_total %></td>
+                            <td class="text-center"> <%=bill.discount ? bill.discount : 0  %></td>
+                            <td class="text-center"> <%=bill.grand_total %></td>
+                            <td class="text-center"> <%=bill.payment_status %></td>
+                            
+                            
+                             
+
+                            
+                            <!-- <td class="text-center" > <button class="btn btn-sm btn-primary" data-toggle="modal"
+                                 onclick="viewbill(this)"  id="<%= bill.id %>">View</button> </td> -->
+                        </tr>   
+
+                     
+                    
+                        
+                        <% } %>
+
+                        <script>
+                            function viewPO(event){
+                                window.location.href = `/branch_admin/po/get_po_single_pending?po_id=${event.id}`
+                            }
+                        </script>
+                       
+                        <!-- end -->
+                        
+                    </tbody>
+                </table>
+            </div>
+  
+
+            
+        <% } %>
+        <div id="DataTables_Table_1_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+            <div class="dt--top-section">
+                <div class="row">
+
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="multi-table table table-bordered table-hover non-hover dataTable" style="width: 100%;"
+                    id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info">
+
+                </table>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>

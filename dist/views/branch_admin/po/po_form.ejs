@@ -1,0 +1,592 @@
+<% layout('layouts/boilerPlate') %>
+
+<div class="layout-px-spacing">
+    <div class="page-header">
+        <nav class="breadcrumb-one" aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <!-- <li class="breadcrumb-item"><a href="javascript:void(0);">Apps</a></li> -->
+                <li class="breadcrumb-item"><a href="javascript:void(0);">PO</a></li>
+                <!-- <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Preview</a></li> -->
+            </ol>
+        </nav>
+    </div>
+    
+    <div class="row invoice  layout-spacing layout-top-spacing">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+            
+            <div class="doc-container">
+
+                <form id="submitPoHandler">
+                <div class="row">
+                    <div class="col-xl-9">
+
+                        <div class="invoice-container">
+                            <div class="invoice-inbox">
+                                
+                                <div id="ct" class="">
+                                    
+                                    <div class="invoice-00001">
+                                        <div class="content-section">
+
+                                            <div class="inv--head-section inv--detail-section">
+                                            
+                                                <div class="row">
+                                                
+                                                    <div class="col-sm-6 col-12 mr-auto">
+                                                        <div class="d-flex">
+                                                            <p class="inv-to">Purchase Order</p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-sm-6 text-sm-right">
+                                                        <!-- <p class="inv-list-number"><span class="inv-title">Invoice : </span> <span class="inv-number">#0001</span></p> -->
+                                                    </div>
+
+                                                    <div class="col-sm-6 align-self-center mt-3">
+                                                        <p class="inv-customer-name"><%= branch_details[0].first_name %> </p>
+                                                        <!-- <p class="inv-street-addr">405 Mulberry Rd. Mc Grady, NC, 28649</p>
+                                                        <p class="inv-email-address">redq@company.com</p>
+                                                        <p class="inv-email-address">(128) 666 070</p> -->
+                                                    </div>
+                                                    <div class="col-sm-6 align-self-center mt-3 text-sm-right">
+                                                        <p class="inv-created-date"><span class="inv-title"> Date : </span> <span class="inv-date"><%= today_date %> </span></p>
+                                                        <!-- <p class="inv-due-date"><span class="inv-title">Due Date : </span> <span class="inv-date">26 Aug 2020</span></p> -->
+                                                    </div>
+                                                
+                                                </div>
+                                                
+                                            </div>
+
+                                                            <style>
+                                                                input[type=number]::-webkit-inner-spin-button, 
+                                                            input[type=number]::-webkit-outer-spin-button { 
+                                                                -webkit-appearance: none;
+                                                                -moz-appearance: none;
+                                                                appearance: none;
+                                                                margin: 0; 
+                                                            }
+                                                            </style>
+                                                            
+                                            <div class="inv--product-table-section">
+                                                <h6 class="ml-2 pb-2" style="font-weight: 900;">Subscription Products : </h6>
+                                                <div class="table-responsive">
+                                                    <table class="table">
+                                                        <thead class="">
+                                                            <tr>
+                                                                <!-- <th class="checkbox-column dt-no-sorting"> Choose</th> -->
+                                                                <th scope="col" >Name</th>
+                                                                <th scope="col">Unit</th>
+                                                                <th class="text-right" scope="col">Price</th>
+                                                                <th class="text-right" scope="col">Qty</th>
+                                                                <th class="text-right" scope="col">Excess Qty</th>
+                                                                <th class="text-right" scope="col">Amount</th>
+                                                               
+                                                            </tr>
+                                                        </thead>  
+                                                        <tbody>
+                                                            <% let sub_product_total = 0  %>
+                                                            <% let add_on_product_total = 0  %>
+                                                            <% let sub_excess_qty = 0  %>
+                                                            
+
+                                                            <% for(let i = 0 ; i< subscription_products.length ; i++){ %>
+                                                                <% sub_product_total = sub_product_total + (subscription_products[i].total_qty * subscription_products[i].price )  %> 
+                                                                <tr>
+                                                                    <!-- <td  class="checkbox-column"> <input style="cursor: pointer;" value="<%= subscription_products[i].id %>" name="product_id" type="checkbox" class="new-checkbox checkbox-primary"> </td> -->
+                                                                    <td name="name"><%= subscription_products[i].name %></td>
+                                                                    <td><%= subscription_products[i].value %></td> 
+                                                                    <td class="text-right" id="price<%= i %>"><%= subscription_products[i].price %></td>
+                                                                    <td class="text-right" id="qty<%= i %>"><%= subscription_products[i].total_qty %></td>
+                                                                    <td class="text-right"><input style="width: 45px;" name="excess_qty" id="<%= i %>" type="number" onkeyup="subChange(this)"></td>
+                                                                    <td class="text-right getSubTotalAmount" id="amount<%= i %>"><%= subscription_products[i].total_qty * subscription_products[i].price %> </td>
+                                                                    <input type="hidden" name="sub_product_id" value="<%= subscription_products[i].id %>">
+                                                                    <input type="hidden" name="sub_qty" value="<%= subscription_products[i].total_qty %>">
+                                                                    <input type="hidden" name="sub_price" value="<%= subscription_products[i].price %>">
+                                                                    <input type="hidden" name="sub_unit" value="<%= subscription_products[i].value %>">
+                                                                </tr>
+                                                                <% }  %> 
+                                       
+                                                                    <script>
+                                                                         function subChange(event){
+                                                                  
+                                                                            const getAddonTotalAmount = document.getElementsByClassName("getAddonTotalAmount")
+                                                                            const getSubTotalAmount = document.getElementsByClassName("getSubTotalAmount")
+                                                               
+
+                                                               
+
+                                                                            const grandTotal = document.getElementById("grandTotal")
+
+                                                                            const excess_qty = event.value
+
+                                                                            const amount = document.getElementById("amount"+event.id).innerText
+                                                                            const price = document.getElementById("price"+event.id).innerText
+                                                                            const qty = document.getElementById("qty"+event.id).innerText
+
+
+
+                                                                            
+
+                                                                             document.getElementById("amount"+event.id).innerText =  (Number(event.value) + Number(qty))  * Number(price)
+
+                                                                           
+
+                                                                             let AddtotalAmount = 0
+                                                                    let SubTotalAmount = 0
+
+                                                                    if(getAddonTotalAmount.length !== 0){
+
+                                                                        for(let i = 0 ; i <getAddonTotalAmount.length ; i++ ){
+                                                                            AddtotalAmount += Number(getAddonTotalAmount[i].innerText)
+                                                                        }
+                                                                    }
+
+
+                                                                    if(getSubTotalAmount.length !== 0){
+
+                                                                        for(let i = 0 ; i <getSubTotalAmount.length ; i++ ){
+                                                                            SubTotalAmount += Number(getSubTotalAmount[i].innerText)
+                                                                        }
+                                                                    }
+
+
+                                                                    grandTotal.innerText = SubTotalAmount + AddtotalAmount
+
+                                                                        }
+                                                                    </script>
+
+                                                          
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+
+
+
+                                            <div class="inv--product-table-section">
+                                                <h6 class="ml-2 pb-2" style="font-weight: 900;">Add On Products : </h6>
+                                                <div class="row">
+                                                    <div class="col-10"></div>
+                                                    <% if(excess_add_on_products.length !== 0 ){ %> 
+                                                    <span class="badge badge-info mb-3 ml-3 p-2" onclick="addProducts()" style="cursor: pointer;">Add Products</span>
+                                                    <% } %> 
+                                                </div>
+                                                <div class="table-responsive">
+                                                    <table class="table">
+                                                        <thead class="">
+                                                            <tr>
+                                                                <!-- <th class="checkbox-column dt-no-sorting"> Choose</th> -->
+                                                                <th scope="col" >Name</th>
+                                                                <th scope="col">Unit</th>
+                                                                <th class="text-right" scope="col">Price</th>
+                                                                <th class="text-right" scope="col">Qty</th>
+                                                                <th class="text-right" scope="col">Excess Qty</th>
+                                                                <th class="text-right" scope="col">Amount</th>
+                                                                <th class="text-right" scope="col"></th>
+                                                            </tr>
+                                                        </thead>  
+                                                        <tbody id="addOnTable">
+
+
+
+                                                            <% for(let i = 0 ; i< add_on_products.length ; i++){ %>
+                                                                <% add_on_product_total = add_on_product_total + (add_on_products[i].total_qty * add_on_products[i].price )  %> 
+                                                                <tr>
+                                                                    
+                                                                    <td><%= add_on_products[i].name %></td>
+                                                                    <td ><%= add_on_products[i].value %></td> 
+                                                                    <td class="text-right" id="addprice<%= i %>"><%= add_on_products[i].price %></td>
+                                                                    <td class="text-right" id="addqty<%= i %>"><%= add_on_products[i].total_qty %></td>
+                                                                    <td class="text-right"><input style="width: 45px;" name="addexcess_qty" id="<%= i %>" type="number" onkeyup="addOnChange(this)"></td>
+                                                                    <td class="text-right getAddonTotalAmount"  id="addamount<%= i %>"><%= add_on_products[i].total_qty * add_on_products[i].price %> </td>
+                                                                    <input type="hidden" name="add_product_id" value="<%= add_on_products[i].id %>">
+                                                                    <input type="hidden" name="add_qty" value="<%= add_on_products[i].total_qty %>">
+                                                                    <input type="hidden" name="add_price" value="<%= add_on_products[i].price %>">
+                                                                    <input type="hidden" name="add_unit" value="<%= add_on_products[i].value %>">
+                                                                </tr>
+                                                                <% }  %> 
+                                                          
+                                                        </tbody>
+                                                      
+                                                        <script >
+
+                                                            function addProducts() {
+                                                            const addOnTable = document.getElementById("addOnTable")
+
+
+                                                            const count = document.getElementsByTagName('tr').length;
+                                                         
+                                                            const node = document.createElement("tr");
+                                                            // node.className="form-row"
+                                                            node.id = `remove${count}`
+                                                            node.innerHTML=   `
+                                                           
+                                                            
+                                                                    
+                                                                    <td><select size="1" id="${count}" onchange=changeHandler(this) wire:model="countryid" required class="form-control" name="add_on_products" >
+                                                                        <option value="" selected >Select Product </option>
+                                                                        <% for(product of excess_add_on_products){ %>
+                    
+                                                                            <option id="optionid${count}" value="<%=product.id %>"><%=product.name %>  / <%= product.value %> 
+                                                                                </option>
+                                                                          
+                                                                        <% } %>
+                    
+                                                                    </select></td>
+                                                                    <td id="unitvalue${count}">N/A</td> 
+                                                                    <td  class="text-right" id="addprice${count}">0</td>
+                                                                    <td class="text-right" id="addqty${count}">0</td>
+                                                                    <td class="text-right"><input style="width: 45px;" name="addexcess_qty" required id="${count}" type="number" onkeyup="addOnChange(this)"></td>
+                                                                    <td class="text-right getAddonTotalAmount"  id="addamount${count}">0</td>
+                                                                        <input type="hidden" name="add_product_id" id="setProductId${count}" >
+                                                                        <input type="hidden" name="add_qty" id="setQty${count}">
+                                                                        <input type="hidden" name="add_price" id="setPrice${count}">
+                                                                        <input type="hidden" name="add_unit" id="setUnit${count}">
+                                                                        
+                                                                        <td><span style="cursor: pointer;" id="${count}" onclick="removeProduct(this)" class="badge badge-danger ml-3"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg> </span></td>
+                                                           
+                                                                
+                                                                 `
+
+                                                                addOnTable.appendChild(node)
+                                                     
+                                                        }
+
+                                                  
+                                                        
+                                                        async function changeHandler (e) {
+                                                            
+                                                            const id = e.id
+
+
+                                                            const unitvalue = document.getElementById("unitvalue"+ id)
+                                                            const price = document.getElementById("addprice"+ id)
+                                                            const setProductId = document.getElementById("setProductId"+ id)
+                                                            const setQty = document.getElementById("setQty"+ id)
+                                                            const setPrice = document.getElementById("setPrice"+ id)
+                                                            const setUnit = document.getElementById("setUnit"+ id)
+                                                            
+                                                            let response
+
+                                                        if(e.value){
+                                                      
+                                                            response =   await fetch('/branch_admin/po/add_on_excess_po', {
+                                                                            method: 'POST',
+                                                                            headers: {
+                                                                                'Accept': 'application/json',
+                                                                                'Content-Type': 'application/json'
+                                                                            },
+                                                                            body: JSON.stringify({"id": e.value })
+                                                                            })
+
+
+
+                                                        }
+                                                        const  get_data = await response.json();
+                                                       
+                                                        const product = get_data.data[0]  
+                                                        
+                                                            price.innerText = product.price
+                                                            unitvalue.innerText = product.value
+                                                            setProductId.value = product.id
+                                                            setQty.value = 0
+                                                            setPrice.value = product.price
+                                                            setUnit.value = product.value
+                                                            
+                                                            
+                                                        }
+                                                        
+                                                        
+                                                        function removeProduct(event){
+
+                                                            const grandTotal = document.getElementById("grandTotal")
+                                                            const amount = document.getElementById("addamount"+event.id).innerText
+
+                                                            grandTotal.innerText = Number(grandTotal.innerText) - Number(amount)
+
+                                                            document.getElementById(`remove${event.id}`).remove();
+                                                        }
+
+
+                                                            function addOnChange(event){
+                                                     
+
+                                                               const excess_qty = event.value
+
+                                                                const getAddonTotalAmount = document.getElementsByClassName("getAddonTotalAmount")
+                                                                const getSubTotalAmount = document.getElementsByClassName("getSubTotalAmount")
+                                                              
+
+                                                               
+
+                                                                const grandTotal = document.getElementById("grandTotal")
+                                                                const amount = document.getElementById("addamount"+event.id).innerText
+                                                                const price = document.getElementById("addprice"+event.id).innerText
+                                                                const qty = document.getElementById("addqty"+event.id).innerText
+                                                                
+                                                                
+
+                                               
+
+                                                                    document.getElementById("addamount"+event.id).innerText =  (Number(event.value) + Number(qty))  * Number(price)
+                                                                    
+                                                                    let AddtotalAmount = 0
+                                                                    let SubTotalAmount = 0
+
+                                                                    if(getAddonTotalAmount.length !== 0){
+
+                                                                        for(let i = 0 ; i <getAddonTotalAmount.length ; i++ ){
+                                                                            AddtotalAmount += Number(getAddonTotalAmount[i].innerText)
+                                                                        }
+                                                                    }
+
+
+                                                                    if(getSubTotalAmount.length !== 0){
+
+                                                                        for(let i = 0 ; i <getSubTotalAmount.length ; i++ ){
+                                                                            SubTotalAmount += Number(getSubTotalAmount[i].innerText)
+                                                                        }
+                                                                    }
+
+                                                                 
+                                                                    grandTotal.innerText = SubTotalAmount + AddtotalAmount
+                                                              
+                                                           }
+                                                       
+                                                       
+                                        const form=document.getElementById("submitPoHandler")
+                                        
+                                        form.addEventListener("submit",async(e)=>{
+
+                                                e.preventDefault()
+                                              
+                                                // action="/branch_admin/po/create_po" method="post"
+                                                let query = {}
+
+                                                const sub_product_id = e.target.sub_product_id
+                                                const excess_qty = e.target.excess_qty
+                                                const sub_qty = e.target.sub_qty
+                                                const sub_price = e.target.sub_price
+                                                const sub_unit = e.target.sub_unit
+
+                                      
+
+                                               
+                                                const addexcess_qty = e.target.addexcess_qty
+                                                const add_product_id = e.target.add_product_id
+                                                const add_qty = e.target.add_qty
+                                                const add_price = e.target.add_price
+                                                const add_unit = e.target.add_unit
+
+
+                                                let sub_products = []
+                                                
+                                                if(sub_product_id != undefined){
+
+                                                    if(excess_qty.length == undefined){
+                                                        sub_products.push({
+                                                            product_id : sub_product_id.value,
+                                                            excess_qty : excess_qty.value,
+                                                            qty : sub_qty.value,
+                                                            total_qty : Number(excess_qty.value) + Number(sub_qty.value),
+                                                            price : Number(sub_price.value),
+                                                            total_price : (Number(excess_qty.value) + Number(sub_qty.value)) * Number(sub_price.value),
+                                                            value : sub_unit.value
+                                                        })
+                                                    }else{
+                                                        
+                                                        for(let i = 0 ; i < sub_product_id.length ; i++){
+                                                            sub_products.push({
+                                                                product_id : sub_product_id[i].value,
+                                                                excess_qty : excess_qty[i].value,
+                                                                qty : sub_qty[i].value,
+                                                                total_qty : Number(excess_qty[i].value) + Number(sub_qty[i].value),
+                                                                price : Number(sub_price[i].value),
+                                                                total_price : (Number(excess_qty[i].value) + Number(sub_qty[i].value)) * Number(sub_price[i].value),
+                                                                value : sub_unit[i].value
+
+                                                            })
+                                                        }
+                                                    }
+                                                }
+
+                                              
+                                                let add_on_products = []
+                                                if(add_product_id != undefined){
+
+                                                    if(addexcess_qty.length == undefined){
+                                                        add_on_products.push({
+                                                            product_id : add_product_id.value,
+                                                            excess_qty : addexcess_qty.value,
+                                                            qty : add_qty.value,
+                                                            total_qty : Number(addexcess_qty.value) + Number(add_qty.value),
+                                                            price : Number(add_price.value),
+                                                            total_price : (Number(addexcess_qty.value) + Number(add_qty.value)) * Number(add_price.value),
+                                                            value : add_unit.value
+                                                    })
+                                                }else{
+                                                    for(let i = 0 ; i < add_product_id.length ; i++){
+                                                        add_on_products.push({
+                                                        product_id : add_product_id[i].value,
+                                                        excess_qty : addexcess_qty[i].value,
+                                                        qty : add_qty[i].value,
+                                                        total_qty : Number(addexcess_qty[i].value) + Number(add_qty[i].value),
+                                                        price : Number(add_price[i].value),
+                                                        total_price : (Number(addexcess_qty[i].value) + Number(add_qty[i].value)) * Number(add_price[i].value),
+                                                        value : add_unit[i].value
+
+                                                    })
+                                                    }
+                                                }
+                                            }
+
+                                               
+                                                await fetch('/branch_admin/po/create_po', {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'Accept': 'application/json',
+                                                        'Content-Type': 'application/json'
+                                                    },
+                                                    body: JSON.stringify({"sub_products":sub_products , "add_on_products" : add_on_products})
+                                                    })
+                                                    
+                                                    await  swal("Done", "Po Raise SuccessFully", "success");
+
+                                                window.location.href = "/home"
+
+
+                                            })
+
+                                                       </script>
+                                                       
+
+                                                    </table>
+                                                </div>
+                                            </div>
+                                       
+                                            <div class="inv--total-amounts">
+                                            
+                                                <div class="row mt-4">
+                                                    <div class="col-sm-5 col-12 order-sm-0 order-1">
+                                                    </div>
+                                                    <div class="col-sm-7 col-12 order-sm-1 order-0">
+                                                        <div class="text-sm-right">
+                                                            <div class="row">
+                                                                <!-- <div class="col-sm-8 col-7">
+                                                                    <p class="">Sub Total: </p>
+                                                                </div>
+                                                                <div class="col-sm-4 col-5">
+                                                                    <p class="">$3155</p>
+                                                                </div>
+                                                                <div class="col-sm-8 col-7">
+                                                                    <p class="">Tax Amount: </p>
+                                                                </div>
+                                                                <div class="col-sm-4 col-5">
+                                                                    <p class="">$700</p>
+                                                                </div>
+                                                                <div class="col-sm-8 col-7">
+                                                                    <p class=" discount-rate">Discount : <span class="discount-percentage">5%</span> </p>
+                                                                </div>
+                                                                <div class="col-sm-4 col-5">
+                                                                    <p class="">$10</p>
+                                                                </div> -->
+
+
+                                                               
+
+                                                                <div class="col-sm-8 col-7 grand-total-title">
+                                                                    <h4 class="">Grand Total : </h4>
+                                                                </div>
+                                                                <div class="col-sm-4 col-5 grand-total-amount">
+                                                                    <h4 id="grandTotal"  class=""><%= add_on_product_total + sub_product_total %>  </h4>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="inv--note">
+
+                                                <div class="row mt-4">
+                                                    <div class="col-sm-12 col-12 order-sm-0 order-1">
+                                                        <p>Note: Thank you for doing Business with us.</p>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div> 
+                                    
+                                </div>
+
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-xl-3">
+
+                        <div class="invoice-actions-btn">
+
+                            <div class="invoice-action-btn">
+                     
+
+                           
+
+                                <div class="row">
+                                    <div class="col-xl-12 col-md-3 col-sm-6">
+                                        <button class="btn btn-primary btn-lg " style="width: 210px;" data-toggle="modal" data-target="#exampleModalCenter" type="button" >Raise PO    </button>
+                                    </div>
+                                    <!-- <div class="col-xl-12 col-md-3 col-sm-6">
+                                        <a href="javascript:void(0);" class="btn btn-secondary btn-print  action-print">Print</a>
+                                    </div>
+                                    <div class="col-xl-12 col-md-3 col-sm-6">
+                                        <a href="javascript:void(0);" class="btn btn-success btn-download">Download</a>
+                                    </div>
+                                    <div class="col-xl-12 col-md-3 col-sm-6">
+                                        <a href="apps_invoice-edit.html" class="btn btn-dark btn-edit">Edit</a>
+                                    </div> -->
+                                </div>
+                            </div>
+                            
+                            <div class="modal fade" id="exampleModalCenter" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalCenterTitle">Raise Purchase Order</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <h4 class="modal-heading mb-4 mt-2">Raise The Purchase Order ?</h4>
+                                                <!-- <p class="modal-text">In hac habitasse platea dictumst. Proin sollicitudin et lacus in tincidunt. Integer nisl ex, sollicitudin eget nulla nec, pharetra lacinia nisl. Aenean nec nunc ex. Integer varius neque at dolor scelerisque porttitor.</p> -->
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn" data-dismiss="modal" type="button"> <i class="flaticon-cancel-12"></i> Discard</button>
+                                            <button  class="btn btn-primary" type="submit">Proceed</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        
+                    </div>
+                </form>
+
+                </div>
+                
+                
+            </div>
+
+        </div>
+    </div>
+    
+</div>

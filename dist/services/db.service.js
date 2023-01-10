@@ -1,17 +1,19 @@
 "use strict";
 
-var _mysql = _interopRequireDefault(require("mysql2"));
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = void 0;
 // let knex;
 // try {
 //   knex = require("knex")({
 //     client: "mysql2",
 //     connection: {
-//       host:process.env.DB_HOST,
-//       port : 3306,
-//       user: process.env.DB_USER,
-//       password: process.env.DB_PASSWORD,
-//       // database: process.env.DB_NAME,
+//       host: "127.0.0.1",
+//       port: 3306,
+//       user: "root",
+//       password: "root",
+//       database: "maram",
 //     },
 //   });
 // } catch (error) {
@@ -19,34 +21,22 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 // }
 // console.log("database Connected");
 
-// import dbConfig from '../configs/db.config'
-
-require("dotenv").config();
-
-//   console.log(process.env.DB_USER)
-
-// const db = {
-//   host: process.env.DB_HOST ,
-//   user: process.env.DB_USER ,
-//   password: process.env.DB_PASSWORD ,
-//   database: process.env.DB_NAME,
-//   // port:"3306"
-// };
-
-// const dbConnection = mySql.createConnection(db)
-
-// dbConnection.connect((err) => {
-//   if (!err) {
-//     console.log("Connected")
-//   }
-//   else {
-//     console.log("hitting")
-//     console.error(err)
-//   }
-// })
-// dbConnection.end()
-
-// export default dbConnection
+var knex;
+try {
+  knex = require("knex")({
+    client: "mysql2",
+    connection: {
+      host: 'awseb-e-x3s3f4wi2v-stack-awsebrdsdatabase-x1jmeljtlon9.cnxyneaiybt8.ap-south-1.rds.amazonaws.com',
+      port: 3306,
+      user: 'maramdbadmin',
+      password: 'q&HJIJ^EWF7N4sBs',
+      database: 'maram_live'
+    }
+  });
+} catch (error) {
+  console.log(error, "error at connecting database");
+}
+console.log("database Connected");
 
 // async function hl() {
 //   await knex.schema.hasTable("users").then(function (exists) {
@@ -62,19 +52,5 @@ require("dotenv").config();
 // }
 // hl();
 // console.log(knex)
-// export default knex;
-
-var connection = _mysql["default"].createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME
-});
-connection.connect(function (err) {
-  if (err) {
-    console.error("Database connection failed: " + err.stack);
-    return;
-  }
-  console.log("Connected to database.");
-});
-connection.end();
+var _default = knex;
+exports["default"] = _default;

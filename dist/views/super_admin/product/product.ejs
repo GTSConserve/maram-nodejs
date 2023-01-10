@@ -1,0 +1,583 @@
+<% layout('layouts/boilerPlate') %>
+
+    <div class="widget-content widget-content-area br-6">
+        <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+                    <div class="row">
+                         <div class="col-8">
+                                <h3 class="mt-2">Products</h3>
+                                </div>
+                                <div class="col-4">
+                                     <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="searchKeyword" oninput="onChangeSearch()" value="<%=searchKeyword ? searchKeyword : ""  %>"  id="searchText" placeholder="search by product"  aria-describedby="basic-addon2">
+                                    <div class="input-group-append" style="cursor: pointer;"  onclick="onSearch()" >
+                                      <span style="background-color: #80C659;" class="input-group-text " id="basic-addon2"><svg style="color: #fff;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button></span>
+                                    </div>
+                                  </div>
+                                  </div>     
+                     
+                     
+    
+                    </div>
+            </div>
+          
+
+
+                    
+                                <script>
+
+                                    async function onChangeSearch(event){
+                                        const text = document.getElementById("searchText").value;
+                                        if(!text){
+
+                                            return window.location.href = `/super_admin/product/get_product_list`
+                                        }
+                                        // window.location.href = `/super_admin/product/get_product_list?searchKeyword=${text}`
+                                        // window.history.pushState("","",`/super_admin/product/get_product_list?searchKeyword=${text}`)
+
+                                    }
+
+                                    async function onSearch(event) {
+                                       
+                                        const text = document.getElementById("searchText").value;
+                            
+                                        window.location.href = `/super_admin/product/get_product_list?searchKeyword=${text}`
+                              
+                                 
+                                };
+                                </script>
+                      
+                    <!-- add -->
+                    <div class="form-group col-md-1 float-right">
+                        <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addbarcategory">Add</button>
+                        <!-- __category add__ -->
+                        <div wire:ignore.self="" data-backdrop="static" class="modal fade" id="addbarcategory" tabindex="-1"
+                            aria-labelledby="addCategoryTitle" style="display: none;" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                <div class="modal-content">
+                                    <form method="post" action="/super_admin/product/create_product" enctype="multipart/form-data">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalCenterTitle">Add Product</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                                height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                class="feather feather-x">
+                                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                    <div class="modal-body">
+                                        <div class="form-row mb-4">
+                                            <div class="col-4 ">
+                                                <label>Product Name</label>
+                                                <input type="text" class="form-control" wire:model="name" name="name" required
+                                                    placeholder="Name">
+
+                                            </div>
+                                            <div class="col-sm-4  ">
+                                                <label>Product Type</label>
+                                                <select wire:model="countryid" class="form-control" name="product_type_id" required>
+                                                    <option value="">Select Product Type</option>
+                                                    <% for(product_type of productType){ %>
+
+                                                        <option name="<%=product_type.name %>" value="<%=product_type.id %>"><%=product_type.name %></option>
+                                                    <% } %>
+
+                                                </select>
+
+                                            </div>
+
+                                            <div class="col-sm-4">
+                                                <label>Category</label>
+                                                <select wire:model="countryid" class="form-control" name="category_id" required>
+                                                    <option value="">Select Category</option>
+                                                    <% for(cat of categories){ %>
+
+                                                        <option name="<%=cat.name %>" value="<%=cat.id %>"><%=cat.name %></option>
+                                                    <% } %>
+
+                                                </select>
+
+                                            </div>                                           
+                                        </div>
+
+                                        <div class="form-row mb-4">
+                                            <div class="col-6">
+                                                <label>Unit Value</label>
+                                                <input type="text" class="form-control" wire:model="name" required
+                                                    placeholder="Unit Value" name="unit_value">
+
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <label>Select a Unit</label>
+                                                <select wire:model="countryid" class="form-control" name="unit_type_id" required>
+                                                    <option value="">Select Unit </option>
+                                                    <% for(unitType of unit_types){ %>
+
+                                                        <option name="<%=unitType.value %>" value="<%=unitType.id %>"><%=unitType.value %></option>
+                                                    <% } %>
+
+                                                </select>
+                                               
+                                            </div>
+                                            
+
+                                            
+                                        </div>
+                                        <div class="form-row mb-4">
+                                            <div class="col-4 ">
+                                                <label>MRP</label>
+                                                <input type="text" class="form-control" wire:model="name" 
+                                                    placeholder="demo price" name="demo_price">
+
+                                            </div>
+                                            <div class="col-4 ">
+                                                <label>Selling Price</label>
+                                                <input type="text" class="form-control" wire:model="name" required
+                                                    placeholder="Selling price" name="price">
+
+                                            </div>
+                                            <div class="col-4 ">
+                                                <label>Branch Price</label>
+                                                <input type="text" class="form-control" wire:model="name" required
+                                                    placeholder="branch price" name="branch_price">
+
+                                            </div>
+                                        
+                                    </div>
+                                        <div class="form-row mb-4">
+                                            <div class="col-sm-12 ">
+                                                <label>Description</label>
+                                                <textarea required name="description" placeholder="Description..." class="form-control"></textarea>
+                                                
+                                            </div>
+                                            <div class="col-6 mt-2" >
+                                                
+                                                <label>Image</label>
+                                                <input type="file" wire:model="image" placeholder="Image" name="image" required
+                                                    class="form-control">
+
+                                            </div>
+                                        </div>
+                                </div>
+                                <div class="modal-footer">
+
+                                    <button class="btn btn-danger" type="button" id="addmodalClose" data-dismiss="modal"><i
+                                            class="flaticon-cancel-12"></i>Discard</button>
+                                    <button wire:click="save" type="submit" class="btn btn-success">Save</button>
+                                </div>
+                            </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+          
+
+    <% if(data.length === 0){ %> 
+        <h2>No Data Found</h2>
+        <% }else if(loading) { %>
+            <div class="row">
+                <div class="col-5">
+
+                </div>
+                <div class="col-2">
+                    <button class="btn btn-success btn-lg mb-3 mr-3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-loader spin mr-2"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg>  Loading</button>
+                </div>
+            </div>
+
+            <% } else {  %>
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped mb-4" style="width: 100%;  font-weight: bold; box-shadow: 8px 5px 5px 0px #aaa;" id="DataTables_Table_0"
+            role="grid" aria-describedby="DataTables_Table_0_info">
+            <thead >
+
+                <tr role="row"  >
+                    <th  class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                        colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
+                        style="width: 5px;">#</th>
+                   
+                    <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                        colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
+                        style="width: 86px;">Product Name</th>
+                    <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                        aria-label="NAME: activate to sort column ascending" style="width: 30px;">Unit Value</th>
+                    <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                        aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">Unit Type</th>
+                    <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                        aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">Price</th>
+                        <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                        colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
+                        style="width: 86px;">Product Type</th>
+                    <th class="text-center sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                        colspan="1" aria-label="Status: activate to sort column ascending" style="width: 49px;">
+                        Status</th>
+                    <th class="text-center dt-no-sorting sorting" tabindex="0"
+                        aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                        aria-label="Action: activate to sort column ascending" style="width: 64px;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr role="row" >
+
+                    <% for(product of data){ %>
+                            <td  class="sorting_1"><%=product.id %></td>
+                            <td><%=product.product_name %></td>
+                            <td ><%=product.unit_value %></td>
+                            <td><%=product.value %></td>
+                            <td><%=product.price %></td>
+                            <td><%=product.product_type_name %></td>
+                            <!-- <td><img style="width: 150px;height : 120px" src="<%=product.image %>"></td> -->
+                            <!-- <td><%=product.product_type %></td> -->
+
+                            <div>
+                                <td style="text-align: center; vertical-align: middle;">
+                                    <div class="custom-control custom-switch">
+                                            <input <%= product.status == "1" ? "checked"  :""  %>  type="checkbox"   class="custom-control-input" name="status" 
+                                            value="<%=product.status %>"  onChange="onToDochange(this)" id=<%=product.id %>>
+                                            <label class="custom-control-label"  for=<%=product.id %>></label>
+                                        
+                                            <script >
+                                                async function onToDochange(event) {
+                                                await fetch('/super_admin/product/update_product_status', {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Accept': 'application/json',
+                                                    'Content-Type': 'application/json'
+                                                },
+                                                body: JSON.stringify({"id": event.id , "status" : event.value})
+                                                })
+                                           
+                                                await  swal("Done", "Status Updated", "success");
+
+                                             window.location.reload("/super_admin/product/get_product_list")
+                                             
+
+                                                
+                                            };
+                                            </script>
+                                     
+                                    </div>
+                                </td>
+                                <td class="text-center"> <button class="btn btn-sm btn-primary" data-toggle="modal"
+                                    data-target="#editCategory<%=product.id %>">edit</button> 
+                                    <button class="btn btn-sm btn-primary" data-toggle="modal"
+                                    data-target="#viewCategory<%=product.id %>">View</button></td>
+                                
+                            </div>
+                            
+                        </tr>
+
+<!-- edit -->
+                        <div wire:ignore.self="" data-backdrop="static" class="modal fade" id="editCategory<%=product.id %>" tabindex="-1"
+                aria-labelledby="addCategoryTitle" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalCenterTitle">Edit Product</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                    height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    class="feather feather-x">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div class="modal-body">
+                            <form method="post" action="/super_admin/product/update_product"  enctype="multipart/form-data">
+                                <div class="form-row mb-4">
+                                    <div class="col-sm-4">
+                                        <label>Product Name</label>
+                                        <input type="text" class="form-control" wire:model="name"
+                                            placeholder="Name"  value="<%=product.product_name %>" name="product_name">
+
+                                    </div>
+                                    <div class="col-4">
+                                        <label>Product Type</label>
+                                        <select wire:model="countryid" class="form-control" name="product_type_id">
+                                            <option value=""><%=product.product_type_name %></option>
+                                            <% for(product_type of productType){ %>
+
+                                                <option value="<%=product_type.id %>"><%=product_type.name %></option>
+                                            <% } %>
+
+                                        </select>
+
+                                    </div>
+                                    
+
+                                    <div class="col-sm-4">
+                                        <label>Category</label>
+                                        <select wire:model="countryid" class="form-control" name="category_id">
+                                            <option value=""><%=product.category_name %></option>
+                                            <% for(cat of categories){ %>
+
+                                                <option value="<%=cat.id %>"><%=cat.name %></option>
+                                            <% } %>
+
+                                        </select>
+
+                                    </div>
+                                </div>
+                                <div class="form-row mb-4">
+                                    
+                                    
+
+                                    <div class="col-6 ">
+                                        <label>Unit Value</label>
+                                        <input type="text" class="form-control" wire:model="name"
+                                            placeholder="Unit Value" value="<%= product.unit_value %>" name="unit_value">
+                
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <label>Unit Type</label>
+                                        <select wire:model="countryid" class="form-control" name="unit_type_id">
+                                            <option value=""><%=product.value %></option>
+                                            <% for(unit of unit_types){ %>
+
+                                                <option value="<%=unit.id %>"><%=unit.value %></option>
+                                            <% } %>
+
+                                        </select>
+
+                                    </div>
+
+                                    
+                                </div>
+                                
+                                <div class="form-row mb-4">
+                                    <div class="col-4">
+                                        <label>MRP</label>
+                                        <input type="text" class="form-control" wire:model="name"
+                                            placeholder="price" value="<%= product.demo_price%>" name="demo_price">
+                
+                                    </div>
+                                    <div class="col-4">
+                                        <label>Selling Price</label>
+                                        <input type="text" class="form-control" wire:model="name"
+                                            placeholder="price" value="<%= product.price %>" name="price">
+                
+                                    </div>
+                                    <div class="col-4">
+                                        <label>Branch Price</label>
+                                        <input type="text" class="form-control" wire:model="name"
+                                            placeholder="price" value="<%= product.branch_price %>" name="branch_price">
+                
+                                    </div>
+                                    
+                               </div>
+                                <div class="form-row mb-4">
+                                    <div class="col-sm-12 ">
+                                        <label>Description</label>
+                                        <textarea  class="form-control"  name="description"   placeholder="description" ><%=product.description %></textarea> 
+                                            
+                                    </div>
+                                    <div class="col-sm-6 mt-3">
+
+                                        <label>Image (Old Image)</label>
+                                        <div class="row"> 
+                                            <img style="width: 170px;height : 150px" class="pb-5 col-5" src="<%=product.image %>">
+                                            <input type="file" wire:model="image"  placeholder="Image" name="image"
+                                            
+                                            class="form-control col-7" >
+                                        </div>
+                                    </div>
+                                   
+                                </div>
+                            
+                                <div class="modal-footer">
+                                    
+                                    <button type="button" name="id" value="<%=product.id %>" class="btn btn-danger" id="addmodalClose" data-dismiss="modal"><i
+                                        class="flaticon-cancel-12"></i>Discard</button>
+                                        <button wire:click="save" name="id" value="<%=product.id %>"  type="submit" class="btn btn-success">Save</button>
+                                </div>
+                        </form>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+<!-- view -->
+
+
+<div wire:ignore.self="" data-backdrop="static" class="modal fade" id="viewCategory<%=product.id %>" tabindex="-1"
+    aria-labelledby="addCategoryTitle" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">View Product</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                        height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="feather feather-x">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-row mb-4">
+                    <div class="col-4 ">
+                        <label>Name</label>
+                        <p style="font-weight: 900;"><%=product.product_name %></p>
+                        <!-- <label>Name</label>
+                        <input type="text" class="form-control" wire:model="name" name="name" 
+                            placeholder="Name"  value="<%= product.product_name %>"> -->
+
+                    </div>
+
+
+                    <div class="col-sm-4">
+                        <label>Product Type</label>
+                        <p style="font-weight: 900;"><%=product.product_type_name %></p>
+                        
+
+                    </div>
+
+                    
+                    <div class="col-sm-4">
+                        <label>Category</label>
+                        <p style="font-weight: 900;"><%=product.category_name %></p>
+
+                    </div>
+                    
+                </div>
+
+                <div class="form-row mb-4">
+                    <div class="col-4 ">
+                        <label>Unit Value</label>
+                        <p style="font-weight: 900;"><%=product.unit_value %></p>
+
+                    </div>
+                    <div class="col-sm-4">
+                        <label>Unit</label>
+                        <p style="font-weight: 900;"><%=product.value %></p>
+                       
+                    </div>
+                    
+                  
+                </div>
+                <div class="form-row mb-4">
+                    <div class="col-4 ">
+                        <label>Selling Price</label>
+                        <p style="font-weight: 900;"><%=product.price %></p>
+
+                    </div>
+                    <div class="col-sm-4">
+                        <label>MRP</label>
+                        <p style="font-weight: 900;"><%=product.demo_price %></p>
+                       
+                    </div>
+
+                    <div class="col-4">
+                        <label>Branch Price</label>
+                        <p style="font-weight: 900;"><%=product.branch_price %></p>
+
+                    </div>
+                    
+                  
+                </div>
+
+                <div class="form-row mb-4">
+
+                    <div class="col-sm-6">
+                        <label>Description</label>
+                        <p style="font-weight: 900;"><%=product.description %></p>
+                        <!-- <textarea required name="description" placeholder="Description..." class="form-control"></textarea> -->
+
+                    </div>
+
+                    <div class="form-row mb-4">
+                        <div class="col-12 mr-4"></div>
+                        <label>Image</label>
+                        <div class="col-11">
+                            
+                       
+                            <img src="<%=product.image  %>" style="width: 200px;height : 150px">
+    
+                        </div>
+                    </div>
+                                   </div>
+                    <div class="modal-footer">
+                        
+                        <button type="button" name="id" value="<%=product.id %>" class="btn btn-danger" id="addmodalClose" data-dismiss="modal"><i
+                            class="flaticon-cancel-12"></i>Cancel</button>
+                    </div>
+            
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+                <% } %>
+
+
+                
+            </tbody>
+
+        </table>
+    </div>
+    <% if(numberOfPages != 1){ %> 
+    <div class="dt--bottom-section d-sm-flex justify-content-sm-between text-center pt-4 ">
+        <div class="dt--pages-count  mb-sm-0 mb-3">
+          <% let search_query =  is_search ? `&searchKeyword=${searchKeyword}` : "" %>
+        </div>
+        <div class="widget-content widget-content-area text-center">
+        <nav class="paginating-container " aria-label="...">
+            <ul class="pagination-default pagination">
+                <% if(page > 1) { %> 
+                    <li class="prev">
+                        <a href="/super_admin/product/get_product_list?page=<%=page-1%><%= search_query %>"  style="padding-left: 5px;">Prev</a>
+              
+                     <% } %>
+               
+                     <% for(let i = iterator==0 ? 1 : iterator; i <= endingLink; i++) { %>
+                        <% if(i === page) { %>
+                            <li class="page-item active" style="padding-left: 5px;"><a  href="#"><%=i%></a></li>
+                          
+                            <% continue; %>
+                            <% } %>
+                            <li class="page-item" style="padding-left: 5px;"><a  href="/super_admin/product/get_product_list?page=<%=i%><%= search_query %>"><%=i%></a></li>
+                    <% } %>
+                
+                <% if(page < numberOfPages) { %>
+                    <li class="next" style="padding-left: 5px;">
+                        <a  href="/super_admin/product/get_product_list?page=<%=page+1%><%= search_query %>">Next</a>
+                    </li>
+                  
+                     <% } %>
+                     
+            </ul>
+        </nav>
+    </div>
+    </div>
+    <% } %>
+</div>
+<% } %>
+    <div id="DataTables_Table_1_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+        <div class="dt--top-section">
+            <div class="row">
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="multi-table table table-bordered table-hover non-hover dataTable" style="width: 100%;"
+                id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info">
+
+            </table>
+        </div>
+    </div>
+    </div>
+    </div>
+    </div>

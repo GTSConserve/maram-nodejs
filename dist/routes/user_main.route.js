@@ -11,6 +11,7 @@ var _general = _interopRequireDefault(require("./user/general.route"));
 var _home = _interopRequireDefault(require("./user/home.route"));
 var _subscription = _interopRequireDefault(require("./user/subscription.route"));
 var _user_details = _interopRequireDefault(require("./user/user_details.route"));
+var _payment = _interopRequireDefault(require("./user/payment.route"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 // Inner routes
 
@@ -38,6 +39,9 @@ var defaultRoutes = [{
 }, {
   path: "/",
   route: _general["default"]
+}, {
+  path: "/payment",
+  route: _payment["default"]
 }];
 defaultRoutes.forEach(function (route) {
   mainRouter.use(route.path, route.route);
