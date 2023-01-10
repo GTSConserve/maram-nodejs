@@ -135,20 +135,82 @@ export const getUser = async (req, res) => {
         .json({ status: false, message: "User Not Found" });
     }
 
-    let get_user_detail = {};
-     let status;
-    if(user.rider[0].status==0){
-      status = "rider is assigned"
-    }
-    else if(user.rider[0].status==1){
-      status = "rider can start the tour and delivered soon"
-    }
-    else if(user.rider[0].status==2){
-      status ="rider can end the tour"
-    }
-    else{
-      status = "no rider can assigned"
-    }
+    const daily = await knex('daily_orders').select('user_id').where({user_id: userId})
+//     const user1 = await knex("bill_history").select("id").where({user_id:id});
+
+// console.log(user[0].id)
+
+// let bill = [];
+
+// if(user.id){
+     const bill = await knex("bill_history_details").select(
+    "bill_history_details.subscription_price",
+    "bill_history_details.additional_price",
+    "bill_history_details.total_price",
+    "bill_history_details.additional_qty",
+    "bill_history_details.total_qty",
+    "bill_history_details.subscription_qty"
+    )
+    .join("bill_history","bill_history.id","=","bill_history_details.bill_history_id")
+    .where({"bill_history.user_id":userId})
+    // }
+
+    // else{
+    //   return {message:"you have no bill" };
+    // }
+    const sub = await knex.select(
+      "subscribed_user_details.subscription_delivered_quantity",
+      "subscribed_user_details.additional_delivered_quantity",
+      "subscribed_user_details.total_delivered_quantity",
+      // "subscribed_user_details.subscription_delivered_quantity",
+    )
+    .from("subscribed_user_details")
+    .where({user_id: userId})
+    // console.log(getuser)
+  const rider = await knex('daily_orders')
+  .join("routes","routes.id","=","daily_orders.router_id")
+  .join("rider_details","rider_details.id","=","routes.rider_id")
+  .select(
+    "rider_details.id",
+    "rider_details.name",
+    "rider_details.tour_status as status",
+  )
+  .where({'daily_orders.user_id':userId});
+
+  console.log(rider);
+
+  let get_user_detail = {};
+  let status;
+  if(rider.length!=0){
+ if(rider[0].status==0){
+   status = "rider is assigned"
+ }
+ else if(rider[0].status==1){
+   status = "rider can start the tour and delivered soon"
+ }
+ else if(rider[0].status==2){
+   status ="rider can end the tour"
+ }
+ else{
+   status = "no rider can assigned"
+ }}
+ else{
+  status = "no rider can assigned"
+  
+ }
+
+ 
+
+   const address = await knex('user_address').select('id').where({user_id:userId})
+
+   const subscription = await knex('subscribed_user_details').select('id').where({user_id: userId})
+   const additional = await knex('additional_orders').select('id').where({user_id: userId,status:"delivered"})
+
+   const subscription1 = await knex('subscribed_user_details').select('product_id').where({user_id:userId,rider_status:"delivered"})
+
+   const addon = await knex('add_on_order_items').select('product_id').where({user_id: userId,status:"delivered"})
+
+   
 
     user.body.map((data) => {
 
@@ -159,15 +221,15 @@ export const getUser = async (req, res) => {
       : null;
       get_user_detail.mobile_number = data.mobile_number;
       get_user_detail.email = data.email;
-      get_user_detail.rider_name = user.rider[0].name;
+      get_user_detail.rider_name =rider.length!=0?rider[0].name : "no rider";
       get_user_detail.rider_status = status;
-      get_user_detail.total_bill_due_Amount = "Bill due amount"+ ' ' +user.bill[0].total_price.toString();
-      get_user_detail.total_bill_count = user.bill.length.toString()+ ' ' + "bills";
-      get_user_detail.total_address_count = user.address.length.toString()+ ' ' + "address count";
-      get_user_detail.total_subcription_count = user.subscription.length.toString()+ ' ' + "subcription";
-      get_user_detail.total_delivered_product_count = user.subscription1.length +user.additional.length +user.addon.length .toString()+ ' ' + "Product Delivery" ;
+      get_user_detail.total_bill_due_Amount = bill.length!=0 ? "Bill due amount"+ ' ' +bill[0].total_price.toString():"0";
+      get_user_detail.total_bill_count = bill.length.toString()+ ' ' + "bills";
+      get_user_detail.total_address_count = address.length.toString()+ ' ' + "address count";
+      get_user_detail.total_subcription_count = subscription.length.toString()+ ' ' + "subcription";
+      get_user_detail.total_delivered_product_count = subscription1.length +additional.length +addon.length .toString()+ ' ' + "Product Delivery" && "0" ;
     });
-
+   
     res
       .status(responseCode.SUCCESS)
       .json({ status: true, data: get_user_detail });

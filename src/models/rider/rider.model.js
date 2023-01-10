@@ -190,6 +190,7 @@ export const userLogin = async (password) => {
       if(tour_status==2){
         const updatetour = await knex('rider_details').update({tour_status:'2'}).where({id:delivery_partner_id})
         
+        const rider1 = await knex('rider_daily_details').insert({router_id:router[0].id,rider_id:delivery_partner_id})
 //         const users = await knex('daily_orders').select('user_id').where({router_id:router[0].id})
 // console.log(users)
 //         let sum1 =0;
@@ -220,11 +221,18 @@ export const userLogin = async (password) => {
 //         }
         const daily = await knex('daily_orders').select('*').where({router_id:router[0].id})
 
-        console.log(daily)
-        
-        // const rider1 = await knex('rider_daily_details').select("order_details").where({router_id:router[0].id})
+        console.log(daily);
+        const json_array =  JSON.stringify(daily);
+        // await knex('rider_daily_details').insert({
+        //   order_details : daily[0],
+        // });
 
-        // rider1[0].order_details.push(daily);
+        console.log("hi")
+       
+        console.log("hi2")
+        const rider2 = await knex('rider_daily_details').insert({"order_details":json_array}).where({router_id:router[0].id})
+
+        // rider1[0].order_details.push(daily[0]);
 
         return{status:true,message:"successfully updated"}
         }

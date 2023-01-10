@@ -1,6 +1,6 @@
 import responseCode from "../../constants/responseCode";
 import messages from "../../constants/messages";
-import axios from "axios"
+// import axios from "axios"
 import moment from "moment";
 import { sendNotification } from "../../notifications/message.sender";
 
@@ -320,7 +320,7 @@ export const singleSubscription = async (req, res) => {
     }
 
     const response = {
-      additional_orders: [sub.add_product[0]],
+      additional_orders: sub.add_product[0],
       this_month_item_detail: sub.this_month_item_detail[0],
     };
 

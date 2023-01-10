@@ -25,6 +25,7 @@
   "dependencies": {
     "@onesignal/node-onesignal": "^1.0.0-beta8",
     "axios": "^1.2.2",
+    "axois": "0.0.1-security",
     "bcrypt": "^5.1.0",
     "body-parser": "^1.20.0",
     "connect-flash": "^0.1.1",

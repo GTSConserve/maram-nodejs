@@ -2,7 +2,7 @@ import responseCode from "../../constants/responseCode";
 import messages from "../../constants/messages";
 import { GetProduct } from "../../utils/helper.util";
 import { sendNotification } from "../../notifications/message.sender";
-import axios from 'axios';
+// import axios from 'axios';
 import moment from "moment";
 
 import {

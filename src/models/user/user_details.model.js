@@ -100,49 +100,11 @@ export const get_user = async (id,userId) => {
     .select("id", "name", "image", "mobile_number", "email")
     .from("users")
     .where({ id });
+    console.log(id)
 
-    const bill = await knex.select(
-    "bill_history_details.subscription_price",
-    "bill_history_details.additional_price",
-    "bill_history_details.total_price",
-    "bill_history_details.additional_qty",
-    "bill_history_details.total_qty",
-    "bill_history_details.subscription_qty"
-    )
-    .from("bill_history_details")
-    .where({id})
 
-    const sub = await knex.select(
-      "subscribed_user_details.subscription_delivered_quantity",
-      "subscribed_user_details.additional_delivered_quantity",
-      "subscribed_user_details.total_delivered_quantity",
-      // "subscribed_user_details.subscription_delivered_quantity",
-    )
-    .from("subscribed_user_details")
-    .where({user_id: id})
-    // console.log(getuser)
-  const rider = await knex('daily_orders')
-  .join("routes","routes.id","=","daily_orders.router_id")
-  .join("rider_details","rider_details.id","=","routes.rider_id")
-  .select(
-    "rider_details.id",
-    "rider_details.name",
-    "rider_details.tour_status as status",
-    
-  )
-  .where({user_id: id})
-
-  // console.log(rider)
-   const address = await knex('user_address').select('id').where({user_id: id})
-
-   const subscription = await knex('subscribed_user_details').select('id').where({user_id: id})
-   const additional = await knex('additional_orders').select('id').where({user_id: id,status:"delivered"})
-
-   const subscription1 = await knex('subscribed_user_details').select('product_id').where({user_id: id,rider_status:"delivered"})
-
-   const addon = await knex('add_on_order_items').select('product_id').where({user_id: id,status:"delivered"})
    try {
-    return { status: responseCode.SUCCESS, body: getuser,rider,bill,sub,address,subscription,additional,subscription1,addon };
+    return { status: responseCode.SUCCESS, body: getuser };
   } catch (error) {
     console.log(error);
     return { status: responseCode.FAILURE.INTERNAL_SERVER_ERROR, error };

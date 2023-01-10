@@ -159,7 +159,7 @@ var editAddress = /*#__PURE__*/function () {
 exports.editAddress = editAddress;
 var getUser = /*#__PURE__*/function () {
   var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(req, res) {
-    var userId, user, get_user_detail, status;
+    var userId, user, daily, bill, sub, rider, get_user_detail, status, address, subscription, additional, subscription1, addon;
     return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
@@ -180,50 +180,114 @@ var getUser = /*#__PURE__*/function () {
               message: "User Not Found"
             }));
           case 8:
+            _context4.next = 10;
+            return (0, _db["default"])('daily_orders').select('user_id').where({
+              user_id: userId
+            });
+          case 10:
+            daily = _context4.sent;
+            _context4.next = 13;
+            return (0, _db["default"])("bill_history_details").select("bill_history_details.subscription_price", "bill_history_details.additional_price", "bill_history_details.total_price", "bill_history_details.additional_qty", "bill_history_details.total_qty", "bill_history_details.subscription_qty").join("bill_history", "bill_history.id", "=", "bill_history_details.bill_history_id").where({
+              "bill_history.user_id": userId
+            });
+          case 13:
+            bill = _context4.sent;
+            _context4.next = 16;
+            return _db["default"].select("subscribed_user_details.subscription_delivered_quantity", "subscribed_user_details.additional_delivered_quantity", "subscribed_user_details.total_delivered_quantity"
+            // "subscribed_user_details.subscription_delivered_quantity",
+            ).from("subscribed_user_details").where({
+              user_id: userId
+            });
+          case 16:
+            sub = _context4.sent;
+            _context4.next = 19;
+            return (0, _db["default"])('daily_orders').join("routes", "routes.id", "=", "daily_orders.router_id").join("rider_details", "rider_details.id", "=", "routes.rider_id").select("rider_details.id", "rider_details.name", "rider_details.tour_status as status").where({
+              'daily_orders.user_id': userId
+            });
+          case 19:
+            rider = _context4.sent;
+            console.log(rider);
             get_user_detail = {};
-            if (user.rider[0].status == 0) {
-              status = "rider is assigned";
-            } else if (user.rider[0].status == 1) {
-              status = "rider can start the tour and delivered soon";
-            } else if (user.rider[0].status == 2) {
-              status = "rider can end the tour";
+            if (rider.length != 0) {
+              if (rider[0].status == 0) {
+                status = "rider is assigned";
+              } else if (rider[0].status == 1) {
+                status = "rider can start the tour and delivered soon";
+              } else if (rider[0].status == 2) {
+                status = "rider can end the tour";
+              } else {
+                status = "no rider can assigned";
+              }
             } else {
               status = "no rider can assigned";
             }
+            _context4.next = 25;
+            return (0, _db["default"])('user_address').select('id').where({
+              user_id: userId
+            });
+          case 25:
+            address = _context4.sent;
+            _context4.next = 28;
+            return (0, _db["default"])('subscribed_user_details').select('id').where({
+              user_id: userId
+            });
+          case 28:
+            subscription = _context4.sent;
+            _context4.next = 31;
+            return (0, _db["default"])('additional_orders').select('id').where({
+              user_id: userId,
+              status: "delivered"
+            });
+          case 31:
+            additional = _context4.sent;
+            _context4.next = 34;
+            return (0, _db["default"])('subscribed_user_details').select('product_id').where({
+              user_id: userId,
+              rider_status: "delivered"
+            });
+          case 34:
+            subscription1 = _context4.sent;
+            _context4.next = 37;
+            return (0, _db["default"])('add_on_order_items').select('product_id').where({
+              user_id: userId,
+              status: "delivered"
+            });
+          case 37:
+            addon = _context4.sent;
             user.body.map(function (data) {
               get_user_detail.user_id = data.id;
               get_user_detail.name = data.name;
               get_user_detail.image = data.image ? process.env.BASE_URL + data.image : null;
               get_user_detail.mobile_number = data.mobile_number;
               get_user_detail.email = data.email;
-              get_user_detail.rider_name = user.rider[0].name;
+              get_user_detail.rider_name = rider.length != 0 ? rider[0].name : "no rider";
               get_user_detail.rider_status = status;
-              get_user_detail.total_bill_due_Amount = "Bill due amount" + ' ' + user.bill[0].total_price.toString();
-              get_user_detail.total_bill_count = user.bill.length.toString() + ' ' + "bills";
-              get_user_detail.total_address_count = user.address.length.toString() + ' ' + "address count";
-              get_user_detail.total_subcription_count = user.subscription.length.toString() + ' ' + "subcription";
-              get_user_detail.total_delivered_product_count = user.subscription1.length + user.additional.length + user.addon.length.toString() + ' ' + "Product Delivery";
+              get_user_detail.total_bill_due_Amount = bill.length != 0 ? "Bill due amount" + ' ' + bill[0].total_price.toString() : "0";
+              get_user_detail.total_bill_count = bill.length.toString() + ' ' + "bills";
+              get_user_detail.total_address_count = address.length.toString() + ' ' + "address count";
+              get_user_detail.total_subcription_count = subscription.length.toString() + ' ' + "subcription";
+              get_user_detail.total_delivered_product_count = subscription1.length + additional.length + addon.length.toString() + ' ' + "Product Delivery" && "0";
             });
             res.status(_responseCode["default"].SUCCESS).json({
               status: true,
               data: get_user_detail
             });
-            _context4.next = 18;
+            _context4.next = 46;
             break;
-          case 14:
-            _context4.prev = 14;
+          case 42:
+            _context4.prev = 42;
             _context4.t0 = _context4["catch"](0);
             console.log(_context4.t0);
             res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: "no user"
             });
-          case 18:
+          case 46:
           case "end":
             return _context4.stop();
         }
       }
-    }, _callee4, null, [[0, 14]]);
+    }, _callee4, null, [[0, 42]]);
   }));
   return function getUser(_x7, _x8) {
     return _ref4.apply(this, arguments);

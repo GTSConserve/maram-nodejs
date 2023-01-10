@@ -19,7 +19,7 @@ var storage = (0, _helper.multerStorage)(path);
 var uploadImg = (0, _multer["default"])({
   storage: storage
 }).single("image");
-userRouter.get("/get_users", _authToken.authenticateJWT, _userDetail.getUser);
+userRouter.get("/get_users", _userDetail.getUser);
 userRouter.post("/update_users", _authToken.authenticateJWT, uploadImg, _userDetail.updateUser);
 userRouter.post("/add_user_address", _authToken.authenticateJWT, _userDetail.addUserAddress);
 userRouter.get("/get_address", _authToken.authenticateJWT, _userDetail.getAddress);

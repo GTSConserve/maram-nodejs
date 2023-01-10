@@ -36,7 +36,7 @@ const storage = multerStorage(path);
 const uploadImg = multer({ storage: storage }).single("image");
 
 
-userRouter.get("/get_users", authenticateJWT, getUser);
+userRouter.get("/get_users", getUser);
 userRouter.post("/update_users", authenticateJWT, uploadImg, updateUser);
 
 userRouter.post("/add_user_address",authenticateJWT, addUserAddress);

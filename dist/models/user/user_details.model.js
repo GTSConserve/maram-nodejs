@@ -129,7 +129,7 @@ var edit_address = /*#__PURE__*/function () {
 exports.edit_address = edit_address;
 var get_user = /*#__PURE__*/function () {
   var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(id, userId) {
-    var getuser, bill, sub, rider, address, subscription, additional, subscription1, addon;
+    var getuser;
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
@@ -140,86 +140,26 @@ var get_user = /*#__PURE__*/function () {
             });
           case 2:
             getuser = _context3.sent;
-            _context3.next = 5;
-            return _db["default"].select("bill_history_details.subscription_price", "bill_history_details.additional_price", "bill_history_details.total_price", "bill_history_details.additional_qty", "bill_history_details.total_qty", "bill_history_details.subscription_qty").from("bill_history_details").where({
-              id: id
-            });
-          case 5:
-            bill = _context3.sent;
-            _context3.next = 8;
-            return _db["default"].select("subscribed_user_details.subscription_delivered_quantity", "subscribed_user_details.additional_delivered_quantity", "subscribed_user_details.total_delivered_quantity"
-            // "subscribed_user_details.subscription_delivered_quantity",
-            ).from("subscribed_user_details").where({
-              user_id: id
-            });
-          case 8:
-            sub = _context3.sent;
-            _context3.next = 11;
-            return (0, _db["default"])('daily_orders').join("routes", "routes.id", "=", "daily_orders.router_id").join("rider_details", "rider_details.id", "=", "routes.rider_id").select("rider_details.id", "rider_details.name", "rider_details.tour_status as status").where({
-              user_id: id
-            });
-          case 11:
-            rider = _context3.sent;
-            _context3.next = 14;
-            return (0, _db["default"])('user_address').select('id').where({
-              user_id: id
-            });
-          case 14:
-            address = _context3.sent;
-            _context3.next = 17;
-            return (0, _db["default"])('subscribed_user_details').select('id').where({
-              user_id: id
-            });
-          case 17:
-            subscription = _context3.sent;
-            _context3.next = 20;
-            return (0, _db["default"])('additional_orders').select('id').where({
-              user_id: id,
-              status: "delivered"
-            });
-          case 20:
-            additional = _context3.sent;
-            _context3.next = 23;
-            return (0, _db["default"])('subscribed_user_details').select('product_id').where({
-              user_id: id,
-              rider_status: "delivered"
-            });
-          case 23:
-            subscription1 = _context3.sent;
-            _context3.next = 26;
-            return (0, _db["default"])('add_on_order_items').select('product_id').where({
-              user_id: id,
-              status: "delivered"
-            });
-          case 26:
-            addon = _context3.sent;
-            _context3.prev = 27;
+            console.log(id);
+            _context3.prev = 4;
             return _context3.abrupt("return", {
               status: _responseCode["default"].SUCCESS,
-              body: getuser,
-              rider: rider,
-              bill: bill,
-              sub: sub,
-              address: address,
-              subscription: subscription,
-              additional: additional,
-              subscription1: subscription1,
-              addon: addon
+              body: getuser
             });
-          case 31:
-            _context3.prev = 31;
-            _context3.t0 = _context3["catch"](27);
+          case 8:
+            _context3.prev = 8;
+            _context3.t0 = _context3["catch"](4);
             console.log(_context3.t0);
             return _context3.abrupt("return", {
               status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
               error: _context3.t0
             });
-          case 35:
+          case 12:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3, null, [[27, 31]]);
+    }, _callee3, null, [[4, 8]]);
   }));
   return function get_user(_x11, _x12) {
     return _ref3.apply(this, arguments);

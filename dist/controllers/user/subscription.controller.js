@@ -7,7 +7,6 @@ Object.defineProperty(exports, "__esModule", {
 exports.singleSubscription = exports.removeAdditionalOrder = exports.pauseSubscription = exports.newSubscription = exports.getSubscriptionPlan = exports.getSubcription_order = exports.getAllSubscription = exports.editAdditionalOrder = exports.createAdditionalOrder = exports.changeSubscriptionplan = exports.changeQuantity = exports.Remove_Subscription = void 0;
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 var _messages = _interopRequireDefault(require("../../constants/messages"));
-var _axios = _interopRequireDefault(require("axios"));
 var _moment = _interopRequireDefault(require("moment"));
 var _message = require("../../notifications/message.sender");
 var _subscription = require("../../models/user/subscription.model");
@@ -492,7 +491,7 @@ var singleSubscription = /*#__PURE__*/function () {
               delete sub.data[i].unit_type;
             }
             response = {
-              additional_orders: [sub.add_product[0]],
+              additional_orders: sub.add_product[0],
               this_month_item_detail: sub.this_month_item_detail[0]
             };
             return _context9.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
