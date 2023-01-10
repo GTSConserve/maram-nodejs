@@ -24,10 +24,10 @@ var productRouter = _express["default"].Router({
 });
 
 // product_type
-productRouter.get("/get_all_product_type", _product_type.getAllProductType);
-productRouter.post("/create_product_type", uploadImg, _product_type.createProductType);
-productRouter.post("/update_product_type_status", _product_type.updateProductTypeStatus);
-productRouter.post("/update_product_type", uploadImg, _product_type.updateProductType);
+// productRouter.get("/get_all_product_type", getAllProductType);
+// productRouter.post("/create_product_type", uploadImg, createProductType);
+// productRouter.post("/update_product_type_status", updateProductTypeStatus);
+// productRouter.post("/update_product_type", uploadImg, updateProductType);
 
 // category
 productRouter.get("/get_category", _category.getCategory);

@@ -47,4 +47,35 @@ console.log("database Connected");
 // }
 // hl();
 // console.log(knex)
+
+
+
+
 export default knex;
+
+
+
+
+// var mysql = require('mysql2');
+
+
+
+// var connection = mysql.createConnection({
+//   host     : 'awseb-e-x3s3f4wi2v-stack-awsebrdsdatabase-x1jmeljtlon9.cnxyneaiybt8.ap-south-1.rds.amazonaws.com',
+//   user     : 'maramdbadmin',
+//   password : 'q&HJIJ^EWF7N4sBs',
+//   port     : 3306
+// });
+
+
+
+// connection.connect(function(err) {
+//   if (err) {
+//     console.error('Database connection failed: ' + err.stack);
+//     return;
+//   }
+
+//   console.log('Connected to database.');
+// });
+
+// connection.end();

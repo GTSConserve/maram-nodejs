@@ -114,7 +114,7 @@ export const userAddressValidator = (payload) => {
   const longitude = payload.longitude ?? null;
 
   if (address && landmark && title && type && alternate_mobile && latitude && longitude) {
-    return { status: true, address, landmark, type, title, alternate_mobile, latitude, longitude};
+    return { status: true, address, landmark, type, title,alternate_mobile,latitude,longitude };
   } else {
     return { status: false, message: "error" };
   }
