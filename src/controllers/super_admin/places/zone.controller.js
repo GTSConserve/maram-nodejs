@@ -25,14 +25,16 @@ export const getAllZone = async (req, res) => {
       data_length = await knex("zones").select("id");
     }
 
-    const countries = await knex("countries").select("id","name").where({status : "1"})
+    const cities = await knex("cities")
+      .select("id", "name")
+      .where({ status: "1" });
 
     if (data_length.length === 0) {
       loading = false;
       return res.render("super_admin/places/zone", {
         data: data_length,
         searchKeyword,
-        countries
+        cities,
       });
     }
 
@@ -49,18 +51,16 @@ export const getAllZone = async (req, res) => {
     let is_search = false;
     if (searchKeyword) {
       results = await knex.raw(
-        `SELECT zones.id,zones.name,zones.code,zones.status,countries.name as country_name FROM zones JOIN countries ON countries.id = zones.country_id WHERE  zones.name LIKE '%${searchKeyword}%' LIMIT ${startingLimit},${resultsPerPage}`
+        `SELECT zones.id,zones.name,zones.status,cities.name as city_name,cities.id as city_id FROM zones JOIN cities ON cities.id = zones.city_id WHERE  zones.name LIKE '%${searchKeyword}%' LIMIT ${startingLimit},${resultsPerPage}`
       );
       is_search = true;
     } else {
       results = await knex.raw(
-        `SELECT zones.id,zones.name,zones.code,zones.status,countries.name as country_name FROM zones JOIN countries ON countries.id = zones.country_id LIMIT ${startingLimit},${resultsPerPage}`
+        `SELECT zones.id,zones.name,zones.status,cities.name as city_name,cities.id as city_id FROM zones JOIN cities ON cities.id = zones.city_id LIMIT ${startingLimit},${resultsPerPage}`
       );
     }
 
     const data = results[0];
-
-   
 
     loading = false;
     res.render("super_admin/places/zone", {
@@ -72,7 +72,7 @@ export const getAllZone = async (req, res) => {
       is_search,
       searchKeyword,
       loading,
-      countries
+      cities,
     });
 
     // res.render("super_admin/places/zone");
@@ -84,23 +84,27 @@ export const getAllZone = async (req, res) => {
 
 export const newZone = async (req, res) => {
   try {
-    const { name, code, country_id } = req.body;
+    const { name, city_id } = req.body;
 
     if (!name) {
       req.flash("error", "Name is missing");
       return res.redirect("/super_admin/places/zone");
     }
 
-    if (!code) {
+    if (!city_id) {
       req.flash("error", "code is missing");
       return res.redirect("/super_admin/places/zone");
     }
-    if (!country_id) {
-      req.flash("error", "Phone code is missing");
+
+    const name_check = await knex("zones").where({name})
+    console.log(name_check)
+
+    if(name_check.length !== 0){
+      req.flash("error", "Zone Name is Should Be Unique");
       return res.redirect("/super_admin/places/zone");
     }
 
-    await knex("zones").insert({ name, code, country_id });
+    await knex("zones").insert({name , city_id});
     req.flash("success", "zone Created SuccessFully");
     res.redirect("/super_admin/places/zone");
   } catch (error) {
@@ -111,19 +115,17 @@ export const newZone = async (req, res) => {
 
 export const updateZone = async (req, res) => {
   try {
-    const { name, id, code, country_id } = req.body;
+    const { name, id, city_id } = req.body;
 
     if (!name) {
       req.flash("error", "Name is missing");
       return res.redirect("/super_admin/places/zone");
     }
 
-    let query = {};
+    let query = { name };
 
-    query.name = name;
-    query.code = code;
-    if (country_id) {
-      query.country_id = country_id;
+    if (city_id) {
+      query.city_id = city_id;
     }
 
     await knex("zones").update(query).where({ id: id });

@@ -8,11 +8,11 @@ export const updateRider = async (req, res) => {
 
     if (!name) {
       req.flash("error", "location is missing");
-      return res.redirect("branch_admin/rider/get_rider");
+      return res.redirect("/branch_admin/rider/get_rider");
     }
     if (!mobile_number) {
       req.flash("error", "mobile number is missing");
-      return res.redirect("branch_admin/rider/get_rider"); 
+      return res.redirect("/branch_admin/rider/get_rider"); 
     }
 
     let query = {};
@@ -25,7 +25,7 @@ export const updateRider = async (req, res) => {
     await knex("rider_details").update(query).where({ id: id });
 
     req.flash("success", "Updated SuccessFully");
-    res.redirect("branch_admin/rider/get_rider");
+    res.redirect("/branch_admin/rider/get_rider");
   } catch (error) {
     console.log(error);
     res.redirect("/home");
@@ -43,7 +43,7 @@ export const updateRiderStatus = async (req, res) => {
     }
 
     req.flash("success", "Updated SuccessFully");
-    res.redirect("branch_admin/rider/get_rider");
+    res.redirect("/branch_admin/rider/get_rider");
   } catch (error) {
     console.log(error);
     res.redirect("/home");
@@ -55,22 +55,22 @@ export const createRider = async (req, res) => {
     const { name, password, mobile_number, address,admin_id } = req.body;
     if (!name) {
       req.flash("error", "Name is missing");
-      return res.redirect("branch_admin/rider/get_rider");
+      return res.redirect("/branch_admin/rider/get_rider");
     }
 
     if (!password) {
       req.flash("error", "password is missing");
-      return res.redirect("branch_admin/rider/get_rider");
+      return res.redirect("/branch_admin/rider/get_rider");
     }
 
     if (!mobile_number) {
       req.flash("error", "mobile number is missing");
-      return res.redirect("branch_admin/rider/get_rider");
+      return res.redirect("/branch_admin/rider/get_rider");
     }
 
     if (password.length < 8) {
       req.flash("error", "password Should be atleast 8 characters");
-      return res.redirect("branch_admin/rider/get_rider");
+      return res.redirect("/branch_admin/rider/get_rider");
     }
 
     let hash_password = await bcrypt.hash(password, 10);
@@ -87,7 +87,7 @@ export const createRider = async (req, res) => {
     });
 
     req.flash("success", "Successfully Created");
-    res.redirect("branch_admin/rider/get_rider");
+    res.redirect("/branch_admin/rider/get_rider");
   } catch (error) {
     console.log(error);
     res.redirect("/home");
@@ -114,7 +114,7 @@ export const getRiders = async (req, res) => {
         loading = false;
         req.query.searchKeyword = "";
         req.flash("error", "No Rider Found");
-        return res.redirect("branch_admin/rider/get_rider");
+        return res.redirect("/branch_admin/rider/get_rider");
       }
     } else {
       data_length = await knex("rider_details").select("id").where({branch_id : admin_id})

@@ -1,26 +1,23 @@
 <% layout('layouts/boilerPlate') %>
     <div class="widget-content widget-content-area br-6">
         <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
-            <div class="dt--top-section">
-                <div class="row">
-                    <div class="col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center">
-                        <div class="dataTables_length" id="DataTables_Table_0_length">
-                            <h4>Route</h4>
+            <div class="row">
+                 <div class="col-8">
+                        <h3 class="mt-2">Route</h3>
                         </div>
-                    </div>
+                        <div class="col-4">
+                             <div class="input-group mb-3">
+                            <input type="text" class="form-control" name="searchKeyword" oninput="onChangeSearch()" value="<%=searchKeyword ? searchKeyword : ""  %>"  id="searchText" placeholder="search..."  aria-describedby="basic-addon2">
+                            <div class="input-group-append" style="cursor: pointer;"  onclick="onSearch()" >
+                              <span style="background-color: #80C659;" class="input-group-text " id="basic-addon2"><svg style="color: #fff;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button></span>
+                            </div>
+                          </div>
+                          </div>     
+             
+             
 
-                    
-                    <div class="col-1"></div>
-                    <div class="col-3  filtered-list-search mx-auto">
-                        <div class="form-inline my-2 my-lg-0 justify-content-center">
-                            <div class="w-100 row">
-
-                                <div class="w-100">
-                                    <input type="text" name="searchKeyword" oninput="onChangeSearch()" value="<%= searchKeyword? searchKeyword : ""  %>" class="w-100 form-control product-search br-30 col-7" id="searchText" placeholder="Search...">
-                                    <button class="btn btn-primary" type="submit" onclick="onSearch()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
-                                </div>
-
-
+            </div>
+    </div>
 
                     
                                 <script>
@@ -43,10 +40,8 @@
                                  
                                 };
                                 </script>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group col-md-1">
+                    
+                    <div class="float-right form-group col-md-1">
                         <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addbarcategory">Add</button>
                         <!-- __category add__ -->
                         <div wire:ignore.self="" class="modal fade" id="addbarcategory" tabindex="-1"
@@ -67,31 +62,20 @@
                                     </div>
 
                                     <div class="widget-content widget-content-area br-6">
-                                        <div class="row m-2 ">
-                                            <!-- <h4 class="modal-title" id="exampleModalLabel"> Add Admin</h4> -->
-                                            <div class="col-sm-3  ml-auto">
-
-                                            </div>
-
                                         
-                                        </div>
 
 
                                         <form action="/branch_admin/route/create_route" method="post">
 
                                         <div class="form-row mb-4">
-                                            <div class="col-sm-6 p-1">
-                                                <label>Starting Point</label>
-                                                <input type="text" wire:model="name" placeholder="Starting Location" required name="starting_point"
-                                                    class="form-control">
-                                            </div>
-                                            <div class="col-sm-6 p-1">
-                                                <label>Ending Point</label>
-                                                <input type="text" wire:model="name" placeholder="Ending Location" required name="ending_point"
+                                           
+                                            <div class="col-sm-12 mb-4">
+                                                <label>Route Name</label>
+                                                <input type="text" wire:model="name" placeholder="Eg. OMR Road" required name="name"
                                                     class="form-control">
                                             </div>
 
-                                            <div class="col-sm-6">
+                                            <!-- <div class="col-sm-6">
                                                 <label>Choose a City</label>
                                                 <select wire:model="countryid" class="form-control" name="city_id" required>
                                                     <option value="">Select City </option>
@@ -102,9 +86,9 @@
 
                                                 </select>
                                                
-                                            </div>
+                                            </div> -->
 
-                                            <div class="col-sm-6">
+                                            <div class="col-sm-12">
                                                 <label>Choose a Rider (optional)</label>
                                                 <select wire:model="countryid" class="form-control" name="rider_id">
                                                     <option value="">Select Rider </option>
@@ -132,10 +116,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
-
-            </div>
-        </div>
+          
         <% if(data.length === 0){ %> 
             <h2>No Data Found</h2>
             <% }else if(loading) { %>
@@ -158,18 +139,18 @@
                         <th  class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
                             colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
                             style="width: 20px;">#</th>
-                        <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                        <!-- <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
                             colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
-                            style="width: 86px;">Starting Point</th>
+                            style="width: 86px;">Starting Point</th> -->
                         <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
-                            aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">Ending Point</th>
+                            aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">Route Name</th>
                             <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
                             aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">Rider Name</th>
-                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
-                            aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">City Name</th>
-                        <th class="text-center sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                        <!-- <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                            aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">City Name</th> -->
+                        <!-- <th class="text-center sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
                             colspan="1" aria-label="Status: activate to sort column ascending" style="width: 49px;">
-                            Status</th>
+                            Status</th> -->
                         <th class="text-center dt-no-sorting sorting" tabindex="0"
                             aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
                             aria-label="Action: activate to sort column ascending" style="width: 64px;">Action</th>
@@ -181,11 +162,11 @@
     
                         <% for(user of data){ %>
                                 <td class="sorting_1"><%=user.id %></td>
-                                <td><%=user.starting_point %></td>
-                                <td ><%=user.ending_point %></td>
+                              
+                                <td ><%=user.route_name %></td>
                                 <td><%=user.rider_name ? user.rider_name : "N/A" %></td>
-                                <td><%=user.city_name %></td>    
-                                <div>
+                                <!-- <td><%=user.city_name %></td>     -->
+                                <!-- <div>
                                     <td style="text-align: center; vertical-align: middle;">
                                         <div class="custom-control custom-switch" style="cursor: pointer;">
                                                 <input style="cursor: pointer;" <%= user.status == "1" ? "checked"  :""  %>   type="checkbox"   class="custom-control-input" name="status" 
@@ -211,28 +192,51 @@
                                                 };
                                                 </script>
                                          
-                                        </div>
+                                        </div> -->
                                     </td>
                          
-                                    <td class="text-center"><a  class="btn mb-2 btn-sm  btn-primary"  id=<%=user.id %> data-toggle="modal" onclick="viewHandler(this)"
-                                      >View Orders</a> <button class="btn mb-2 btn-sm  btn-primary" data-toggle="modal"
-                                        data-target="#editCategory<%=user.id %>">edit</button>
+                                    <td class="text-center">
+                                        <!-- <a  class="btn mb-2 btn-sm  btn-primary"  id=<%=user.id %> data-toggle="modal" onclick="viewHandler(this)"
+                                      >View Orders</a> -->
+                                       <button id="<%= user.id %>" class="btn mb-2 btn-md  btn-info" data-toggle="modal"  onclick="userMapping(this)"
+                                       >User Mapping</button>
+                                       <button class="btn mb-2 btn-md  btn-primary" data-toggle="modal"
+                                         id="<%= user.id %>"  onclick="viewMapping(this)">View Mapping</button>
+                                       <button class="btn mb-2 btn-md  btn-warning" data-toggle="modal"
+                                         onclick="tommorowMapping(this)"  id="<%= user.id %>" >Tommorrow Route Users</button>
+                                       <button class="btn mb-2 btn-md  btn-secondary" data-toggle="modal"
+                                        data-target="#editCategory<%=user.id %>">Edit Route</button>
                                          
                                         
                                     
                                 </div>
                                 <script>
-                                    async function viewHandler(event){
-                                        window.location.href = `/branch_admin/order/daily_orders?route_id=${event.id}`
-                                        // await fetch('/branch_admin/order/daily_orders', {
-                                        //     method: 'get',
-                                        //     headers: {
-                                        //         'Accept': 'application/json',
-                                        //         'Content-Type': 'application/json'
-                                        //             },
-                                        //             body: JSON.stringify({"route_id": event.id })
-                                        //         })
+                                    // async function userMapping(event){
+                                    //     window.location.href = `/branch_admin/order/daily_orders?route_id=${event.id}`
+                                    //     // await fetch('/branch_admin/order/daily_orders', {
+                                    //     //     method: 'get',
+                                    //     //     headers: {
+                                    //     //         'Accept': 'application/json',
+                                    //     //         'Content-Type': 'application/json'
+                                    //     //             },
+                                    //     //             body: JSON.stringify({"route_id": event.id })
+                                    //     //         })
                                                 
+                                                    
+                                    // }
+                                    async function userMapping(event){
+                                        window.location.href = `/branch_admin/route/user_mapping?route_id=${event.id}`
+                                      
+              
+                                    }
+                                    async function viewMapping(event){
+                                        window.location.href = `/branch_admin/route/view_mapping?route_id=${event.id}`
+                                       
+                                                    
+                                    }
+                                    async function tommorowMapping(event){
+                                        window.location.href = `/branch_admin/route/tommorrow_route_mapping?route_id=${event.id}`
+                                       
                                                     
                                     }
                                 </script>
@@ -240,7 +244,7 @@
                             </tr>
     
     <!-- edit -->
-                <div wire:ignore.self="" class="modal fade" id="editCategory<%=user.id %>" tabindex="-1"
+                <div wire:ignore.self="" class="modal fade bd-example-modal-xl" id="editCategory<%=user.id %>" tabindex="-1"
                     aria-labelledby="addCategoryTitle" style="display: none;" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
@@ -260,18 +264,14 @@
                             <div class="modal-body">
                                 <form method="post" action="/branch_admin/route/update_route"  >
                                     <div class="form-row mb-4">
-                                        <div class="col-sm-6 p-1">
-                                            <label>Starting Point</label>
-                                            <input type="text" wire:model="name" value="<%= user.starting_point %>" placeholder="Starting Location" required name="starting_point"
-                                                class="form-control">
-                                        </div>
-                                        <div class="col-sm-6 p-1">
-                                            <label>Ending Point</label>
-                                            <input type="text" wire:model="name" value="<%= user.ending_point %>" placeholder="Ending Location" required name="ending_point"
+                                       
+                                        <div class="col-sm-12 p-1">
+                                            <label>Route Name</label>
+                                            <input type="text" wire:model="name" value="<%= user.route_name %>" placeholder="Ending Location" required name="name"
                                                 class="form-control">
                                         </div>
 
-                                        <div class="col-sm-6">
+                                        <!-- <div class="col-sm-6">
                                             <label>Choose a City</label>
                                             <select wire:model="countryid" class="form-control" name="city_id" required>
                                                 <option value="<%= user.city_id %>"><%= user.city_name %> </option>
@@ -282,9 +282,9 @@
 
                                             </select>
                                            
-                                        </div>
+                                        </div> -->
 
-                                        <div class="col-sm-6">
+                                        <div class="col-sm-12">
                                             <label>Choose a Rider (optional)</label>
                                             <select wire:model="countryid" class="form-control" name="rider_id">
                                                 <option value="<%= user.rider_id %>"><%= user.rider_name ? user.rider_name : "Choose a Rider"  %></option>
@@ -310,8 +310,94 @@
                 </div>
                 </div>
     
-    <!-- view -->
-    
+    <!-- viewMapping -->
+    <div wire:ignore.self="" class="modal fade bd-example-modal-xl" id="viewMapping<%=user.id %>" tabindex="-1"
+        aria-labelledby="addCategoryTitle" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">View Mapping </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                            height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="feather feather-x">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <form method="post" action="/branch_admin/route/update_view_mapping"  >
+                     
+                       <div id='left-defaults' class='dragula'>
+
+                        <div class="media  d-md-flex d-block text-sm-left text-center" id="1">
+                           
+                            <div class="media-body">
+                                <div class="d-xl-flex d-block justify-content-between">
+                                    <div class="">
+                                        <h6 class="">Need to be approved</h6>
+                                        <p class="">1</p>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-primary btn-sm">View</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="media  d-md-flex d-block text-sm-left text-center" id="2">
+                           
+                            <div class="media-body">
+                                <div class="d-xl-flex d-block justify-content-between">
+                                    <div class="">
+                                        <h6 class="">Meeting with client</h6>
+                                        <p class="">2</p>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-primary btn-sm">View</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="media  d-md-flex d-block text-sm-left text-center" id="3">
+                           
+                            <div class="media-body">
+                                <div class="d-xl-flex d-block justify-content-between">
+                                    <div class="">
+                                        <h6 class="">Project Detail</h6>
+                                        <p class="">3</p>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-primary btn-sm">View</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    
+                    <button type="button" name="id" value="<%=user.id %>" class="btn btn-danger" id="addmodalClose" data-dismiss="modal"><i
+                        class="flaticon-cancel-12"></i>Discard</button>
+                        <button wire:click="save" name="id" value="<%=user.id %>"  type="submit" class="btn btn-success">Save</button>
+                    </div>
+                </form>
+
+
+                <script>
+
+                </script>
+
+            </div>
+        </div>
+    </div>
     
   
     </div>
@@ -326,6 +412,7 @@
                 
             </table>
         </div>
+        <% if(numberOfPages != 1){ %> 
         <div class="dt--bottom-section d-sm-flex justify-content-sm-between text-center pt-4 ">
             <div class="dt--pages-count  mb-sm-0 mb-3">
               <% let search_query =  is_search ? `&searchKeyword=${searchKeyword}` : "" %>
@@ -359,6 +446,7 @@
                     </nav>
                 </div>
             </div>
+            <% } %>
         </div>
         <% } %>
     <div id="DataTables_Table_1_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">

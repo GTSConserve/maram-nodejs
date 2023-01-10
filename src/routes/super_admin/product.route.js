@@ -33,10 +33,10 @@ const productRouter = express.Router({
 });
 
 // product_type
-productRouter.get("/get_all_product_type", getAllProductType);
-productRouter.post("/create_product_type", uploadImg, createProductType);
-productRouter.post("/update_product_type_status", updateProductTypeStatus);
-productRouter.post("/update_product_type", uploadImg, updateProductType);
+// productRouter.get("/get_all_product_type", getAllProductType);
+// productRouter.post("/create_product_type", uploadImg, createProductType);
+// productRouter.post("/update_product_type_status", updateProductTypeStatus);
+// productRouter.post("/update_product_type", uploadImg, updateProductType);
 
 // category
 productRouter.get("/get_category", getCategory);

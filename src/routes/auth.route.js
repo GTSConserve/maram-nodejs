@@ -26,6 +26,8 @@ authRouter.post('/update_profile',authenticateJWTSession,uploadImg, updateProfil
 authRouter.get('/get_change_password', getChangePassword)
 authRouter.post('/update_change_password', updateChangePassword)
 
+
+
 authRouter.get('/get_password_recovery',getPasswordRecovery)
 authRouter.post('/forgot_password',sendPasswordResetEmail)
 authRouter.post('/update_email_password',updateEmailPassword)

@@ -1,46 +1,76 @@
-import express from 'express';
-import { addUserAddress,getAddress,editAddress,getUser,updateUser,deleteUseraddress, changePlan,RemoveOrder,Edit } from '../../controllers/user/userDetail.controller';
+import express from "express";
+import {
+  addUserAddress,
+  getAddress,
+  editAddress,
+  getUser,
+  updateUser,
+  deleteUseraddress,
+  changePlan,
+  RemoveOrder,
+  Edit,
+  checkDeliveryAddress,
+  getEmptyBottle,
+  userAddressChange,
+  getSingleCalendar,
+  getBillList,
+  getSingleBillList,
+  getOverallCalendar,
+  RiderLocation,
+  getSingleCalendarEvent,
+  getOverallCalendarEvent
+} from "../../controllers/user/userDetail.controller";
 import multer from "multer";
-// import { edit_address } from '../../models/user/user_details.model';
 
+import { authenticateJWT } from "../../middlewares/authToken.middleware";
 
+import { multerStorage } from "../../utils/helper.util";
 const userRouter = express.Router({
-    caseSensitive: true,
-    strict: true
-  })
+  caseSensitive: true,
+  strict: true,
+});
+
+
+const path = "./uploads/users";
+
+const storage = multerStorage(path);
+
+const uploadImg = multer({ storage: storage }).single("image");
+
+
+userRouter.get("/get_users", authenticateJWT, getUser);
+userRouter.post("/update_users", authenticateJWT, uploadImg, updateUser);
+
+userRouter.post("/add_user_address",authenticateJWT, addUserAddress);
+userRouter.get("/get_address",authenticateJWT, getAddress);
+userRouter.post("/edit_address",authenticateJWT, editAddress);
+userRouter.post("/delete_user_address",authenticateJWT, deleteUseraddress);
+userRouter.post("/check_delivery_address",authenticateJWT, checkDeliveryAddress);
+
+userRouter.post("/remove_orders", authenticateJWT,RemoveOrder);
+userRouter.post("/edit_orders", authenticateJWT,Edit);
+userRouter.post("/change_plan", authenticateJWT,changePlan);
+userRouter.get("/get_empty_bottle", authenticateJWT, getEmptyBottle);
+
+
+// get bill history api
+userRouter.post("/get_bill_list", authenticateJWT, getBillList);
+userRouter.post("/get_single_bill_list",  getSingleBillList);
+
+// empty bottle tracking api for static
+
+userRouter.post("/user_address_change", authenticateJWT, userAddressChange);
+userRouter.post("/single_calendar", authenticateJWT, getSingleCalendar);
+userRouter.post("/over_all_calendar", authenticateJWT, getOverallCalendar);
+
+userRouter.post("/single_calendar_event",authenticateJWT, getSingleCalendarEvent);
+userRouter.post("/over_all_calendar_event", authenticateJWT,getOverallCalendarEvent);
+
+
+// rider details 
+userRouter.post("/rider_location", authenticateJWT,RiderLocation);
 
 
 
-
-
-  const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'uploads/');
-      },
-    filename: function (req, file, cb) {
-      // console.log(req.headers.authorization)
-      let index = file.mimetype.indexOf('/') + 1
-      cb(null, Date.now() + "." + file.mimetype.slice(index));
-    }
-  });
+export default userRouter;
   
-  const uploadImg = multer({storage: storage}).single('image');
-  
-  userRouter.get('/get_address',getAddress)
-  userRouter.post("/edit_address",editAddress)
-  userRouter.get('/get_users',getUser)
-  userRouter.post('/update_users',uploadImg,updateUser)
-  
-
- 
-  userRouter.post('/remove_orders',RemoveOrder)
-  userRouter.post('/edit_orders',Edit)
-  userRouter.get('/delete_useraddress',deleteUseraddress)
-  userRouter.post('/add_user_address',addUserAddress)
-  userRouter.post('/change_plan',changePlan)
-
-
-
-
-
-  export default userRouter;

@@ -12,6 +12,8 @@ var branchRouter = _express["default"].Router({
   strict: true
 });
 branchRouter.get('/get_branch_admin', _branch.getBranchAdmin);
+// authRouter.get('/get_change_password', getChangePassword)
+branchRouter.post('/update_change_password', _branch.updateChangePassword);
 branchRouter.post('/create_branch_admin', _branch.createBranchAdmin);
 branchRouter.post('/update_branch', _branch.updateBranch);
 branchRouter.post('/update_branch_status', _branch.updateBranchStatus);

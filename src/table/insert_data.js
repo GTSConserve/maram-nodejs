@@ -10,7 +10,8 @@ import {
   category,
   subscription_type,
   product_variations,
-  week_days
+  week_days,
+  app_settings
 } from "../seeds/dummy_data";
 
 export const insertData = async (req, res) => {
@@ -22,7 +23,7 @@ export const insertData = async (req, res) => {
 
 
     // weekdays
-    // await knex("weekdays").insert(week_days)
+    await knex("weekdays").insert(week_days)
 
     //banners
     await knex("banners").insert(banners);
@@ -42,6 +43,9 @@ export const insertData = async (req, res) => {
     // // product_type
     await knex("product_type").insert(product_type);
 
+    // // app_settings
+    await knex("app_settings").insert(app_settings);
+
     //variation_type
     await knex("unit_types").insert(variation_types);
 
@@ -55,42 +59,42 @@ export const insertData = async (req, res) => {
     // const variation_type_id = await knex("variation_types").select("id");
 
     // category
-    for (let i = 0; i < category.length; i++) {
-      category[i].product_type_id = get_random_id(product_type_id);
-    }
-    await knex("categories").insert(category);
+    // for (let i = 0; i < category.length; i++) {
+    //   category[i].product_type_id = get_random_id(product_type_id);
+    // }
+    // await knex("categories").insert(category);
 
-    const category_id = await knex("categories").select("id");
-    products
-    for (let i = 0; i < products.length; i++) {
-      products[i].admin_id = "1";
-      products[i].category_id = get_random_id(category_id);
-      // products[i].variation_type_id = get_random_id(variation_type_id);
-      products[i].product_type_id = get_random_id(product_type_id);
-    }
-    await knex("products").insert(products);
+    // const category_id = await knex("categories").select("id");
+    // products
+    // for (let i = 0; i < products.length; i++) {
+    //   // products[i].admin_id = "1";
+    //   products[i].category_id = get_random_id(category_id);
+    //   // products[i].variation_type_id = get_random_id(variation_type_id);
+    //   products[i].product_type_id = get_random_id(product_type_id);
+    // }
+    // await knex("products").insert(products);
 
-    const product_id = await knex("products").select("id");
+    // const product_id = await knex("products").select("id");
 
     // dont need
-    product_variations
-    let product_variations_data = [];
-    for (let i = 0; i < product_id.length; i++) {
-      product_variations_data.push({
-        product_id: get_random_id(product_id),
-        variation_type_id: get_random_id(variation_type_id),
-        value:
-          product_variations[
-            Math.floor(Math.random() * product_variations.length)
-          ].value,
-        price:
-          product_variations[
-            Math.floor(Math.random() * product_variations.length)
-          ].price,
-      });
-    }
+    // product_variations
+    // let product_variations_data = [];
+    // for (let i = 0; i < product_id.length; i++) {
+    //   product_variations_data.push({
+    //     product_id: get_random_id(product_id),
+    //     variation_type_id: get_random_id(variation_type_id),
+    //     value:
+    //       product_variations[
+    //         Math.floor(Math.random() * product_variations.length)
+    //       ].value,
+    //     price:
+    //       product_variations[
+    //         Math.floor(Math.random() * product_variations.length)
+    //       ].price,
+    //   });
+    // }
 
-    await knex("product_variations").insert(product_variations_data);
+    // await knex("product_variations").insert(product_variations_data);
 
     return res
       .status(200)

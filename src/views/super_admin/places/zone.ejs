@@ -2,25 +2,23 @@
 
     <div class="widget-content widget-content-area br-6">
         <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
-            <div class="dt--top-section">
-                <div class="row">
-                    <div class="col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center">
-                        <div class="dataTables_length" id="DataTables_Table_0_length">
-                            <h4>Zone</h4>
+            <div class="row">
+                 <div class="col-8">
+                        <h3 class="mt-2">Zone</h3>
                         </div>
-                    </div>
+                        <div class="col-4">
+                             <div class="input-group mb-3">
+                            <input type="text" class="form-control" name="searchKeyword" oninput="onChangeSearch()" value="<%=searchKeyword ? searchKeyword : ""  %>"  id="searchText" placeholder="search..."  aria-describedby="basic-addon2">
+                            <div class="input-group-append" style="cursor: pointer;"  onclick="onSearch()" >
+                              <span style="background-color: #80C659;" class="input-group-text " id="basic-addon2"><svg style="color: #fff;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button></span>
+                            </div>
+                          </div>
+                          </div>     
+             
+             
 
-                    <div class="col-1"></div>
-                    <div class="col-3  filtered-list-search mx-auto">
-                        <div class="form-inline my-2 my-lg-0 justify-content-center">
-                            <div class="w-100 row">
-
-                                <div class="w-100">
-                                    <input type="text" name="searchKeyword" oninput="onChangeSearch()" value="<%=searchKeyword? searchKeyword : ""  %>" class="w-100 form-control product-search br-30 col-7" id="searchText" placeholder="Search...">
-                                    <button class="btn btn-primary" type="submit" onclick="onSearch()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
-                                </div>
-
-
+            </div>
+    </div>
 
                     
                                 <script>
@@ -45,12 +43,10 @@
                                  
                                 };
                                 </script>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group col-md-1">
-                            <button class="btn btn-sm" data-toggle="modal"
-                                data-target="#addbarcategory">Add</button>
+                     
+                    <div class="form-group col-md-1 float-right">
+                            <button class="btn btn-sm btn-primary" data-toggle="modal"
+                                data-target="#addbarcategory">Add Zone</button>
                             <!-- __category add__ -->
                             <div wire:ignore.self="" class="modal fade" id="addbarcategory" tabindex="-1"
                                 aria-labelledby="addCategoryTitle" style="display: none;" aria-hidden="true">
@@ -72,34 +68,27 @@
                                         <div class="modal-body">
                                             <form method="post" action="/super_admin/places/new_zone" >
                                                 <div class="form-row mb-4">
-                                                    <div class="col-sm-6">
-                                                        <label>Name</label>
+                                                    <div class="col-sm-12">
+                                                        <label>Zone Name</label>
                                                         <input type="text" class="form-control" wire:model="name" required
                                                             placeholder="Name" name="name">
 
                                                     </div>
-                                                    <div class="col-6">
-                                                        <label>Zone Code</label>
-                                                        <input type="text" class="form-control" wire:model="name" required
-                                                            placeholder="Name" name="code">
-        
-                                                    </div>
-                                                </div>
-                                            
-                                                <div class="form-row mb-4">
                                                     <div class="col-sm-12">
-                                                        <label>Choose a Country</label>
-                                                        <select wire:model="countryid" class="form-control" name="country_id" required>
-                                                            <option value="">Select Country</option>
-                                                            <% for(country of countries){ %>
+                                                        <label>Choose a City</label>
+                                                        <select wire:model="countryid" class="form-control" name="city_id" required>
+                                                            <option value="">Select City</option>
+                                                            <% for(city of cities){ %>
 
-                                                                <option name="<%=country.name %>" value="<%=country.id %>"><%=country.name %></option>
+                                                                <option name="<%=city.name %>" value="<%=city.id %>"><%=city.name %></option>
                                                             <% } %>
 
                                                         </select>
                                                        
                                                     </div>
                                                 </div>
+                                            
+                                                
                                                 
                                             </div>
                                             <div class="modal-footer">
@@ -113,10 +102,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    
-                </div>
-            </div>
+                 
 
             <% if(data.length === 0){ %> 
                 <h2>No Data Found</h2>
@@ -144,9 +130,8 @@
                                 colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
                                 style="width: 86px;">Zone Name</th>
                             <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
-                                aria-label="NAME: activate to sort column ascending" style="width: 100px;">Zone Code</th>
-                            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
-                                aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">Country Name</th>
+                                aria-label="NAME: activate to sort column ascending" style="width: 100px;">City Name</th>
+                           
                             <th class="text-center sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
                                 colspan="1" aria-label="Status: activate to sort column ascending" style="width: 49px;">
                                 Status</th>
@@ -162,8 +147,7 @@
                             <% for(zone of data){ %>
                                     <td class="sorting_1"><%=zone.id %></td>
                                     <td><%=zone.name %></td>
-                                    <td><%= zone.code %> </td>
-                                    <td><%=zone.country_name %></td>
+                                    <td><%=zone.city_name %></td>
 
                                     <div>
                                         <td style="text-align: center; vertical-align: middle;">
@@ -216,27 +200,21 @@
                                             <div class="modal-body">
                                                 <form method="post" action="/super_admin/places/update_zone">
                                                     <div class="form-row mb-4">
-                                                        <div class="col-sm-6">
+                                                        <div class="col-sm-12">
                                                             <label>Zone Name</label>
                                                             <input type="text" class="form-control" wire:model="name"
                                                                 placeholder="Name" name="name" value="<%=zone.name %>" required>
-
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <label>Zone Code</label>
-                                                            <input type="text" class="form-control" wire:model="name"
-                                                                placeholder="Name" name="code" value="<%=zone.code %>" required>
 
                                                         </div>
                                                     </div>
                                                     <div class="form-row mb-4">
                                                         <div class="col-sm-12">
                                                             <label>Choose a country</label>
-                                                            <select wire:model="countryid" class="form-control" name="country_id" required>
-                                                                <option value="<%=country.id %>"><%=zone.country_name %></option>
-                                                                <% for(country of countries){ %>
+                                                            <select wire:model="countryid" class="form-control" name="city_id" required>
+                                                                <option value="<%=zone.city_id %>"><%=zone.city_name %></option>
+                                                                <% for(city of cities){ %>
 
-                                                                    <option  value="<%=country.id %>"><%=country.name %></option>
+                                                                    <option  value="<%=city.id %>"><%=city.name %></option>
                                                                 <% } %>
 
                                                             </select>
@@ -264,6 +242,7 @@
 
                 </table>
             </div>
+            <% if(numberOfPages != 1){ %> 
             <div class="dt--bottom-section d-sm-flex justify-content-sm-between text-center pt-4 ">
                 <div class="dt--pages-count  mb-sm-0 mb-3">
                   <% let search_query =  is_search ? `&searchKeyword=${searchKeyword}` : "" %>
@@ -297,6 +276,8 @@
                 </nav>
             </div>
             </div>
+
+            <% } %>
         </div>
         <% } %>
     <div id="DataTables_Table_1_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">

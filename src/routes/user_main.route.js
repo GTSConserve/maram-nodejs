@@ -14,6 +14,8 @@ import homeRouter from "./user/home.route";
 import subscriptionRouter from "./user/subscription.route";
 import userRouter from "./user/user_details.route";
 
+import paymentRouter from "./user/payment.route";
+
 
 const mainRouter = express.Router({
   caseSensitive: true,
@@ -46,6 +48,11 @@ const defaultRoutes = [
   {
     path: "/",
     route: appsettingRouter,
+
+  },
+  {
+    path: "/payment",
+    route: paymentRouter,
 
   },
 ];

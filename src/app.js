@@ -6,6 +6,7 @@ import fs from "fs";
 import flash from "connect-flash";
 import session from "express-session";
 import nodemailer from "nodemailer"
+import axios from "axios";
 
 import knex from "./services/db.service";
 import { parseJwtPayload } from "./services/jwt.service";
@@ -15,6 +16,7 @@ import { authenticateJWTSession } from "./middlewares/authToken.middleware";
 import mainRouter from "./routes/user_main.route";
 import superAdminRouter from "./routes/super_admin_main.route";
 import branchAdminRouter from "./routes/branch_admin_main.route";
+import riderRouter from "./routes/rider_main.route";
 import authRouter from "./routes/auth_main.route";
 
 import { createTable } from "./table/create_table";
@@ -204,12 +206,40 @@ app.get("/", (req, res) => {
 });
 
 app.get("/home", authenticateJWTSession, (req, res) => {
-  res.render("home");
+const {is_super_admin} = req.body
+const {is_user_added} = req.query
+
+
+
+  if(!is_super_admin && is_user_added == 1){
+    req.flash("error","User Already Found")
+    return res.render("super_admin/home/home");
+  }
+  if(!is_super_admin && is_user_added == 2){
+    req.flash("success","User Created SuccessFully")
+    return res.render("super_admin/home/home");
+  }
+
+  if(is_super_admin && is_user_added == 1){
+    req.flash("error","User Already Found")
+    return res.render("super_admin/home/home");
+  }
+  if(is_super_admin && is_user_added == 2){
+    req.flash("success","User Created SuccessFully")
+    return res.render("super_admin/home/home");
+  }
+
+
+
+  if(is_super_admin){
+
+    res.render("super_admin/home/home");
+  }else{
+
+    res.render("branch_admin/home/home");
+  }
 });
 
-app.get("/branch", authenticateJWTSession, (req, res) => {
-  res.render("branch_admin");
-});
 
 
 // app.get("/recovery",(req,res)=>{
@@ -244,5 +274,12 @@ app.use(
   branchAdminRouter
 );
 app.use("/api", bodyParsercheck, mainRouter);
+
+app.use(
+  "/rider_api",
+  bodyParsercheck,
+  
+  riderRouter
+);
 
 export default app;

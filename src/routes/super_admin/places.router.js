@@ -16,11 +16,11 @@ placesRouter.post("/create_city", createCity);
 placesRouter.post("/update_city", updateCity);
 placesRouter.post("/update_city_status", updateCityStatus);
 
-//country
-placesRouter.get("/country", getAllCountry);
-placesRouter.post("/create_country", createCountry);
-placesRouter.post("/update_country", updateCountry);
-placesRouter.post("/update_country_status", updateCountryStatus);
+// //country
+// placesRouter.get("/country", getAllCountry);
+// placesRouter.post("/create_country", createCountry);
+// placesRouter.post("/update_country", updateCountry);
+// placesRouter.post("/update_country_status", updateCountryStatus);
 
 //zone
 placesRouter.get("/zone", getAllZone);
@@ -29,6 +29,6 @@ placesRouter.post("/update_zone", updateZone);
 placesRouter.post("/update_zone_status", updateZoneStatus);
 
 //post code
-placesRouter.get("/post_code", getAllPostCode);
+// placesRouter.get("/post_code", getAllPostCode);
 
 export default placesRouter;

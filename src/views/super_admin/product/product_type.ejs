@@ -236,7 +236,7 @@
                 </table>
             </div>
   
-
+            <% if(numberOfPages != 1){ %> 
             <div class="dt--bottom-section d-sm-flex justify-content-sm-between text-center pt-4 ">
                 <div class="dt--pages-count  mb-sm-0 mb-3">
                   <% let search_query =  is_search ? `&searchKeyword=${searchKeyword}` : "" %>
@@ -270,6 +270,7 @@
                 </nav>
             </div>
             </div>
+            <% } %>
         </div>
         <% } %>
         <div id="DataTables_Table_1_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">

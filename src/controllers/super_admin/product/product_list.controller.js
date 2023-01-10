@@ -1,5 +1,6 @@
 import knex from "../../../services/db.service";
 import { getPageNumber } from "../../../utils/helper.util";
+import moment from "moment";
 
 export const updateProductStatus = async (req, res) => {
   try {
@@ -30,6 +31,8 @@ export const updateProduct = async (req, res) => {
       description,
       price,
       unit_value,
+      branch_price,
+      demo_price
     } = req.body;
     const file = req.file;
 
@@ -57,6 +60,8 @@ export const updateProduct = async (req, res) => {
     query.description = description;
     query.price = price;
     query.unit_value = unit_value;
+    query.demo_price = demo_price
+    query.branch_price = branch_price
     if (file) {
       const image = req.file.destination.slice(1) + "/" + req.file.filename;
 
@@ -85,6 +90,11 @@ export const updateProduct = async (req, res) => {
 
 export const getProductList = async (req, res) => {
   try {
+
+    // console.log("Current month is:", moment().format("M"))
+    //   var endOfMonth   = moment().clone().endOf('month').format('YYYY-MM-DD');
+    // console.log(endOfMonth , "end");
+
     let loading = true;
     const { searchKeyword } = req.query;
 
@@ -141,7 +151,7 @@ export const getProductList = async (req, res) => {
     if (searchKeyword) {
       results = await knex.raw(
         `SELECT  products.id,products.name as product_name,products.image,products.description,products.status,products.price,products.unit_value,
-        product_type.name as product_type_name,categories.name as category_name, unit_types.value FROM products
+        product_type.name as product_type_name,categories.name as category_name, unit_types.value,products.demo_price,products.branch_price FROM products
         JOIN product_type ON products.product_type_id = product_type.id 
         JOIN categories ON products.category_id = categories.id 
         JOIN unit_types ON products.unit_type_id = unit_types.id
@@ -151,7 +161,7 @@ export const getProductList = async (req, res) => {
     } else {
       results = await knex.raw(
         `SELECT  products.id,products.name as product_name,products.image,products.description,products.status,products.price,products.unit_value,
-         product_type.name as product_type_name,categories.name as category_name, unit_types.value FROM products
+         product_type.name as product_type_name,categories.name as category_name, unit_types.value,products.demo_price,products.branch_price FROM products
          JOIN product_type ON products.product_type_id = product_type.id 
          JOIN categories ON products.category_id = categories.id 
          JOIN unit_types ON products.unit_type_id = unit_types.id 
@@ -164,6 +174,7 @@ export const getProductList = async (req, res) => {
     for (let i = 0; i < data.length; i++) {
       data[i].image = process.env.BASE_URL + data[i].image;
     }
+
 
     loading = false;
     res.render("super_admin/product/product", {
@@ -195,6 +206,8 @@ export const createProduct = async (req, res) => {
       unit_type_id,
       price,
       product_type_id,
+      demo_price,
+      branch_price
     } = req.body;
     if (!name) {
       req.flash("error", "Name is missing");
@@ -241,6 +254,8 @@ export const createProduct = async (req, res) => {
       price,
       image,
       description,
+      branch_price,
+      demo_price : demo_price ? demo_price : null
     });
 
     req.flash("success", "Successfully Created");
@@ -250,3 +265,6 @@ export const createProduct = async (req, res) => {
     res.redirect("/home");
   }
 };
+
+
+

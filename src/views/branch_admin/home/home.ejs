@@ -8,21 +8,8 @@
                 <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Analytics</a></li>
             </ol>
         </nav>
-        <div>
-            <button onclick="submitHandler()" style="font-weight: bold;" class="btn btn-md btn-primary">Generate</button>
-        </div>
-        <script>
-            async function submitHandler(){
-                await fetch('/branch_admin/home/update_daily_task', {
-                                method: 'POST',
-                                headers: {
-                                    'Accept': 'application/json',
-                                    'Content-Type': 'application/json'
-                                },
-                                // body: JSON.stringify({"id": event.value})
-                                })
-            }
-        </script>
+        
+       
         <!-- <div class="dropdown filter custom-dropdown-icon">
             <a class="dropdown-toggle btn" href="#" role="button" id="filterDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="text"><span>Show</span> : Daily Analytics</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg></a>
 
@@ -35,6 +22,21 @@
             </div>
         </div> -->
     </div>
+<div class="row">
+<div class="col-10"></div>
+    <!-- <div class="col-1">
+        <form action="branch_admin/home/update_daily_task" method="post">
+            
+            <button  style="font-weight: bold;" type="submit" class="btn btn-md btn-info">PO </button>
+        </form>
+    </div> -->
+    <div class="col-1">
+        <form action="branch_admin/home/update_daily_task" method="post">
+            
+            <button  style="font-weight: bold;" type="submit" class="btn btn-md btn-primary">Generate</button>
+        </form>
+    </div>
+</div>
 
     <div class="row layout-top-spacing">
 

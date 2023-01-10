@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.verifyOtpValidator = exports.userValidator = exports.userAddressValidator = exports.profileUpdateValidator = exports.loginValidator = exports.latLongValidator = void 0;
+exports.verifyOtpValidator = exports.userValidator = exports.userProfileValidator = exports.userAddressValidator = exports.profileUpdateValidator = exports.loginValidator = exports.latLongValidator = exports.NumberValidator = void 0;
 var _helper = require("../utils/helper.util");
 var _messages = _interopRequireDefault(require("../constants/messages"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -38,6 +38,30 @@ var loginValidator = function loginValidator(payload) {
   }
 };
 exports.loginValidator = loginValidator;
+var NumberValidator = function NumberValidator(payload) {
+  var _payload$mobile_numbe2;
+  var mobile_number = (_payload$mobile_numbe2 = payload.mobile_number) !== null && _payload$mobile_numbe2 !== void 0 ? _payload$mobile_numbe2 : null;
+  // const email = payload.email ?? null
+  if (mobile_number) {
+    if ((0, _helper.phoneNumberValidator)(mobile_number)) {
+      return {
+        status: true,
+        mobile_number: mobile_number
+      };
+    } else {
+      return {
+        status: false,
+        message: "Invalid phone number"
+      };
+    }
+  } else {
+    return {
+      status: false,
+      message: "Mandatory fields missing"
+    };
+  }
+};
+exports.NumberValidator = NumberValidator;
 var userValidator = function userValidator(payload) {
   var _payload$user_name, _payload$password;
   var user_name = (_payload$user_name = payload.user_name) !== null && _payload$user_name !== void 0 ? _payload$user_name : null;
@@ -145,20 +169,24 @@ var latLongValidator = function latLongValidator(payload) {
 };
 exports.latLongValidator = latLongValidator;
 var userAddressValidator = function userAddressValidator(payload) {
-  var _payload$address, _payload$title, _payload$landmark, _payload$type, _payload$user_id2;
+  var _payload$address, _payload$title, _payload$landmark, _payload$type, _payload$alternate_mo, _payload$latitude2, _payload$longitude2;
   var address = (_payload$address = payload.address) !== null && _payload$address !== void 0 ? _payload$address : null;
   var title = (_payload$title = payload.title) !== null && _payload$title !== void 0 ? _payload$title : null;
   var landmark = (_payload$landmark = payload.landmark) !== null && _payload$landmark !== void 0 ? _payload$landmark : null;
   var type = (_payload$type = payload.type) !== null && _payload$type !== void 0 ? _payload$type : null;
-  var user_id = (_payload$user_id2 = payload.user_id) !== null && _payload$user_id2 !== void 0 ? _payload$user_id2 : null;
-  if (address && landmark && title && user_id && type) {
+  var alternate_mobile = (_payload$alternate_mo = payload.alternate_mobile) !== null && _payload$alternate_mo !== void 0 ? _payload$alternate_mo : null;
+  var latitude = (_payload$latitude2 = payload.latitude) !== null && _payload$latitude2 !== void 0 ? _payload$latitude2 : null;
+  var longitude = (_payload$longitude2 = payload.longitude) !== null && _payload$longitude2 !== void 0 ? _payload$longitude2 : null;
+  if (address && landmark && title && type && alternate_mobile && latitude && longitude) {
     return {
       status: true,
       address: address,
       landmark: landmark,
-      user_id: user_id,
       type: type,
-      title: title
+      title: title,
+      alternate_mobile: alternate_mobile,
+      latitude: latitude,
+      longitude: longitude
     };
   } else {
     return {
@@ -168,3 +196,28 @@ var userAddressValidator = function userAddressValidator(payload) {
   }
 };
 exports.userAddressValidator = userAddressValidator;
+var userProfileValidator = function userProfileValidator(payload) {
+  var _payload$name2, _payload$email2;
+  var name = (_payload$name2 = payload.name) !== null && _payload$name2 !== void 0 ? _payload$name2 : null;
+  var email = (_payload$email2 = payload.email) !== null && _payload$email2 !== void 0 ? _payload$email2 : null;
+  if (name && email) {
+    if ((0, _helper.integerValidator)(name && email)) {
+      return {
+        status: true,
+        name: name,
+        email: email
+      };
+    } else {
+      return {
+        status: false,
+        message: "please set unique name and email"
+      };
+    }
+  } else {
+    return {
+      status: false,
+      message: "Mandatory fields missing"
+    };
+  }
+};
+exports.userProfileValidator = userProfileValidator;

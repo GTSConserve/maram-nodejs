@@ -25,20 +25,13 @@ export const getCities = async (req, res) => {
       data_length = await knex("cities").select("id");
     }
 
-    const countries = await knex("countries")
-      .select("id", "name")
-      .where({ status: "1" });
-    const zones = await knex("zones")
-      .select("id", "name")
-      .where({ status: "1" });
-
+ 
     if (data_length.length === 0) {
       loading = false;
       return res.render("super_admin/places/city", {
         data: data_length,
         searchKeyword,
-        countries,
-        zones
+       
       });
     }
 
@@ -55,17 +48,13 @@ export const getCities = async (req, res) => {
     let is_search = false;
     if (searchKeyword) {
       results = await knex.raw(
-        `SELECT cities.id,cities.name,cities.code,cities.status,cities.latitude,cities.longitude, countries.name as country_name ,countries.id as country_id,zones.name as zone_name ,zones.id as zone_id
-        FROM cities JOIN countries ON countries.id = cities.country_id 
-        JOIN zones ON zones.id = cities.zone_id 
+        `SELECT id,name,status,latitude,longitude FROM cities
         WHERE cities.name LIKE '%${searchKeyword}%' LIMIT ${startingLimit},${resultsPerPage}`
       );
       is_search = true;
     } else {
       results = await knex.raw(
-        `SELECT cities.id,cities.name,cities.code,cities.status ,cities.latitude,cities.longitude,countries.name as country_name,countries.id as country_id,zones.name as zone_name ,zones.id as zone_id
-        FROM cities JOIN countries ON countries.id = cities.country_id 
-        JOIN zones ON zones.id = cities.zone_id LIMIT ${startingLimit},${resultsPerPage}`
+        `SELECT id,name,status,latitude,longitude FROM cities  LIMIT ${startingLimit},${resultsPerPage}`
       );
     }
 
@@ -81,8 +70,7 @@ export const getCities = async (req, res) => {
       is_search,
       searchKeyword,
       loading,
-      countries,
-      zones
+     
     });
 
     // res.render("super_admin/places/zone");
@@ -94,31 +82,16 @@ export const getCities = async (req, res) => {
 
 export const createCity = async (req, res) => {
   try {
-    const { name, code, country_id, zone_id, latitude, longitude } = req.body;
+    const { name,  latitude, longitude } = req.body;
 
     if (!name) {
       req.flash("error", "Name is missing");
       return res.redirect("/super_admin/places/city");
     }
 
-    if (!code) {
-      req.flash("error", "code is missing");
-      return res.redirect("/super_admin/places/city");
-    }
-    if (!country_id) {
-      req.flash("error", "Country is missing");
-      return res.redirect("/super_admin/places/city");
-    }
-    if (!zone_id) {
-      req.flash("error", "Zone  is missing");
-      return res.redirect("/super_admin/places/city");
-    }
-
     let query = {
       name,
-      code,
-      country_id,
-      zone_id,
+    
  
     }
 
@@ -140,7 +113,7 @@ export const createCity = async (req, res) => {
 
 export const updateCity = async (req, res) => {
   try {
-    const { name, id, code, country_id,zone_id,latitude,longitude } = req.body;
+    const { name, id,latitude,longitude } = req.body;
 
     if (!name) {
       req.flash("error", "Name is missing");
@@ -150,13 +123,8 @@ export const updateCity = async (req, res) => {
     let query = {};
 
     query.name = name;
-    query.code = code;
-    if (country_id) {
-      query.country_id = country_id;
-    }
-    if (zone_id) {
-      query.zone_id = zone_id;
-    }
+   
+  
     if (latitude) {
       query.latitude = latitude;
     }
