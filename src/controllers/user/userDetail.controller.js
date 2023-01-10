@@ -654,18 +654,20 @@ export const getOverallCalendarEvent = async (req, res) => {
   try {
     const { date, userId } = req.body;
 
+    console.log(userId)
+
     if (!date) {
       return res
         .status(responseCode.FAILURE.BAD_REQUEST)
         .json({ status: false, message: messages.MANDATORY_ERROR });
     }
-
-
     const products = await knex("subscribed_user_details AS sub")
       .select(
         "sub.date",
       )
-      .where({ "sub.date": date });
+      .where({ "sub.date": date, "sub.user_id":userId });
+
+      console.log(products[0])
 
 
     if (products.length == 0) {
@@ -711,7 +713,7 @@ export const getOverallCalendarEvent = async (req, res) => {
     }
 
     const data = {
-      "date": moment().format("DD-MM-YYYY"),
+      "date": moment(products.date).format("DD-MM-YYYY"),
       "products": {
         "subscription": {
           "1-liter": status,
