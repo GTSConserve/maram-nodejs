@@ -729,6 +729,7 @@ var createTable = /*#__PURE__*/function () {
                   t.foreign("branch_id").references("id").inTable("admin_users");
                   t.date("date").nullable();
                   t.enu("status", ["pending", "approved", "cancelled"]).defaultTo("pending");
+                  t.enu("is_bill_generated", ["0", "1"]).defaultTo("0");
                   t.integer("grand_total").nullable();
                   t.timestamps(true, true);
                 });
@@ -834,12 +835,29 @@ var createTable = /*#__PURE__*/function () {
               }
             });
           case 83:
+            _context.next = 85;
+            return _db["default"].schema.hasTable("branch_bills").then(function (exists) {
+              if (!exists) {
+                return _db["default"].schema.createTable("branch_bills", function (t) {
+                  t.increments("id").primary();
+                  t.integer("branch_id").unsigned().nullable();
+                  t.foreign("branch_id").references("id").inTable("admin_users");
+                  t.date("generated_date").nullable();
+                  t.date("payed_date").nullable();
+                  t.date("completed_date").nullable();
+                  t.enu("payment_status", ["pending", "payed", "completed", "cancelled"]).defaultTo("pending");
+                  t.integer("grand_total").nullable();
+                  t.timestamps(true, true);
+                });
+              }
+            });
+          case 85:
             return _context.abrupt("return", res.status(200).json({
               status: true,
               message: "table successfully created"
             }));
-          case 86:
-            _context.prev = 86;
+          case 88:
+            _context.prev = 88;
             _context.t0 = _context["catch"](0);
             console.log(_context.t0);
             return _context.abrupt("return", res.status(500).json({
@@ -847,12 +865,12 @@ var createTable = /*#__PURE__*/function () {
               message: "Error at creating tables",
               error: _context.t0
             }));
-          case 90:
+          case 92:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 86]]);
+    }, _callee, null, [[0, 88]]);
   }));
   return function createTable(_x, _x2) {
     return _ref.apply(this, arguments);

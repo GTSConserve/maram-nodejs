@@ -241,7 +241,7 @@ var getCategory = /*#__PURE__*/function () {
               break;
             }
             _context4.next = 7;
-            return _db["default"].raw("SELECT categories.id,categories.name FROM categories JOIN product_type ON categories.product_type_id = product_type.id WHERE categories.name LIKE '%".concat(searchKeyword, "%'"));
+            return _db["default"].raw("SELECT categories.id,categories.name FROM categories WHERE categories.name LIKE '%".concat(searchKeyword, "%'"));
           case 7:
             search_data_length = _context4.sent;
             data_length = search_data_length[0];
@@ -294,7 +294,7 @@ var getCategory = /*#__PURE__*/function () {
               break;
             }
             _context4.next = 37;
-            return _db["default"].raw("SELECT categories.id,categories.name,categories.image,categories.status,product_type.name as product_type,\n        product_type.id as product_type_id \n        FROM categories \n        JOIN product_type ON categories.product_type_id=product_type.id \n        WHERE categories.name LIKE '%".concat(searchKeyword, "%' LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
+            return _db["default"].raw("SELECT id,name,image,status\n        FROM categories \n        WHERE name LIKE '%".concat(searchKeyword, "%' LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
           case 37:
             results = _context4.sent;
             is_search = true;
@@ -302,7 +302,7 @@ var getCategory = /*#__PURE__*/function () {
             break;
           case 41:
             _context4.next = 43;
-            return _db["default"].raw("SELECT id,name,image,status\n        FROM categories \n      \n        LIMIT ".concat(startingLimit, ",").concat(resultsPerPage));
+            return _db["default"].raw("SELECT id,name,image,status\n        FROM categories \n        LIMIT ".concat(startingLimit, ",").concat(resultsPerPage));
           case 43:
             results = _context4.sent;
           case 44:
@@ -322,6 +322,7 @@ var getCategory = /*#__PURE__*/function () {
                 }
               }
             }
+            console.log(data);
             for (_i = 0; _i < data.length; _i++) {
               data[_i].image = process.env.BASE_URL + data[_i].image;
             }
@@ -360,19 +361,19 @@ var getCategory = /*#__PURE__*/function () {
             //   data: categories,
             //   productType,
             // });
-            _context4.next = 58;
+            _context4.next = 59;
             break;
-          case 54:
-            _context4.prev = 54;
+          case 55:
+            _context4.prev = 55;
             _context4.t0 = _context4["catch"](0);
             console.log(_context4.t0);
             res.redirect("/home");
-          case 58:
+          case 59:
           case "end":
             return _context4.stop();
         }
       }
-    }, _callee4, null, [[0, 54]]);
+    }, _callee4, null, [[0, 55]]);
   }));
   return function getCategory(_x7, _x8) {
     return _ref4.apply(this, arguments);

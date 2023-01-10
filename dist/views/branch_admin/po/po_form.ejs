@@ -440,8 +440,6 @@
                                                 }
                                             }
 
-                                                console.log(sub_products)
-                                                console.log(add_on_products)
                                                
                                                 await fetch('/branch_admin/po/create_po', {
                                                     method: 'POST',
@@ -452,7 +450,8 @@
                                                     body: JSON.stringify({"sub_products":sub_products , "add_on_products" : add_on_products})
                                                     })
                                                     
-                                                
+                                                    await  swal("Done", "Po Raise SuccessFully", "success");
+
                                                 window.location.href = "/home"
 
 
@@ -556,7 +555,7 @@
                                 </div>
                             </div>
                             
-                            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                            <div class="modal fade" id="exampleModalCenter" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -566,8 +565,8 @@
                                             </button>
                                         </div>
                                         <div class="modal-body">
-                                            <h4 class="modal-heading mb-4 mt-2">Are You Sure?</h4>
-                                                <p class="modal-text">In hac habitasse platea dictumst. Proin sollicitudin et lacus in tincidunt. Integer nisl ex, sollicitudin eget nulla nec, pharetra lacinia nisl. Aenean nec nunc ex. Integer varius neque at dolor scelerisque porttitor.</p>
+                                            <h4 class="modal-heading mb-4 mt-2">Raise The Purchase Order ?</h4>
+                                                <!-- <p class="modal-text">In hac habitasse platea dictumst. Proin sollicitudin et lacus in tincidunt. Integer nisl ex, sollicitudin eget nulla nec, pharetra lacinia nisl. Aenean nec nunc ex. Integer varius neque at dolor scelerisque porttitor.</p> -->
                                         </div>
                                         <div class="modal-footer">
                                             <button class="btn" data-dismiss="modal" type="button"> <i class="flaticon-cancel-12"></i> Discard</button>

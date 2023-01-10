@@ -71,6 +71,12 @@
                                                             
                                             <div class="inv--product-table-section">
                                                 <h6 class="ml-2 pb-2" style="font-weight: 900;">Subscription Products : </h6>
+                                                <% let sub_product_total = 0  %>
+                                                <% let add_on_product_total = 0  %>
+                                                <% let sub_excess_qty = 0  %>
+                                                <% if(subscription_products.length === 0){ %> 
+                                                    <h6 class="ml-4">No Subscription Found</h6>
+                                                    <% }else{ %> 
                                                 <div class="table-responsive">
                                                     <table class="table alterateTable">
                                                         <thead class="">
@@ -86,13 +92,9 @@
                                                             </tr>
                                                         </thead>  
                                                         <tbody>
-                                                            <% let sub_product_total = 0  %>
-                                                            <% let add_on_product_total = 0  %>
-                                                            <% let sub_excess_qty = 0  %>
+                                                       
                                                             
-                                                            <% if(subscription_products.length === 0){ %> 
-                                                                <h6>No Subscription Found</h6>
-                                                                <% }else{ %> 
+                                                         
                                                             <% for(let i = 0 ; i< subscription_products.length ; i++){ %>
                                                                 <% sub_product_total = sub_product_total + (subscription_products[i].total_qty * subscription_products[i].price )  %> 
                                                                 <tr>
@@ -110,61 +112,63 @@
                                                                 </tr>
                                                                 
                                                                 <% }  %> 
-                                                                <% }  %> 
-                                                                    <script>
-                                                                         function subChange(event){
-                                                                  
-                                                                            const getAddonTotalAmount = document.getElementsByClassName("getAddonTotalAmount")
-                                                                            const getSubTotalAmount = document.getElementsByClassName("getSubTotalAmount")
-                                                               
-
-                                                               
-
-                                                                            const grandTotal = document.getElementById("grandTotal")
-
-                                                                            const excess_qty = event.value
-
-                                                                            const amount = document.getElementById("amount"+event.id).innerText
-                                                                            const price = document.getElementById("price"+event.id).innerText
-                                                                            const qty = document.getElementById("qty"+event.id).innerText
-
-
-
-                                                                            
-
-                                                                             document.getElementById("amount"+event.id).innerText =  (Number(event.value) + Number(qty))  * Number(price)
-
-                                                                           
-
-                                                                             let AddtotalAmount = 0
-                                                                    let SubTotalAmount = 0
-
-                                                                    if(getAddonTotalAmount.length !== 0){
-
-                                                                        for(let i = 0 ; i <getAddonTotalAmount.length ; i++ ){
-                                                                            AddtotalAmount += Number(getAddonTotalAmount[i].innerText)
-                                                                        }
-                                                                    }
-
-
-                                                                    if(getSubTotalAmount.length !== 0){
-
-                                                                        for(let i = 0 ; i <getSubTotalAmount.length ; i++ ){
-                                                                            SubTotalAmount += Number(getSubTotalAmount[i].innerText)
-                                                                        }
-                                                                    }
-
-
-                                                                    grandTotal.innerText = SubTotalAmount + AddtotalAmount
-
-                                                                        }
-                                                                    </script>
-
-                                                          
-                                                        </tbody>
-                                                    </table>
-                                                </div>
+                                                                
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <% }  %> 
                                             </div>
+
+                                            <script>
+                                                function subChange(event){
+                                         
+                                                   const getAddonTotalAmount = document.getElementsByClassName("getAddonTotalAmount")
+                                                   const getSubTotalAmount = document.getElementsByClassName("getSubTotalAmount")
+                                      
+
+                                      
+
+                                                   const grandTotal = document.getElementById("grandTotal")
+
+                                                   const excess_qty = event.value
+
+                                                   const amount = document.getElementById("amount"+event.id).innerText
+                                                   const price = document.getElementById("price"+event.id).innerText
+                                                   const qty = document.getElementById("qty"+event.id).innerText
+
+
+
+                                                   
+
+                                                    document.getElementById("amount"+event.id).innerText =  (Number(event.value) + Number(qty))  * Number(price)
+
+                                                  
+
+                                                    let AddtotalAmount = 0
+                                           let SubTotalAmount = 0
+
+                                           if(getAddonTotalAmount.length !== 0){
+
+                                               for(let i = 0 ; i <getAddonTotalAmount.length ; i++ ){
+                                                   AddtotalAmount += Number(getAddonTotalAmount[i].innerText)
+                                               }
+                                           }
+
+
+                                           if(getSubTotalAmount.length !== 0){
+
+                                               for(let i = 0 ; i <getSubTotalAmount.length ; i++ ){
+                                                   SubTotalAmount += Number(getSubTotalAmount[i].innerText)
+                                               }
+                                           }
+
+
+                                           grandTotal.innerText = SubTotalAmount + AddtotalAmount
+
+                                               }
+                                           </script>
+
+                                 
 
 
 
@@ -173,6 +177,9 @@
                                                 <div class="row">
                                                     <div class="col-10"></div>
                                                 </div>
+                                                <% if(add_on_products.length ===0){ %> 
+                                                    <h6 class="ml-4">No Add On Found</h6>
+                                                    <% }else{ %> 
                                                 <div class="table-responsive">
                                                     <table class="table alterateTable">
                                                         <thead class="">
@@ -190,9 +197,7 @@
                                                         <tbody id="addOnTable">
 
 
-                                                            <% if(add_on_products.length ===0){ %> 
-                                                                <h6>No Add On Found</h6>
-                                                                <% }else{ %> 
+                                                           
                                                             <% for(let i = 0 ; i< add_on_products.length ; i++){ %>
                                                                 <% add_on_product_total = add_on_product_total + (add_on_products[i].total_qty * add_on_products[i].price )  %> 
                                                                 <tr>
@@ -209,170 +214,173 @@
                                                                     <input type="hidden" name="add_unit" value="<%= add_on_products[i].value %>">
                                                                 </tr>
                                                                 <% }  %> 
-                                                                <% }  %> 
-                                                          
-                                                        </tbody>
-                                                      
-                                                        <script >
-
-                                                       
-
-                                                            function addOnChange(event){
-                                                     
-
-                                                               const excess_qty = event.value
-
-                                                                const getAddonTotalAmount = document.getElementsByClassName("getAddonTotalAmount")
-                                                                const getSubTotalAmount = document.getElementsByClassName("getSubTotalAmount")
-                                                              
-
-                                                               
-
-                                                                const grandTotal = document.getElementById("grandTotal")
-                                                                const amount = document.getElementById("addamount"+event.id).innerText
-                                                                const price = document.getElementById("addprice"+event.id).innerText
-                                                                const qty = document.getElementById("addqty"+event.id).innerText
                                                                 
-                                                                
-
-                                               
-
-                                                                    document.getElementById("addamount"+event.id).innerText =  (Number(event.value) + Number(qty))  * Number(price)
-                                                                    
-                                                                    let AddtotalAmount = 0
-                                                                    let SubTotalAmount = 0
-
-                                                                    if(getAddonTotalAmount.length !== 0){
-
-                                                                        for(let i = 0 ; i <getAddonTotalAmount.length ; i++ ){
-                                                                            AddtotalAmount += Number(getAddonTotalAmount[i].innerText)
-                                                                        }
-                                                                    }
-
-
-                                                                    if(getSubTotalAmount.length !== 0){
-
-                                                                        for(let i = 0 ; i <getSubTotalAmount.length ; i++ ){
-                                                                            SubTotalAmount += Number(getSubTotalAmount[i].innerText)
-                                                                        }
-                                                                    }
-
-                                                                 
-                                                                    grandTotal.innerText = SubTotalAmount + AddtotalAmount
-                                                              
-                                                           }
-                                                       
-                                                       
-                                        const form=document.getElementById("submitPoHandler")
-                                        
-                                        form.addEventListener("submit",async(e)=>{
-
-                                                e.preventDefault()
-                                     
-                                                // action="/branch_admin/po/create_po" method="post"
-                                                let query = {}
-
-                                                const sub_product_id = e.target.sub_product_id
-                                                const excess_qty = e.target.excess_qty
-                                                const sub_qty = e.target.sub_qty
-                                                const sub_price = e.target.sub_price
-                                                const sub_unit = e.target.sub_unit
-
-                                      
-
-                                               
-                                                const addexcess_qty = e.target.addexcess_qty
-                                                const add_product_id = e.target.add_product_id
-                                                const add_qty = e.target.add_qty
-                                                const add_price = e.target.add_price
-                                                const add_unit = e.target.add_unit
-
-
-                                                let sub_products = []
-                                              
-                                                if(sub_product_id != undefined){
-
-                                                    if(excess_qty.length == undefined){
-                                                        sub_products.push({
-                                                            product_id : sub_product_id.value,
-                                                            excess_qty : excess_qty.value,
-                                                            qty : sub_qty.value,
-                                                            total_qty : Number(excess_qty.value) + Number(sub_qty.value),
-                                                            price : Number(sub_price.value),
-                                                            total_price : (Number(excess_qty.value) + Number(sub_qty.value)) * Number(sub_price.value),
-                                                            value : sub_unit.value
-                                                        })
-                                                    }else{
-                                                        
-                                                        for(let i = 0 ; i < sub_product_id.length ; i++){
-                                                            sub_products.push({
-                                                                product_id : sub_product_id[i].value,
-                                                                excess_qty : excess_qty[i].value,
-                                                                qty : sub_qty[i].value,
-                                                                total_qty : Number(excess_qty[i].value) + Number(sub_qty[i].value),
-                                                                price : Number(sub_price[i].value),
-                                                                total_price : (Number(excess_qty[i].value) + Number(sub_qty[i].value)) * Number(sub_price[i].value),
-                                                                value : sub_unit[i].value
-
-                                                            })
-                                                        }
-                                                    }
-                                                }
-
-                                              
-                                                let add_on_products = []
-                                                if(add_product_id != undefined){
-
-                                                    if(addexcess_qty.length == undefined){
-                                                        add_on_products.push({
-                                                            product_id : add_product_id.value,
-                                                            excess_qty : addexcess_qty.value,
-                                                            qty : add_qty.value,
-                                                            total_qty : Number(addexcess_qty.value) + Number(add_qty.value),
-                                                            price : Number(add_price.value),
-                                                            total_price : (Number(addexcess_qty.value) + Number(add_qty.value)) * Number(add_price.value),
-                                                            value : add_unit.value
-                                                    })
-                                                }else{
-                                                    for(let i = 0 ; i < add_product_id.length ; i++){
-                                                        add_on_products.push({
-                                                        product_id : add_product_id[i].value,
-                                                        excess_qty : addexcess_qty[i].value,
-                                                        qty : add_qty[i].value,
-                                                        total_qty : Number(addexcess_qty[i].value) + Number(add_qty[i].value),
-                                                        price : Number(add_price[i].value),
-                                                        total_price : (Number(addexcess_qty[i].value) + Number(add_qty[i].value)) * Number(add_price[i].value),
-                                                        value : add_unit[i].value
-
-                                                    })
-                                                    }
-                                                }
-                                            }
-
-                                              
-
-                                                await fetch('/super_admin/po/update_po', {
-                                                    method: 'POST',
-                                                    headers: {
-                                                        'Accept': 'application/json',
-                                                        'Content-Type': 'application/json'
-                                                    },
-                                                    body: JSON.stringify({"sub_products":sub_products , "add_on_products" : add_on_products , "po_id"  :"<%= po_id%>"})
-                                                    })
-                                                    
-                                                
-                                                window.location.href = "/home"
-
-
-                                            })
-
-                                                       </script>
-                                                       
-
-                                                    </table>
-                                                </div>
+                                                            </tbody>
+                                                            
+                                                            
+                                                            
+                                                        </table>
+                                                    </div>
+                                                    <% }  %> 
                                             </div>
                                        
+                                            <script >
+
+                                                       
+
+                                                function addOnChange(event){
+                                         
+
+                                                   const excess_qty = event.value
+
+                                                    const getAddonTotalAmount = document.getElementsByClassName("getAddonTotalAmount")
+                                                    const getSubTotalAmount = document.getElementsByClassName("getSubTotalAmount")
+                                                  
+
+                                                   
+
+                                                    const grandTotal = document.getElementById("grandTotal")
+                                                    const amount = document.getElementById("addamount"+event.id).innerText
+                                                    const price = document.getElementById("addprice"+event.id).innerText
+                                                    const qty = document.getElementById("addqty"+event.id).innerText
+                                                    
+                                                    
+
+                                   
+
+                                                        document.getElementById("addamount"+event.id).innerText =  (Number(event.value) + Number(qty))  * Number(price)
+                                                        
+                                                        let AddtotalAmount = 0
+                                                        let SubTotalAmount = 0
+
+                                                        if(getAddonTotalAmount.length !== 0){
+
+                                                            for(let i = 0 ; i <getAddonTotalAmount.length ; i++ ){
+                                                                AddtotalAmount += Number(getAddonTotalAmount[i].innerText)
+                                                            }
+                                                        }
+
+
+                                                        if(getSubTotalAmount.length !== 0){
+
+                                                            for(let i = 0 ; i <getSubTotalAmount.length ; i++ ){
+                                                                SubTotalAmount += Number(getSubTotalAmount[i].innerText)
+                                                            }
+                                                        }
+
+                                                     
+                                                        grandTotal.innerText = SubTotalAmount + AddtotalAmount
+                                                  
+                                               }
+                                           
+                                           
+                            const form=document.getElementById("submitPoHandler")
+                            
+                            form.addEventListener("submit",async(e)=>{
+
+                                    e.preventDefault()
+                         
+                                    // action="/branch_admin/po/create_po" method="post"
+                                    let query = {}
+
+                                    const sub_product_id = e.target.sub_product_id
+                                    const excess_qty = e.target.excess_qty
+                                    const sub_qty = e.target.sub_qty
+                                    const sub_price = e.target.sub_price
+                                    const sub_unit = e.target.sub_unit
+
+                          
+
+                                   
+                                    const addexcess_qty = e.target.addexcess_qty
+                                    const add_product_id = e.target.add_product_id
+                                    const add_qty = e.target.add_qty
+                                    const add_price = e.target.add_price
+                                    const add_unit = e.target.add_unit
+
+
+                                    let sub_products = []
+                                  
+                                    if(sub_product_id != undefined){
+
+                                        if(excess_qty.length == undefined){
+                                            sub_products.push({
+                                                product_id : sub_product_id.value,
+                                                excess_qty : excess_qty.value,
+                                                qty : sub_qty.value,
+                                                total_qty : Number(excess_qty.value) + Number(sub_qty.value),
+                                                price : Number(sub_price.value),
+                                                total_price : (Number(excess_qty.value) + Number(sub_qty.value)) * Number(sub_price.value),
+                                                value : sub_unit.value
+                                            })
+                                        }else{
+                                            
+                                            for(let i = 0 ; i < sub_product_id.length ; i++){
+                                                sub_products.push({
+                                                    product_id : sub_product_id[i].value,
+                                                    excess_qty : excess_qty[i].value,
+                                                    qty : sub_qty[i].value,
+                                                    total_qty : Number(excess_qty[i].value) + Number(sub_qty[i].value),
+                                                    price : Number(sub_price[i].value),
+                                                    total_price : (Number(excess_qty[i].value) + Number(sub_qty[i].value)) * Number(sub_price[i].value),
+                                                    value : sub_unit[i].value
+
+                                                })
+                                            }
+                                        }
+                                    }
+
+                                  
+                                    let add_on_products = []
+                                    if(add_product_id != undefined){
+
+                                        if(addexcess_qty.length == undefined){
+                                            add_on_products.push({
+                                                product_id : add_product_id.value,
+                                                excess_qty : addexcess_qty.value,
+                                                qty : add_qty.value,
+                                                total_qty : Number(addexcess_qty.value) + Number(add_qty.value),
+                                                price : Number(add_price.value),
+                                                total_price : (Number(addexcess_qty.value) + Number(add_qty.value)) * Number(add_price.value),
+                                                value : add_unit.value
+                                        })
+                                    }else{
+                                        for(let i = 0 ; i < add_product_id.length ; i++){
+                                            add_on_products.push({
+                                            product_id : add_product_id[i].value,
+                                            excess_qty : addexcess_qty[i].value,
+                                            qty : add_qty[i].value,
+                                            total_qty : Number(addexcess_qty[i].value) + Number(add_qty[i].value),
+                                            price : Number(add_price[i].value),
+                                            total_price : (Number(addexcess_qty[i].value) + Number(add_qty[i].value)) * Number(add_price[i].value),
+                                            value : add_unit[i].value
+
+                                        })
+                                        }
+                                    }
+                                }
+
+                                  
+
+                                    await fetch('/super_admin/po/update_po', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Accept': 'application/json',
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({"sub_products":sub_products , "add_on_products" : add_on_products , "po_id"  :"<%= po_id%>"})
+                                        })
+                                        
+                                        await  swal("Done", "Po Approved SuccessFully", "success");
+
+                                    window.location.href = "/home"
+
+
+                                })
+
+                                           </script>
+                                           
+
                                             <div class="inv--total-amounts">
                                             
                                                 <div class="row mt-4">
@@ -468,7 +476,7 @@
                         
                     </div>
 
-                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                    <div class="modal fade" data-backdrop="static" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -478,8 +486,8 @@
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    <h4 class="modal-heading mb-4 mt-2">Are You Sure?</h4>
-                                        <p class="modal-text">In hac habitasse platea dictumst. Proin sollicitudin et lacus in tincidunt. Integer nisl ex, sollicitudin eget nulla nec, pharetra lacinia nisl. Aenean nec nunc ex. Integer varius neque at dolor scelerisque porttitor.</p>
+                                    <h4 class="modal-heading mb-4 mt-2">Approve The Purchase Order?</h4>
+                                        <!-- <p class="modal-text">In hac habitasse platea dictumst. Proin sollicitudin et lacus in tincidunt. Integer nisl ex, sollicitudin eget nulla nec, pharetra lacinia nisl. Aenean nec nunc ex. Integer varius neque at dolor scelerisque porttitor.</p> -->
                                 </div>
                                 <div class="modal-footer">
                                     <button class="btn" data-dismiss="modal" type="button"> <i class="flaticon-cancel-12"></i> Discard</button>

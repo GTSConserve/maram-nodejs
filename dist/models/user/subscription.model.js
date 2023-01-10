@@ -119,40 +119,41 @@ var get_subscription_product = /*#__PURE__*/function () {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
-            _context2.prev = 0;
-            _context2.next = 3;
-            return (0, _db["default"])("subscribed_user_details AS sub").select("sub.id as subscription_id", "products.name as product_name", "products.image", "products.price", "products.unit_value", "unit_types.value as unit_type", "subscription_type.name as subscription_name", "sub.subscription_status", "sub.quantity").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("subscription_type", "subscription_type.id", "=", "sub.subscribe_type_id").orderBy('subscription_id', 'desc').where({
-              user_id: userId
+            console.log(userId);
+            _context2.prev = 1;
+            _context2.next = 4;
+            return (0, _db["default"])("subscribed_user_details AS sub").select("sub.id as subscription_id", "sub.date", "products.name as product_name", "products.image", "products.price", "products.unit_value", "unit_types.value as unit_type", "subscription_type.name as subscription_name", "sub.subscription_status", "sub.quantity").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("subscription_type", "subscription_type.id", "=", "sub.subscribe_type_id").orderBy('subscription_id', 'desc').where({
+              "sub.user_id": userId
             });
-          case 3:
+          case 4:
             products = _context2.sent;
             if (!(products.length === 0)) {
-              _context2.next = 6;
+              _context2.next = 7;
               break;
             }
             return _context2.abrupt("return", {
               status: false,
               message: "No Subscription Found"
             });
-          case 6:
+          case 7:
             return _context2.abrupt("return", {
               status: true,
               data: products
             });
-          case 9:
-            _context2.prev = 9;
-            _context2.t0 = _context2["catch"](0);
+          case 10:
+            _context2.prev = 10;
+            _context2.t0 = _context2["catch"](1);
             console.log(_context2.t0);
             return _context2.abrupt("return", {
               status: false,
               message: _context2.t0
             });
-          case 13:
+          case 14:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[0, 9]]);
+    }, _callee2, null, [[1, 10]]);
   }));
   return function get_subscription_product(_x8) {
     return _ref2.apply(this, arguments);

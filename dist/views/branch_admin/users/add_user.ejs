@@ -368,8 +368,9 @@
                                                         if(add_on_delivery_date.length != 0 ||add_on_products.length != 0 ||add_on_qty.length != 0   ){
                                                     
                                                              if(add_on_delivery_date.length === 0 ||add_on_products.length === 0 ||add_on_qty.length === 0   ){
-                                                                     document.body.insertAdjacentElement("afterbegin",ErroHandler) 
-                                                                     return document.getElementById("dynamic_content_error").innerText = "Please Fill the Add on  Product Details"
+                                                                    //  document.body.insertAdjacentElement("afterbegin",ErroHandler) 
+                                                                    //  return document.getElementById("dynamic_content_error").innerText = "Please Fill the Add on  Product Details"
+                                                                    return  await  swal("", "Please Fill the Add on  Product Details", "error");
     
                                                                  }
 
@@ -388,8 +389,9 @@
                                                         for(let i = 0 ; i < add_on_products.length; i++){
 
                                                             if(add_on_products[i].value.length === 0 || add_on_qty[i].value.length === 0){
-                                                            document.body.insertAdjacentElement("afterbegin",ErroHandler) 
-                                                            return document.getElementById("dynamic_content_error").innerText = "Please Fill the Add on  Product Details"
+                                                            // document.body.insertAdjacentElement("afterbegin",ErroHandler) 
+                                                            // return document.getElementById("dynamic_content_error").innerText = "Please Fill the Add on  Product Details"
+                                                            return  await  swal("", "Please Fill the Add on  Product Details", "error");
 
                                                         }
 
@@ -410,23 +412,26 @@
                                                     // user details
                                                 if(user_name.length ==0 || mobile_number.length == 0){
                                                         
-                                                        document.body.insertAdjacentElement("afterbegin",ErroHandler) 
-                                                   return  document.getElementById("dynamic_content_error").innerText = "Please Fill the User Details"
+                                                //         document.body.insertAdjacentElement("afterbegin",ErroHandler) 
+                                                //    return  document.getElementById("dynamic_content_error").innerText = "Please Fill the User Details"
+                                                return  await  swal("", "Please Fill the User Details", "error");
                                                 }
 
                                                 // address
                                                 if(latitude.length ==0 || longitude.length ==0 || address_title.length == 0 ||  address.length == 0){
                                                         
-                                                        document.body.insertAdjacentElement("afterbegin",ErroHandler) 
-                                                    return document.getElementById("dynamic_content_error").innerText = "Please Fill the Address Details"
+                                                    //     document.body.insertAdjacentElement("afterbegin",ErroHandler) 
+                                                    // return document.getElementById("dynamic_content_error").innerText = "Please Fill the Address Details"
+                                                    return  await  swal("", "Please Fill the Address Details", "error");
                                                 }
                                                 
                                                 // sub product
                                                 if(sub_product.length != 0 ||sub_qty.length != 0 ||your_plan.length != 0 ||sub_start_date.length != 0  ){
                                                     
                                                     if(sub_product.length === 0 ||sub_qty.length === 0 ||your_plan.length === 0 ||sub_start_date.length === 0  ){
-                                                        document.body.insertAdjacentElement("afterbegin",ErroHandler) 
-                                                    return document.getElementById("dynamic_content_error").innerText = "Please Fill the Subscription Product Details"
+                                                    //     document.body.insertAdjacentElement("afterbegin",ErroHandler) 
+                                                    // return document.getElementById("dynamic_content_error").innerText = "Please Fill the Subscription Product Details"
+                                                    return  await  swal("", "Please Fill the Subscription Product Details", "error");
     
                                                     }
 
@@ -439,8 +444,9 @@
                                                                 
                                                             }
                                                             if (count == 7){
-                                                                document.body.insertAdjacentElement("afterbegin",ErroHandler) 
-                                                    return document.getElementById("dynamic_content_error").innerText = "Please Choose A Day "
+                                                    //             document.body.insertAdjacentElement("afterbegin",ErroHandler) 
+                                                    // return document.getElementById("dynamic_content_error").innerText = "Please Choose A Day "
+                                                    return  await  swal("", "Please Choose A Day ", "error");
                                                             }
 
                                                             if(days.checked){
@@ -459,8 +465,9 @@
                                                 }
 
                                                 if(add_on_delivery_date.length === 0 && add_on_products.length === 0 && add_on_qty.length === 0 && sub_product.length == 0 && sub_qty.length == 0 && your_plan.length == 0 && sub_start_date.length == 0  ){
-                                                    document.body.insertAdjacentElement("afterbegin",ErroHandler) 
-                                                    return document.getElementById("dynamic_content_error").innerText = "Please Place a Add on or Subscription"
+                                                    // document.body.insertAdjacentElement("afterbegin",ErroHandler) 
+                                                    // return document.getElementById("dynamic_content_error").innerText = "Please Place a Add on or Subscription"
+                                                    return  await  swal("", "Please Place a Add on or Subscription", "error");
                                                 }
                                                
                                              
@@ -496,7 +503,9 @@
                                                     })
                                                     
                                                    
-                                                 window.location.href = "/home?is_user_added=2"
+                                                    await  swal("Done", "New User Created SuccessFully", "success");
+
+                                                 window.location.href = "/home"
 
 
                                             })

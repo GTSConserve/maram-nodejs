@@ -70,6 +70,9 @@
                                                             
                                             <div class="inv--product-table-section">
                                                 <h6 class="ml-2 pb-2" style="font-weight: 900;">Subscription Products : </h6>
+                                                <% if(subscription_products.length ===0){ %> 
+                                                    <h6 class="ml-4">No Subscription Products Found</h6>
+                                                    <% }else{ %> 
                                                 <div class="table-responsive alterateTable">
                                                     <table class="table">
                                                         <thead class="">
@@ -88,10 +91,8 @@
 
                                                             
 
-                                                            <% if(subscription_products.length ===0){ %> 
-                                                                <h6>No Subscription Products Found</h6>
-                                                                <% }else{ %> 
-                                                            <% for(sub_products of subscription_products){ %>
+                                                            
+                                                                     <% for(sub_products of subscription_products){ %>
                                                                
                                                                 <tr>
                                                                     <!-- <td  class="checkbox-column"> <input style="cursor: pointer;" value="<%= sub_products.id %>" name="product_id" type="checkbox" class="new-checkbox checkbox-primary"> </td> -->
@@ -104,18 +105,21 @@
                                                                     <td class="text-right"><%= sub_products.total_price %> </td>
                                                                 </tr>
                                                                 <% }  %> 
-                                                                <% }  %> 
-                                       
-                                                          
-                                                        </tbody>
-                                                    </table>
+                                                                
+                                                                
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <% }  %> 
                                                 </div>
-                                            </div>
 
 
 
                                             <div class="inv--product-table-section">
                                                 <h6 class="ml-2 pb-2" style="font-weight: 900;">Add On Products : </h6>
+                                                <% if(add_on_products.length ===0){ %> 
+                                                    <h6 class="ml-4">No Add On Products Found</h6>
+                                                    <% }else{ %> 
                                                 <div class="table-responsive">
                                                     <table class="table alterateTable">
                                                         <thead class="">
@@ -133,9 +137,7 @@
                                                         <tbody>
 
 
-                                                            <% if(add_on_products.length ===0){ %> 
-                                                                <h6>No Add On Products Found</h6>
-                                                                <% }else{ %> 
+                                                          
                                                             <% for(add_on_products of add_on_products){ %>
                                                                
                                                                 <tr>
@@ -150,11 +152,11 @@
                                                                     <td class="text-right"><%= add_on_products.total_price %></td>
                                                                 </tr>
                                                                 <% }  %> 
-                                                                <% }  %> 
-                                                          
-                                                        </tbody>
-                                                    </table>
-                                                </div>
+                                                                
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <% }  %> 
                                             </div>
                                        
                                             <div class="inv--total-amounts">

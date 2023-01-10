@@ -50,7 +50,7 @@
                     <div class="form-group col-md-1 float-right">
                         <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addbarcategory">Add</button>
                         <!-- __category add__ -->
-                        <div wire:ignore.self="" class="modal fade" id="addbarcategory" tabindex="-1"
+                        <div wire:ignore.self="" data-backdrop="static" class="modal fade" id="addbarcategory" tabindex="-1"
                             aria-labelledby="addCategoryTitle" style="display: none;" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                 <div class="modal-content">
@@ -250,6 +250,8 @@
                                                 body: JSON.stringify({"id": event.id , "status" : event.value})
                                                 })
                                            
+                                                await  swal("Done", "Status Updated", "success");
+
                                              window.location.reload("/super_admin/product/get_product_list")
                                              
 
@@ -269,7 +271,7 @@
                         </tr>
 
 <!-- edit -->
-                        <div wire:ignore.self="" class="modal fade" id="editCategory<%=product.id %>" tabindex="-1"
+                        <div wire:ignore.self="" data-backdrop="static" class="modal fade" id="editCategory<%=product.id %>" tabindex="-1"
                 aria-labelledby="addCategoryTitle" style="display: none;" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                     <div class="modal-content">
@@ -404,7 +406,7 @@
 <!-- view -->
 
 
-<div wire:ignore.self="" class="modal fade" id="viewCategory<%=product.id %>" tabindex="-1"
+<div wire:ignore.self="" data-backdrop="static" class="modal fade" id="viewCategory<%=product.id %>" tabindex="-1"
     aria-labelledby="addCategoryTitle" style="display: none;" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">

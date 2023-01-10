@@ -17,5 +17,12 @@ branchRouter.post('/update_change_password', _branch.updateChangePassword);
 branchRouter.post('/create_branch_admin', _branch.createBranchAdmin);
 branchRouter.post('/update_branch', _branch.updateBranch);
 branchRouter.post('/update_branch_status', _branch.updateBranchStatus);
+
+// bills 
+branchRouter.post('/generate_bill', _branch.createGenerateBill);
+branchRouter.get('/get_pending_bill', _branch.getPendingBill);
+branchRouter.get('/get_received_bill', _branch.getReceivedBill);
+branchRouter.get('/get_completed_bill', _branch.getCompletedBill);
+branchRouter.post('/approve_bill', _branch.approveBill);
 var _default = branchRouter;
 exports["default"] = _default;

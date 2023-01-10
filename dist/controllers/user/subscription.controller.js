@@ -7,7 +7,6 @@ Object.defineProperty(exports, "__esModule", {
 exports.singleSubscription = exports.removeAdditionalOrder = exports.pauseSubscription = exports.newSubscription = exports.getSubscriptionPlan = exports.getSubcription_order = exports.getAllSubscription = exports.editAdditionalOrder = exports.createAdditionalOrder = exports.changeSubscriptionplan = exports.changeQuantity = exports.Remove_Subscription = void 0;
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 var _messages = _interopRequireDefault(require("../../constants/messages"));
-var _axios = _interopRequireDefault(require("axios"));
 var _moment = _interopRequireDefault(require("moment"));
 var _message = require("../../notifications/message.sender");
 var _subscription = require("../../models/user/subscription.model");
@@ -383,25 +382,25 @@ var getAllSubscription = /*#__PURE__*/function () {
           case 0:
             _context8.prev = 0;
             userId = req.body.userId;
-            _context8.next = 4;
+            console.log(userId);
+            _context8.next = 5;
             return (0, _subscription.get_subscription_product)(userId);
-          case 4:
+          case 5:
             subscription_product = _context8.sent;
             if (subscription_product.status) {
-              _context8.next = 7;
+              _context8.next = 8;
               break;
             }
             return _context8.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
               message: subscription_product.message
             }));
-          case 7:
+          case 8:
             for (i = 0; i < subscription_product.data.length; i++) {
               subscription_product.data[i].image = process.env.BASE_URL + subscription_product.data[i].image;
-              subscription_product.data[i].quantity = subscription_product.data[i].quantity, subscription_product.data[i].price = subscription_product.data[i].price,
-              // below next delivery date in static
-              subscription_product.data[i].next_delivery_date = "22-Jan";
-              subscription_product.data[i].next_delviery = "Next delivery 22-Jan-2022";
+              subscription_product.data[i].quantity = subscription_product.data[i].quantity, subscription_product.data[i].price = subscription_product.data[i].price, subscription_product.data[i].date = (0, _moment["default"])().format("YYYY-MM-DD");
+              subscription_product.data[i].date = (0, _moment["default"])().format("YYYY-MM-DD");
+              ;
               if (subscription_product.data[i].unit_value >= 500) {
                 subscription_product.data[i].unit = subscription_product.data[i].unit_value / 1000 + " " + (subscription_product.data[i].unit_type === "ml" ? "litre" : subscription_product.data[i].unit_type);
               } else {
@@ -414,20 +413,20 @@ var getAllSubscription = /*#__PURE__*/function () {
               status: true,
               data: subscription_product.data
             }));
-          case 11:
-            _context8.prev = 11;
+          case 12:
+            _context8.prev = 12;
             _context8.t0 = _context8["catch"](0);
             console.log(_context8.t0);
             return _context8.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
-          case 15:
+          case 16:
           case "end":
             return _context8.stop();
         }
       }
-    }, _callee8, null, [[0, 11]]);
+    }, _callee8, null, [[0, 12]]);
   }));
   return function getAllSubscription(_x13, _x14) {
     return _ref8.apply(this, arguments);
@@ -492,7 +491,7 @@ var singleSubscription = /*#__PURE__*/function () {
               delete sub.data[i].unit_type;
             }
             response = {
-              additional_orders: [sub.add_product[0]],
+              additional_orders: sub.add_product[0],
               this_month_item_detail: sub.this_month_item_detail[0]
             };
             return _context9.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
