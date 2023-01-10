@@ -89,7 +89,8 @@ export const get_subscription_product = async (userId) => {
         "unit_types.value as unit_type",
         "subscription_type.name as subscription_name",
         "sub.subscription_status",
-        "sub.quantity"
+        "sub.quantity",
+        "sub.date"
       )
       .join("products", "products.id", "=", "sub.product_id")
       .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
