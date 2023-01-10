@@ -16,7 +16,9 @@ import {
   getBillList,
   getSingleBillList,
   getOverallCalendar,
-  RiderLocation
+  RiderLocation,
+  getSingleCalendarEvent,
+  getOverallCalendarEvent
 } from "../../controllers/user/userDetail.controller";
 import multer from "multer";
 
@@ -60,6 +62,9 @@ userRouter.post("/get_single_bill_list",  getSingleBillList);
 userRouter.post("/user_address_change", authenticateJWT, userAddressChange);
 userRouter.post("/single_calendar", authenticateJWT, getSingleCalendar);
 userRouter.post("/over_all_calendar", authenticateJWT, getOverallCalendar);
+
+userRouter.post("/single_calendar_event",authenticateJWT, getSingleCalendarEvent);
+userRouter.post("/over_all_calendar_event", getOverallCalendarEvent);
 
 
 // rider details 

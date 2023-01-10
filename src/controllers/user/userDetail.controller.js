@@ -15,6 +15,7 @@ import {
   checkAddress,
   get_user_bill,
   get_single_bill,
+  single_calendar_data,
   rider_location
 } from "../../models/user/user_details.model";
 import messages from "../../constants/messages";
@@ -607,6 +608,103 @@ export const getSingleBillList = async (req, res) => {
     console.log(error);
 
     res.status(500).json({ status: false });
+  }
+};
+
+
+export const getSingleCalendarEvent = async (req, res) => {
+  try {
+    const { date, userId } = req.body;
+
+    if (!date) {
+      return res
+        .status(responseCode.FAILURE.BAD_REQUEST)
+        .json({ status: false, message: messages.MANDATORY_ERROR });
+    }
+
+    const sub = await single_calendar_data(date,userId);
+
+    if (!sub.status) {
+      return res
+        .status(responseCode.FAILURE.DATA_NOT_FOUND)
+        .json({ status: false, message: sub.message });
+    }
+   
+    for (let i = 0; i < sub.data.length; i++) {
+      
+      sub.data[i].product_image = process.env.BASE_URL + sub.data[i].image;
+      sub.data[i].quantity = sub.data[i].quantity;
+      sub.data[i].price = sub.data[i].price;
+      
+
+      for (let j = 0; j < sub.add_product.length; j++) {  
+      
+      sub.add_product[0][j].id = sub.add_product[0][j].id;
+      sub.add_product[0][j].image = sub.add_product[0][j].image;
+     
+
+      if (sub.data[i].product_variation_type >= 500) {
+        sub.data[i].product_variation_type =
+          sub.data[i].product_variation_type / 1000 +
+          " " +
+          (sub.data[i].product_variation_type === "ml" ? "litre" : sub.data[i].unit_type);
+      } 
+    
+      delete sub.data[i].unit_value;
+      delete sub.data[i].unit_type;
+    }
+
+    const response = {
+      addons_products: [sub.add_product[0]],
+     
+    };
+
+    return res
+      .status(responseCode.SUCCESS)
+      .json({ status: true, data: { ...sub.data[0], ...response } });
+  } }catch (error) {
+    console.log(error);
+    return res
+      .status(responseCode.FAILURE.DATA_NOT_FOUND)
+      .json({ status: false, message: messages.DATA_NOT_FOUND });
+  }
+};
+
+export const getOverallCalendarEvent = async (req, res) => {
+  try {
+    const { date } = req.body;  
+
+    const this_month_item_detail = await knex("users").select(
+      "one_liter_in_hand ",
+      "half_liter_in_hand ",
+    )
+
+    console.log(this_month_item_detail)
+
+    const overall_calendar_data = 
+      { 
+        "date": date,
+        "products": {
+          "subscription": {
+            "1-liter": parseInt(this_month_item_detail[0].one_liter_in_hand),
+            "0.5-liter": parseInt(this_month_item_detail[0].half_liter_in_hand),
+            "packed-milk": 0
+          },
+          "addons-products": 0,
+          "is_delivered": 0
+        }
+      }
+    
+
+    // await edit_address(userId, address_id, title, address, landmark, type);
+
+    res
+      .status(responseCode.SUCCESS)
+      .json({ status: true, data: overall_calendar_data });
+  } catch (error) {
+    console.log(error);
+
+    res.status(responseCode.FAILURE.BAD_REQUEST).json({ status: false, error });
   }
 };
 
