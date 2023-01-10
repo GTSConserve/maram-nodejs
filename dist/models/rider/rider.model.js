@@ -443,7 +443,7 @@ var update_starttour = /*#__PURE__*/function () {
 exports.update_starttour = update_starttour;
 var update_endtour = /*#__PURE__*/function () {
   var _ref10 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10(delivery_partner_id, tour_id, tour_status) {
-    var router, daily, updatetour, rider1, _daily, json_array, rider2;
+    var router, daily, updatetour, _daily;
     return _regeneratorRuntime().wrap(function _callee10$(_context10) {
       while (1) {
         switch (_context10.prev = _context10.next) {
@@ -463,11 +463,11 @@ var update_endtour = /*#__PURE__*/function () {
           case 6:
             daily = _context10.sent;
             if (!(daily.status !== "pending")) {
-              _context10.next = 28;
+              _context10.next = 22;
               break;
             }
             if (!(tour_status == 2)) {
-              _context10.next = 25;
+              _context10.next = 19;
               break;
             }
             _context10.next = 11;
@@ -479,64 +479,50 @@ var update_endtour = /*#__PURE__*/function () {
           case 11:
             updatetour = _context10.sent;
             _context10.next = 14;
-            return (0, _db["default"])('rider_daily_details').insert({
-              router_id: router[0].id,
-              rider_id: delivery_partner_id
-            });
-          case 14:
-            rider1 = _context10.sent;
-            _context10.next = 17;
             return (0, _db["default"])('daily_orders').select('*').where({
               router_id: router[0].id
             });
-          case 17:
+          case 14:
             _daily = _context10.sent;
-            // console.log(daily);
-            json_array = JSON.stringify(_daily); // await knex('rider_daily_details').insert({
-            //   order_details : daily[0],
-            // });
-            _context10.next = 21;
-            return (0, _db["default"])('rider_daily_details').update({
-              "order_details": json_array
-            }).where({
-              router_id: router[0].id
-            });
-          case 21:
-            rider2 = _context10.sent;
+            console.log(_daily);
+
+            // const rider1 = await knex('rider_daily_details').select("order_details").where({router_id:router[0].id})
+
+            // rider1[0].order_details.push(daily);
             return _context10.abrupt("return", {
               status: true,
               message: "successfully updated"
             });
-          case 25:
+          case 19:
             return _context10.abrupt("return", {
               status: false,
               message: "cannot updated"
             });
-          case 26:
-            _context10.next = 29;
+          case 20:
+            _context10.next = 23;
             break;
-          case 28:
+          case 22:
             return _context10.abrupt("return", {
               status: false,
               message: "your orders not completed"
             });
-          case 29:
-            _context10.next = 35;
+          case 23:
+            _context10.next = 29;
             break;
-          case 31:
-            _context10.prev = 31;
+          case 25:
+            _context10.prev = 25;
             _context10.t0 = _context10["catch"](0);
             console.log(_context10.t0);
             return _context10.abrupt("return", {
               status: false,
               message: "Cannot Update the status"
             });
-          case 35:
+          case 29:
           case "end":
             return _context10.stop();
         }
       }
-    }, _callee10, null, [[0, 31]]);
+    }, _callee10, null, [[0, 25]]);
   }));
   return function update_endtour(_x18, _x19, _x20) {
     return _ref10.apply(this, arguments);

@@ -127,7 +127,7 @@ export const getCategory = async (req, res) => {
 
     if (searchKeyword) {
       const search_data_length = await knex.raw(
-        `SELECT categories.id,categories.name FROM categories JOIN product_type ON categories.product_type_id = product_type.id WHERE categories.name LIKE '%${searchKeyword}%'`
+        `SELECT categories.id,categories.name FROM categories WHERE categories.name LIKE '%${searchKeyword}%'`
       );
 
       data_length = search_data_length[0];
@@ -167,18 +167,15 @@ export const getCategory = async (req, res) => {
     let is_search = false;
     if (searchKeyword) {
       results = await knex.raw(
-        `SELECT categories.id,categories.name,categories.image,categories.status,product_type.name as product_type,
-        product_type.id as product_type_id 
+        `SELECT id,name,image,status
         FROM categories 
-        JOIN product_type ON categories.product_type_id=product_type.id 
-        WHERE categories.name LIKE '%${searchKeyword}%' LIMIT ${startingLimit},${resultsPerPage}`
+        WHERE name LIKE '%${searchKeyword}%' LIMIT ${startingLimit},${resultsPerPage}`
       );
       is_search = true;
     } else {
       results = await knex.raw(
         `SELECT id,name,image,status
         FROM categories 
-      
         LIMIT ${startingLimit},${resultsPerPage}`
       );
     }

@@ -190,7 +190,6 @@ var getBanners = /*#__PURE__*/function () {
             for (i = 0; i < data.length; i++) {
               data[i].image = process.env.BASE_URL + data[i].image;
             }
-            console.log(data);
             loading = false;
             res.render("super_admin/settings/banner", {
               data: data,
@@ -202,19 +201,19 @@ var getBanners = /*#__PURE__*/function () {
               searchKeyword: searchKeyword,
               loading: loading
             });
-            _context3.next = 53;
+            _context3.next = 52;
             break;
-          case 49:
-            _context3.prev = 49;
+          case 48:
+            _context3.prev = 48;
             _context3.t0 = _context3["catch"](0);
             console.log(_context3.t0);
             res.redirect("/home");
-          case 53:
+          case 52:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3, null, [[0, 49]]);
+    }, _callee3, null, [[0, 48]]);
   }));
   return function getBanners(_x5, _x6) {
     return _ref3.apply(this, arguments);

@@ -322,7 +322,6 @@ var getCategory = /*#__PURE__*/function () {
                 }
               }
             }
-            console.log(data);
             for (_i = 0; _i < data.length; _i++) {
               data[_i].image = process.env.BASE_URL + data[_i].image;
             }
@@ -361,19 +360,19 @@ var getCategory = /*#__PURE__*/function () {
             //   data: categories,
             //   productType,
             // });
-            _context4.next = 59;
+            _context4.next = 58;
             break;
-          case 55:
-            _context4.prev = 55;
+          case 54:
+            _context4.prev = 54;
             _context4.t0 = _context4["catch"](0);
             console.log(_context4.t0);
             res.redirect("/home");
-          case 59:
+          case 58:
           case "end":
             return _context4.stop();
         }
       }
-    }, _callee4, null, [[0, 55]]);
+    }, _callee4, null, [[0, 54]]);
   }));
   return function getCategory(_x7, _x8) {
     return _ref4.apply(this, arguments);
