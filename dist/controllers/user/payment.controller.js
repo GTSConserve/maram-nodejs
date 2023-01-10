@@ -192,14 +192,14 @@ var getPaymentStatusUpdate = /*#__PURE__*/function () {
 exports.getPaymentStatusUpdate = getPaymentStatusUpdate;
 var getRazorpayMethod = /*#__PURE__*/function () {
   var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(req, res) {
-    var _req$body2, amount, order_id, razorpay, options, response;
+    var _req$body2, amount, order_id, pay, razorpay, options, response;
     return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
             _context4.prev = 0;
             _req$body2 = req.body, amount = _req$body2.amount, order_id = _req$body2.order_id;
-            if (!(!amount && !order_id)) {
+            if (!(!amount || !order_id)) {
               _context4.next = 4;
               break;
             }
@@ -208,29 +208,34 @@ var getRazorpayMethod = /*#__PURE__*/function () {
               message: _messages["default"].MANDATORY_ERROR
             }));
           case 4:
+            _context4.next = 6;
+            return (0, _db["default"])('bill_history_details').select('bill_history_id');
+          case 6:
+            pay = _context4.sent;
             razorpay = new _razorpay["default"]({
               key_id: process.env.RAZORPAY_KEY_ID,
               key_secret: process.env.RAZORPAY_KEY_SECRET
             });
             if (razorpay) {
-              _context4.next = 7;
+              _context4.next = 10;
               break;
             }
             return _context4.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
               message: "please check razorpay id"
             }));
-          case 7:
+          case 10:
             options = {
               amount: amount,
               currency: "INR",
-              receipt: order_id
+              receipt: pay.bill_history_id
             };
-            _context4.next = 10;
-            return razorpay.orders.create(options);
-          case 10:
-            response = _context4.sent;
             _context4.next = 13;
+            return razorpay.orders.create(options);
+          case 13:
+            response = _context4.sent;
+            console.log(response);
+            _context4.next = 17;
             return (0, _message.sendNotification)({
               include_external_user_ids: [order_id.toString()],
               contents: {
@@ -245,31 +250,32 @@ var getRazorpayMethod = /*#__PURE__*/function () {
                 category_id: 0,
                 product_type_id: 0,
                 type: 3,
-                receipt: response.receipt[0],
+                receipt: options.receipt,
+                // receipt: response.receipt[0],
                 amount: options.amount[0]
               }
             });
-          case 13:
+          case 17:
             res.status(200).json({
               status: true,
               data: response
             });
-            _context4.next = 20;
+            _context4.next = 24;
             break;
-          case 16:
-            _context4.prev = 16;
+          case 20:
+            _context4.prev = 20;
             _context4.t0 = _context4["catch"](0);
             console.log(_context4.t0);
             res.status(500).json({
               status: false,
               message: "Razorpay method failed..."
             });
-          case 20:
+          case 24:
           case "end":
             return _context4.stop();
         }
       }
-    }, _callee4, null, [[0, 16]]);
+    }, _callee4, null, [[0, 20]]);
   }));
   return function getRazorpayMethod(_x7, _x8) {
     return _ref4.apply(this, arguments);

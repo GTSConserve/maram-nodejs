@@ -11,7 +11,7 @@ import {
   edit_address,
   get_address,
   get_user,
-  remove_order, 
+  remove_order,
   checkAddress,
   get_user_bill,
   get_single_bill,
@@ -83,16 +83,16 @@ export const getAddress = async (req, res) => {
 
 export const editAddress = async (req, res) => {
   try {
-    const { 
-      userId, 
-      address_id, 
-      title, 
-      address, 
-      landmark, 
-      type, 
-      alternate_mobile, 
-      latitude, 
-      longitude 
+    const {
+      userId,
+      address_id,
+      title,
+      address,
+      landmark,
+      type,
+      alternate_mobile,
+      latitude,
+      longitude
     } = req.body;
 
     if (!latitude && !longitude) {
@@ -104,14 +104,14 @@ export const editAddress = async (req, res) => {
     // console.log(userId, address_id, title, address, landmark, type, alternate_mobile, latitude, longitude)
 
     await edit_address(
-      userId, 
-      address_id, 
-      title, 
-      address, 
-      landmark, 
-      type, 
-      alternate_mobile, 
-      latitude, 
+      userId,
+      address_id,
+      title,
+      address,
+      landmark,
+      type,
+      alternate_mobile,
+      latitude,
       longitude);
 
     res
@@ -137,37 +137,100 @@ export const getUser = async (req, res) => {
         .json({ status: false, message: "User Not Found" });
     }
 
+    const daily = await knex('daily_orders').select('user_id').where({ user_id: userId })
+    //     const user1 = await knex("bill_history").select("id").where({user_id:id});
+
+    // console.log(user[0].id)
+
+    // let bill = [];
+
+    // if(user.id){
+    const bill = await knex("bill_history_details").select(
+      "bill_history_details.subscription_price",
+      "bill_history_details.additional_price",
+      "bill_history_details.total_price",
+      "bill_history_details.additional_qty",
+      "bill_history_details.total_qty",
+      "bill_history_details.subscription_qty"
+    )
+      .join("bill_history", "bill_history.id", "=", "bill_history_details.bill_history_id")
+      .where({ "bill_history.user_id": userId })
+    // }
+
+    // else{
+    //   return {message:"you have no bill" };
+    // }
+    const sub = await knex.select(
+      "subscribed_user_details.subscription_delivered_quantity",
+      "subscribed_user_details.additional_delivered_quantity",
+      "subscribed_user_details.total_delivered_quantity",
+      // "subscribed_user_details.subscription_delivered_quantity",
+    )
+      .from("subscribed_user_details")
+      .where({ user_id: userId })
+    // console.log(getuser)
+    const rider = await knex('daily_orders')
+      .join("routes", "routes.id", "=", "daily_orders.router_id")
+      .join("rider_details", "rider_details.id", "=", "routes.rider_id")
+      .select(
+        "rider_details.id",
+        "rider_details.name",
+        "rider_details.tour_status as status",
+      )
+      .where({ 'daily_orders.user_id': userId });
+
+    // console.log(rider);
+
     let get_user_detail = {};
-     let status;
-    if(user.rider[0].status==0){
-      status = "rider is assigned"
+    let status;
+    if (rider.length != 0) {
+      if (rider[0].status == 0) {
+        status = "rider is assigned"
+      }
+      else if (rider[0].status == 1) {
+        status = "rider can start the tour and delivered soon"
+      }
+      else if (rider[0].status == 2) {
+        status = "rider can end the tour"
+      }
+      else {
+        status = "no rider can assigned"
+      }
     }
-    else if(user.rider[0].status==1){
-      status = "rider can start the tour and delivered soon"
-    }
-    else if(user.rider[0].status==2){
-      status ="rider can end the tour"
-    }
-    else{
+    else {
       status = "no rider can assigned"
+
     }
+
+
+
+    const address = await knex('user_address').select('id').where({ user_id: userId })
+
+    const subscription = await knex('subscribed_user_details').select('id').where({ user_id: userId })
+    const additional = await knex('additional_orders').select('id').where({ user_id: userId, status: "delivered" })
+
+    const subscription1 = await knex('subscribed_user_details').select('product_id').where({ user_id: userId, rider_status: "delivered" })
+
+    const addon = await knex('add_on_order_items').select('product_id').where({ user_id: userId, status: "delivered" })
+
+
 
     user.body.map((data) => {
 
       get_user_detail.user_id = data.id;
       get_user_detail.name = data.name;
       get_user_detail.image = data.image
-      ? process.env.BASE_URL + data.image
-      : null;
+        ? process.env.BASE_URL + data.image
+        : null;
       get_user_detail.mobile_number = data.mobile_number;
       get_user_detail.email = data.email;
-      get_user_detail.rider_name = user.rider[0].name;
+      get_user_detail.rider_name = rider.length != 0 ? rider[0].name : "no rider";
       get_user_detail.rider_status = status;
-      get_user_detail.total_bill_due_Amount = "Bill due amount"+ ' ' +user.bill[0].total_price.toString();
-      get_user_detail.total_bill_count = user.bill.length.toString()+ ' ' + "bills";
-      get_user_detail.total_address_count = user.address.length.toString()+ ' ' + "address count";
-      get_user_detail.total_subcription_count = user.subscription.length.toString()+ ' ' + "subcription";
-      get_user_detail.total_delivered_product_count = user.subscription1.length +user.additional.length +user.addon.length .toString()+ ' ' + "Product Delivery" ;
+      get_user_detail.total_bill_due_Amount = bill.length != 0 ? "Bill due amount" + ' ' + bill[0].total_price.toString() : "0";
+      get_user_detail.total_bill_count = bill.length.toString() + ' ' + "bills";
+      get_user_detail.total_address_count = address.length.toString() + ' ' + "address count";
+      get_user_detail.total_subcription_count = subscription.length.toString() + ' ' + "subcription";
+      get_user_detail.total_delivered_product_count = subscription1.length + additional.length + addon.length.toString() + ' ' + "Product Delivery" && "0";
     });
 
     res
@@ -208,17 +271,17 @@ export const updateUser = async (req, res) => {
     await knex("users").update(query).where({ id: user.user_id });
 
     // await sendNotification({
-      //   include_external_user_ids: [userId],
-      //   contents: { en: `Addon Products Created notificaiton` },
-      //   headings: { en: "Addon Products Notification" },
-      //   name: "Addon Products",
-      //   data: {
-      //     status: "new_order",
-      //     type: 2,
-      //     // appointment_id: user._id,
-      //     // appointment_chat_id: user_chat._id
-      //   },
-      // });
+    //   include_external_user_ids: [userId],
+    //   contents: { en: `Addon Products Created notificaiton` },
+    //   headings: { en: "Addon Products Notification" },
+    //   name: "Addon Products",
+    //   data: {
+    //     status: "new_order",
+    //     type: 2,
+    //     // appointment_id: user._id,
+    //     // appointment_chat_id: user_chat._id
+    //   },
+    // });
 
     return res
       .status(responseCode.SUCCESS)
@@ -243,17 +306,17 @@ export const deleteUseraddress = async (req, res) => {
     const addresses = await delete_user_address(address_id, userId);
 
     // await sendNotification({
-      //   include_external_user_ids: [userId],
-      //   contents: { en: `Addon Products Created notificaiton` },
-      //   headings: { en: "Addon Products Notification" },
-      //   name: "Addon Products",
-      //   data: {
-      //     status: "new_order",
-      //     type: 2,
-      //     // appointment_id: user._id,
-      //     // appointment_chat_id: user_chat._id
-      //   },
-      // });
+    //   include_external_user_ids: [userId],
+    //   contents: { en: `Addon Products Created notificaiton` },
+    //   headings: { en: "Addon Products Notification" },
+    //   name: "Addon Products",
+    //   data: {
+    //     status: "new_order",
+    //     type: 2,
+    //     // appointment_id: user._id,
+    //     // appointment_chat_id: user_chat._id
+    //   },
+    // });
 
     res
       .status(responseCode.SUCCESS)
@@ -272,17 +335,17 @@ export const RemoveOrder = async (req, res) => {
     const remove = await remove_order(user_id);
 
     // await sendNotification({
-      //   include_external_user_ids: [userId],
-      //   contents: { en: `Addon Products Created notificaiton` },
-      //   headings: { en: "Addon Products Notification" },
-      //   name: "Addon Products",
-      //   data: {
-      //     status: "new_order",
-      //     type: 2,
-      //     // appointment_id: user._id,
-      //     // appointment_chat_id: user_chat._id
-      //   },
-      // });
+    //   include_external_user_ids: [userId],
+    //   contents: { en: `Addon Products Created notificaiton` },
+    //   headings: { en: "Addon Products Notification" },
+    //   name: "Addon Products",
+    //   data: {
+    //     status: "new_order",
+    //     type: 2,
+    //     // appointment_id: user._id,
+    //     // appointment_chat_id: user_chat._id
+    //   },
+    // });
 
     res
       .status(responseCode.SUCCESS)
@@ -339,17 +402,17 @@ export const changePlan = async (req, res) => {
     );
 
     // await sendNotification({
-      //   include_external_user_ids: [userId],
-      //   contents: { en: `Addon Products Created notificaiton` },
-      //   headings: { en: "Addon Products Notification" },
-      //   name: "Addon Products",
-      //   data: {
-      //     status: "new_order",
-      //     type: 2,
-      //     // appointment_id: user._id,
-      //     // appointment_chat_id: user_chat._id
-      //   },
-      // });
+    //   include_external_user_ids: [userId],
+    //   contents: { en: `Addon Products Created notificaiton` },
+    //   headings: { en: "Addon Products Notification" },
+    //   name: "Addon Products",
+    //   data: {
+    //     status: "new_order",
+    //     type: 2,
+    //     // appointment_id: user._id,
+    //     // appointment_chat_id: user_chat._id
+    //   },
+    // });
 
     res
       .status(responseCode.SUCCESS)
@@ -375,7 +438,7 @@ export const checkDeliveryAddress = async (req, res) => {
         .status(200)
         .json({ status: true, message: "successfully delivery" });
     }
-    else if (!latitude <= 15.9165 && !longitude <=  80.1325) {
+    else if (!latitude <= 15.9165 && !longitude <= 80.1325) {
       return res
         .status(200)
         .json({ status: true, message: "out of locations" });
@@ -396,25 +459,25 @@ export const getEmptyBottle = async (req, res) => {
 
 
       const this_month_item_detail = await knex("users").select(
-          "one_liter_in_hand as delivered_orders",
-          "half_liter_in_hand as additional_delivered_orders",
-          "one_liter_in_return as remaining_orders",
-          "one_liter_in_return as additional_remaining_orders"
-        )
-        let empty_bottle_in_hand= {
-                 one_liter : this_month_item_detail[0].delivered_orders,
-                 half_liter : this_month_item_detail[0].additional_delivered_orders
-        }
+        "one_liter_in_hand as delivered_orders",
+        "half_liter_in_hand as additional_delivered_orders",
+        "one_liter_in_return as remaining_orders",
+        "one_liter_in_return as additional_remaining_orders"
+      )
+      let empty_bottle_in_hand = {
+        one_liter: this_month_item_detail[0].delivered_orders,
+        half_liter: this_month_item_detail[0].additional_delivered_orders
+      }
       let empty_bottle_in_return = {
-                 one_liter : this_month_item_detail[0].remaining_orders,
-                 half_liter : this_month_item_detail[0].additional_remaining_orders
-                }
-   
+        one_liter: this_month_item_detail[0].remaining_orders,
+        half_liter: this_month_item_detail[0].additional_remaining_orders
+      }
+
 
       res
         .status(responseCode.SUCCESS)
-        .json({ status: true,empty_bottle_in_hand,empty_bottle_in_return });
-      }
+        .json({ status: true, empty_bottle_in_hand, empty_bottle_in_return });
+    }
     else {
       return res
         .status(responseCode.FAILURE.DATA_NOT_FOUND)
@@ -432,13 +495,13 @@ export const getEmptyBottle = async (req, res) => {
 
 export const userAddressChange = async (req, res) => {
   try {
-    const { 
-      userId, 
-      title, 
-      address, 
-      landmark, 
-      type, 
-      address_id 
+    const {
+      userId,
+      title,
+      address,
+      landmark,
+      type,
+      address_id
     } = req.body;
 
     // await edit_address(userId, address_id, title, address, landmark, type);
@@ -502,20 +565,20 @@ export const getOverallCalendar = async (req, res) => {
   try {
     const { date } = req.body;
 
-    const overall_calendar_data = 
-      {
-        "date": date,
-        "products": {
-          "subscription": {
-            "1-liter": 1,
-            "0.5-liter": 0,
-            "packed-milk": 0
-          },
-          "addons-products": 0,
-          "is_delivered": 0
-        }
+    const overall_calendar_data =
+    {
+      "date": date,
+      "products": {
+        "subscription": {
+          "1-liter": 1,
+          "0.5-liter": 0,
+          "packed-milk": 0
+        },
+        "addons-products": 0,
+        "is_delivered": 0
       }
-    
+    }
+
 
     // await edit_address(userId, address_id, title, address, landmark, type);
 
@@ -537,18 +600,18 @@ export const getBillList = async (req, res) => {
     const user = await get_user_bill(userId);
 
     // await sendNotification({
-      //   include_external_user_ids: [userId],
-      //   contents: { en: `Addon Products Created notificaiton` },
-      //   headings: { en: "Addon Products Notification" },
-      //   name: "Addon Products",
-      //   data: {
-      //     status: "new_order",
-      //     type: 2,
-      //     // appointment_id: user._id,
-      //     // appointment_chat_id: user_chat._id
-      //   },
-      // });
-      
+    //   include_external_user_ids: [userId],
+    //   contents: { en: `Addon Products Created notificaiton` },
+    //   headings: { en: "Addon Products Notification" },
+    //   name: "Addon Products",
+    //   data: {
+    //     status: "new_order",
+    //     type: 2,
+    //     // appointment_id: user._id,
+    //     // appointment_chat_id: user_chat._id
+    //   },
+    // });
+
     if (user.body.length === 0) {
       return res
         .status(responseCode.FAILURE.DATA_NOT_FOUND)
@@ -599,10 +662,10 @@ export const getSingleBillList = async (req, res) => {
     }
     for (let i = 0; i < list.data.length; i++) {
       console.log(list)
-      
+
       list.data[i].id = list.data[i].id;
       list.data[i].bill_value = list.data[i].bill_value;
-      list.data[i].date = moment().format("DD-MM-YYYY"); 
+      list.data[i].date = moment().format("DD-MM-YYYY");
     }
     return res.status(responseCode.SUCCESS).json({ status: true, data: list });
   } catch (error) {
@@ -623,47 +686,48 @@ export const getSingleCalendarEvent = async (req, res) => {
         .json({ status: false, message: messages.MANDATORY_ERROR });
     }
 
-    const sub = await single_calendar_data(date,userId);
+    const sub = await single_calendar_data(date, userId);
 
     if (!sub.status) {
       return res
         .status(responseCode.FAILURE.DATA_NOT_FOUND)
         .json({ status: false, message: sub.message });
     }
-   
+
     for (let i = 0; i < sub.data.length; i++) {
-      
+
       sub.data[i].product_image = process.env.BASE_URL + sub.data[i].image;
       sub.data[i].quantity = sub.data[i].quantity;
       sub.data[i].price = sub.data[i].price;
-      
 
-      for (let j = 0; j < sub.add_product.length; j++) {  
-      
-      sub.add_product[0][j].id = sub.add_product[0][j].id;
-      sub.add_product[0][j].image = sub.add_product[0][j].image;
-     
 
-      if (sub.data[i].product_variation_type >= 500) {
-        sub.data[i].product_variation_type =
-          sub.data[i].product_variation_type / 1000 +
-          " " +
-          (sub.data[i].product_variation_type === "ml" ? "litre" : sub.data[i].unit_type);
-      } 
-    
-      delete sub.data[i].unit_value;
-      delete sub.data[i].unit_type;
+      for (let j = 0; j < sub.add_product.length; j++) {
+
+        sub.add_product[0][j].id = sub.add_product[0][j].id;
+        sub.add_product[0][j].image = sub.add_product[0][j].image;
+
+
+        if (sub.data[i].product_variation_type >= 500) {
+          sub.data[i].product_variation_type =
+            sub.data[i].product_variation_type / 1000 +
+            " " +
+            (sub.data[i].product_variation_type === "ml" ? "litre" : sub.data[i].unit_type);
+        }
+
+        delete sub.data[i].unit_value;
+        delete sub.data[i].unit_type;
+      }
+
+      const response = {
+        addons_products: [sub.add_product[0]],
+
+      };
+
+      return res
+        .status(responseCode.SUCCESS)
+        .json({ status: true, data: { ...sub.data[0], ...response } });
     }
-
-    const response = {
-      addons_products: [sub.add_product[0]],
-     
-    };
-
-    return res
-      .status(responseCode.SUCCESS)
-      .json({ status: true, data: { ...sub.data[0], ...response } });
-  } }catch (error) {
+  } catch (error) {
     console.log(error);
     return res
       .status(responseCode.FAILURE.DATA_NOT_FOUND)
@@ -673,7 +737,7 @@ export const getSingleCalendarEvent = async (req, res) => {
 
 export const getOverallCalendarEvent = async (req, res) => {
   try {
-    const { date, userId } = req.body;  
+    const { date, userId } = req.body;
 
     if (!date) {
       return res
@@ -681,8 +745,9 @@ export const getOverallCalendarEvent = async (req, res) => {
         .json({ status: false, message: messages.MANDATORY_ERROR });
     }
 
+
     const products = await knex("subscribed_user_details AS sub")
-      .select(  
+      .select(
         "sub.date",
       )
       .where({ "sub.date": date });
@@ -695,8 +760,8 @@ export const getOverallCalendarEvent = async (req, res) => {
     }
 
     // console.log(sub.data[0].date)
-    const diary = await knex('users').select('today_one_liter','today_half_liter')
-    .where({id:userId})
+    const diary = await knex('users').select('today_one_liter', 'today_half_liter')
+      .where({ id: userId })
 
     console.log(diary[0].today_one_liter)
 
@@ -704,16 +769,16 @@ export const getOverallCalendarEvent = async (req, res) => {
 
     if (diary[0].today_one_liter === 0 || null) {
       status = 0;
-    } 
+    }
     if (diary[0].today_half_liter === 0 || null) {
-      status =0;
+      status = 0;
     }
     else {
       status = 1;
     }
 
-    const add_on = await knex('add_on_orders').select('id','status')
-    .where({user_id:userId})
+    const add_on = await knex('add_on_orders').select('id', 'status')
+      .where({ user_id: userId })
 
     let add;
     if (add_on[0].id === 0 || null) {
@@ -730,11 +795,11 @@ export const getOverallCalendarEvent = async (req, res) => {
       delivered = 0;
     }
 
-    const data =  {
+    const data = {
       "date": moment().format("DD-MM-YYYY"),
       "products": {
-        "subscription": { 
-          "1-liter":status,
+        "subscription": {
+          "1-liter": status,
           "0.5-liter": status,
           "packed-milk": 0
         },
@@ -755,42 +820,42 @@ export const getOverallCalendarEvent = async (req, res) => {
 
 
 // rider location 
-export const RiderLocation = async (req,res) => {
-  try{
-      const { userId } = req.body;
-    
-    const rider1= await rider_location(userId)
-    let data =[];
+export const RiderLocation = async (req, res) => {
+  try {
+    const { userId } = req.body;
 
-    let user ={
-      'id':rider1.location[0].user_id,
-      'name':rider1.location[0].user_name,
-      'address':rider1.location[0].user_address,
-      'latitude':rider1.location[0].user_latitude,
-      'longitude':rider1.location[0].user_longitude,
+    const rider1 = await rider_location(userId)
+    let data = [];
+
+    let user = {
+      'id': rider1.location[0].user_id,
+      'name': rider1.location[0].user_name,
+      'address': rider1.location[0].user_address,
+      'latitude': rider1.location[0].user_latitude,
+      'longitude': rider1.location[0].user_longitude,
 
     }
 
-    let branch ={
-      'id':rider1.location[0].admin_id,
-      'name':rider1.location[0].admin_name,
-      'address':rider1.location[0].admin_address,
-      'latitude':rider1.location[0].admin_latitude,
-      'longitude':rider1.location[0].admin_longitude,
+    let branch = {
+      'id': rider1.location[0].admin_id,
+      'name': rider1.location[0].admin_name,
+      'address': rider1.location[0].admin_address,
+      'latitude': rider1.location[0].admin_latitude,
+      'longitude': rider1.location[0].admin_longitude,
     }
 
-    let rider ={
-      'id':rider1.location[0].rider_id,
-      'name':rider1.location[0].rider_name,
-      'latitude':rider1.location[0].rider_latitude,
-      'longitude':rider1.location[0].rider_longitude,
+    let rider = {
+      'id': rider1.location[0].rider_id,
+      'name': rider1.location[0].rider_name,
+      'latitude': rider1.location[0].rider_latitude,
+      'longitude': rider1.location[0].rider_longitude,
     }
-    return res.status(responseCode.SUCCESS).json({ status: true, data:{user,branch,rider} });
+    return res.status(responseCode.SUCCESS).json({ status: true, data: { user, branch, rider } });
 
   }
-  catch(error){
+  catch (error) {
     console.log(error);
-    res.status(500).json({ status: false, message:"no order placed today SORRY!!!!!" });
+    res.status(500).json({ status: false, message: "no order placed today SORRY!!!!!" });
   }
 }
 

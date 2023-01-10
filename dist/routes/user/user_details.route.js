@@ -40,6 +40,8 @@ userRouter.post("/get_single_bill_list", _userDetail.getSingleBillList);
 userRouter.post("/user_address_change", _authToken.authenticateJWT, _userDetail.userAddressChange);
 userRouter.post("/single_calendar", _authToken.authenticateJWT, _userDetail.getSingleCalendar);
 userRouter.post("/over_all_calendar", _authToken.authenticateJWT, _userDetail.getOverallCalendar);
+userRouter.post("/single_calendar_event", _authToken.authenticateJWT, _userDetail.getSingleCalendarEvent);
+userRouter.post("/over_all_calendar_event", _authToken.authenticateJWT, _userDetail.getOverallCalendarEvent);
 
 // rider details 
 userRouter.post("/rider_location", _authToken.authenticateJWT, _userDetail.RiderLocation);
