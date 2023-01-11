@@ -28,27 +28,24 @@ var getPayment = /*#__PURE__*/function () {
             });
           case 2:
             payment = _context.sent;
-            // knex.select('key','value').from('app_settings')
-
-            console.log(payment);
-            _context.prev = 4;
+            _context.prev = 3;
             return _context.abrupt("return", {
               status: _responseCode["default"].SUCCESS,
               body: payment
             });
-          case 8:
-            _context.prev = 8;
-            _context.t0 = _context["catch"](4);
+          case 7:
+            _context.prev = 7;
+            _context.t0 = _context["catch"](3);
             return _context.abrupt("return", {
               status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
               error: _context.t0
             });
-          case 11:
+          case 10:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[4, 8]]);
+    }, _callee, null, [[3, 7]]);
   }));
   return function getPayment(_x, _x2, _x3) {
     return _ref.apply(this, arguments);

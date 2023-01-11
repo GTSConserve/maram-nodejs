@@ -14,7 +14,7 @@ var subscriptionRouter = _express["default"].Router({
 });
 subscriptionRouter.post("/new_subscription", _authToken.authenticateJWT, _subscription.newSubscription);
 subscriptionRouter.post("/get_all_subscription", _authToken.authenticateJWT, _subscription.getAllSubscription);
-subscriptionRouter.post("/single_subscription", _authToken.authenticateJWT, _subscription.singleSubscription);
+subscriptionRouter.post("/single_subscription", _subscription.singleSubscription);
 subscriptionRouter.get("/get_subscription_plan", _authToken.authenticateJWT, _subscription.getSubscriptionPlan);
 subscriptionRouter.post("/create_additional_order", _authToken.authenticateJWT, _subscription.createAdditionalOrder);
 subscriptionRouter.post("/edit_additional_order", _authToken.authenticateJWT, _subscription.editAdditionalOrder);

@@ -833,7 +833,7 @@ var getSingleCalendarEvent = /*#__PURE__*/function () {
             sub.data[i].quantity = sub.data[i].quantity;
             sub.data[i].price = sub.data[i].price;
             for (j = 0; j < sub.add_product.length; j++) {
-              sub.add_product[0][j].id = sub.add_product[0][j].id;
+              sub.add_product[0][j].product_id = sub.add_product[0][j].product_id;
               sub.add_product[0][j].image = sub.add_product[0][j].image;
               if (sub.data[i].product_variation_type >= 500) {
                 sub.data[i].product_variation_type = sub.data[i].product_variation_type / 1000 + " " + (sub.data[i].product_variation_type === "ml" ? "litre" : sub.data[i].unit_type);
@@ -1044,13 +1044,13 @@ var getBillList = /*#__PURE__*/function () {
 exports.getBillList = getBillList;
 var getSingleBillList = /*#__PURE__*/function () {
   var _ref16 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee16(req, res) {
-    var bill_id, list, i;
+    var _req$body9, bill_id, userId, list, i;
     return _regeneratorRuntime().wrap(function _callee16$(_context16) {
       while (1) {
         switch (_context16.prev = _context16.next) {
           case 0:
             _context16.prev = 0;
-            bill_id = req.body.bill_id;
+            _req$body9 = req.body, bill_id = _req$body9.bill_id, userId = _req$body9.userId;
             if (bill_id) {
               _context16.next = 4;
               break;
@@ -1061,7 +1061,7 @@ var getSingleBillList = /*#__PURE__*/function () {
             }));
           case 4:
             _context16.next = 6;
-            return (0, _user_details.get_single_bill)(bill_id);
+            return (0, _user_details.get_single_bill)(bill_id, userId);
           case 6:
             list = _context16.sent;
             console.log(list);

@@ -435,7 +435,7 @@ var getAllSubscription = /*#__PURE__*/function () {
 exports.getAllSubscription = getAllSubscription;
 var singleSubscription = /*#__PURE__*/function () {
   var _ref9 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9(req, res) {
-    var _req$body5, userId, subscription_id, sub, i, j, response;
+    var _req$body5, userId, subscription_id, data1, sub, date, i, j, response;
     return _regeneratorRuntime().wrap(function _callee9$(_context9) {
       while (1) {
         switch (_context9.prev = _context9.next) {
@@ -451,38 +451,40 @@ var singleSubscription = /*#__PURE__*/function () {
               message: _messages["default"].MANDATORY_ERROR
             }));
           case 4:
-            _context9.next = 6;
+            data1 = [];
+            _context9.next = 7;
             return (0, _subscription.single_subscription)(userId, subscription_id);
-          case 6:
+          case 7:
             sub = _context9.sent;
+            date = [];
             if (sub.status) {
-              _context9.next = 9;
+              _context9.next = 11;
               break;
             }
             return _context9.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
               message: sub.message
             }));
-          case 9:
+          case 11:
             i = 0;
-          case 10:
+          case 12:
             if (!(i < sub.data.length)) {
-              _context9.next = 25;
+              _context9.next = 27;
               break;
             }
             sub.data[i].image = process.env.BASE_URL + sub.data[i].image;
             sub.data[i].subscription_start_date = (0, _moment["default"])().format("YYYY-MM-DD");
-            sub.data[i].customized_days = sub.data[i].customized_days;
+            sub.data[i].customized_days = [sub.data[i].customized_days];
             sub.data[i].address_id = sub.data[i].address_id;
             sub.data[i].quantity = sub.data[i].quantity;
             sub.data[i].price = sub.data[i].price;
             sub.data[i].demo_price = sub.data[i].demo_price;
-            sub.data[i].date = (0, _moment["default"])().format("YYYY-MM-DD");
+            sub.data[i].date = [(0, _moment["default"])().format("YYYY-MM-DD")];
             for (j = 0; j < sub.add_product.length; j++) {
               console.log(sub.add_product[0][j].id);
               sub.add_product[0][j].id = sub.add_product[0][j].id;
               sub.add_product[0][j].image = sub.add_product[0][j].image;
-              sub.add_product[0][j].date = (0, _moment["default"])().format("YYYY-MM-DD");
+              sub.add_product[0][j].date = [(0, _moment["default"])().format("YYYY-MM-DD")];
               if (sub.data[i].unit_value >= 500) {
                 sub.data[i].unit = sub.data[i].unit_value / 1000 + " " + (sub.data[i].unit_type === "ml" ? "litre" : sub.data[i].unit_type);
               } else {
@@ -499,27 +501,27 @@ var singleSubscription = /*#__PURE__*/function () {
               status: true,
               data: _objectSpread(_objectSpread({}, sub.data[0]), response)
             }));
-          case 22:
+          case 24:
             i++;
-            _context9.next = 10;
-            break;
-          case 25:
-            _context9.next = 31;
+            _context9.next = 12;
             break;
           case 27:
-            _context9.prev = 27;
+            _context9.next = 33;
+            break;
+          case 29:
+            _context9.prev = 29;
             _context9.t0 = _context9["catch"](0);
             console.log(_context9.t0);
             return _context9.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
               message: _messages["default"].DATA_NOT_FOUND
             }));
-          case 31:
+          case 33:
           case "end":
             return _context9.stop();
         }
       }
-    }, _callee9, null, [[0, 27]]);
+    }, _callee9, null, [[0, 29]]);
   }));
   return function singleSubscription(_x15, _x16) {
     return _ref9.apply(this, arguments);
