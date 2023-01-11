@@ -615,6 +615,20 @@ export const getSingleCalendarEvent = async (req, res) => {
       sub.data[i].quantity = sub.data[i].quantity;
       sub.data[i].price = sub.data[i].price;
 
+      for (let j = 0; j < sub.additional1.length; j++) {
+
+        sub.additional1[0][j].product_id = sub.additional1[0][j].product_id;
+        sub.additional1[0][j].image = sub.additional1[0][j].image;
+
+
+        if (sub.data[i].product_variation_type >= 500) {
+          sub.data[i].product_variation_type =
+            sub.data[i].product_variation_type / 1000 +
+            " " +
+            (sub.data[i].product_variation_type === "ml" ? "litre" : sub.data[i].unit_type);
+        }
+      }
+
 
       for (let j = 0; j < sub.add_product.length; j++) {
 
@@ -635,6 +649,7 @@ export const getSingleCalendarEvent = async (req, res) => {
 
       const response = {
         subscription_products: [sub.data[0]],
+        additional_order_products:sub.additional1[0],
         addons_products: sub.add_product[0],
 
       };

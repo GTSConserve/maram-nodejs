@@ -277,7 +277,7 @@ export const getAllSubscription = async (req, res) => {
 export const singleSubscription = async (req, res) => {
   try {
     const { userId, subscription_id } = req.body;
-
+   
     if (!subscription_id) {
       return res
         .status(responseCode.FAILURE.BAD_REQUEST)
@@ -285,6 +285,8 @@ export const singleSubscription = async (req, res) => {
     }
      let data1 =[];
     const sub = await single_subscription(userId, subscription_id);
+    
+
     let date = [];
     if (!sub.status) {
       return res
@@ -296,28 +298,30 @@ export const singleSubscription = async (req, res) => {
       
       sub.data[i].image = process.env.BASE_URL + sub.data[i].image;
       sub.data[i].subscription_start_date = moment().format("YYYY-MM-DD");
-      sub.data[i].customized_days = [sub.data[i].customized_days];
+      sub.data[i].customized_days = sub.data[i].customized_days!=null? [sub.data[i].customized_days]:[];
       sub.data[i].address_id = sub.data[i].address_id;
       sub.data[i].quantity = sub.data[i].quantity;
       sub.data[i].price = sub.data[i].price;
       sub.data[i].demo_price = sub.data[i].demo_price;
       sub.data[i].date =[ moment().format("YYYY-MM-DD")];
-      
+
+      if (sub.data[i].unit_value >= 500) {
+        sub.data[i].unit =
+          sub.data[i].unit_value / 1000 +
+          " " +
+          (sub.data[i].unit_type == "ml" ? "litre" : sub.data[i].unit_type);
+      } else {
+        sub.data[i].unit =
+          sub.data[i].unit_value + " " + sub.data[i].unit_type;
+      }
+   
       for (let j = 0; j < sub.add_product.length; j++) {  
         console.log( sub.add_product[0][j].id)    
       sub.add_product[0][j].id = sub.add_product[0][j].id;
       sub.add_product[0][j].image = sub.add_product[0][j].image;
       sub.add_product[0][j].date =[(moment().format("YYYY-MM-DD"))];
 
-      if (sub.data[i].unit_value >= 500) {
-        sub.data[i].unit =
-          sub.data[i].unit_value / 1000 +
-          " " +
-          (sub.data[i].unit_type === "ml" ? "litre" : sub.data[i].unit_type);
-      } else {
-        sub.data[i].unit =
-          sub.data[i].unit_value + " " + sub.data[i].unit_type;
-      }
+    
       delete sub.data[i].unit_value;
       delete sub.data[i].unit_type;
     }

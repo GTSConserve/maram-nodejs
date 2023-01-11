@@ -323,20 +323,28 @@ export const single_calendar_data = async (date,userId, sub_id,id) => {
       .join("user_address", "user_address.id", "=", "sub.user_address_id")
       .where({ "sub.date": date });
 
-      console.log(products)
+      // console.log(products)
      const additional = await knex("additional_orders")
      .join("subscribed_user_details", "subscribed_user_details.id", "=", "additional_orders.subscription_id")
      .join("products", "products.id", "=", "subscribed_user_details.product_id")
+     .join(
+      "subscription_type",
+      "subscription_type.id",
+      "=",
+      "subscribed_user_details.subscribe_type_id"
+    )
      .join("unit_types", "unit_types.id", "=", "products.unit_type_id")
      .select(
-       "products.id as product_id",
-       "products.name as product_name",
-       "products.image as product_image",
-       "products.unit_value as product_variation",
-       "unit_types.value as product_variation_type",
-       "products.price as product_price",
-      //  "products.quantity as product_quantity",
-
+      "subscribed_user_details.id as subscription_id",
+      "subscribed_user_details.subscription_status",
+      "products.name as product_name",
+      "products.image as product_image",
+      "products.unit_value as product_variation",
+      "products.price as product_price",
+      // "products.quantity as product_quantity",
+      "unit_types.value as product_variation_type",
+      "subscription_type.name as subscription_mode",
+      "additional_orders.id as additional_order_id",
      )
      .where({ "subscribed_user_details.user_id" : userId});
      console.log(additional)
@@ -353,7 +361,7 @@ export const single_calendar_data = async (date,userId, sub_id,id) => {
        "products.unit_value as product_variation",
        "unit_types.value as product_variation_type",
        "products.price as product_price",
-      //  "products.quantity as product_quantity",
+       "add_on_order_items.remove_status as remove_status",
 
      )
      .where({"add_on_orders.user_id" : userId});
@@ -365,7 +373,7 @@ export const single_calendar_data = async (date,userId, sub_id,id) => {
       return { status: false, message: "No Subscription Found" };
     }
 
-    return { status: true, data: products, add_product };
+    return { status: true, data: products,additional1,add_product };
   } catch (error) {
     console.log(error);
     return { status: false, message: "No Subscription Found"};
