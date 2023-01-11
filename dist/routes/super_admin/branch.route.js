@@ -24,5 +24,9 @@ branchRouter.get('/get_pending_bill', _branch.getPendingBill);
 branchRouter.get('/get_received_bill', _branch.getReceivedBill);
 branchRouter.get('/get_completed_bill', _branch.getCompletedBill);
 branchRouter.post('/approve_bill', _branch.approveBill);
+
+// get zone based on city for front end
+
+branchRouter.post('/get_zones', _branch.getZones);
 var _default = branchRouter;
 exports["default"] = _default;

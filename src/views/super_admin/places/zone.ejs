@@ -74,7 +74,7 @@
                                                             placeholder="Name" name="name">
 
                                                     </div>
-                                                    <div class="col-sm-12">
+                                                    <div class="col-sm-12 mt-3">
                                                         <label>Choose a City</label>
                                                         <select wire:model="countryid" class="form-control" name="city_id" required>
                                                             <option value="">Select City</option>
@@ -211,7 +211,7 @@
                                                     </div>
                                                     <div class="form-row mb-4">
                                                         <div class="col-sm-12">
-                                                            <label>Choose a country</label>
+                                                            <label>Choose a City</label>
                                                             <select wire:model="countryid" class="form-control" name="city_id" required>
                                                                 <option value="<%=zone.city_id %>"><%=zone.city_name %></option>
                                                                 <% for(city of cities){ %>

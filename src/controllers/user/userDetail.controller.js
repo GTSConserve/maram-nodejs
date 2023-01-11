@@ -15,6 +15,7 @@ import {
   checkAddress,
   get_user_bill,
   get_single_bill,
+  single_calendar_data,
   rider_location
 } from "../../models/user/user_details.model";
 import messages from "../../constants/messages";
@@ -123,9 +124,10 @@ export const editAddress = async (req, res) => {
 };
 
 export const getUser = async (req, res) => {
+  console.log("hi");
   try {
     const { userId } = req.body;
-
+    
     const user = await get_user(userId);
 
     console.log(user)
@@ -513,75 +515,235 @@ export const userAddressChange = async (req, res) => {
   }
 };
 
-export const getSingleCalendar = async (req, res) => {
+// export const getSingleCalendar = async (req, res) => {
+//   try {
+//     const { date } = req.body;
+
+//     const single_calendar_data =
+//     {
+//       "subscription_products": [
+//         {
+//           "subscription_id": 1,
+//           "product_name": "Farm Fresh Natural Milk",
+//           "product_image": "https://i.pinimg.com/originals/e1/e3/e6/e1e3e608910263114b0f03560bdcd966.jpg",
+//           "product_variation": 1,
+//           "product_price": 130,
+//           "product_quantity": 2,
+//           "subcription_status": "1",
+//           "subcription_mode": "Daily Order",
+//         },
+//       ],
+//       "addons_products": [
+//         {
+//           "product_id": 1,
+//           "product_name": "Farm Fresh Natural Milk",
+//           "product_image": "https://i.pinimg.com/originals/e1/e3/e6/e1e3e608910263114b0f03560bdcd966.jpg",
+//           "product_variation": "1 liter",
+//           "product_price": 130,
+//           "product_quantity": 2,
+//           "remove_status": 0
+//         },
+//       ],
+
+//     }
+
+
+//     // await edit_address(userId, address_id, title, address, landmark, type);
+
+//     res
+//       .status(responseCode.SUCCESS)
+//       .json({ status: true, data: single_calendar_data });
+//   } catch (error) {
+//     console.log(error);
+
+//     res.status(responseCode.FAILURE.BAD_REQUEST).json({ status: false, error });
+//   }
+// };
+
+// export const getOverallCalendar = async (req, res) => {
+//   try {
+//     const { date } = req.body;
+
+//     const overall_calendar_data = 
+//       {
+//         "date": date,
+//         "products": {
+//           "subscription": {
+//             "1-liter": 1,
+//             "0.5-liter": 0,
+//             "packed-milk": 0
+//           },
+//           "addons-products": 0,
+//           "is_delivered": 0
+//         }
+//       }
+    
+
+//     // await edit_address(userId, address_id, title, address, landmark, type);
+
+//     res
+//       .status(responseCode.SUCCESS)
+//       .json({ status: true, data: overall_calendar_data });
+//   } catch (error) {
+//     console.log(error);
+
+//     res.status(responseCode.FAILURE.BAD_REQUEST).json({ status: false, error });
+//   }
+// };
+
+export const getSingleCalendarEvent = async (req, res) => {
   try {
-    const { date } = req.body;
+    const { date, userId } = req.body;
 
-    const single_calendar_data =
-    {
-      "subscription_products": [
-        {
-          "subscription_id": 1,
-          "product_name": "Farm Fresh Natural Milk",
-          "product_image": "https://i.pinimg.com/originals/e1/e3/e6/e1e3e608910263114b0f03560bdcd966.jpg",
-          "product_variation": 1,
-          "product_price": 130,
-          "product_quantity": 2,
-          "subcription_status": "1",
-          "subcription_mode": "Daily Order",
-        },
-      ],
-      "addons_products": [
-        {
-          "product_id": 1,
-          "product_name": "Farm Fresh Natural Milk",
-          "product_image": "https://i.pinimg.com/originals/e1/e3/e6/e1e3e608910263114b0f03560bdcd966.jpg",
-          "product_variation": "1 liter",
-          "product_price": 130,
-          "product_quantity": 2,
-          "remove_status": 0
-        },
-      ],
-
+    if (!date) {
+      return res
+        .status(responseCode.FAILURE.BAD_REQUEST)
+        .json({ status: false, message: messages.MANDATORY_ERROR });
     }
 
+    const sub = await single_calendar_data(date, userId);
 
-    // await edit_address(userId, address_id, title, address, landmark, type);
+    if (!sub.status) {
+      return res
+        .status(responseCode.FAILURE.DATA_NOT_FOUND)
+        .json({ status: false, message: sub.message });
+    }
 
-    res
-      .status(responseCode.SUCCESS)
-      .json({ status: true, data: single_calendar_data });
+    for (let i = 0; i < sub.data.length; i++) {
+
+      sub.data[i].product_image = process.env.BASE_URL + sub.data[i].image;
+      sub.data[i].quantity = sub.data[i].quantity;
+      sub.data[i].price = sub.data[i].price;
+
+      for (let j = 0; j < sub.additional1.length; j++) {
+
+        sub.additional1[0][j].product_id = sub.additional1[0][j].product_id;
+        sub.additional1[0][j].image = sub.additional1[0][j].image;
+
+
+        if (sub.data[i].product_variation_type >= 500) {
+          sub.data[i].product_variation_type =
+            sub.data[i].product_variation_type / 1000 +
+            " " +
+            (sub.data[i].product_variation_type === "ml" ? "litre" : sub.data[i].unit_type);
+        }
+      }
+
+
+      for (let j = 0; j < sub.add_product.length; j++) {
+
+        sub.add_product[0][j].product_id = sub.add_product[0][j].product_id;
+        sub.add_product[0][j].image = sub.add_product[0][j].image;
+
+
+        if (sub.data[i].product_variation_type >= 500) {
+          sub.data[i].product_variation_type =
+            sub.data[i].product_variation_type / 1000 +
+            " " +
+            (sub.data[i].product_variation_type === "ml" ? "litre" : sub.data[i].unit_type);
+        }
+
+        delete sub.data[i].unit_value;
+        delete sub.data[i].unit_type;
+      }
+
+      const response = {
+        subscription_products: [sub.data[0]],
+        additional_order_products:sub.additional1[0],
+        addons_products: sub.add_product[0],
+
+      };
+
+      return res
+        .status(responseCode.SUCCESS)
+        .json({ status: true, data: { ...response } });
+    }
   } catch (error) {
     console.log(error);
-
-    res.status(responseCode.FAILURE.BAD_REQUEST).json({ status: false, error });
+    return res
+      .status(responseCode.FAILURE.DATA_NOT_FOUND)
+      .json({ status: false, message: messages.DATA_NOT_FOUND });
   }
 };
 
-export const getOverallCalendar = async (req, res) => {
+export const getOverallCalendarEvent = async (req, res) => {
   try {
-    const { date } = req.body;
+    const { date, userId } = req.body;
 
-    const overall_calendar_data = 
-      {
-        "date": date,
-        "products": {
-          "subscription": {
-            "1-liter": 1,
-            "0.5-liter": 0,
-            "packed-milk": 0
-          },
-          "addons-products": 0,
-          "is_delivered": 0
-        }
+    console.log(userId)
+
+    if (!date) {
+      return res
+        .status(responseCode.FAILURE.BAD_REQUEST)
+        .json({ status: false, message: messages.MANDATORY_ERROR });
+    }
+    const products = await knex("subscribed_user_details AS sub")
+      .select(
+        "sub.date",
+      )
+      .where({ "sub.date": date, "sub.user_id":userId });
+
+      console.log(products[0])
+
+
+    if (products.length == 0) {
+      return res
+        .status(responseCode.FAILURE.BAD_REQUEST)
+        .json({ status: false, message: "Please check date" });
+    }
+
+    // console.log(sub.data[0].date)
+    const diary = await knex('users').select('today_one_liter', 'today_half_liter')
+      .where({ id: userId })
+
+    console.log(diary[0].today_one_liter)
+
+    let status;
+
+    if (diary[0].today_one_liter === 0 || null) {
+      status = 0;
+    }
+    if (diary[0].today_half_liter === 0 || null) {
+      status = 0;
+    }
+    else {
+      status = 1;
+    }
+
+    const add_on = await knex('add_on_orders').select('id', 'status')
+      .where({ user_id: userId })
+
+    let add;
+    if (add_on[0].id === 0 || null) {
+      add = 0;
+    } else {
+      add = 1;
+    }
+
+    let delivered;
+
+    if (add_on[0].status == "delivered") {
+      delivered = 1;
+    } else {
+      delivered = 0;
+    }
+
+    const data = {
+      "date": moment(products.date).format("DD-MM-YYYY"),
+      "products": {
+        "subscription": {
+          "1-liter": status,
+          "0.5-liter": status,
+          "packed-milk": 0
+        },
+        "addons-products": add,
+        "is_delivered": delivered
       }
-    
-
-    // await edit_address(userId, address_id, title, address, landmark, type);
+    }
 
     res
       .status(responseCode.SUCCESS)
-      .json({ status: true, data: overall_calendar_data });
+      .json({ status: true, data: data });
   } catch (error) {
     console.log(error);
 
@@ -593,6 +755,7 @@ export const getOverallCalendar = async (req, res) => {
 export const getBillList = async (req, res) => {
   try {
     const { userId } = req.body;
+    console.log(userId)
 
     const user = await get_user_bill(userId);
 
@@ -615,18 +778,12 @@ export const getBillList = async (req, res) => {
         .json({ status: false, message: "User Not Found" });
     }
 
-    // let get_bill = {};
-    // user.body.map((data) => {
-    //   get_bill.id = data.id;
-    //   get_bill.user_id = data.user_id;
-    //   get_bill.payment_id = data.id // payment id set to id
-    //   // ? process.env.BASE_URL + data.image
-    //   // : null;
-    //   get_bill.items = data.items;
-    //   get_bill.bill_no = data.bill_no
-    //   get_bill.bill_value = data.bill_value;
-    //   get_bill.status = data.status;
-    // });
+    let get_bill = {
+      "id": user.id,
+      "payment_status": "pending",
+      "bill_no": "MA1673413428513",
+      "sub_total": 1450
+     }
 
     res
       .status(responseCode.SUCCESS)
@@ -642,7 +799,7 @@ export const getBillList = async (req, res) => {
 
 export const getSingleBillList = async (req, res) => {
   try {
-    const { bill_id } = req.body;
+    const { bill_id,userId } = req.body;
 
     if (!bill_id) {
       return res
@@ -650,7 +807,8 @@ export const getSingleBillList = async (req, res) => {
         .json({ status: false, message: "Cannot find bill list" });
     }
 
-    const list = await get_single_bill(bill_id);
+    const list = await get_single_bill(bill_id,userId);
+    // console.log(list)
 
     if (!list) {
       return res

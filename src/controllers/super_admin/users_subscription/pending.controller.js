@@ -158,14 +158,28 @@ export const getCreateUsers = async (req, res) => {
 
 export const cancelPendingList = async (req, res) => {
   try {
-    const { id } = req.body;
+    const { id,add_on_id } = req.body;
 
-    await knex("subscribed_user_details")
+
+    if(id){
+
+      await knex("subscribed_user_details")
       .update({ subscription_status: "cancelled" })
       .where({ id });
+      
+      req.flash("success", "SuccessFully Cancelled the Subscription");
+      return res.redirect("/super_admin/users_subscription/get_new_users");
+    }
 
-    req.flash("success", "SuccessFully Cancelled the Subscription");
-    return res.redirect("/super_admin/users_subscription/get_new_users");
+    if(add_on_id){
+      await knex("add_on_orders")
+      .update({ status: "cancelled" })
+      .where({ id : add_on_id });
+      
+      req.flash("success", "SuccessFully Cancelled the Add On Order");
+      return res.redirect("/super_admin/users_subscription/get_new_users");
+    }
+
   } catch (error) {
     console.log(error);
     res.redirect("/home");
@@ -1066,7 +1080,25 @@ export const subscribeSubscription = async (req, res) => {
 };
 
 
+export const updateUser = async (req,res) =>{
+  try {
+    const {user_name,mobile_number,address,address_id} = req.body
 
+    const user_id = await knex("user_address").select("user_id").where({id : address_id})
+
+    await knex("user_address").update({address}).where({id : address_id})
+
+    await knex("users").update({name : user_name , mobile_number}).where({id : user_id[0].user_id})
+
+    req.flash("success","User Detail Updated SuccessFully")
+    res.redirect("/super_admin/users_subscription/get_all_users")
+
+
+  } catch (error) {
+    console.log(error)
+    res.redirect("/home")
+  }
+}
 
 
 // export const getSingleUser = async (req, res) => {

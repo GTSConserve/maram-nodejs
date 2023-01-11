@@ -1,6 +1,7 @@
 import e from "connect-flash";
 import knex from "../../services/db.service";
 import { GetProduct } from "../../utils/helper.util";
+import { sendNotification } from "../../notifications/message.sender";
 import moment from "moment";
 
 
@@ -201,34 +202,48 @@ export const addon_order = async (
 };
 
 
-export const remove_addonorders = async (product_id , delivery_date) => {
+export const remove_addonorders = async (product_id,delivery_date,userId ) => {
   // console.log("hi");
   try{
-      // console.log(product_id)
+      console.log(userId)
    const addon_status = await knex('add_on_orders').select('status','id')
-   .where({delivery_date:delivery_date})
+   .where({ user_id: userId, delivery_date:delivery_date})
 
-  //  console.log(addon_status[0].id)
+   console.log(addon_status)
 
-   if(addon_status[0]!="cancelled"){
+   if(addon_status[0]!="cancelled"){ 
 
-    await knex("add_on_order_items").update({status : "removed"}).where({product_id:product_id,add_on_order_id:addon_status[0].id})
+    await knex("add_on_order_items")
+    .update({status : "removed",remove_status:"1"})
+    .where({product_id:product_id,add_on_order_id:addon_status[0].id})
 
-    const select = await knex('add_on_order_items').select("price").where({product_id:product_id,add_on_order_id:addon_status[0].id, status :"removed"});
+    const select = await knex('add_on_order_items')
+    .select("price")
+    .where({product_id:product_id,add_on_order_id:addon_status[0].id, status :"removed"});
 
-    const select1 = await knex('add_on_orders').select("sub_total").where({id:addon_status[0].id,delivery_date:delivery_date});   
+    console.log(select)
 
-
+    const select1 = await knex('add_on_orders')
+    .select("sub_total")
+    .where({id:addon_status[0].id,delivery_date:delivery_date});
+    
+    
+    console.log(select1)
+    
     const total = select1[0].sub_total-select[0].price;
 
     // console.log(total)
 
-    const update = await knex('add_on_orders').update({sub_total:total}).where({id:addon_status[0].id,delivery_date:delivery_date});
+    const update = await knex('add_on_orders')
+    .update({sub_total:total})
+    .where({id:addon_status[0].id,delivery_date:delivery_date});
 
-    const status = await knex('add_on_orders').update({status:"cancelled"}).where({sub_total:0})
+    const status = await knex('add_on_orders')
+    .update({status:"cancelled"})
+    .where({sub_total:0})
 
     await sendNotification({
-      include_external_user_ids: [user_id.toString()],
+      include_external_user_ids: [userId.toString()],
       contents: { en: `Your Add_on Remove SuccessFully` },
       headings: { en: "Remove Add_on Notification" },
       name: "Remove Add_on Notification",
@@ -237,7 +252,7 @@ export const remove_addonorders = async (product_id , delivery_date) => {
         category_id: 0,
         product_type_id: 0,
         type: 2,
-        subscription_id: select1.id[0],
+        subscription_id: addon_status.id,
         bill_id: 0,
       },
     });

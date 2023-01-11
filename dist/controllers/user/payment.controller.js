@@ -8,6 +8,7 @@ exports.getVerifyPaymentMethod = exports.getRazorpayMethod = exports.getPaymentS
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 var _messages = _interopRequireDefault(require("../../constants/messages"));
 var _message = require("../../notifications/message.sender");
+var _payment = require("../../models/user/payment.model");
 var _crypto = _interopRequireWildcard(require("crypto"));
 var _db = _interopRequireDefault(require("../../services/db.service"));
 var _razorpay = _interopRequireDefault(require("razorpay"));
@@ -192,13 +193,13 @@ var getPaymentStatusUpdate = /*#__PURE__*/function () {
 exports.getPaymentStatusUpdate = getPaymentStatusUpdate;
 var getRazorpayMethod = /*#__PURE__*/function () {
   var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(req, res) {
-    var _req$body2, amount, order_id, razorpay, options, response;
+    var _req$body2, amount, order_id, userId, razorpay, options, response, signature;
     return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
             _context4.prev = 0;
-            _req$body2 = req.body, amount = _req$body2.amount, order_id = _req$body2.order_id;
+            _req$body2 = req.body, amount = _req$body2.amount, order_id = _req$body2.order_id, userId = _req$body2.userId; // console.log(userId)
             if (!(!amount && !order_id)) {
               _context4.next = 4;
               break;
@@ -231,8 +232,27 @@ var getRazorpayMethod = /*#__PURE__*/function () {
           case 10:
             response = _context4.sent;
             _context4.next = 13;
+            return (0, _db["default"])('bill_history').update({
+              razorpay_payment_id: response.id,
+              status: "1"
+            }).where({
+              user_id: userId,
+              bill_no: order_id
+            });
+          case 13:
+            signature = _context4.sent;
+            if (signature) {
+              _context4.next = 16;
+              break;
+            }
+            return _context4.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
+              status: false,
+              message: "please check bill number"
+            }));
+          case 16:
+            _context4.next = 18;
             return (0, _message.sendNotification)({
-              include_external_user_ids: [order_id.toString()],
+              include_external_user_ids: [userId.toString()],
               contents: {
                 en: "Your Razorpay Placed SuccessFully"
               },
@@ -245,31 +265,31 @@ var getRazorpayMethod = /*#__PURE__*/function () {
                 category_id: 0,
                 product_type_id: 0,
                 type: 3,
-                receipt: response.receipt[0],
-                amount: options.amount[0]
+                receipt: options.receipt,
+                amount: options.amount
               }
             });
-          case 13:
+          case 18:
             res.status(200).json({
               status: true,
               data: response
             });
-            _context4.next = 20;
+            _context4.next = 25;
             break;
-          case 16:
-            _context4.prev = 16;
+          case 21:
+            _context4.prev = 21;
             _context4.t0 = _context4["catch"](0);
             console.log(_context4.t0);
             res.status(500).json({
               status: false,
               message: "Razorpay method failed..."
             });
-          case 20:
+          case 25:
           case "end":
             return _context4.stop();
         }
       }
-    }, _callee4, null, [[0, 16]]);
+    }, _callee4, null, [[0, 21]]);
   }));
   return function getRazorpayMethod(_x7, _x8) {
     return _ref4.apply(this, arguments);
@@ -278,13 +298,13 @@ var getRazorpayMethod = /*#__PURE__*/function () {
 exports.getRazorpayMethod = getRazorpayMethod;
 var getVerifyPaymentMethod = /*#__PURE__*/function () {
   var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(req, res) {
-    var _req$body3, order_id, payment_id, secret, shasum, digest;
+    var _req$body3, userId, order_id, payment_id, secret, shasum, digest, signature;
     return _regeneratorRuntime().wrap(function _callee5$(_context5) {
       while (1) {
         switch (_context5.prev = _context5.next) {
           case 0:
             _context5.prev = 0;
-            _req$body3 = req.body, order_id = _req$body3.order_id, payment_id = _req$body3.payment_id;
+            _req$body3 = req.body, userId = _req$body3.userId, order_id = _req$body3.order_id, payment_id = _req$body3.payment_id;
             if (!(!order_id && !payment_id)) {
               _context5.next = 4;
               break;
@@ -298,7 +318,17 @@ var getVerifyPaymentMethod = /*#__PURE__*/function () {
             shasum = _crypto["default"].createHmac("sha256", secret);
             shasum.update(order_id + "|" + payment_id);
             digest = shasum.digest('hex');
-            console.log(digest, req.headers["x-razorpay-signature"]);
+            console.log(digest);
+            _context5.next = 11;
+            return (0, _db["default"])('bill_history').update({
+              razorpay_signature_id: digest
+            }).where({
+              user_id: userId,
+              bill_no: order_id
+            });
+          case 11:
+            signature = _context5.sent;
+            console.log(signature);
             if (digest === req.headers["x-razorpay-signature"]) {
               console.log("request is properly");
               res.status(200).json({
@@ -309,22 +339,22 @@ var getVerifyPaymentMethod = /*#__PURE__*/function () {
                 message: "Payment verification failed"
               });
             }
-            _context5.next = 16;
+            _context5.next = 20;
             break;
-          case 12:
-            _context5.prev = 12;
+          case 16:
+            _context5.prev = 16;
             _context5.t0 = _context5["catch"](0);
             console.log(_context5.t0);
             res.status(500).json({
               status: false,
               error: _context5.t0
             });
-          case 16:
+          case 20:
           case "end":
             return _context5.stop();
         }
       }
-    }, _callee5, null, [[0, 12]]);
+    }, _callee5, null, [[0, 16]]);
   }));
   return function getVerifyPaymentMethod(_x9, _x10) {
     return _ref5.apply(this, arguments);

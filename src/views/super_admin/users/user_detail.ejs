@@ -1531,161 +1531,160 @@
                                         }
                                     }
 
+                                  ///////////////////////////////////////////////// chnage user plan custom days insertation
 
-
-                                    ///////////////////////////////////////////////// chnage user plan custom days insertation
-
-                                    function checkChangePlanCustom(event){
-                                        console.log(event , "idddd")
-                                        console.log(event.id , "idddd")
-                                        console.log(event.value , "value")
-                                if(event.value == 3){
-                                    document.getElementById("custom_days_change_plan" + event.id).innerHTML = ` <label for="delivery_days" class="mt-3">Choose Your Custome Days</label>
-                                    <div class="row">
-                                        <div class="col-5">
-                            <div class="custom-control custom-checkbox checkbox-info">
-                                <input type="checkbox" name="custom_days" value="1" class="custom-control-input" id="hChkbox">
-                                <label class="custom-control-label" for="hChkbox">Sun</label>
-                            </div>
-                            <div class="custom-control custom-checkbox checkbox-info">
-                                <input type="checkbox" name="custom_days" value="2" class="custom-control-input" id="hChkbox2">
-                                <label class="custom-control-label" for="hChkbox2">Mon</label>
-                            </div>
-                            <div class="custom-control custom-checkbox checkbox-info">
-                                <input type="checkbox" name="custom_days" value="3" class="custom-control-input" id="hChkbox3">
-                                <label class="custom-control-label" for="hChkbox3">Tue</label>
-                            </div>
-                            <div class="custom-control custom-checkbox checkbox-info">
-                                <input type="checkbox" name="custom_days" value="4" class="custom-control-input" id="hChkbox4">
-                                <label class="custom-control-label" for="hChkbox4">Wed</label>
-                            </div>
-                            </div>
-                            <div class="col-5">
-                            <div class="custom-control custom-checkbox checkbox-info">
-                                <input type="checkbox" name="custom_days" value="5" class="custom-control-input" id="hChkbox5">
-                                <label class="custom-control-label" for="hChkbox5">Thu</label>
-                            </div>
-                            <div class="custom-control custom-checkbox checkbox-info">
-                                <input type="checkbox" name="custom_days" value="6" class="custom-control-input" id="hChkbox6">
-                                <label class="custom-control-label" for="hChkbox6">Fri</label>
-                            </div>
-                            <div class="custom-control custom-checkbox checkbox-info">
-                                <input type="checkbox" name="custom_days" value="7" class="custom-control-input" id="hChkbox7">
-                                <label class="custom-control-label" for="hChkbox7">Sat</label>
-                            </div>
-                            </div>
-                            `
-                                }else{
-                                    document.getElementById("custom_days_change_plan" + event.id).innerHTML = ``
-                                }
-                            }
-
-
-
-
-
-
-                                    ////////////////////////////////////////////////////// chnage user plan
-                                    
-
-                                    async function changeSubscriptionPlan(e){
-                                                let query = {}
-
-                                                    e.preventDefault()
-
-                                                    console.log(e)
-
-                                                    // sub products
-
-                                                    const sub_start_date = e.target.sub_start_date.value
-                                                    const your_plan = e.target.your_plan.value
-
-                                                    const user_address_id = e.target.user_address_id.value
-                                                    const sub_id = e.target.sub_id.value
-
-
-                                        // console.log($('#hChkbox').value() , "hit")
-
-                                        console.log(e.target.sub_start_date.value)
-                                        console.log(e.target)
-                                        console.log(e.target.custom_days, "tets")
-
-                                                    let custom_days_change 
-                                                    if(your_plan){
-                                                        console.log("tetsssssss" ,e.target.custom_days)
-                                                        // custom_days_change_plan
-                                                        custom_days_change = e.target.custom_days_change_plan
-                                                    }
-
-                                                    
-                                                    console.log(custom_days_change ,"check")
-                                                  
-
-                                                    // sub product
-                                                    if(your_plan.length != 0 ||sub_start_date.length != 0  ){
+                                  function checkChangePlanCustom(event){
+                                 
+                                 if(event.value == 3){
+                                     document.getElementById("custom_days_change_plan" + event.id).innerHTML = ` <label for="delivery_days" class="mt-3">Choose Your Custome Days</label>
+                                     <div class="row">
+                                         <div class="col-5">
+                             <div class="custom-control custom-checkbox checkbox-info">
+                                 <input type="checkbox" name="custom_days_change_plan" value="1" class="custom-control-input custom_days_change_plan" id="changePlanhChkbox">
+                                 <label class="custom-control-label" for="changePlanhChkbox">Sun</label>
+                             </div>
+                             <div class="custom-control custom-checkbox checkbox-info">
+                                 <input type="checkbox" name="custom_days_change_plan" value="2" class="custom-control-input custom_days_change_plan" id="changePlanhChkbox2">
+                                 <label class="custom-control-label" for="changePlanhChkbox2">Mon</label>
+                             </div>
+                             <div class="custom-control custom-checkbox checkbox-info">
+                                 <input type="checkbox" name="custom_days_change_plan" value="3" class="custom-control-input custom_days_change_plan" id="changePlanhChkbox3">
+                                 <label class="custom-control-label" for="changePlanhChkbox3">Tue</label>
+                             </div>
+                             <div class="custom-control custom-checkbox checkbox-info">
+                                 <input type="checkbox" name="custom_days_change_plan" value="4" class="custom-control-input custom_days_change_plan" id="changePlanhChkbox4">
+                                 <label class="custom-control-label" for="changePlanhChkbox4">Wed</label>
+                             </div>
+                             </div>
+                             <div class="col-5">
+                             <div class="custom-control custom-checkbox checkbox-info">
+                                 <input type="checkbox" name="custom_days_change_plan" value="5" class="custom-control-input custom_days_change_plan" id="changePlanhChkbox5">
+                                 <label class="custom-control-label" for="changePlanhChkbox5">Thu</label>
+                             </div>
+                             <div class="custom-control custom-checkbox checkbox-info">
+                                 <input type="checkbox" name="custom_days_change_plan" value="6" class="custom-control-input custom_days_change_plan" id="changePlanhChkbox6">
+                                 <label class="custom-control-label" for="changePlanhChkbox6">Fri</label>
+                             </div>
+                             <div class="custom-control custom-checkbox checkbox-info">
+                                 <input type="checkbox" name="custom_days_change_plan" value="7" class="custom-control-input custom_days_change_plan" id="changePlanhChkbox7">
+                                 <label class="custom-control-label" for="changePlanhChkbox7">Sat</label>
+                             </div>
+                             </div>
+                             `
+                                 }else{
+                                     document.getElementById("custom_days_change_plan" + event.id).innerHTML = ``
+                                 }
+                             }
+ 
+ 
+ 
+ 
+ 
+ 
+                                     ////////////////////////////////////////////////////// chnage user plan
+                                     
+ 
+                                     async function changeSubscriptionPlan(e){
+                                                 let query = {}
+ 
+                                                     e.preventDefault()
+ 
+                                                     console.log(e)
+ 
+                                                     // sub products
+ 
+                                          const custom_days =  document.getElementsByClassName("custom_days_change_plan")
+ 
+                                         // console.log(e.target.custom_days , "custom_days")
+ 
+                                                     const sub_start_date = e.target.sub_start_date.value
+                                                     const your_plan = e.target.your_plan.value
+ 
+                                                     const user_address_id = e.target.user_address_id.value
+                                                     const sub_id = e.target.sub_id.value
+ 
+ 
+                                         // console.log($('#hChkbox').value() , "hit")
+ 
+ 
+                                                     let custom_days_change 
+                                                     if(your_plan){
+                                                         // custom_days_change_plan
+                                                         // custom_days_change = e.target.custom_days_change_plan
+                                                     }
+ 
+                                                     
+                                             
+                                                   
+ 
+                                                     // sub product
+                                                     if(your_plan.length != 0 ||sub_start_date.length != 0  ){
+                                                         
                                                         
-                                                       
-                                                        if(your_plan.length === 0 ||sub_start_date.length === 0  ){
-                                                          
-
-                                                            error.style ="display: block; padding-right: 17px;"
-                                                            error.className = "modal fade show"
-
-                                                            return document.getElementById("dynamic_content_error").innerText = "Please Fill the Change Plan Details"
-
-
-                                                        }
-
-                                                        if(your_plan == 3){
-
-                                                            let count = 0
-                                                            let cutsom = []
-
-                                                            for(days of custom_days){
-                                                                if(!days.checked){
-                                                                    count += 1
-                                                                }
-                                                                if (count == 7){
-                                                                    error.style ="display: block; padding-right: 17px;"
-                                                                    error.className = "modal fade show"
-                                                                    return document.getElementById("dynamic_content_error").innerText = "Please Choose A Day "
-                                                                }
-
-                                                                if(days.checked){
-                                                                    cutsom.push(days.value)
-                                                                }
-
-                                                            }
-                                                            query.custom_days = cutsom
-                                                        }
-
-                                        
-                                                        query.your_plan = your_plan
-                                                        query.sub_start_date = sub_start_date
-                                                        query.sub_id = sub_id
-
-                                                    }
-
-
-
-                                                    console.log(query)
-
-
-
-                                                    await fetch('/branch_admin/user/change_user_plan', {
-                                                        method: 'POST',
-                                                        headers: {
-                                                            'Accept': 'application/json',
-                                                            'Content-Type': 'application/json'
-                                                        },
-                                                        body: JSON.stringify({"data": query , "user_address_id" : user_address_id})
-                                                        })
-                                                                                                    
-                                                    // window.location.href = "/super_admin/users_subscription/single_user?user_address_id=" + user_address_id
-
-                                            }
-                               
-
+                                                         if(your_plan.length === 0 ||sub_start_date.length === 0  ){
+                                                           
+ 
+                                                             error.style ="display: block; padding-right: 17px;"
+                                                             error.className = "modal fade show"
+ 
+                                                             return document.getElementById("dynamic_content_error").innerText = "Please Fill the Change Plan Details"
+ 
+ 
+                                                         }
+ 
+                                                         if(your_plan == 3){
+ 
+                                                             let count = 0
+                                                             let cutsom = []
+ 
+                                                             for(days of custom_days){
+                                                                 if(!days.checked){
+                                                                     count += 1
+                                                                 }
+                                                                 if (count == 7){
+                                                                     error.style ="display: block; padding-right: 17px;"
+                                                                     error.className = "modal fade show"
+                                                                     return document.getElementById("dynamic_content_error").innerText = "Please Choose A Day "
+                                                                 }
+ 
+                                                                 if(days.checked){
+                                                                     cutsom.push(days.value)
+                                                                 }
+ 
+                                                             }
+                                                             query.custom_days = cutsom
+                                                         }
+ 
+                                         
+                                                         query.your_plan = your_plan
+                                                         query.sub_start_date = sub_start_date
+                                                         query.sub_id = sub_id
+ 
+                                                     }
+ 
+ 
+ 
+                                                     console.log(query)
+ 
+ 
+ 
+                                                     await fetch('/branch_admin/user/change_user_plan', {
+                                                         method: 'POST',
+                                                         headers: {
+                                                             'Accept': 'application/json',
+                                                             'Content-Type': 'application/json'
+                                                         },
+                                                         body: JSON.stringify({"data": query , })
+                                                         })
+                                                           
+                                                         await  swal("Done", "Subscription Plan Was Changed SuccessFully", "success");
+ 
+                                                     window.location.href = "/super_admin/users_subscription/single_user?user_address_id=" + user_address_id
+ 
+                                             }
+                                
+ 
+ 
 
 
 

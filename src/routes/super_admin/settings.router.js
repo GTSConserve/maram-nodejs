@@ -5,7 +5,7 @@ import { multerStorage } from "../../utils/helper.util";
 import { getPlan } from "../../controllers/super_admin/settings/plan.controller";
 
 import { createAppsettings, getAppSettings, updateappsettings, updateSettingsStatus } from "../../controllers/super_admin/settings/app_settings.controller";
-import { createBanners, getBanners, updateBanners, updateBannerStatus } from "../../controllers/super_admin/settings/banner.controller";
+import { createBanners, getBanners, updateBanners, updateBannerStatus ,deleteBanner} from "../../controllers/super_admin/settings/banner.controller";
 
 
 
@@ -34,6 +34,7 @@ settingsRouter.get("/get_banner", getBanners);
 settingsRouter.post("/create_banners",uploadImg, createBanners);
 settingsRouter.post("/update_banners",uploadImg, updateBanners);
 settingsRouter.post("/update_banner_status",updateBannerStatus);
+settingsRouter.post("/delete_banners",deleteBanner);
 
 
 

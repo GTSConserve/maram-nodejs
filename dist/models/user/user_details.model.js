@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.rider_location = exports.remove_order = exports.get_user_bill = exports.get_user = exports.get_single_bill = exports.get_address = exports.edit_address = exports.edit = exports.delete_user_address = exports.checkAddress = exports.change_plan = void 0;
+exports.single_calendar_data = exports.rider_location = exports.remove_order = exports.get_user_bill = exports.get_user = exports.get_single_bill = exports.get_address = exports.edit_address = exports.edit = exports.delete_user_address = exports.checkAddress = exports.change_plan = void 0;
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 var _db = _interopRequireDefault(require("../../services/db.service"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -443,37 +443,48 @@ var checkAddress = /*#__PURE__*/function () {
 exports.checkAddress = checkAddress;
 var get_user_bill = /*#__PURE__*/function () {
   var _ref9 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9(userId) {
-    var getuser;
+    var getuser, items, sum, i;
     return _regeneratorRuntime().wrap(function _callee9$(_context9) {
       while (1) {
         switch (_context9.prev = _context9.next) {
           case 0:
             _context9.next = 2;
-            return _db["default"].select("id", "items", "bill_no", "bill_value", "status").from("bill_history").where({
+            return (0, _db["default"])("bill_history").join("bill_history_details", "bill_history_details.bill_history_id", "=", "bill_history.id").select("bill_history.id", "bill_history.payment_status", "bill_history.bill_no", "bill_history.sub_total", 'bill_history_details.total_qty as items').from("bill_history").where({
               user_id: userId
             });
           case 2:
             getuser = _context9.sent;
             console.log(getuser);
-            _context9.prev = 4;
+            _context9.next = 6;
+            return (0, _db["default"])('bill_history_details').select('total_qty').where({
+              bill_history_id: getuser[0].id
+            });
+          case 6:
+            items = _context9.sent;
+            sum = 0;
+            for (i = 0; i < items.length; i++) {
+              sum += items[i].total_qty;
+            }
+            console.log(sum);
+            _context9.prev = 10;
             return _context9.abrupt("return", {
               status: _responseCode["default"].SUCCESS,
               body: getuser
             });
-          case 8:
-            _context9.prev = 8;
-            _context9.t0 = _context9["catch"](4);
+          case 14:
+            _context9.prev = 14;
+            _context9.t0 = _context9["catch"](10);
             console.log(_context9.t0);
             return _context9.abrupt("return", {
               status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
               error: _context9.t0
             });
-          case 12:
+          case 18:
           case "end":
             return _context9.stop();
         }
       }
-    }, _callee9, null, [[4, 8]]);
+    }, _callee9, null, [[10, 14]]);
   }));
   return function get_user_bill(_x23) {
     return _ref9.apply(this, arguments);
@@ -482,108 +493,193 @@ var get_user_bill = /*#__PURE__*/function () {
 exports.get_user_bill = get_user_bill;
 var get_single_bill = /*#__PURE__*/function () {
   var _ref10 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10(bill_id, userId) {
-    var getSingleBillList, sub_products, add_on_products;
+    var getSingleBillList, subscription_products, additional_order_product, add_on_products;
     return _regeneratorRuntime().wrap(function _callee10$(_context10) {
       while (1) {
         switch (_context10.prev = _context10.next) {
           case 0:
             _context10.prev = 0;
             _context10.next = 3;
-            return (0, _db["default"])("bill_history").select("bill_history.id", "bill_history.bill_no", "bill_history.bill_value", "bill_history.date", "payment_gateways.id as payment_id", "payment_gateways.status as payment_status", "add_on_orders.sub_total as sub_total").join("payment_gateways", "payment_gateways.user_id", "=", "bill_history.user_id").join("add_on_orders", "add_on_orders.user_id", "=", "payment_gateways.user_id");
+            return (0, _db["default"])("bill_history").select("bill_history.id", "bill_history.bill_no as bill_id", "bill_history.sub_total as bill_value", "bill_history.date", "bill_history.razorpay_payment_id as payment_id", "bill_history.status as payment_status", "add_on_orders.sub_total as sub_total").join("payment_gateways", "payment_gateways.user_id", "=", "bill_history.user_id").join("add_on_orders", "add_on_orders.user_id", "=", "payment_gateways.user_id").where({
+              "bill_history.user_id": userId
+            });
           case 3:
             getSingleBillList = _context10.sent;
             _context10.next = 6;
-            return (0, _db["default"])("subscribed_user_details as sub").select("sub.product_id", "sub.quantity", "unit_types.name", "unit_types.id", "products.price").join("products", "products.id", "=", "sub.user_id").join("unit_types", "unit_types.id", "=", "unit_type_id").where({
-              user_id: bill_id
+            return (0, _db["default"])("subscribed_user_details as sub").select("sub.id as subscription_id", "sub.subscription_status", "products.name as product_name", "products.image as product_image", "products.unit_value as product_variation", "products.price as product_price", "sub.quantity as product_quantity", "unit_types.value as product_variation_type").join("products", "products.id", "=", "sub.user_id").join("unit_types", "unit_types.id", "=", "unit_type_id")
+            // .join("subscription_type.id","=","products.unit_type_id")
+            .where({
+              "sub.user_id": userId
             });
           case 6:
-            sub_products = _context10.sent;
+            subscription_products = _context10.sent;
             _context10.next = 9;
-            return (0, _db["default"])("add_on_order_items as add").select("add.product_id", "add.quantity", "unit_types.id as variation_id", "unit_types.name as variation_type", "products.unit_value", "add.total_price").join("products", "products.id", "=", "add.user_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").where({
-              user_id: bill_id
+            return (0, _db["default"])("subscribed_user_details AS sub").select("additional_orders.id as product_id", "additional_orders.quantity as no_quantity", "products.name as product_name", "products.price as product_total", "additional_orders.price as recipe_price", "products.unit_value as variation_id", "unit_types.value as variation_name").join("additional_orders", "additional_orders.user_id", "=", "sub.user_id").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").where({
+              'additional_orders.user_id': userId
             });
           case 9:
+            additional_order_product = _context10.sent;
+            _context10.next = 12;
+            return (0, _db["default"])("add_on_order_items as add").select("add.product_id as product_id", "add.quantity as no_quantity", "unit_types.id as variation_id", "unit_types.name as variation_type", "products.unit_value as variation_name", "add.total_price as product_total").join("products", "products.id", "=", "add.user_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").where({
+              "add.user_id": userId
+            });
+          case 12:
             add_on_products = _context10.sent;
             return _context10.abrupt("return", {
               data: getSingleBillList,
-              sub_products: sub_products,
-              add_on_products: add_on_products
+              subscription_products: subscription_products,
+              add_on_products: add_on_products,
+              additional_order_product: additional_order_product
             });
-          case 13:
-            _context10.prev = 13;
+          case 16:
+            _context10.prev = 16;
             _context10.t0 = _context10["catch"](0);
             console.log(_context10.t0);
             return _context10.abrupt("return", {
               status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
               error: _context10.t0
             });
-          case 17:
+          case 20:
           case "end":
             return _context10.stop();
         }
       }
-    }, _callee10, null, [[0, 13]]);
+    }, _callee10, null, [[0, 16]]);
   }));
   return function get_single_bill(_x24, _x25) {
     return _ref10.apply(this, arguments);
   };
 }();
-
-// rider location 
 exports.get_single_bill = get_single_bill;
-var rider_location = /*#__PURE__*/function () {
-  var _ref11 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11(userId) {
-    var router, location;
+var single_calendar_data = /*#__PURE__*/function () {
+  var _ref11 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11(date, userId, sub_id, id) {
+    var add_product, additional1, products, additional, additional2;
     return _regeneratorRuntime().wrap(function _callee11$(_context11) {
       while (1) {
         switch (_context11.prev = _context11.next) {
           case 0:
             _context11.prev = 0;
-            _context11.next = 3;
-            return (0, _db["default"])('daily_orders').join("routes", "routes.id", "=", "daily_orders.router_id").join("rider_details", "rider_details.id", "=", "routes.rider_id").select('rider_details.tour_status as status').where({
-              user_id: userId
+            add_product = [];
+            additional1 = [];
+            _context11.next = 5;
+            return (0, _db["default"])("subscribed_user_details AS sub").select("sub.id as subscription_id", "sub.subscription_status", "products.name as product_name", "products.image as product_image", "products.unit_value as product_variation", "products.price as product_price",
+            // "products.quantity as product_quantity",
+            "unit_types.value as product_variation_type", "subscription_type.name as subscription_mode"
+            // "additional_orders.id as additional_order_id",
+            // "additional_orders.additional_orders_parent_id as additional_order_parent_id",
+            ).join("additional_orders", "additional_orders.subscription_id", "=", "sub.id").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("subscription_type", "subscription_type.id", "=", "sub.subscribe_type_id").join("user_address", "user_address.id", "=", "sub.user_address_id").where({
+              "sub.date": date
             });
-          case 3:
-            router = _context11.sent;
-            if (!(router[0].status == 1)) {
-              _context11.next = 11;
-              break;
-            }
-            _context11.next = 7;
-            return (0, _db["default"])('daily_orders').join("users", "users.id", "=", "daily_orders.user_id").join("user_address", "user_address.user_id", "=", "daily_orders.user_id").join("admin_users", "admin_users.id", "=", "daily_orders.branch_id").join("routes", "routes.id", "=", "daily_orders.router_id").join("rider_details", "rider_details.id", "=", "routes.rider_id").select('users.id as user_id', 'users.name as user_name', 'user_address.address as user_address', 'user_address.latitude as user_latitude', 'user_address.longitude as user_longitude', 'admin_users.id as admin_id', 'admin_users.first_name as admin_name', 'admin_users.address as admin_address', 'admin_users.latitude as admin_latitude', 'admin_users.longitude as admin_longitude', 'rider_details.id as rider_id', 'rider_details.name as rider_name', 'rider_details.latitude as rider_latitude', 'rider_details.longitude as rider_longitude').where({
-              'daily_orders.user_id': userId
+          case 5:
+            products = _context11.sent;
+            _context11.next = 8;
+            return (0, _db["default"])("additional_orders").join("subscribed_user_details", "subscribed_user_details.id", "=", "additional_orders.subscription_id").join("products", "products.id", "=", "subscribed_user_details.product_id").join("subscription_type", "subscription_type.id", "=", "subscribed_user_details.subscribe_type_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("subscribed_user_details.id as subscription_id", "subscribed_user_details.subscription_status", "products.name as product_name", "products.image as product_image", "products.unit_value as product_variation", "products.price as product_price",
+            // "products.quantity as product_quantity",
+            "unit_types.value as product_variation_type", "subscription_type.name as subscription_mode", "additional_orders.id as additional_order_id").where({
+              "subscribed_user_details.user_id": userId
             });
-          case 7:
-            location = _context11.sent;
-            return _context11.abrupt("return", {
-              status: _responseCode["default"].SUCCESS,
-              location: location
-            });
-          case 11:
-            return _context11.abrupt("return", {
-              status: false,
-              message: "no order placed today SORRY!!!!!"
+          case 8:
+            additional = _context11.sent;
+            //  console.log(additional)
+            additional1.push(additional);
+            _context11.next = 12;
+            return (0, _db["default"])("add_on_orders").join("add_on_order_items", "add_on_order_items.add_on_order_id", "=", "add_on_orders.id").join("products", "products.id", "=", "add_on_order_items.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id as product_id", "products.name as product_name", "products.image as product_image", "products.unit_value as product_variation", "unit_types.value as product_variation_type", "products.price as product_price", "add_on_order_items.remove_status as remove_status").where({
+              "add_on_orders.user_id": userId
             });
           case 12:
-            _context11.next = 18;
-            break;
-          case 14:
-            _context11.prev = 14;
+            additional2 = _context11.sent;
+            console.log(additional2);
+            add_product.push(additional2);
+            if (!(products.length === 0)) {
+              _context11.next = 17;
+              break;
+            }
+            return _context11.abrupt("return", {
+              status: false,
+              message: "No Subscription Found"
+            });
+          case 17:
+            return _context11.abrupt("return", {
+              status: true,
+              data: products,
+              additional1: additional1,
+              add_product: add_product
+            });
+          case 20:
+            _context11.prev = 20;
             _context11.t0 = _context11["catch"](0);
             console.log(_context11.t0);
             return _context11.abrupt("return", {
-              status: _responseCode["default"].FAILURE.DATA_NOT_FOUND,
-              error: _context11.t0
+              status: false,
+              message: "No Subscription Found"
             });
-          case 18:
+          case 24:
           case "end":
             return _context11.stop();
         }
       }
-    }, _callee11, null, [[0, 14]]);
+    }, _callee11, null, [[0, 20]]);
   }));
-  return function rider_location(_x26) {
+  return function single_calendar_data(_x26, _x27, _x28, _x29) {
     return _ref11.apply(this, arguments);
+  };
+}();
+
+// rider location 
+exports.single_calendar_data = single_calendar_data;
+var rider_location = /*#__PURE__*/function () {
+  var _ref12 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee12(userId) {
+    var router, location;
+    return _regeneratorRuntime().wrap(function _callee12$(_context12) {
+      while (1) {
+        switch (_context12.prev = _context12.next) {
+          case 0:
+            _context12.prev = 0;
+            _context12.next = 3;
+            return (0, _db["default"])('daily_orders').join("routes", "routes.id", "=", "daily_orders.router_id").join("rider_details", "rider_details.id", "=", "routes.rider_id").select('rider_details.tour_status as status').where({
+              user_id: userId
+            });
+          case 3:
+            router = _context12.sent;
+            if (!(router[0].status == 1)) {
+              _context12.next = 11;
+              break;
+            }
+            _context12.next = 7;
+            return (0, _db["default"])('daily_orders').join("users", "users.id", "=", "daily_orders.user_id").join("user_address", "user_address.user_id", "=", "daily_orders.user_id").join("admin_users", "admin_users.id", "=", "daily_orders.branch_id").join("routes", "routes.id", "=", "daily_orders.router_id").join("rider_details", "rider_details.id", "=", "routes.rider_id").select('users.id as user_id', 'users.name as user_name', 'user_address.address as user_address', 'user_address.latitude as user_latitude', 'user_address.longitude as user_longitude', 'admin_users.id as admin_id', 'admin_users.first_name as admin_name', 'admin_users.address as admin_address', 'admin_users.latitude as admin_latitude', 'admin_users.longitude as admin_longitude', 'rider_details.id as rider_id', 'rider_details.name as rider_name', 'rider_details.latitude as rider_latitude', 'rider_details.longitude as rider_longitude').where({
+              'daily_orders.user_id': userId
+            });
+          case 7:
+            location = _context12.sent;
+            return _context12.abrupt("return", {
+              status: _responseCode["default"].SUCCESS,
+              location: location
+            });
+          case 11:
+            return _context12.abrupt("return", {
+              status: false,
+              message: "no order placed today SORRY!!!!!"
+            });
+          case 12:
+            _context12.next = 18;
+            break;
+          case 14:
+            _context12.prev = 14;
+            _context12.t0 = _context12["catch"](0);
+            console.log(_context12.t0);
+            return _context12.abrupt("return", {
+              status: _responseCode["default"].FAILURE.DATA_NOT_FOUND,
+              error: _context12.t0
+            });
+          case 18:
+          case "end":
+            return _context12.stop();
+        }
+      }
+    }, _callee12, null, [[0, 14]]);
+  }));
+  return function rider_location(_x30) {
+    return _ref12.apply(this, arguments);
   };
 }();
 exports.rider_location = rider_location;

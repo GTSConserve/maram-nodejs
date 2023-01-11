@@ -186,7 +186,8 @@ export const userLogin = async (password) => {
       const router = await knex('routes').select('id','name').where({rider_id:delivery_partner_id});
 
       const daily = await knex('daily_orders').select("status").where({router_id:router[0].id,status:"pending"})
-     if(daily.status !== "pending"){
+      console.log(daily[0].status)
+     if(daily[0].status !== "pending"){
       if(tour_status==2){
         const updatetour = await knex('rider_details').update({tour_status:'2'}).where({id:delivery_partner_id})
         
@@ -221,19 +222,18 @@ export const userLogin = async (password) => {
 //         }
         const daily = await knex('daily_orders').select('*').where({router_id:router[0].id})
 
-        console.log(daily);
+        // console.log(daily);
         const json_array =  JSON.stringify(daily);
         // await knex('rider_daily_details').insert({
         //   order_details : daily[0],
         // });
 
-        console.log("hi")
-       
-        console.log("hi2")
-        const rider2 = await knex('rider_daily_details').insert({"order_details":json_array}).where({router_id:router[0].id})
+        
+        const rider2 = await knex('rider_daily_details').update({"order_details":json_array}).where({router_id:router[0].id})
 
-        // rider1[0].order_details.push(daily[0]);
+        
 
+        
         return{status:true,message:"successfully updated"}
         }
         else{

@@ -148,7 +148,7 @@
                                                                                         </div>
                                                                                         <div class="col-sm-4">
                                                                                             <label>User Name</label>
-                                                                                            <p style="font-weight: 900;"><%=user.user_name %></p>
+                                                                                            <p style="font-weight: 900;"><%=user.user_name ? user.user_name : "N/A" %></p>
                                                                                             
                                                                                         </div>
                                                                                         <div class="col-sm-4 ">
@@ -178,7 +178,7 @@
                                                                                                 Delivery Date :<span style="color: rgb(77, 76, 76);"> <%= user.delivery_date %> </span>
                                                                                             </div>
                                                                                             <div class="col-12">
-                                                                                                Sub Total : <span style="color: rgb(77, 76, 76);"><%= user.sub_total %></span>
+                                                                                                Sub Total : <span style="color: rgb(77, 76, 76);">₹<%= user.sub_total %></span>
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
@@ -211,7 +211,7 @@
                                                                                                 <h5 class="card-user_name"> <%= user.product_name %> </h5>
                                                                                                 <p class="card-user_occupation"> <%=user.unit_value %> <%=user.value %> / Qty : <%=user.quantity %></p>
                                                                                                 <p class="card-user_occupation">Subscription Start From - <%=user.start_date%></p>
-                                                                                                <p class="card-user_occupation">User Plan : <%= user.subscription_name %>  </p>
+                                                                                                <p class="card-user_occupation">Subscription Plan : <%= user.subscription_name %>  </p>
                                                                                                 <p class="card-user_occupation">Price : ₹<%=user.price %></p>
                                                                                                 <% if(user.customized_days){ %> 
                                                                                                 <p class="card-user_occupation"> customized days :
@@ -302,7 +302,7 @@
                                                                                                     Delivery Date :<span style="color: rgb(77, 76, 76);"> <%= add_on_details.delivery_date %> </span>
                                                                                                 </div>
                                                                                                 <div class="col-12">
-                                                                                                    Sub Total : <span style="color: rgb(77, 76, 76);"><%= add_on_details.sub_total %></span>
+                                                                                                    Sub Total : <span style="color: rgb(77, 76, 76);">₹<%= add_on_details.sub_total %></span>
                                                                                                 </div>
                                                                                             </div>
                                                                                             <div class="col-4" ></div>
@@ -507,7 +507,7 @@
                                                                 </div>
                                                                 <div class="col-sm-4">
                                                                     <label>User Name</label>
-                                                                    <p style="font-weight: 900;"><%=user.user_name %></p>
+                                                                    <p style="font-weight: 900;"><%=user.user_name ? user.user_name : "N/A" %></p>
                                                                     
                                                                 </div>
                                                                 <div class="col-sm-4 ">
@@ -537,7 +537,7 @@
                                                                         Delivery Date :<span style="color: rgb(77, 76, 76);"> <%= user.delivery_date %> </span>
                                                                     </div>
                                                                     <div class="col-12">
-                                                                        Sub Total : <span style="color: rgb(77, 76, 76);"><%= user.sub_total %></span>
+                                                                        Sub Total : <span style="color: rgb(77, 76, 76);">₹<%= user.sub_total %></span>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -663,7 +663,7 @@
                                                                                 Delivery Date :<span style="color: rgb(77, 76, 76);"> <%= add_on_details.delivery_date %> </span>
                                                                             </div>
                                                                             <div class="col-12">
-                                                                                Sub Total : <span style="color: rgb(77, 76, 76);"><%= add_on_details.sub_total %></span>
+                                                                                Sub Total : <span style="color: rgb(77, 76, 76);">₹<%= add_on_details.sub_total %></span>
                                                                             </div>
                                                                         </div>
                                                                         <div class="col-4" ></div>

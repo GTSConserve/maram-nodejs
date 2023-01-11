@@ -87,7 +87,7 @@
 
                         <% for(user of data){ %>
                                 <td class="sorting_1"><%=user.user_unique_id %></td>
-                                <td class="sorting_1"><%=user.user_name %></td>
+                                <td class="sorting_1"><%=user.user_name ? user.user_name : "N/A" %></td>
                                 <td ><%=user.route_name ? user.route_name : "N/A" %></td>
                                 
                                 <td><%=user.address %></td>

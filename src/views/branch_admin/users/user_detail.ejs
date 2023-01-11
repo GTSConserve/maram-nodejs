@@ -596,9 +596,10 @@
                                                                                 <select onchange="checkChangePlanCustom(this)" id="<%= sub_products[i].sub_id %>" wire:model="countryid" class="form-control" name="your_plan" >
                                                                                     <option value="" selected >Choose Your plan </option>
                                                                                     <% for(plan of get_plan){ %>
-                                                                                        
+                                                                                        <% if(sub_products[i].sub_name != plan.name) {%> 
                                                                                         <option  value="<%=plan.id %>"><%=plan.name %>  </option>
                                                                                         <% } %>
+                                                                                    <% } %>
                                                                                     </select>
                                                                                     
                                                                                 </div>
@@ -1540,42 +1541,40 @@
                                     ///////////////////////////////////////////////// chnage user plan custom days insertation
 
                                     function checkChangePlanCustom(event){
-                                        console.log(event , "idddd")
-                                        console.log(event.id , "idddd")
-                                        console.log(event.value , "value")
+                                 
                                 if(event.value == 3){
                                     document.getElementById("custom_days_change_plan" + event.id).innerHTML = ` <label for="delivery_days" class="mt-3">Choose Your Custome Days</label>
                                     <div class="row">
                                         <div class="col-5">
                             <div class="custom-control custom-checkbox checkbox-info">
-                                <input type="checkbox" name="custom_days" value="1" class="custom-control-input" id="hChkbox">
-                                <label class="custom-control-label" for="hChkbox">Sun</label>
+                                <input type="checkbox" name="custom_days_change_plan" value="1" class="custom-control-input custom_days_change_plan" id="changePlanhChkbox">
+                                <label class="custom-control-label" for="changePlanhChkbox">Sun</label>
                             </div>
                             <div class="custom-control custom-checkbox checkbox-info">
-                                <input type="checkbox" name="custom_days" value="2" class="custom-control-input" id="hChkbox2">
-                                <label class="custom-control-label" for="hChkbox2">Mon</label>
+                                <input type="checkbox" name="custom_days_change_plan" value="2" class="custom-control-input custom_days_change_plan" id="changePlanhChkbox2">
+                                <label class="custom-control-label" for="changePlanhChkbox2">Mon</label>
                             </div>
                             <div class="custom-control custom-checkbox checkbox-info">
-                                <input type="checkbox" name="custom_days" value="3" class="custom-control-input" id="hChkbox3">
-                                <label class="custom-control-label" for="hChkbox3">Tue</label>
+                                <input type="checkbox" name="custom_days_change_plan" value="3" class="custom-control-input custom_days_change_plan" id="changePlanhChkbox3">
+                                <label class="custom-control-label" for="changePlanhChkbox3">Tue</label>
                             </div>
                             <div class="custom-control custom-checkbox checkbox-info">
-                                <input type="checkbox" name="custom_days" value="4" class="custom-control-input" id="hChkbox4">
-                                <label class="custom-control-label" for="hChkbox4">Wed</label>
+                                <input type="checkbox" name="custom_days_change_plan" value="4" class="custom-control-input custom_days_change_plan" id="changePlanhChkbox4">
+                                <label class="custom-control-label" for="changePlanhChkbox4">Wed</label>
                             </div>
                             </div>
                             <div class="col-5">
                             <div class="custom-control custom-checkbox checkbox-info">
-                                <input type="checkbox" name="custom_days" value="5" class="custom-control-input" id="hChkbox5">
-                                <label class="custom-control-label" for="hChkbox5">Thu</label>
+                                <input type="checkbox" name="custom_days_change_plan" value="5" class="custom-control-input custom_days_change_plan" id="changePlanhChkbox5">
+                                <label class="custom-control-label" for="changePlanhChkbox5">Thu</label>
                             </div>
                             <div class="custom-control custom-checkbox checkbox-info">
-                                <input type="checkbox" name="custom_days" value="6" class="custom-control-input" id="hChkbox6">
-                                <label class="custom-control-label" for="hChkbox6">Fri</label>
+                                <input type="checkbox" name="custom_days_change_plan" value="6" class="custom-control-input custom_days_change_plan" id="changePlanhChkbox6">
+                                <label class="custom-control-label" for="changePlanhChkbox6">Fri</label>
                             </div>
                             <div class="custom-control custom-checkbox checkbox-info">
-                                <input type="checkbox" name="custom_days" value="7" class="custom-control-input" id="hChkbox7">
-                                <label class="custom-control-label" for="hChkbox7">Sat</label>
+                                <input type="checkbox" name="custom_days_change_plan" value="7" class="custom-control-input custom_days_change_plan" id="changePlanhChkbox7">
+                                <label class="custom-control-label" for="changePlanhChkbox7">Sat</label>
                             </div>
                             </div>
                             `
@@ -1601,6 +1600,10 @@
 
                                                     // sub products
 
+                                         const custom_days =  document.getElementsByClassName("custom_days_change_plan")
+
+                                        // console.log(e.target.custom_days , "custom_days")
+
                                                     const sub_start_date = e.target.sub_start_date.value
                                                     const your_plan = e.target.your_plan.value
 
@@ -1610,19 +1613,15 @@
 
                                         // console.log($('#hChkbox').value() , "hit")
 
-                                        console.log(e.target.sub_start_date.value)
-                                        console.log(e.target)
-                                        console.log(e.target.custom_days_change_plan , "tets")
 
                                                     let custom_days_change 
                                                     if(your_plan){
-                                                        console.log("tetsssssss" ,e.target.custom_days_change_plan )
                                                         // custom_days_change_plan
-                                                        custom_days_change = e.target.custom_days_change_plan
+                                                        // custom_days_change = e.target.custom_days_change_plan
                                                     }
 
                                                     
-                                                    console.log(custom_days_change ,"check")
+                                            
                                                   
 
                                                     // sub product
@@ -1682,10 +1681,12 @@
                                                             'Accept': 'application/json',
                                                             'Content-Type': 'application/json'
                                                         },
-                                                        body: JSON.stringify({"data": query , "user_address_id" : user_address_id})
+                                                        body: JSON.stringify({"data": query , })
                                                         })
-                                                                                                    
-                                                    // window.location.href = "/branch_admin/user/single_user?user_address_id=" + user_address_id
+                                                          
+                                                        await  swal("Done", "Subscription Plan Was Changed SuccessFully", "success");
+
+                                                    window.location.href = "/branch_admin/user/single_user?user_address_id=" + user_address_id
 
                                             }
                                

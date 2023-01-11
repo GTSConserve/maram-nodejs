@@ -1,0 +1,532 @@
+<% layout('layouts/boilerPlate') %>
+<div class="widget-content widget-content-area br-6">
+    <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+        <div class="dt--top-section">
+            <div class="row ">
+                <div class="col-12  d-flex justify-content-sm-start justify-content-center">
+                    <div class="dataTables_length" id="DataTables_Table_0_length">
+                        <h4>Add Users</h4>
+                    </div>
+                </div>
+
+                <div class="col-1"></div>
+                <div class="col-10" style="margin-bottom:24px;">
+                    <div class="statbox widget box box-shadow">
+                        <div class="widget-header">                                
+                            <div class="row">
+                                <div class="col-xl-12 col-md-12 col-sm-12 col-12">
+                                    <h4>User Details</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="widget-content widget-content-area" >
+                            <!-- <form action="/branch_admin/user/create_user" method="post"> -->
+                            <form >
+                                    <div class="form-row mb-4">
+                                        <div class="form-group col-md-4">
+                                            <label for="name">Name</label>
+                                            <input type="text" class="form-control"  minlength="3" id="name" name="user_name" placeholder="Name">
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label for="email">Email <span style="font-size : 12px;">(optional)</span></label>
+                                            <input type="email" class="form-control" name="email" id="email" placeholder="Email">
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label for="mobile-number">Mobile Number</label>
+                                            <input type="text"   minlength="10" maxlength="10"  class="form-control" name="mobile_number" id="mobile-number" placeholder="10 Digit Mobile Number">
+                                        </div>
+                                    </div>
+                                                                  
+                                        <div class="row">
+                                            <div class="col-xl-12 col-md-12 col-sm-12 col-12 pb-3">
+                                                <h5>Address Details</h5>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-row mb-4">
+                                          
+                                            <div class="form-group col-md-4">
+                                                <label for="title">Title</label>
+                                                <input type="text" class="form-control" name="address_title" id="title" placeholder="Eg. Home,Office,Others">
+                                            </div>
+                                            <div class="col-2"></div>
+                                            <div class="form-group col-md-4">
+                                                <label for="type">Alternate Mobile Number <span style="font-size : 12px;">(optional)</span></label>
+                                                <input type="text" class="form-control"  id="type" name="alternate_mobile_number" placeholder="10 Digit Mobile Number">
+                                            </div>
+                                            <div class="form-group col-md-4">
+                                                <label for="latitude">Latitude</label>
+                                                <input type="text" class="form-control"  id="latitude" name="latitude" placeholder="latitude">
+                                            </div>
+                                            <div class="col-2"></div>
+
+                                            <div class="form-group col-md-4">
+                                                <label for="longitude">Longitude</label>
+                                                <input type="text" class="form-control"  id="longitude" name="longitude" placeholder="longitude">
+                                                
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label for="address">Address</label>
+                                                <textarea id="address" class="form-control" name="address"></textarea>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label for="landmark">Landmark <span style="font-size : 12px;">(optional)</span></label>
+                                                <textarea id="landmark" class="form-control" name="address_landmark"></textarea>
+                                                
+                                            </div>
+                                           
+                                            
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-xl-12 col-md-12 col-sm-12 col-12 pb-3">
+                                                <h5>Branch</h5>
+                                            </div>
+                                        </div>
+                                        <div class="form-row mb-4">
+                                            <div class="form-group col-md-3">
+                                                <label>Choose A Branch </label>
+                                                <select wire:model="countryid" class="form-control" required name="branch_id" >
+                                                    <% if(branch_admin.length !==0){ %>
+                                                    <option value="" selected >Select A Branch </option>
+                                                    <% for(branch of branch_admin){ %>
+
+                                                        <option value="<%=branch.id %>"><%=branch.first_name %>   </option>
+                                                    <% } %>
+                                                    <% }else{ %>
+                                                        <option value="" selected >No Branch Found </option>
+                                                        <% } %>
+
+                                                </select>
+                                            </div>
+                                            </div>
+
+                                        <div class="row">
+                                            <div class="col-xl-12 col-md-12 col-sm-12 col-12 pb-3">
+                                                <h5>Add Product</h5>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-12 col-12 layout-spacing">
+                                            <div class="statbox widget box box-shadow">
+                                                <div class="widget-content widget-content-area pill-justify-right">
+                                                    
+                                                    <ul class="nav nav-tabs mb-3 mt-3 justify-content-start" id="justify-right-pills-tab" role="tablist" style="font-weight: 900;">
+                                                        <li class="nav-item">
+                                                            <a class="nav-link active" id="justify-right-pills-home-tab" data-toggle="pill" href="#justify-right-pills-home" role="tab" aria-controls="justify-right-pills-home" aria-selected="true">Subscription Product</a>
+                                                        </li>
+                                                        <li class="nav-item">
+                                                            <a class="nav-link" id="justify-right-pills-contact-tab" data-toggle="pill" href="#justify-right-pills-contact" role="tab" aria-controls="justify-right-pills-contact" aria-selected="false">Add On Product</a>
+                                                        </li>
+                                                    </ul>
+                
+                                                    <div class="tab-content" id="justify-right-pills-tabContent">
+                                                        <div class="tab-pane fade show active" id="justify-right-pills-home" role="tabpanel" aria-labelledby="justify-right-pills-home-tab">
+                                                            <div class="form-row mb-4">
+                                                                <div class="form-group col-md-4">
+                                                                    <label>Product</label>
+                                                <select wire:model="countryid" class="form-control" name="sub_product" >
+                                                    <option value="" selected >Select Product </option>
+                                                    <% for(product of get_subscription_products){ %>
+
+                                                        <option value="<%=product.id %>"><%=product.name %>  / <%= product.unit_value %>-<%= product.unit_type %>    </option>
+                                                    <% } %>
+
+                                                </select>
+                                                                </div>
+                                                                <div class="form-group col-md-4">
+                                                                    <label for="sub_qty">Qty</label>
+                                                                    <input type="number" class="form-control" name="sub_qty" id="sub_qty" placeholder="qty">
+                                                                </div>
+                                                                <div class="form-group col-md-4">
+                                                                    <label for="start_date">Start Date</label>
+                                                                    <input type="date"  class="form-control"   id="start_date" name="sub_start_date">
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-row mb-4">
+                                                                <div class="form-group col-md-4">
+                                                                    <label>Choose Your Plan</label>
+                                                                    <select onchange="checkHandler(this)" wire:model="countryid" class="form-control" name="your_plan" >
+                                                                        <option value="" selected >Choose Your plan </option>
+                                                                        <% for(plan of get_plan){ %>
+                    
+                                                                            <option  value="<%=plan.id %>"><%=plan.name %>  </option>
+                                                                        <% } %>
+                                                                    </select>
+                                                                </div>
+
+                                                                <script>
+                                                                    function checkHandler(event){
+                                                                        console.log(event)
+                                                                        if(event.value == 3){
+                                                                            document.getElementById("custom_days").innerHTML = ` <label for="delivery_days">Choose Your Custome Days</label>
+                                                                    <div class="custom-control custom-checkbox checkbox-info">
+                                                                        <input type="checkbox" name="custom_days" value="1" class="custom-control-input" id="hChkbox">
+                                                                        <label class="custom-control-label" for="hChkbox">Sun</label>
+                                                                    </div>
+                                                                    <div class="custom-control custom-checkbox checkbox-info">
+                                                                        <input type="checkbox" name="custom_days" value="2" class="custom-control-input" id="hChkbox2">
+                                                                        <label class="custom-control-label" for="hChkbox2">Mon</label>
+                                                                    </div>
+                                                                    <div class="custom-control custom-checkbox checkbox-info">
+                                                                        <input type="checkbox" name="custom_days" value="3" class="custom-control-input" id="hChkbox3">
+                                                                        <label class="custom-control-label" for="hChkbox3">Tue</label>
+                                                                    </div>
+                                                                    <div class="custom-control custom-checkbox checkbox-info">
+                                                                        <input type="checkbox" name="custom_days" value="4" class="custom-control-input" id="hChkbox4">
+                                                                        <label class="custom-control-label" for="hChkbox4">Thu</label>
+                                                                    </div>
+                                                                    <div class="custom-control custom-checkbox checkbox-info">
+                                                                        <input type="checkbox" name="custom_days" value="5" class="custom-control-input" id="hChkbox5">
+                                                                        <label class="custom-control-label" for="hChkbox5">Fri</label>
+                                                                    </div>
+                                                                    <div class="custom-control custom-checkbox checkbox-info">
+                                                                        <input type="checkbox" name="custom_days" value="6" class="custom-control-input" id="hChkbox6">
+                                                                        <label class="custom-control-label" for="hChkbox6">Sat</label>
+                                                                    </div>
+                                                                    <div class="custom-control custom-checkbox checkbox-info">
+                                                                        <input type="checkbox" name="custom_days" value="7" class="custom-control-input" id="hChkbox7">
+                                                                        <label class="custom-control-label" for="hChkbox7">Sun</label>
+                                                                    </div>`
+                                                                        }else{
+                                                                            document.getElementById("custom_days").innerHTML = ``
+                                                                        }
+                                                                    }
+                                                                </script>
+                                                              
+                                                               
+                                                                <div class="form-group col-md-4 pl-3 " id="custom_days">
+                                                                   
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="tab-pane fade" id="justify-right-pills-contact" role="tabpanel" aria-labelledby="justify-right-pills-contact-tab">
+                                                            <div class="form-row mb-4" >
+                                                                <div class="form-group col-md-4">
+                                                                    <label for="delivery_date">Delivery Date</label>
+                                                                    <input type="date" class="form-control"  minlength="3" id="delivery_date" name="add_on_delivery_date" placeholder="Name">
+                                                                </div>
+                                                                <div class="col-8"></div>
+                                                                <div class="form-group col-md-6">
+                                                                    <label>Product</label>
+                                                                    <select wire:model="countryid" class="form-control" name="add_on_products" >
+                                                                        <option value="" selected >Select Product </option>
+                                                                        <% for(product of add_on_products){ %>
+                    
+                                                                            <option value="<%=product.id %>"><%=product.name %>  / <%= product.unit_value %>-<%= product.unit_type %>    </option>
+                                                                        <% } %>
+                    
+                                                                    </select>
+                                                                </div>
+                                                                <div class="form-group col-md-3">
+                                                                    <label for="add_on_qty">Qty</label>
+                                                                    <input type="number" class="form-control" id="add_on_qty" name="add_on_qty" placeholder="qty">
+                                                                </div>
+                                                                <div class="form-group col-md-2">
+                                                                    
+                                                                   <button type="button" onclick="addProducts()" class="btn btn-info" style="margin-top: 32px;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
+                                                                </div>
+                                                                <span class="col-12 " id="add_on">
+
+                                                                </span>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                
+                                                    <script>
+                                                        function addProducts() {
+                                                            const get_length = document.getElementById("add_on")
+                                                            const count = document.getElementsByTagName('span').length;
+                                                         
+                                                            const node = document.createElement("span");
+                                                            node.className="form-row"
+                                                            node.id = `remove${count}`
+                                                            node.innerHTML=   `
+                                                           
+                                                                <div class="form-group col-6">
+                                                                    <label>Product</label>
+                                                                    <select wire:model="countryid" class="form-control" name="add_on_products" >
+                                                                        <option value="" selected >Select Product </option>
+                                                                        <% for(product of add_on_products){ %>
+                    
+                                                                            <option value="<%=product.id %>"><%=product.name %>  / <%= product.unit_value %>-<%= product.unit_type %>    </option>
+                                                                        <% } %>
+                    
+                                                                    </select>
+                                                                </div>
+                                                                <div class="form-group col-3">
+                                                                    <label for="add_on_qty${count}">Qty</label>
+                                                                    <input type="number" class="form-control" id="add_on_qty" name="add_on_qty" placeholder="qty">
+                                                                </div>
+                                                                <div class="form-group col-2">
+                                                                    
+                                                                    <button type="button" onclick="removeProduct(this)" name="${count}" class="btn btn-danger" style="margin-top: 32px;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg></button>
+                                                                 </div>
+                                                                 
+                                                        
+                                                                `
+                                                            // const textnode = document.createTextNode("Water");
+
+                                                            console.log(get_length.length)
+                                                            document.getElementById("add_on").appendChild(node)
+                                                        //  ;
+                                                        }
+
+
+                                                        function removeProduct(event){
+                                                            document.getElementById(`remove${event.name}`).remove();
+                                                        }
+
+                                                    </script>
+                                                </div>
+                                            </div>
+                                        </div>
+                
+                                        <button type="submit" class="btn btn-primary mt-3">Submit</button>
+                                  </form>
+                                    </div>
+
+                                    <script>
+
+                                                let ErroHandler = document.createElement("div")
+                                                ErroHandler.innerHTML =`<div class="modal show fade" id="exampleModal" tabindex="-1" style="display: block; padding-right: 17px;" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog  animated fadeInDown" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"></h5>
+            </div>
+            <div class="modal-body">
+                <p class="modal-text" id="dynamic_content_error">Please Fill The Form! </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-warning" onclick="removeModal()" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Discard</button>
+            </div>
+        </div>
+    </div>
+</div> ` 
+
+
+
+                                         const form=document.querySelector("form")
+                                            form.addEventListener("submit",async(e)=>{
+
+                                                let query = {}
+
+                                                e.preventDefault()
+                                                // user details
+                                                const user_name = e.target.user_name.value
+                                                const mobile_number = e.target.mobile_number.value
+                                                const email = e.target.email.value
+
+                                                
+                                                //address
+                                                
+                                                const latitude = e.target.latitude.value
+                                                const longitude= e.target.longitude.value
+                                                const alternate_mobile_number= e.target.alternate_mobile_number.value
+                                                const address_title = e.target.address_title.value
+                                                const address_landmark = e.target.address_landmark.value
+                                                const address = e.target.address.value
+                                                
+                                                // route
+                                                const branch_id = e.target.branch_id.value
+                                             
+                                                    query.branch_id = branch_id
+                                                 
+                                              
+                                                // sub products
+                                                const sub_product = e.target.sub_product.value
+                                                const sub_qty = e.target.sub_qty.value
+                                                const sub_start_date = e.target.sub_start_date.value
+                                                const your_plan = e.target.your_plan.value
+                                                
+                                                let custom_days 
+                                                if(your_plan){
+                                                         custom_days = e.target.custom_days
+                                                }
+                                            
+                                                // addon product
+                                                const add_on_delivery_date = e.target.add_on_delivery_date.value
+
+                                                
+                                                let add_on_products 
+                                                let add_on_qty
+                                             
+              
+
+                                                    if(e.target.add_on_qty.length == undefined){
+                                                         add_on_products = e.target.add_on_products.value
+                                                         add_on_qty = e.target.add_on_qty.value
+                                                        }else{
+                                                            add_on_products = e.target.add_on_products
+                                                            add_on_qty = e.target.add_on_qty
+                                                    }
+
+                                               
+                                                    let add_on = []
+                                                    if(e.target.add_on_qty.length == undefined){
+                                                        if(add_on_delivery_date.length != 0 ||add_on_products.length != 0 ||add_on_qty.length != 0   ){
+                                                    
+                                                             if(add_on_delivery_date.length === 0 ||add_on_products.length === 0 ||add_on_qty.length === 0   ){
+                                                                    //  document.body.insertAdjacentElement("afterbegin",ErroHandler) 
+                                                                    //  return document.getElementById("dynamic_content_error").innerText = "Please Fill the Add on  Product Details"
+                                                                    return  await  swal("", "Please Fill the Add on  Product Details", "error");
+    
+                                                                 }
+
+                                                                let add_on_object = {}
+                                                                 add_on_object.product_id = add_on_products
+                                                                 add_on_object.qty = add_on_qty
+                                                                 add_on.push(add_on_object)
+
+                                                                //  query.is_add_on = true
+                                                                 query.delivery_date = add_on_delivery_date
+                                                        }
+                                                    }else{
+                                                        query.delivery_date = add_on_delivery_date
+                                                        let add_on_object = {}
+
+                                                        for(let i = 0 ; i < add_on_products.length; i++){
+
+                                                            if(add_on_products[i].value.length === 0 || add_on_qty[i].value.length === 0){
+                                                            // document.body.insertAdjacentElement("afterbegin",ErroHandler) 
+                                                            // return document.getElementById("dynamic_content_error").innerText = "Please Fill the Add on  Product Details"
+                                                            return  await  swal("", "Please Fill the Add on  Product Details", "error");
+
+                                                        }
+
+
+                                                        add_on_object.product_id = add_on_products[i].value
+                                                        add_on_object.qty = add_on_qty[i].value
+
+                                                        add_on.push(add_on_object)
+                                                        add_on_object = {}
+
+                                                        }
+                                                    }
+
+                                                    
+                                                    query.add_on = add_on
+
+
+                                                    // user details
+                                                if(user_name.length ==0 || mobile_number.length == 0){
+                                                        
+                                                //         document.body.insertAdjacentElement("afterbegin",ErroHandler) 
+                                                //    return  document.getElementById("dynamic_content_error").innerText = "Please Fill the User Details"
+                                                return  await  swal("", "Please Fill the User Details", "error");
+                                                }
+
+                                                // address
+                                                if(latitude.length ==0 || longitude.length ==0 || address_title.length == 0  || address.length == 0){
+                                                        
+                                                    //     document.body.insertAdjacentElement("afterbegin",ErroHandler) 
+                                                    // return document.getElementById("dynamic_content_error").innerText = "Please Fill the Address Details"
+                                                    return  await  swal("", "Please Fill the Address Details", "error");
+                                                }
+                                                
+                                                // sub product
+                                                if(sub_product.length != 0 ||sub_qty.length != 0 ||your_plan.length != 0 ||sub_start_date.length != 0  ){
+                                                    
+                                                    if(sub_product.length === 0 ||sub_qty.length === 0 ||your_plan.length === 0 ||sub_start_date.length === 0  ){
+                                                    //     document.body.insertAdjacentElement("afterbegin",ErroHandler) 
+                                                    // return document.getElementById("dynamic_content_error").innerText = "Please Fill the Subscription Product Details"
+                                                    return  await  swal("", "Please Fill the Subscription Product Details", "error");
+    
+                                                    }
+
+                                                    if(your_plan == 3){
+                                                        let count = 0
+                                                        let cutsom = []
+                                                        for(days of custom_days){
+                                                            if(!days.checked){
+                                                                count += 1
+                                                                
+                                                            }
+                                                            if (count == 7){
+                                                    //             document.body.insertAdjacentElement("afterbegin",ErroHandler) 
+                                                    // return document.getElementById("dynamic_content_error").innerText = "Please Choose A Day "
+                                                    return  await  swal("", "Please Choose A Day ", "error");
+                                                            }
+
+                                                            if(days.checked){
+                                                                cutsom.push(days.value)
+                                                            }
+
+                                                        }
+                                                        query.custom_days = cutsom
+                                                    }
+
+                                                    query.sub_product = sub_product
+                                                    query.sub_qty = sub_qty
+                                                    query.your_plan = your_plan
+                                                    query.sub_start_date = sub_start_date
+
+                                                }
+
+                                                if(add_on_delivery_date.length === 0 && add_on_products.length === 0 && add_on_qty.length === 0 && sub_product.length == 0 && sub_qty.length == 0 && your_plan.length == 0 && sub_start_date.length == 0  ){
+                                                    // document.body.insertAdjacentElement("afterbegin",ErroHandler) 
+                                                    // return document.getElementById("dynamic_content_error").innerText = "Please Place a Add on or Subscription"
+                                                    return  await  swal("", "Please Place a Add on or Subscription", "error");
+                                                }
+                                               
+                                             
+                                         
+                                                query.alternate_mobile_number = alternate_mobile_number
+                                                query.latitude = latitude
+                                                query.longitude = longitude
+                                             
+                                                query.address_title = address_title
+                                                query.address_landmark = address_landmark
+                                                query.address = address
+                                                
+
+                                                query.user_name= user_name
+                                                query.mobile_number= mobile_number
+                                                if(email.length !==0){
+
+                                                    query.email= email
+                                                }
+
+
+
+
+                                                await fetch('/super_admin/users_subscription/create_user', {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'Accept': 'application/json',
+                                                        'Content-Type': 'application/json'
+                                                    },
+                                                    body: JSON.stringify({"data": query})
+                                                    })
+                                                    
+                                                      await  swal("Done", "New User Created SuccessFully", "success");
+
+                                                 window.location.href = "/home"
+
+
+                                            })
+                               
+
+                                            function removeModal(){
+                                                ErroHandler.remove()
+                                            }
+
+                                    </script>
+                                    
+                                   
+                        </div>
+                    </div>
+                </div>
+                <div class="col-1"></div>
+              
+        </div>
+    </div>
+ 
+    
+
+
+
+</div>
+            </div>

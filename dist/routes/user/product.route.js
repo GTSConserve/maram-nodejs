@@ -19,10 +19,10 @@ productRouter.get("/get_subscription_product", _authToken.nonMandatoryToken, _au
 productRouter.get("/get_add_on_product", _authToken.nonMandatoryToken, _authToken.authenticateJWT, _product.getAddOnProducts);
 productRouter.post("/get_single_product", _authToken.nonMandatoryToken, _authToken.authenticateJWT, _product.getSingleProduct);
 productRouter.post("/create_add_on_products", _authToken.authenticateJWT, _authToken.nonMandatoryToken, _product.addon_Order);
-productRouter.post("/remove_add_on_products", _authToken.authenticateJWT, _authToken.nonMandatoryToken, _product.removeAddOnOrder);
+productRouter.post("/remove_add_on_products", _authToken.nonMandatoryToken, _authToken.authenticateJWT, _authToken.nonMandatoryToken, _product.removeAddOnOrder);
 
 // next day delivery product api
 
-productRouter.post("/next_day_product", _authToken.authenticateJWT, _authToken.nonMandatoryToken, _product.nextDayProduct);
+productRouter.post("/next_day_product", _authToken.nonMandatoryToken, _product.nextDayProduct);
 var _default = productRouter;
 exports["default"] = _default;

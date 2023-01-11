@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updatePendingList = exports.updateAllUsersStatus = exports.unsubscribeSubscription = exports.subscribeSubscription = exports.getSingleUser = exports.getNewUsers = exports.getCreateUsers = exports.getAllUsers = exports.createUsers = exports.cancelPendingList = void 0;
+exports.updateUser = exports.updatePendingList = exports.updateAllUsersStatus = exports.unsubscribeSubscription = exports.subscribeSubscription = exports.getSingleUser = exports.getNewUsers = exports.getCreateUsers = exports.getAllUsers = exports.createUsers = exports.cancelPendingList = void 0;
 var _db = _interopRequireDefault(require("../../../services/db.service"));
 var _helper = require("../../../utils/helper.util");
 var _moment = _interopRequireDefault(require("moment"));
@@ -229,33 +229,54 @@ var getCreateUsers = /*#__PURE__*/function () {
 exports.getCreateUsers = getCreateUsers;
 var cancelPendingList = /*#__PURE__*/function () {
   var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(req, res) {
-    var id;
+    var _req$body, id, add_on_id;
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.prev = 0;
-            id = req.body.id;
-            _context3.next = 4;
+            _req$body = req.body, id = _req$body.id, add_on_id = _req$body.add_on_id;
+            if (!id) {
+              _context3.next = 7;
+              break;
+            }
+            _context3.next = 5;
             return (0, _db["default"])("subscribed_user_details").update({
               subscription_status: "cancelled"
             }).where({
               id: id
             });
-          case 4:
+          case 5:
             req.flash("success", "SuccessFully Cancelled the Subscription");
             return _context3.abrupt("return", res.redirect("/super_admin/users_subscription/get_new_users"));
-          case 8:
-            _context3.prev = 8;
+          case 7:
+            if (!add_on_id) {
+              _context3.next = 12;
+              break;
+            }
+            _context3.next = 10;
+            return (0, _db["default"])("add_on_orders").update({
+              status: "cancelled"
+            }).where({
+              id: add_on_id
+            });
+          case 10:
+            req.flash("success", "SuccessFully Cancelled the Add On Order");
+            return _context3.abrupt("return", res.redirect("/super_admin/users_subscription/get_new_users"));
+          case 12:
+            _context3.next = 18;
+            break;
+          case 14:
+            _context3.prev = 14;
             _context3.t0 = _context3["catch"](0);
             console.log(_context3.t0);
             res.redirect("/home");
-          case 12:
+          case 18:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3, null, [[0, 8]]);
+    }, _callee3, null, [[0, 14]]);
   }));
   return function cancelPendingList(_x5, _x6) {
     return _ref3.apply(this, arguments);
@@ -769,13 +790,13 @@ var getAllUsers = /*#__PURE__*/function () {
 exports.getAllUsers = getAllUsers;
 var updatePendingList = /*#__PURE__*/function () {
   var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(req, res) {
-    var _req$body, sub_id, branch_id, address_id, add_on_id, add_on_order_id, i;
+    var _req$body2, sub_id, branch_id, address_id, add_on_id, add_on_order_id, i;
     return _regeneratorRuntime().wrap(function _callee6$(_context6) {
       while (1) {
         switch (_context6.prev = _context6.next) {
           case 0:
             _context6.prev = 0;
-            _req$body = req.body, sub_id = _req$body.sub_id, branch_id = _req$body.branch_id, address_id = _req$body.address_id, add_on_id = _req$body.add_on_id; // console.log(address_id);
+            _req$body2 = req.body, sub_id = _req$body2.sub_id, branch_id = _req$body2.branch_id, address_id = _req$body2.address_id, add_on_id = _req$body2.add_on_id; // console.log(address_id);
             // console.log(add_on_id);
             add_on_order_id = req.body.add_on_order_id;
             console.log(add_on_order_id, "add", _typeof(add_on_order_id));
@@ -861,13 +882,13 @@ var updatePendingList = /*#__PURE__*/function () {
 exports.updatePendingList = updatePendingList;
 var updateAllUsersStatus = /*#__PURE__*/function () {
   var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7(req, res) {
-    var _req$body2, status, id;
+    var _req$body3, status, id;
     return _regeneratorRuntime().wrap(function _callee7$(_context7) {
       while (1) {
         switch (_context7.prev = _context7.next) {
           case 0:
             _context7.prev = 0;
-            _req$body2 = req.body, status = _req$body2.status, id = _req$body2.id;
+            _req$body3 = req.body, status = _req$body3.status, id = _req$body3.id;
             if (!(status == "1")) {
               _context7.next = 7;
               break;
@@ -1131,13 +1152,13 @@ var getSingleUser = /*#__PURE__*/function () {
 exports.getSingleUser = getSingleUser;
 var unsubscribeSubscription = /*#__PURE__*/function () {
   var _ref9 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9(req, res) {
-    var _req$body3, sub_id, user_id, user_address_id;
+    var _req$body4, sub_id, user_id, user_address_id;
     return _regeneratorRuntime().wrap(function _callee9$(_context9) {
       while (1) {
         switch (_context9.prev = _context9.next) {
           case 0:
             _context9.prev = 0;
-            _req$body3 = req.body, sub_id = _req$body3.sub_id, user_id = _req$body3.user_id, user_address_id = _req$body3.user_address_id;
+            _req$body4 = req.body, sub_id = _req$body4.sub_id, user_id = _req$body4.user_id, user_address_id = _req$body4.user_address_id;
             _context9.next = 4;
             return (0, _db["default"])("subscribed_user_details").update({
               subscription_status: "unsubscribed"
@@ -1169,13 +1190,13 @@ var unsubscribeSubscription = /*#__PURE__*/function () {
 exports.unsubscribeSubscription = unsubscribeSubscription;
 var subscribeSubscription = /*#__PURE__*/function () {
   var _ref10 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10(req, res) {
-    var _req$body4, sub_id, user_id, user_address_id;
+    var _req$body5, sub_id, user_id, user_address_id;
     return _regeneratorRuntime().wrap(function _callee10$(_context10) {
       while (1) {
         switch (_context10.prev = _context10.next) {
           case 0:
             _context10.prev = 0;
-            _req$body4 = req.body, sub_id = _req$body4.sub_id, user_id = _req$body4.user_id, user_address_id = _req$body4.user_address_id;
+            _req$body5 = req.body, sub_id = _req$body5.sub_id, user_id = _req$body5.user_id, user_address_id = _req$body5.user_address_id;
             _context10.next = 4;
             return (0, _db["default"])("subscribed_user_details").update({
               subscription_status: "subscribed"
@@ -1202,6 +1223,57 @@ var subscribeSubscription = /*#__PURE__*/function () {
   }));
   return function subscribeSubscription(_x19, _x20) {
     return _ref10.apply(this, arguments);
+  };
+}();
+exports.subscribeSubscription = subscribeSubscription;
+var updateUser = /*#__PURE__*/function () {
+  var _ref11 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11(req, res) {
+    var _req$body6, user_name, mobile_number, address, address_id, user_id;
+    return _regeneratorRuntime().wrap(function _callee11$(_context11) {
+      while (1) {
+        switch (_context11.prev = _context11.next) {
+          case 0:
+            _context11.prev = 0;
+            _req$body6 = req.body, user_name = _req$body6.user_name, mobile_number = _req$body6.mobile_number, address = _req$body6.address, address_id = _req$body6.address_id;
+            _context11.next = 4;
+            return (0, _db["default"])("user_address").select("user_id").where({
+              id: address_id
+            });
+          case 4:
+            user_id = _context11.sent;
+            _context11.next = 7;
+            return (0, _db["default"])("user_address").update({
+              address: address
+            }).where({
+              id: address_id
+            });
+          case 7:
+            _context11.next = 9;
+            return (0, _db["default"])("users").update({
+              name: user_name,
+              mobile_number: mobile_number
+            }).where({
+              id: user_id[0].user_id
+            });
+          case 9:
+            req.flash("success", "User Detail Updated SuccessFully");
+            res.redirect("/super_admin/users_subscription/get_all_users");
+            _context11.next = 17;
+            break;
+          case 13:
+            _context11.prev = 13;
+            _context11.t0 = _context11["catch"](0);
+            console.log(_context11.t0);
+            res.redirect("/home");
+          case 17:
+          case "end":
+            return _context11.stop();
+        }
+      }
+    }, _callee11, null, [[0, 13]]);
+  }));
+  return function updateUser(_x21, _x22) {
+    return _ref11.apply(this, arguments);
   };
 }();
 
@@ -1331,4 +1403,4 @@ var subscribeSubscription = /*#__PURE__*/function () {
 //     return res.redirect("/home");
 //   }
 // };
-exports.subscribeSubscription = subscribeSubscription;
+exports.updateUser = updateUser;

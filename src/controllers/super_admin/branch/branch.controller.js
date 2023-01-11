@@ -355,10 +355,12 @@ export const createGenerateBill = async (req, res) => {
 
 export const updateBranch = async (req, res) => {
   try {
-    const { location, id, mobile_number, city_id, incharge_name } = req.body;
+    const { zone_id, id, mobile_number, city_id, incharge_name } = req.body;
 
-    if (!location) {
-      req.flash("error", "location is missing");
+    console.log(req.body , "some")
+
+    if (!zone_id) {
+      req.flash("error", "Zone is missing");
       return res.redirect("/super_admin/branch/get_branch_admin");
     }
     if (!mobile_number) {
@@ -367,12 +369,12 @@ export const updateBranch = async (req, res) => {
     }
 
     let query = {};
-    if (city_id) {
-      query.city_id = city_id;
-    }
+    // if (city_id) {
+    //   query.city_id = city_id;
+    // }
 
     query.incharge_name = incharge_name;
-    query.location = location;
+    query.zone_id = zone_id;
     query.mobile_number = mobile_number;
 
     await knex("admin_users").update(query).where({ id: id });
@@ -488,6 +490,10 @@ export const getBranchAdmin = async (req, res) => {
     }
 
     const zones = await knex("zones")
+      .select("id", "name" , "city_id")
+      .where({ status: "1" });
+
+      const cities = await knex("cities")
       .select("id", "name")
       .where({ status: "1" });
 
@@ -497,6 +503,7 @@ export const getBranchAdmin = async (req, res) => {
         data: data_length,
         searchKeyword,
         zones,
+        cities
       });
     }
 
@@ -513,15 +520,17 @@ export const getBranchAdmin = async (req, res) => {
     let is_search = false;
     if (searchKeyword) {
       results = await knex.raw(
-        `SELECT admin_users.id,admin_users.first_name,admin_users.location,admin_users.mobile_number,admin_users.email,admin_users.status,admin_users.password,admin_users.is_password_change,zones.name as zone_name,zones.id as zone_id,admin_users.incharge_name FROM admin_users 
+        `SELECT admin_users.id,admin_users.first_name,admin_users.location,admin_users.mobile_number,admin_users.email,admin_users.status,admin_users.password,admin_users.is_password_change,zones.name as zone_name,zones.id as zone_id,zones.city_id as zone_city_id, cities.id as city_id,cities.name as city_name, admin_users.incharge_name FROM admin_users 
         JOIN zones ON zones.id = admin_users.zone_id 
+        JOIN cities ON cities.id = zones.city_id
         WHERE admin_users.user_group_id = "2" AND admin_users.first_name LIKE '%${searchKeyword}%' LIMIT ${startingLimit},${resultsPerPage}`
       );
       is_search = true;
     } else {
       results = await knex.raw(
-        `SELECT admin_users.id,admin_users.first_name,admin_users.location,admin_users.mobile_number,admin_users.email,admin_users.status,admin_users.password,admin_users.is_password_change,zones.name as zone_name,zones.id as zone_id,admin_users.incharge_name FROM admin_users 
+        `SELECT admin_users.id,admin_users.first_name,admin_users.location,admin_users.mobile_number,admin_users.email,admin_users.status,admin_users.password,admin_users.is_password_change,zones.name as zone_name,zones.id as zone_id,zones.city_id as zone_city_id,cities.id as city_id,cities.name as city_name,admin_users.incharge_name FROM admin_users 
         JOIN zones ON zones.id = admin_users.zone_id
+        JOIN cities ON cities.id = zones.city_id
          WHERE admin_users.user_group_id = "2" LIMIT ${startingLimit},${resultsPerPage}`
       );
     }
@@ -534,7 +543,7 @@ export const getBranchAdmin = async (req, res) => {
 
     let total_amount = 0;
 
-    console.log(data);
+    // console.log(data);
     for (let i = 0; i < data.length; i++) {
       const get_bills = await knex("branch_purchase_order")
         .select("grand_total")
@@ -559,7 +568,7 @@ export const getBranchAdmin = async (req, res) => {
       total_amount = 0;
     }
 
-    console.log(data);
+    // console.log(data);
 
     loading = false;
     res.render("super_admin/branch/branch", {
@@ -572,6 +581,7 @@ export const getBranchAdmin = async (req, res) => {
       searchKeyword,
       loading,
       zones,
+      cities
     });
   } catch (error) {
     console.log(error);
@@ -640,6 +650,26 @@ export const updateChangePassword = async (req, res) => {
     res.redirect("/home");
   }
 };
+
+
+
+export const getZones = async (req,res) => {
+  try {
+    
+    const {city_id} = req.body
+
+    const zones = await knex("zones").select("id","name").where({city_id })
+
+    console.log(city_id)
+    console.log(zones)
+    return res.status(200).json({data : zones})
+
+  } catch (error) {
+   console.log(error)
+   res.redirect("/home")    
+  }
+}
+
 
 // export const getChangePassword = async (req, res) => {
 //   try {

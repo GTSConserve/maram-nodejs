@@ -1530,24 +1530,76 @@ var editPaused = /*#__PURE__*/function () {
 exports.editPaused = editPaused;
 var changeUserPlan = /*#__PURE__*/function () {
   var _ref18 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee18(req, res) {
-    var data;
+    var data, sub_details, query, change_plan_query, weekdays, store_weekdays, i, j, change_plan_create;
     return _regeneratorRuntime().wrap(function _callee18$(_context18) {
       while (1) {
         switch (_context18.prev = _context18.next) {
           case 0:
-            try {
-              data = req.body.data;
-              console.log(data);
-            } catch (error) {
-              console.log(error);
-              res.redirect("/home");
+            _context18.prev = 0;
+            data = req.body.data;
+            console.log(data);
+            _context18.next = 5;
+            return (0, _db["default"])("subscribed_user_details").select("subscribe_type_id", "user_id").where({
+              id: data.sub_id
+            });
+          case 5:
+            sub_details = _context18.sent;
+            query = {
+              subscribe_type_id: data.your_plan,
+              date: (0, _moment["default"])(data.sub_start_date).format("YYYY-MM-DD"),
+              change_start_date: (0, _moment["default"])(data.sub_start_date).format("YYYY-MM-DD")
+            };
+            change_plan_query = {
+              user_id: sub_details[0].user_id,
+              previous_subscription_type_id: sub_details[0].subscribe_type_id,
+              change_subscription_type_id: data.your_plan,
+              start_date: (0, _moment["default"])(data.sub_start_date).format("YYYY-MM-DD")
+            };
+            if (!(data.your_plan == 3)) {
+              _context18.next = 16;
+              break;
             }
-          case 1:
+            _context18.next = 11;
+            return (0, _db["default"])("weekdays").select("id", "name");
+          case 11:
+            weekdays = _context18.sent;
+            store_weekdays = [];
+            for (i = 0; i < data.custom_days.length; i++) {
+              for (j = 0; j < weekdays.length; j++) {
+                if (weekdays[j].id == data.custom_days[i]) {
+                  store_weekdays.push(weekdays[j].name);
+                }
+              }
+            }
+            query.customized_days = JSON.stringify(store_weekdays);
+            change_plan_query.customized_days = JSON.stringify(store_weekdays);
+          case 16:
+            _context18.next = 18;
+            return (0, _db["default"])("subscription_users_change_plan").insert(change_plan_query);
+          case 18:
+            change_plan_create = _context18.sent;
+            query.change_plan_id = change_plan_create[0];
+            _context18.next = 22;
+            return (0, _db["default"])("subscribed_user_details").update(query).where({
+              id: data.sub_id
+            });
+          case 22:
+            res.status(200).json({
+              status: true
+            });
+            _context18.next = 29;
+            break;
+          case 25:
+            _context18.prev = 25;
+            _context18.t0 = _context18["catch"](0);
+            console.log(_context18.t0);
+            res.redirect("/home");
+          case 29:
           case "end":
             return _context18.stop();
         }
       }
-    }, _callee18);
+    }, _callee18, null, [[0, 25]]);
   }));
   return function changeUserPlan(_x33, _x34) {
     return _ref18.apply(this, arguments);

@@ -1,0 +1,467 @@
+<% layout('layouts/boilerPlate') %>
+    <div class="widget-content widget-content-area br-6">
+        <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+            <div class="row">
+                 <div class="col-8">
+                        <h3 class="mt-2">Route</h3>
+                        </div>
+                        <div class="col-4">
+                             <div class="input-group mb-3">
+                            <input type="text" class="form-control" name="searchKeyword" oninput="onChangeSearch()" value="<%=searchKeyword ? searchKeyword : ""  %>"  id="searchText" placeholder="search..."  aria-describedby="basic-addon2">
+                            <div class="input-group-append" style="cursor: pointer;"  onclick="onSearch()" >
+                              <span style="background-color: #80C659;" class="input-group-text " id="basic-addon2"><svg style="color: #fff;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button></span>
+                            </div>
+                          </div>
+                          </div>     
+             
+             
+
+            </div>
+    </div>
+
+                    
+                                <script>
+
+                                    async function onChangeSearch(event){
+                                        const text = document.getElementById("searchText").value;
+                                        if(!text){
+
+                                            return window.location.href = `/branch_admin/route/get_route`
+                                        }
+
+                                    }
+
+                                    async function onSearch(event) {
+                                       
+                                        const text = document.getElementById("searchText").value;
+                            
+                                        window.location.href = `/branch_admin/route/get_route?searchKeyword=${text}`
+                              
+                                 
+                                };
+                                </script>
+                    
+                    <div class="float-right form-group col-md-1">
+                        <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addbarcategory">Add</button>
+                        <!-- __category add__ -->
+                        <div wire:ignore.self="" data-backdrop="static" class="modal fade" id="addbarcategory" tabindex="-1"
+                            aria-labelledby="addCategoryTitle" style="display: none;" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalCenterTitle">Add Route</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                                height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                class="feather feather-x">
+                                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                    <div class="widget-content widget-content-area br-6">
+                                        
+
+
+                                        <form action="/branch_admin/route/create_route" method="post">
+
+                                        <div class="form-row mb-4">
+                                           
+                                            <div class="col-sm-12 mb-4">
+                                                <label>Route Name</label>
+                                                <input type="text" wire:model="name" placeholder="Eg. OMR Road" required name="name"
+                                                    class="form-control">
+                                            </div>
+
+                                            <!-- <div class="col-sm-6">
+                                                <label>Choose a City</label>
+                                                <select wire:model="countryid" class="form-control" name="city_id" required>
+                                                    <option value="">Select City </option>
+                                                    <% for(city of cities){ %>
+
+                                                        <option name="<%=city.name %>" value="<%=city.id %>"><%=city.name %></option>
+                                                    <% } %>
+
+                                                </select>
+                                               
+                                            </div> -->
+
+                                            <div class="col-sm-12">
+                                                <label>Choose a Rider (optional)</label>
+                                                <select wire:model="countryid" class="form-control" name="rider_id">
+                                                    <option value="">Select Rider </option>
+                                                    <% for(rider of riders){ %>
+
+                                                        <option name="<%=rider.name %>" value="<%=rider.id %>"><%=rider.name %></option>
+                                                    <% } %>
+
+                                                </select>
+                                               
+                                            </div>
+                                           
+
+                                        </div>
+
+                                    </div>
+                                    <div class="modal-footer">
+
+                                        <button type="button" class="btn btn-danger" id="addmodalClose" data-dismiss="modal"><i
+                                                class="flaticon-cancel-12"></i>Discard</button>
+                                        <button type="submit" wire:click="save" class="btn btn-success">Save</button>
+                                    </div>
+                                </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+          
+        <% if(data.length === 0){ %> 
+            <h2>No Data Found</h2>
+            <% }else if(loading) { %>
+                <div class="row">
+                    <div class="col-5">
+    
+                    </div>
+                    <div class="col-2">
+                        <button class="btn btn-success btn-lg mb-3 mr-3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-loader spin mr-2"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg>  Loading</button>
+                    </div>
+                </div>
+    
+                <% } else {  %>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped mb-4" style="width: 100%;  font-weight: bold; box-shadow: 8px 5px 5px 0px #aaa;" id="DataTables_Table_0"
+                role="grid" aria-describedby="DataTables_Table_0_info">
+                <thead >
+    
+                    <tr role="row"  >
+                        <th  class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                            colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
+                            style="width: 20px;">#</th>
+                        <!-- <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                            colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
+                            style="width: 86px;">Starting Point</th> -->
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                            aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">Route Name</th>
+                            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                            aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">Rider Name</th>
+                        <!-- <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                            aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">City Name</th> -->
+                        <!-- <th class="text-center sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                            colspan="1" aria-label="Status: activate to sort column ascending" style="width: 49px;">
+                            Status</th> -->
+                        <th class="text-center dt-no-sorting sorting" tabindex="0"
+                            aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                            aria-label="Action: activate to sort column ascending" style="width: 64px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+    
+                    <tr role="row" >
+    
+                        <% for(user of data){ %>
+                                <td class="sorting_1"><%=user.id %></td>
+                              
+                                <td ><%=user.route_name %></td>
+                                <td><%=user.rider_name ? user.rider_name : "N/A" %></td>
+                                <!-- <td><%=user.city_name %></td>     -->
+                                <!-- <div>
+                                    <td style="text-align: center; vertical-align: middle;">
+                                        <div class="custom-control custom-switch" style="cursor: pointer;">
+                                                <input style="cursor: pointer;" <%= user.status == "1" ? "checked"  :""  %>   type="checkbox"   class="custom-control-input" name="status" 
+                                                value="<%=user.status %>"  onChange="onToDochange(this)" id=<%=user.id %>>
+                                                <label class="custom-control-label"  for=<%=user.id %>></label>
+                                            
+                                                <script >
+                                                    async function onToDochange(event) {
+                                                    await fetch('/branch_admin/route/update_route_status', {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'Accept': 'application/json',
+                                                        'Content-Type': 'application/json'
+                                                    },
+                                                    body: JSON.stringify({"id": event.id , "status" : event.value})
+                                                    })
+                                                    
+                                                   
+                                                 window.location.reload("/branch_admin/route/get_route")
+                                                 
+    
+                                                    
+                                                };
+                                                </script>
+                                         
+                                        </div> -->
+                                    </td>
+                         
+                                    <td class="text-center">
+                                        <!-- <a  class="btn mb-2 btn-sm  btn-primary"  id=<%=user.id %> data-toggle="modal" onclick="viewHandler(this)"
+                                      >View Orders</a> -->
+                                       <button id="<%= user.id %>" class="btn mb-2 btn-md  btn-info" data-toggle="modal"  onclick="userMapping(this)"
+                                       >User Mapping</button>
+                                       <button class="btn mb-2 btn-md  btn-primary" data-toggle="modal"
+                                         id="<%= user.id %>"  onclick="viewMapping(this)">View Mapping</button>
+                                       <button class="btn mb-2 btn-md  btn-warning" data-toggle="modal"
+                                         onclick="tommorowMapping(this)"  id="<%= user.id %>" >Tommorrow Route Users</button>
+                                       <button class="btn mb-2 btn-md  btn-secondary" data-toggle="modal"
+                                        data-target="#editCategory<%=user.id %>">Edit Route</button>
+                                         
+                                        
+                                    
+                                </div>
+                                <script>
+                                    // async function userMapping(event){
+                                    //     window.location.href = `/branch_admin/order/daily_orders?route_id=${event.id}`
+                                    //     // await fetch('/branch_admin/order/daily_orders', {
+                                    //     //     method: 'get',
+                                    //     //     headers: {
+                                    //     //         'Accept': 'application/json',
+                                    //     //         'Content-Type': 'application/json'
+                                    //     //             },
+                                    //     //             body: JSON.stringify({"route_id": event.id })
+                                    //     //         })
+                                                
+                                                    
+                                    // }
+                                    async function userMapping(event){
+                                        window.location.href = `/branch_admin/route/user_mapping?route_id=${event.id}`
+                                      
+              
+                                    }
+                                    async function viewMapping(event){
+                                        window.location.href = `/branch_admin/route/view_mapping?route_id=${event.id}`
+                                       
+                                                    
+                                    }
+                                    async function tommorowMapping(event){
+                                        window.location.href = `/branch_admin/route/tommorrow_route_mapping?route_id=${event.id}`
+                                       
+                                                    
+                                    }
+                                </script>
+                                
+                            </tr>
+    
+    <!-- edit -->
+                <div wire:ignore.self="" data-backdrop="static" class="modal fade bd-example-modal-xl" id="editCategory<%=user.id %>" tabindex="-1"
+                    aria-labelledby="addCategoryTitle" style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalCenterTitle">Edit Route</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                        height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                        class="feather feather-x">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </button>
+                            </div>
+    
+                            <div class="modal-body">
+                                <form method="post" action="/branch_admin/route/update_route"  >
+                                    <div class="form-row mb-4">
+                                       
+                                        <div class="col-sm-12 p-1">
+                                            <label>Route Name</label>
+                                            <input type="text" wire:model="name" value="<%= user.route_name %>" placeholder="Ending Location" required name="name"
+                                                class="form-control">
+                                        </div>
+
+                                        <!-- <div class="col-sm-6">
+                                            <label>Choose a City</label>
+                                            <select wire:model="countryid" class="form-control" name="city_id" required>
+                                                <option value="<%= user.city_id %>"><%= user.city_name %> </option>
+                                                <% for(city of cities){ %>
+
+                                                    <option name="<%=city.name %>" value="<%=city.id %>"><%=city.name %></option>
+                                                <% } %>
+
+                                            </select>
+                                           
+                                        </div> -->
+
+                                        <div class="col-sm-12">
+                                            <label>Choose a Rider (optional)</label>
+                                            <select wire:model="countryid" class="form-control" name="rider_id">
+                                                <option value="<%= user.rider_id %>"><%= user.rider_name ? user.rider_name : "Choose a Rider"  %></option>
+                                                <% for(rider of riders){ %>
+
+                                                    <option name="<%=rider.name %>" value="<%=rider.id %>"><%=rider.name %></option>
+                                                <% } %>
+
+                                            </select>
+                                           
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="modal-footer">
+                                        
+                                        <button type="button" name="id" value="<%=user.id %>" class="btn btn-danger" id="addmodalClose" data-dismiss="modal"><i
+                                            class="flaticon-cancel-12"></i>Discard</button>
+                                            <button wire:click="save" name="id" value="<%=user.id %>"  type="submit" class="btn btn-success">Save</button>
+                                    </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                </div>
+    
+    <!-- viewMapping -->
+    <div wire:ignore.self="" data-backdrop="static" class="modal fade bd-example-modal-xl" id="viewMapping<%=user.id %>" tabindex="-1"
+        aria-labelledby="addCategoryTitle" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">View Mapping </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                            height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="feather feather-x">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <form method="post" action="/branch_admin/route/update_view_mapping"  >
+                     
+                       <div id='left-defaults' class='dragula'>
+
+                        <div class="media  d-md-flex d-block text-sm-left text-center" id="1">
+                           
+                            <div class="media-body">
+                                <div class="d-xl-flex d-block justify-content-between">
+                                    <div class="">
+                                        <h6 class="">Need to be approved</h6>
+                                        <p class="">1</p>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-primary btn-sm">View</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="media  d-md-flex d-block text-sm-left text-center" id="2">
+                           
+                            <div class="media-body">
+                                <div class="d-xl-flex d-block justify-content-between">
+                                    <div class="">
+                                        <h6 class="">Meeting with client</h6>
+                                        <p class="">2</p>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-primary btn-sm">View</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="media  d-md-flex d-block text-sm-left text-center" id="3">
+                           
+                            <div class="media-body">
+                                <div class="d-xl-flex d-block justify-content-between">
+                                    <div class="">
+                                        <h6 class="">Project Detail</h6>
+                                        <p class="">3</p>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-primary btn-sm">View</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    
+                    <button type="button" name="id" value="<%=user.id %>" class="btn btn-danger" id="addmodalClose" data-dismiss="modal"><i
+                        class="flaticon-cancel-12"></i>Discard</button>
+                        <button wire:click="save" name="id" value="<%=user.id %>"  type="submit" class="btn btn-success">Save</button>
+                    </div>
+                </form>
+
+
+                <script>
+
+                </script>
+
+            </div>
+        </div>
+    </div>
+    
+  
+    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    <% } %>
+                    
+                </tbody>
+                
+            </table>
+        </div>
+        <% if(numberOfPages != 1){ %> 
+        <div class="dt--bottom-section d-sm-flex justify-content-sm-between text-center pt-4 ">
+            <div class="dt--pages-count  mb-sm-0 mb-3">
+              <% let search_query =  is_search ? `&searchKeyword=${searchKeyword}` : "" %>
+            </div>
+            <div class="widget-content widget-content-area text-center">
+            <nav class="paginating-container " aria-label="...">
+                <ul class="pagination-default pagination">
+                    <% if(page > 1) { %> 
+                        <li class="prev">
+                            <a href="/branch_admin/route/get_route?page=<%=page-1%><%= search_query %>"  style="padding-left: 5px;">Prev</a>
+                  
+                         <% } %>
+                   
+                         <% for(let i = iterator==0 ? 1 : iterator; i <= endingLink; i++) { %>
+                            <% if(i === page) { %>
+                                <li class="page-item active" style="padding-left: 5px;"><a  href="#"><%=i%></a></li>
+                                
+                                <% continue; %>
+                                <% } %>
+                                <li class="page-item" style="padding-left: 5px;"><a  href="/branch_admin/route/get_route?page=<%=i%><%= search_query %>"><%=i%></a></li>
+                        <% } %>
+                        
+                        <% if(page < numberOfPages) { %>
+                            <li class="next" style="padding-left: 5px;">
+                                <a  href="/branch_admin/route/get_route?page=<%=page+1%><%= search_query %>">Next</a>
+                            </li>
+                      
+                         <% } %>
+                         
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+            <% } %>
+        </div>
+        <% } %>
+    <div id="DataTables_Table_1_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+        <div class="dt--top-section">
+            <div class="row">
+
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="multi-table table table-bordered table-hover non-hover dataTable" style="width: 100%;"
+                id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info">
+
+            </table>
+        </div>
+    </div>
+    </div>
+    </div>
+    </div>

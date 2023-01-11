@@ -1,5 +1,5 @@
 import express  from 'express';
-import { getBranchAdmin,createBranchAdmin,updateBranchStatus,updateBranch,updateChangePassword,getChangePassword ,createGenerateBill,getPendingBill,getReceivedBill,getCompletedBill,approveBill} from "../../controllers/super_admin/branch/branch.controller"
+import { getBranchAdmin,createBranchAdmin,updateBranchStatus,updateBranch,updateChangePassword,getChangePassword ,createGenerateBill,getPendingBill,getReceivedBill,getCompletedBill,approveBill,getZones} from "../../controllers/super_admin/branch/branch.controller"
 
 
 const branchRouter = express.Router({
@@ -25,6 +25,11 @@ branchRouter.get('/get_received_bill',getReceivedBill)
 branchRouter.get('/get_completed_bill',getCompletedBill)
 
 branchRouter.post('/approve_bill',approveBill)
+
+
+// get zone based on city for front end
+
+branchRouter.post('/get_zones',getZones)
 
 
 export default branchRouter

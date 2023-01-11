@@ -155,9 +155,10 @@
                                             </div>
                                             <div class="col-6 mt-2" >
                                                 
-                                                <label>Image</label>
+                                                <label>Image -<span> Size (512 * 512)</span></label>
                                                 <input type="file" wire:model="image" placeholder="Image" name="image" required
                                                     class="form-control">
+                                                    <span>Maximum Size Of File Should Be 1 MB</span>
 
                                             </div>
                                         </div>
@@ -380,12 +381,13 @@
                                     </div>
                                     <div class="col-sm-6 mt-3">
 
-                                        <label>Image (Old Image)</label>
+                                        <label>Image (Old Image) -<span> Size (512 * 512)</span></label>
                                         <div class="row"> 
                                             <img style="width: 170px;height : 150px" class="pb-5 col-5" src="<%=product.image %>">
                                             <input type="file" wire:model="image"  placeholder="Image" name="image"
                                             
                                             class="form-control col-7" >
+                                            <span>Maximum Size Of File Should Be 1 MB</span>
                                         </div>
                                     </div>
                                    

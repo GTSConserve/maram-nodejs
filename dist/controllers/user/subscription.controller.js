@@ -382,25 +382,27 @@ var getAllSubscription = /*#__PURE__*/function () {
           case 0:
             _context8.prev = 0;
             userId = req.body.userId;
-            _context8.next = 4;
+            console.log(userId);
+            _context8.next = 5;
             return (0, _subscription.get_subscription_product)(userId);
-          case 4:
+          case 5:
             subscription_product = _context8.sent;
             if (subscription_product.status) {
-              _context8.next = 7;
+              _context8.next = 8;
               break;
             }
             return _context8.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
               message: subscription_product.message
             }));
-          case 7:
+          case 8:
             for (i = 0; i < subscription_product.data.length; i++) {
               subscription_product.data[i].image = process.env.BASE_URL + subscription_product.data[i].image;
               subscription_product.data[i].quantity = subscription_product.data[i].quantity, subscription_product.data[i].price = subscription_product.data[i].price,
               // below next delivery date in static
-              subscription_product.data[i].next_delivery_date = "22-Jan";
-              subscription_product.data[i].next_delviery = "Next delivery 22-Jan-2022";
+              subscription_product.data[i].date = (0, _moment["default"])().format("YYYY-MM-DD");
+              subscription_product.data[i].date = (0, _moment["default"])().format("YYYY-MM-DD");
+              ;
               if (subscription_product.data[i].unit_value >= 500) {
                 subscription_product.data[i].unit = subscription_product.data[i].unit_value / 1000 + " " + (subscription_product.data[i].unit_type === "ml" ? "litre" : subscription_product.data[i].unit_type);
               } else {
@@ -413,20 +415,20 @@ var getAllSubscription = /*#__PURE__*/function () {
               status: true,
               data: subscription_product.data
             }));
-          case 11:
-            _context8.prev = 11;
+          case 12:
+            _context8.prev = 12;
             _context8.t0 = _context8["catch"](0);
             console.log(_context8.t0);
             return _context8.abrupt("return", res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: _messages["default"].SERVER_ERROR
             }));
-          case 15:
+          case 16:
           case "end":
             return _context8.stop();
         }
       }
-    }, _callee8, null, [[0, 11]]);
+    }, _callee8, null, [[0, 12]]);
   }));
   return function getAllSubscription(_x13, _x14) {
     return _ref8.apply(this, arguments);
@@ -435,7 +437,7 @@ var getAllSubscription = /*#__PURE__*/function () {
 exports.getAllSubscription = getAllSubscription;
 var singleSubscription = /*#__PURE__*/function () {
   var _ref9 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9(req, res) {
-    var _req$body5, userId, subscription_id, sub, i, j, response;
+    var _req$body5, userId, subscription_id, data1, sub, date, i, j, response;
     return _regeneratorRuntime().wrap(function _callee9$(_context9) {
       while (1) {
         switch (_context9.prev = _context9.next) {
@@ -451,74 +453,77 @@ var singleSubscription = /*#__PURE__*/function () {
               message: _messages["default"].MANDATORY_ERROR
             }));
           case 4:
-            _context9.next = 6;
+            data1 = [];
+            _context9.next = 7;
             return (0, _subscription.single_subscription)(userId, subscription_id);
-          case 6:
+          case 7:
             sub = _context9.sent;
+            date = [];
             if (sub.status) {
-              _context9.next = 9;
+              _context9.next = 11;
               break;
             }
             return _context9.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
               message: sub.message
             }));
-          case 9:
+          case 11:
             i = 0;
-          case 10:
+          case 12:
             if (!(i < sub.data.length)) {
-              _context9.next = 24;
+              _context9.next = 28;
               break;
             }
             sub.data[i].image = process.env.BASE_URL + sub.data[i].image;
             sub.data[i].subscription_start_date = (0, _moment["default"])().format("YYYY-MM-DD");
-            sub.data[i].customized_days = sub.data[i].customized_days;
+            sub.data[i].customized_days = sub.data[i].customized_days != null ? [sub.data[i].customized_days] : [];
             sub.data[i].address_id = sub.data[i].address_id;
             sub.data[i].quantity = sub.data[i].quantity;
             sub.data[i].price = sub.data[i].price;
+            sub.data[i].demo_price = sub.data[i].demo_price;
             sub.data[i].date = [(0, _moment["default"])().format("YYYY-MM-DD")];
+            if (sub.data[i].unit_value >= 500) {
+              sub.data[i].unit = sub.data[i].unit_value / 1000 + " " + (sub.data[i].unit_type == "ml" ? "litre" : sub.data[i].unit_type);
+            } else {
+              sub.data[i].unit = sub.data[i].unit_value + " " + sub.data[i].unit_type;
+            }
             for (j = 0; j < sub.add_product.length; j++) {
               console.log(sub.add_product[0][j].id);
               sub.add_product[0][j].id = sub.add_product[0][j].id;
               sub.add_product[0][j].image = sub.add_product[0][j].image;
               sub.add_product[0][j].date = [(0, _moment["default"])().format("YYYY-MM-DD")];
-              if (sub.data[i].unit_value >= 500) {
-                sub.data[i].unit = sub.data[i].unit_value / 1000 + " " + (sub.data[i].unit_type === "ml" ? "litre" : sub.data[i].unit_type);
-              } else {
-                sub.data[i].unit = sub.data[i].unit_value + " " + sub.data[i].unit_type;
-              }
               delete sub.data[i].unit_value;
               delete sub.data[i].unit_type;
             }
             response = {
-              additional_orders: sub.add_product[0],
+              additional_orders: sub.add_product[0] != null ? sub.add_product[0] : [],
               this_month_item_detail: sub.this_month_item_detail[0]
             };
             return _context9.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               status: true,
               data: _objectSpread(_objectSpread({}, sub.data[0]), response)
             }));
-          case 21:
+          case 25:
             i++;
-            _context9.next = 10;
+            _context9.next = 12;
             break;
-          case 24:
-            _context9.next = 30;
+          case 28:
+            _context9.next = 34;
             break;
-          case 26:
-            _context9.prev = 26;
+          case 30:
+            _context9.prev = 30;
             _context9.t0 = _context9["catch"](0);
             console.log(_context9.t0);
             return _context9.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
               message: _messages["default"].DATA_NOT_FOUND
             }));
-          case 30:
+          case 34:
           case "end":
             return _context9.stop();
         }
       }
-    }, _callee9, null, [[0, 26]]);
+    }, _callee9, null, [[0, 30]]);
   }));
   return function singleSubscription(_x15, _x16) {
     return _ref9.apply(this, arguments);

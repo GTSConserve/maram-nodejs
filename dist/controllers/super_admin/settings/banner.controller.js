@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updateBanners = exports.updateBannerStatus = exports.getBanners = exports.createBanners = void 0;
+exports.updateBanners = exports.updateBannerStatus = exports.getBanners = exports.deleteBanner = exports.createBanners = void 0;
 var _db = _interopRequireDefault(require("../../../services/db.service"));
 var _helper = require("../../../utils/helper.util");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -272,3 +272,38 @@ var createBanners = /*#__PURE__*/function () {
   };
 }();
 exports.createBanners = createBanners;
+var deleteBanner = /*#__PURE__*/function () {
+  var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(req, res) {
+    var id;
+    return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+      while (1) {
+        switch (_context5.prev = _context5.next) {
+          case 0:
+            _context5.prev = 0;
+            id = req.body.id;
+            _context5.next = 4;
+            return (0, _db["default"])("banners").where({
+              id: id
+            }).del();
+          case 4:
+            req.flash("success", "Banner Deleted SuccessFully");
+            res.redirect("/super_admin/settings/get_banner");
+            _context5.next = 12;
+            break;
+          case 8:
+            _context5.prev = 8;
+            _context5.t0 = _context5["catch"](0);
+            console.log(_context5.t0);
+            res.redirect("/home");
+          case 12:
+          case "end":
+            return _context5.stop();
+        }
+      }
+    }, _callee5, null, [[0, 8]]);
+  }));
+  return function deleteBanner(_x9, _x10) {
+    return _ref5.apply(this, arguments);
+  };
+}();
+exports.deleteBanner = deleteBanner;

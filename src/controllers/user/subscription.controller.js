@@ -225,6 +225,8 @@ export const getAllSubscription = async (req, res) => {
   try {
     const { userId } = req.body;
 
+    console.log(userId)
+
     const subscription_product = await get_subscription_product(userId);
 
     if (!subscription_product.status) {
@@ -240,9 +242,11 @@ export const getAllSubscription = async (req, res) => {
         subscription_product.data[i].quantity),
         (subscription_product.data[i].price =
           subscription_product.data[i].price),
+
         // below next delivery date in static
         (subscription_product.data[i].date = moment().format("YYYY-MM-DD"));
       subscription_product.data[i].date = moment().format("YYYY-MM-DD");;
+
 
       if (subscription_product.data[i].unit_value >= 500) {
         subscription_product.data[i].unit =
@@ -275,15 +279,17 @@ export const getAllSubscription = async (req, res) => {
 export const singleSubscription = async (req, res) => {
   try {
     const { userId, subscription_id } = req.body;
-
+   
     if (!subscription_id) {
       return res
         .status(responseCode.FAILURE.BAD_REQUEST)
         .json({ status: false, message: messages.MANDATORY_ERROR });
     }
-
+     let data1 =[];
     const sub = await single_subscription(userId, subscription_id);
+    
 
+    let date = [];
     if (!sub.status) {
       return res
         .status(responseCode.FAILURE.DATA_NOT_FOUND)
@@ -294,33 +300,35 @@ export const singleSubscription = async (req, res) => {
       
       sub.data[i].image = process.env.BASE_URL + sub.data[i].image;
       sub.data[i].subscription_start_date = moment().format("YYYY-MM-DD");
-      sub.data[i].customized_days = sub.data[i].customized_days;
+      sub.data[i].customized_days = sub.data[i].customized_days!=null? [sub.data[i].customized_days]:[];
       sub.data[i].address_id = sub.data[i].address_id;
       sub.data[i].quantity = sub.data[i].quantity;
       sub.data[i].price = sub.data[i].price;
-      sub.data[i].date = [moment().format("YYYY-MM-DD")];
-
-      for (let j = 0; j < sub.add_product.length; j++) {  
-        console.log( sub.add_product[0][j].id)    
-      sub.add_product[0][j].id = sub.add_product[0][j].id;
-      sub.add_product[0][j].image = sub.add_product[0][j].image;
-      sub.add_product[0][j].date = [moment().format("YYYY-MM-DD")];
+      sub.data[i].demo_price = sub.data[i].demo_price;
+      sub.data[i].date =[ moment().format("YYYY-MM-DD")];
 
       if (sub.data[i].unit_value >= 500) {
         sub.data[i].unit =
           sub.data[i].unit_value / 1000 +
           " " +
-          (sub.data[i].unit_type === "ml" ? "litre" : sub.data[i].unit_type);
+          (sub.data[i].unit_type == "ml" ? "litre" : sub.data[i].unit_type);
       } else {
         sub.data[i].unit =
           sub.data[i].unit_value + " " + sub.data[i].unit_type;
       }
+   
+      for (let j = 0; j < sub.add_product.length; j++) {  
+        console.log( sub.add_product[0][j].id)    
+      sub.add_product[0][j].id = sub.add_product[0][j].id;
+      sub.add_product[0][j].image = sub.add_product[0][j].image;
+      sub.add_product[0][j].date =[(moment().format("YYYY-MM-DD"))];
+
+    
       delete sub.data[i].unit_value;
       delete sub.data[i].unit_type;
     }
-
     const response = {
-      additional_orders: sub.add_product[0],
+      additional_orders: sub.add_product[0]!=null? sub.add_product[0]:[],
       this_month_item_detail: sub.this_month_item_detail[0],
     };
 

@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updateChangePassword = exports.updateBranchStatus = exports.updateBranch = exports.getReceivedBill = exports.getPendingBill = exports.getCompletedBill = exports.getBranchAdmin = exports.createGenerateBill = exports.createBranchAdmin = exports.approveBill = void 0;
+exports.updateChangePassword = exports.updateBranchStatus = exports.updateBranch = exports.getZones = exports.getReceivedBill = exports.getPendingBill = exports.getCompletedBill = exports.getBranchAdmin = exports.createGenerateBill = exports.createBranchAdmin = exports.approveBill = void 0;
 var _db = _interopRequireDefault(require("../../../services/db.service"));
 var _jwt = require("../../../services/jwt.service");
 var _helper = require("../../../utils/helper.util");
@@ -448,33 +448,33 @@ var getCompletedBill = /*#__PURE__*/function () {
 exports.getCompletedBill = getCompletedBill;
 var updateBranch = /*#__PURE__*/function () {
   var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(req, res) {
-    var _req$body, location, id, mobile_number, city_id, incharge_name, query;
+    var _req$body, zone_id, id, mobile_number, city_id, incharge_name, query;
     return _regeneratorRuntime().wrap(function _callee6$(_context6) {
       while (1) {
         switch (_context6.prev = _context6.next) {
           case 0:
             _context6.prev = 0;
-            _req$body = req.body, location = _req$body.location, id = _req$body.id, mobile_number = _req$body.mobile_number, city_id = _req$body.city_id, incharge_name = _req$body.incharge_name;
-            if (location) {
-              _context6.next = 5;
+            _req$body = req.body, zone_id = _req$body.zone_id, id = _req$body.id, mobile_number = _req$body.mobile_number, city_id = _req$body.city_id, incharge_name = _req$body.incharge_name;
+            console.log(req.body, "some");
+            if (zone_id) {
+              _context6.next = 6;
               break;
             }
-            req.flash("error", "location is missing");
+            req.flash("error", "Zone is missing");
             return _context6.abrupt("return", res.redirect("/super_admin/branch/get_branch_admin"));
-          case 5:
+          case 6:
             if (mobile_number) {
-              _context6.next = 8;
+              _context6.next = 9;
               break;
             }
             req.flash("error", "mobile number is missing");
             return _context6.abrupt("return", res.redirect("/super_admin/branch/get_branch_admin"));
-          case 8:
-            query = {};
-            if (city_id) {
-              query.city_id = city_id;
-            }
+          case 9:
+            query = {}; // if (city_id) {
+            //   query.city_id = city_id;
+            // }
             query.incharge_name = incharge_name;
-            query.location = location;
+            query.zone_id = zone_id;
             query.mobile_number = mobile_number;
             _context6.next = 15;
             return (0, _db["default"])("admin_users").update(query).where({
@@ -636,7 +636,7 @@ var createBranchAdmin = /*#__PURE__*/function () {
 exports.createBranchAdmin = createBranchAdmin;
 var getBranchAdmin = /*#__PURE__*/function () {
   var _ref9 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9(req, res) {
-    var loading, searchKeyword, data_length, search_data_length, zones, _yield$getPageNumber4, startingLimit, page, resultsPerPage, numberOfPages, iterator, endingLink, results, is_search, data, total_amount, i, get_bills, j;
+    var loading, searchKeyword, data_length, search_data_length, zones, cities, _yield$getPageNumber4, startingLimit, page, resultsPerPage, numberOfPages, iterator, endingLink, results, is_search, data, total_amount, i, get_bills, j;
     return _regeneratorRuntime().wrap(function _callee9$(_context9) {
       while (1) {
         switch (_context9.prev = _context9.next) {
@@ -674,25 +674,32 @@ var getBranchAdmin = /*#__PURE__*/function () {
             data_length = _context9.sent;
           case 19:
             _context9.next = 21;
-            return (0, _db["default"])("zones").select("id", "name").where({
+            return (0, _db["default"])("zones").select("id", "name", "city_id").where({
               status: "1"
             });
           case 21:
             zones = _context9.sent;
+            _context9.next = 24;
+            return (0, _db["default"])("cities").select("id", "name").where({
+              status: "1"
+            });
+          case 24:
+            cities = _context9.sent;
             if (!(data_length.length === 0)) {
-              _context9.next = 25;
+              _context9.next = 28;
               break;
             }
             loading = false;
             return _context9.abrupt("return", res.render("super_admin/branch/branch", {
               data: data_length,
               searchKeyword: searchKeyword,
-              zones: zones
+              zones: zones,
+              cities: cities
             }));
-          case 25:
-            _context9.next = 27;
+          case 28:
+            _context9.next = 30;
             return (0, _helper.getPageNumber)(req, res, data_length, "branch/branch");
-          case 27:
+          case 30:
             _yield$getPageNumber4 = _context9.sent;
             startingLimit = _yield$getPageNumber4.startingLimit;
             page = _yield$getPageNumber4.page;
@@ -702,47 +709,46 @@ var getBranchAdmin = /*#__PURE__*/function () {
             endingLink = _yield$getPageNumber4.endingLink;
             is_search = false;
             if (!searchKeyword) {
-              _context9.next = 42;
+              _context9.next = 45;
               break;
             }
-            _context9.next = 38;
-            return _db["default"].raw("SELECT admin_users.id,admin_users.first_name,admin_users.location,admin_users.mobile_number,admin_users.email,admin_users.status,admin_users.password,admin_users.is_password_change,zones.name as zone_name,zones.id as zone_id,admin_users.incharge_name FROM admin_users \n        JOIN zones ON zones.id = admin_users.zone_id \n        WHERE admin_users.user_group_id = \"2\" AND admin_users.first_name LIKE '%".concat(searchKeyword, "%' LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
-          case 38:
+            _context9.next = 41;
+            return _db["default"].raw("SELECT admin_users.id,admin_users.first_name,admin_users.location,admin_users.mobile_number,admin_users.email,admin_users.status,admin_users.password,admin_users.is_password_change,zones.name as zone_name,zones.id as zone_id,zones.city_id as zone_city_id, cities.id as city_id,cities.name as city_name, admin_users.incharge_name FROM admin_users \n        JOIN zones ON zones.id = admin_users.zone_id \n        JOIN cities ON cities.id = zones.city_id\n        WHERE admin_users.user_group_id = \"2\" AND admin_users.first_name LIKE '%".concat(searchKeyword, "%' LIMIT ").concat(startingLimit, ",").concat(resultsPerPage));
+          case 41:
             results = _context9.sent;
             is_search = true;
-            _context9.next = 45;
+            _context9.next = 48;
             break;
-          case 42:
-            _context9.next = 44;
-            return _db["default"].raw("SELECT admin_users.id,admin_users.first_name,admin_users.location,admin_users.mobile_number,admin_users.email,admin_users.status,admin_users.password,admin_users.is_password_change,zones.name as zone_name,zones.id as zone_id,admin_users.incharge_name FROM admin_users \n        JOIN zones ON zones.id = admin_users.zone_id\n         WHERE admin_users.user_group_id = \"2\" LIMIT ".concat(startingLimit, ",").concat(resultsPerPage));
-          case 44:
-            results = _context9.sent;
           case 45:
+            _context9.next = 47;
+            return _db["default"].raw("SELECT admin_users.id,admin_users.first_name,admin_users.location,admin_users.mobile_number,admin_users.email,admin_users.status,admin_users.password,admin_users.is_password_change,zones.name as zone_name,zones.id as zone_id,zones.city_id as zone_city_id,cities.id as city_id,cities.name as city_name,admin_users.incharge_name FROM admin_users \n        JOIN zones ON zones.id = admin_users.zone_id\n        JOIN cities ON cities.id = zones.city_id\n         WHERE admin_users.user_group_id = \"2\" LIMIT ".concat(startingLimit, ",").concat(resultsPerPage));
+          case 47:
+            results = _context9.sent;
+          case 48:
             data = results[0]; // for (let i = 0; i < data.length; i++) {
             //   data[i].password = process.env.BASE_URL + data[i].password;
             // }
-            total_amount = 0;
-            console.log(data);
+            total_amount = 0; // console.log(data);
             i = 0;
-          case 49:
+          case 51:
             if (!(i < data.length)) {
-              _context9.next = 62;
+              _context9.next = 64;
               break;
             }
-            _context9.next = 52;
+            _context9.next = 54;
             return (0, _db["default"])("branch_purchase_order").select("grand_total").where({
               branch_id: data[i].id,
               is_bill_generated: "0"
             });
-          case 52:
+          case 54:
             get_bills = _context9.sent;
             if (!(get_bills.length == 0)) {
-              _context9.next = 56;
+              _context9.next = 58;
               break;
             }
             data[i].sub_total = 0;
-            return _context9.abrupt("continue", 59);
-          case 56:
+            return _context9.abrupt("continue", 61);
+          case 58:
             for (j = 0; j < get_bills.length; j++) {
               total_amount += Number(get_bills[j].grand_total);
             }
@@ -755,12 +761,13 @@ var getBranchAdmin = /*#__PURE__*/function () {
 
             data[i].sub_total = total_amount;
             total_amount = 0;
-          case 59:
+          case 61:
             i++;
-            _context9.next = 49;
+            _context9.next = 51;
             break;
-          case 62:
-            console.log(data);
+          case 64:
+            // console.log(data);
+
             loading = false;
             res.render("super_admin/branch/branch", {
               data: data,
@@ -771,21 +778,22 @@ var getBranchAdmin = /*#__PURE__*/function () {
               is_search: is_search,
               searchKeyword: searchKeyword,
               loading: loading,
-              zones: zones
+              zones: zones,
+              cities: cities
             });
-            _context9.next = 71;
+            _context9.next = 72;
             break;
-          case 67:
-            _context9.prev = 67;
+          case 68:
+            _context9.prev = 68;
             _context9.t0 = _context9["catch"](0);
             console.log(_context9.t0);
             res.redirect("/home");
-          case 71:
+          case 72:
           case "end":
             return _context9.stop();
         }
       }
-    }, _callee9, null, [[0, 67]]);
+    }, _callee9, null, [[0, 68]]);
   }));
   return function getBranchAdmin(_x17, _x18) {
     return _ref9.apply(this, arguments);
@@ -879,6 +887,43 @@ var updateChangePassword = /*#__PURE__*/function () {
     return _ref10.apply(this, arguments);
   };
 }();
+exports.updateChangePassword = updateChangePassword;
+var getZones = /*#__PURE__*/function () {
+  var _ref11 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11(req, res) {
+    var city_id, zones;
+    return _regeneratorRuntime().wrap(function _callee11$(_context11) {
+      while (1) {
+        switch (_context11.prev = _context11.next) {
+          case 0:
+            _context11.prev = 0;
+            city_id = req.body.city_id;
+            _context11.next = 4;
+            return (0, _db["default"])("zones").select("id", "name").where({
+              city_id: city_id
+            });
+          case 4:
+            zones = _context11.sent;
+            console.log(city_id);
+            console.log(zones);
+            return _context11.abrupt("return", res.status(200).json({
+              data: zones
+            }));
+          case 10:
+            _context11.prev = 10;
+            _context11.t0 = _context11["catch"](0);
+            console.log(_context11.t0);
+            res.redirect("/home");
+          case 14:
+          case "end":
+            return _context11.stop();
+        }
+      }
+    }, _callee11, null, [[0, 10]]);
+  }));
+  return function getZones(_x21, _x22) {
+    return _ref11.apply(this, arguments);
+  };
+}();
 
 // export const getChangePassword = async (req, res) => {
 //   try {
@@ -921,4 +966,4 @@ var updateChangePassword = /*#__PURE__*/function () {
 //     res.redirect("/home");
 //   }
 // };
-exports.updateChangePassword = updateChangePassword;
+exports.getZones = getZones;

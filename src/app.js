@@ -104,7 +104,7 @@ app.get('/contact', (req, res) => {
 })
 
 app.get('/privacy_policy', (req, res) => {
-  res.sendFile(path.join(__dirname, './static/privacy_policy.html'));
+  res.sendFile(path.join(__dirname, '../public/privacy_policy.html'));
 })
 
 app.get('/corporates', (req, res) => {
@@ -112,8 +112,12 @@ app.get('/corporates', (req, res) => {
 })
 
 app.get('/terms_and_conditions', (req, res) => {
-  res.sendFile(path.join(__dirname, './static/Terms & Conditions.html'));
+  res.sendFile(path.join(__dirname, '../public/Terms & Conditions.html'));
 })
+app.get('/refund_policy', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/refund_policy.html'));
+})
+
 app.get('/news_and_media', (req, res) => {
   res.sendFile(path.join(__dirname, './static/news&media.html'));
 })

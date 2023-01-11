@@ -259,6 +259,9 @@ export const updateEndtour = async (req, res) => {
       const route = await knex('routes').select('id').where({ rider_id: delivery_partner_id });
 
       const status = await knex("daily_orders").update({ tour_status: "completed" }).where({ router_id: route[0].id })
+      
+
+      // const rider3 = await knex('daily_orders').truncate("*")
       return res.status(responseCode.SUCCESS).json(endtour);
     }
     else {

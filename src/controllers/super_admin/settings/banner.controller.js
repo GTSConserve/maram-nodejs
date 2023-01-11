@@ -71,16 +71,13 @@ export const getBanners = async (req, res) => {
       data_length = await knex("banners").select("id");
     }
 
-
     if (data_length.length === 0) {
-      loading = false
+      loading = false;
       return res.render("super_admin/settings/banner", {
         data: data_length,
         searchKeyword,
-       
       });
     }
-
 
     let {
       startingLimit,
@@ -89,7 +86,7 @@ export const getBanners = async (req, res) => {
       numberOfPages,
       iterator,
       endingLink,
-    } = await getPageNumber(req,res, data_length, "settings/get_banner");
+    } = await getPageNumber(req, res, data_length, "settings/get_banner");
 
     let results;
     let is_search = false;
@@ -110,7 +107,7 @@ export const getBanners = async (req, res) => {
       data[i].image = process.env.BASE_URL + data[i].image;
     }
 
-    console.log(data)
+    console.log(data);
 
     loading = false;
     res.render("super_admin/settings/banner", {
@@ -147,6 +144,19 @@ export const createBanners = async (req, res) => {
 
     await knex("banners").insert({ name, image });
     req.flash("success", "Banner Created SuccessFully");
+    res.redirect("/super_admin/settings/get_banner");
+  } catch (error) {
+    console.log(error);
+    res.redirect("/home");
+  }
+};
+
+export const deleteBanner = async (req, res) => {
+  try {
+    const { id } = req.body;
+    await knex("banners").where({ id }).del();
+
+    req.flash("success", "Banner Deleted SuccessFully");
     res.redirect("/super_admin/settings/get_banner");
   } catch (error) {
     console.log(error);

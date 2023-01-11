@@ -31,7 +31,7 @@ export const removeAddOnOrder = async (req, res) => {
 
     return res
       .status(responseCode.SUCCESS)
-      .json({ status: true, body: remove });
+      .json({ ...remove });
 
   } catch (error) {
     console.log(error);

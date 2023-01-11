@@ -102,10 +102,10 @@
                                              data-toggle="modal"
                                        data-target="#userUpdate<%=user.user_address_id%>"
                                         >Edit</button>
-                                        <button style="font-weight: bold;" class="btn  btn-md  btn-primary" 
+                                        <button style="font-weight: bold;" class="btn m-2 btn-md  btn-primary" 
                                         onclick="viewhandler(this)" id="<%= user.user_address_id%>"
                                         >view</button>
-                                        <button style="font-weight: bold;" class="btn  btn-md  btn-warning mt-2" 
+                                        <button style="font-weight: bold;" class="btn  btn-md  btn-warning " 
                                         onclick="billView(this)" id="<%= user.user_id%>"
                                         >Bill</button>
                                     </td>
@@ -150,13 +150,13 @@
                         <div class="form-row mb-4">
                             <div class="col-sm-6">
                                 <label>User Name</label>
-                                <input type="text" class="form-control" wire:model="name"
+                                <input type="text" class="form-control" wire:model="name" minlength="3"
                                     placeholder="Name" name="user_name" value="<%=user.user_name %>" required>
 
                             </div>
                             <div class="col-sm-6">
                                 <label>Mobile Number</label>
-                                <input type="text" class="form-control" wire:model="name"
+                                <input type="text" class="form-control" wire:model="name" minlength="10" maxlength="10"
                                     placeholder="10 digtit Mobile Number" name="mobile_number" value="<%=user.mobile_number %>" required>
 
                             </div>
@@ -169,13 +169,13 @@
                             </div> -->
                             <div class="col-12 mt-3">
                                 <label for="address">Address</label>
-                                <textarea id="address" class="form-control" name="address"><%= user.address %> </textarea>
+                                <textarea id="address" minlength="10"  rows="4" class="form-control" name="address"><%= user.address %> </textarea>
                             </div>
                             
                         </div>
                         
                         <div class="modal-footer">
-                                <button wire:click="save" name="address_id" value="<%=user.user_address_id %>"  type="submit" class="btn btn-success">Save</button>
+                                <button wire:click="save" name="address_id" value="<%=user.user_address_id %>"  type="submit" class="btn btn-primary">Save</button>
                         </div>
                 </form>
             </div>

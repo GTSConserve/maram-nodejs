@@ -99,23 +99,29 @@
                                             </div>
 
                                             <div class="col-sm-6  p-1">
-                                                <label>Mobile Number</label>
-                                                <input type="number" wire:model="name" minlength="10" maxlength="10" name="mobile_number" placeholder="Enter 10 digit mobile number" required
-                                                    class="form-control">
+                                                <label>City</label>
+                                                <select onchange="getAddZoneHandler(this)" wire:model="countryid" class="form-control" name="city_id" required>
+                                                    <option name="" value="">Choose A City</option>
+                                                    <% for(city of cities){ %>
 
-                                            </div>
-                                            <div class="col-sm-6  p-1">
-                                                <label>Zone</label>
-                                                <select wire:model="countryid" class="form-control" name="zone_id" required>
-                                                    <option name="" value="">Choose A Zone</option>
-                                                    <% for(zone of zones){ %>
-
-                                                        <option name="<%=zone.name %>" value="<%=zone.id %>"><%=zone.name %></option>
+                                                        <option name="<%=city.name %>" value="<%=city.id %>"><%=city.name %></option>
                                                     <% } %>
 
                                                 </select>
 
                                             </div>
+                                            <div class="col-sm-6  p-1 " id="getAddZone">
+                                                
+
+                                            </div>
+
+                                            <div class="col-sm-6  p-1">
+                                                <label>Mobile Number</label>
+                                                <input type="text" wire:model="name" minlength="10" maxlength="10" name="mobile_number" placeholder="Enter 10 digit mobile number" required
+                                                    class="form-control">
+
+                                            </div>
+                                            
                                             <!-- <div class="col-sm-6  p-1">
                                                 <label>Location</label>
                                                 <input type="text" wire:model="name" placeholder="Brach Location" required name="location"
@@ -144,7 +150,8 @@
                             </div>
                         </div>
                     </div>
-           
+
+                   
         <% if(data.length === 0){ %> 
             <h2>No Data Found</h2>
             <% }else if(loading) { %>
@@ -280,24 +287,37 @@
                                                 placeholder="Location" required  value="<%=user.incharge_name %>" name="incharge_name">
     
                                         </div>
-                                        <div class="col-sm-6">
-                                            <label>City</label>
-                                                <select wire:model="countryid" class="form-control" name="zone_id" required>
-                                                    <option value="<%=user.zone_id  %>" ><%=user.zone_name %></option>
-                                                    <% for(zone of zones){ %>
-
-                                                        <option name="<%=zone.name %>" value="<%=zone.id %>"><%=zone.name %></option>
-                                                    <% } %>
-
-                                                </select>
-    
-                                        </div>
                                         <div class="col-6">
                                             <label>Mobile Number</label>
                                             <input type="text" class="form-control" wire:model="name"
                                                 placeholder="10 digit mobile number" minlength="10" maxlength="10" required  value="<%=user.mobile_number %>" name="mobile_number">
     
                                         </div>
+                                        <div class="col-sm-6  p-1">
+                                            <label>City</label>
+                                            <select id="<%= user.id %>" onchange="editAddZoneHandler(this)" wire:model="countryid" class="form-control" name="city_id" >
+                                                <option  value="<% user.city_id %>"><%= user.city_name%> </option>
+                                                <% for(city of cities){ %>
+                                                    
+                                                    <option name="<%=city.name %>" value="<%=city.id %>"><%=city.name %></option>
+                                                    <% } %>
+                                                    
+                                                </select>
+                                                
+                                            </div>
+                                            <div class="col-sm-6  p-1 " id="editAddZone<%= user.id %>">
+                                                <label>Zone</label>
+                                                <select class="form-control" id="editSelectZones<%= user.id %>" name="zone_id" required>
+                                                    <option name="" value="<% user.zone_id %>"><%= user.zone_name%> </option>
+                                            <% for(zone of zones){ %>
+                                                <% if(user.city_id == zone.city_id){ %> 
+                                                <option name="<%=zone.name %>" value="<%=zone.id %>"><%=zone.name %></option>
+                                                <% } %> 
+                                            <% } %>
+                                            </select>
+                                        </div>
+
+                                        
                                     </div>
                                     
                                     <div class="modal-footer">
@@ -481,6 +501,127 @@
     
             </table>
         </div>
+
+
+        <script>
+            async function getAddZoneHandler (e){
+               
+
+                const getZoneElement = document.getElementById("getAddZone")
+
+                if(e.value){
+
+                    response =   await fetch('/super_admin/branch/get_zones', {
+                                                 method: 'POST',
+                                                headers: {
+                                                        'Accept': 'application/json',
+                                                        'Content-Type': 'application/json'
+                                                          },
+                                                 body: JSON.stringify({"city_id": e.value })
+                                         })
+
+
+
+                                            
+                                            let  get_data = await response.json();
+
+                                            const zoness = get_data.data  
+
+                                            // console.log(zoness)
+
+                                            
+
+
+                                getZoneElement.innerHTML = ` <label>Zone</label>
+                                    <select wire:model="countryid" class="form-control" id="selectZones" name="zone_id" required>
+                                      
+                                    </select>`
+
+                                    const selectZones = document.getElementById("selectZones")
+
+
+
+                                    if(zoness.length ==0){
+                                        selectZones.innerHTML = `<option value="">No Zones Found</option>`
+                                    }else{
+
+                                        
+                                        for(let i = 0 ; i< zoness.length ; i++){
+                                            
+                                            selectZones.innerHTML += `<option value="${zoness[i].id}">${zoness[i].name}</option>`
+                                        }
+                                    }
+
+                }else{
+                    getZoneElement.innerHTML = ""
+                }
+
+            }
+
+
+
+            async function editAddZoneHandler (e){
+              
+
+                const id = e.id
+
+               
+
+                const editZoneElement = document.getElementById("editAddZone"+id)
+
+              
+
+                if(e.value){
+
+                    response =   await fetch('/super_admin/branch/get_zones', {
+                                                 method: 'POST',
+                                                headers: {
+                                                        'Accept': 'application/json',
+                                                        'Content-Type': 'application/json'
+                                                          },
+                                                 body: JSON.stringify({"city_id": e.value })
+                                         })
+
+
+
+                                            
+                                            let  get_data = await response.json();
+
+                                            const zoness = get_data.data  
+
+                                            // console.log(zoness)
+
+                                            
+
+                                         const test = document.getElementById("editSelectZones"+id)
+
+
+                              
+                                    test.innerHTML = ""
+                                    if(zoness.length ==0){
+                                        test.innerHTML = `<option value="">No Zones Found</option>`
+                                    }else{
+
+                                        
+                                        for(let i = 0 ; i< zoness.length ; i++){
+                                            
+                                            test.innerHTML += `<option value="${zoness[i].id}">${zoness[i].name}</option>`
+                                        }
+                                    }
+
+                }else{
+                    editZoneElement.innerHTML = ""
+                }
+
+            }
+
+
+
+        </script>
+
+
+
+
         <% if(numberOfPages != 1){ %> 
         <div class="dt--bottom-section d-sm-flex justify-content-sm-between text-center pt-4 ">
             <div class="dt--pages-count  mb-sm-0 mb-3">

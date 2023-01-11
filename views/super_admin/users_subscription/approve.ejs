@@ -1,0 +1,439 @@
+<% layout('layouts/boilerPlate') %>
+
+    <div class="widget-content widget-content-area br-6">
+        <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+            <div class="dt--top-section">
+                <div class="row">
+                    <div class="col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center">
+                        <div class="dataTables_length" id="DataTables_Table_0_length">
+                            <h4>Assign</h4>
+                        </div>
+                    </div>
+
+                    <div class="col-1"></div>
+                    <div class="col-3  filtered-list-search mx-auto">
+                        <div class="form-inline my-2 my-lg-0 justify-content-center">
+                            <div class="w-100 row">
+
+                                <div class="w-100">
+                                    <input type="text" name="searchKeyword" oninput="onChangeSearch()" value="<%=searchKeyword? searchKeyword : ""  %>" class="w-100 form-control product-search br-30 col-9" id="searchText" placeholder="Search">
+                                    <button class="btn btn-primary" type="submit" onclick="onSearch()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
+                                </div>
+
+
+
+                    
+                                <script>
+
+                                    async function onChangeSearch(event){
+                                        const text = document.getElementById("searchText").value;
+                                        if(!text){
+
+                                            return window.location.href = `/super_admin/users_subscription/get_all_users`
+                                        }
+
+                                    }
+
+                                    async function onSearch(event) {
+                                       
+                                        const text = document.getElementById("searchText").value;
+                            
+                                        window.location.href = `/super_admin/users_subscription/get_all_users?searchKeyword=${text}`
+                              
+                                 
+                                };
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+
+            </div>
+        </div>
+        <% if(data.length === 0){ %> 
+            <h2>No Subscription Found</h2>
+            <% }else if(loading) { %>
+                <div class="row">
+                    <div class="col-5">
+    
+                    </div>
+                    <div class="col-2">
+                        <button class="btn btn-success btn-lg mb-3 mr-3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-loader spin mr-2"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg>  Loading</button>
+                    </div>
+                </div>
+    
+                <% } else {  %>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped mb-4" style="width: 100%;  font-weight: bold; box-shadow: 8px 5px 5px 0px #aaa;" id="DataTables_Table_0"
+                role="grid" aria-describedby="DataTables_Table_0_info">
+                <thead >
+    
+                    <tr role="row"  >
+                        <th  class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                            colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
+                            style="width: 20px;">#</th>
+                        <th  class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                            colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
+                            style="width: 20px;">Branch Name</th>
+                       
+                        <!-- <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                            aria-label="NAME: activate to sort column ascending" style="width: 20px;">Subscription Type</th> -->
+                            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                                aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">User Name</th>
+                        
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                            aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">Product</th>
+                            <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                            colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending"
+                            style="width: 50px;"> Address</th>
+                            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                            aria-label="IMAGE: activate to sort column ascending" style="width: 10px;">Mobile Number</th>
+                            
+                        <!-- <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                            aria-label="IMAGE: activate to sort column ascending" style="width: 53px;">Status</th> -->
+                            
+                        <th class="text-center dt-no-sorting sorting" tabindex="0"
+                            aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                            aria-label="Action: activate to sort column ascending" style="width: 64px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+    
+                    <tr role="row" >
+    
+                        <% for(user of data){ %>
+
+                                <td  class="sorting_1"><%=user.id %></td>
+                                <td  class="sorting_1"><%=user.first_name %></td>
+                                <td ><%=user.user_name %></td>
+                                
+                                <td ><%=user.product_name %></td>
+                                <td><%=user.address %></td>
+                                <td><%=user.mobile_number %></td>
+                                <!-- <td><%=user.subscription_start_date ? user.subscription_start_date : "N/A"   %></td> -->
+                                <!-- <td><%=user.subscription_status %></td> -->
+
+                              
+    
+                                <div>
+                                    
+                                    <td  class="text-center" > 
+                                        <button style="font-weight: bold;" class="btn btn-sm btn-primary" data-toggle="modal"
+                                        data-target="#view<%=user.id %>">view</button>
+                                         
+                                      
+                                    </td>
+                                    </td>
+                                    
+                                </div>
+                                
+                            </tr>
+    
+    <!-- view -->
+                <div wire:ignore.self="" data-backdrop="static" class="modal fade" id="view<%=user.id %>" tabindex="-1"
+                    aria-labelledby="addCategoryTitle"  style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document" > 
+                        <div class="modal-content" >
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalCenterTitle">Assigned Subscription Details</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                        height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                        class="feather feather-x">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </button>
+                            </div>
+    
+                            <div class="modal-body" >
+                               
+                                    <div class="form-row mb-4" >
+                                      
+
+                                            <div class="col-sm-4 pb-4" >
+                                                <label>Customer Id</label>
+                                                <p style="font-weight: 900;"><%=user.id %></p>
+                                                
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <label>User Name</label>
+                                                <p style="font-weight: 900;"><%=user.user_name %></p>
+                                                
+                                            </div>
+                                            <div class="col-sm-4 ">
+                                                <label>Mobile Number</label>
+                                                <p style="font-weight: 900;"><%=user.mobile_number %></p>
+                                            </div>
+                                            <div class="col-sm-4 pb-4">
+                                                <label>Address</label>
+                                                <p style="font-weight: 900;"><%=user.address %></p>
+                                                
+                                            </div>
+
+                                            <div class="col-sm-4 pb-4">
+                                                <label>Branch</label>
+                                                <p style="font-weight: 900;"><%=user.first_name %></p>
+                                                
+                                            </div>
+
+                                            <div class="col-sm-4">
+                                                <label>Landmark</label>
+                                                <p style="font-weight: 900;"><%=user.landmark %></p>
+                                              
+                                            </div>
+
+                                            <div class="col-sm-4 pb-4">
+                                                <label>Product name</label>
+                                                <p style="font-weight: 900;"><%=user.product_name %></p>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <label> Category Name</label>
+                                                <p style="font-weight: 900;"><%=user.category_name %></p>
+                                                
+                                            </div>
+                                            <div class="col-sm-4 ">
+                                                <label>Unit Type</label>
+                                                <p style="font-weight: 900;"><%=user.value %></p>
+                                                
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <label>Unit Value</label>
+                                                <p style="font-weight: 900;"><%=user.unit_value %></p>
+                                                
+                                            </div>
+                                            <div class="col-sm-4 ">
+                                                <label>Quantity</label>
+                                                <p style="font-weight: 900;"><%=user.quantity %></p>
+                                                
+                                            </div>
+
+                                            <div class="col-sm-4 pb-4">
+                                                <label>Price</label>
+                                                <p style="font-weight: 900;"><%=user.price %></p>
+                                                
+                                            </div>
+                                        
+                                            <% for(data of data1){ %>
+
+                                            <div class="col-sm-4">
+                                                <label> Category Name</label>
+                                                <p style="font-weight: 900;"><%=data.category_name %></p>
+                                                
+                                            </div>
+
+                                            <div class="col-sm-4 pb-4">
+                                                <label>Product name</label>
+                                                <p style="font-weight: 900;"><%=data.product_name %></p>
+                                            </div>
+
+                                            <div class="col-sm-4 ">
+                                                <label>Unit Type</label>
+                                                <p style="font-weight: 900;"><%=data.value %></p>
+                                                
+                                            </div>
+
+                                            <div class="col-sm-4">
+                                                <label>Unit Value</label>
+                                                <p style="font-weight: 900;"><%=data.unit_value %></p>
+                                                
+                                            </div>
+                                           
+                                            <div class="col-sm-4 ">
+                                                <label>Quantity</label>
+                                                <p style="font-weight: 900;"><%=data.quantity %></p>
+                                                
+                                            </div>
+
+                                            <div class="col-sm-4 pb-4">
+                                                <label>Price</label>
+                                                <p style="font-weight: 900;"><%=data.price %></p>
+                                                
+                                            </div>
+                                            
+                                            <div class="col-sm-4 pb-4">
+                                                <label>Address</label>
+                                                <p style="font-weight: 900;"><%=data.address %></p>
+                                                
+                                            </div>
+
+                                            <!-- <div class="col-sm-4 pb-4">
+                                                <label>Branch</label>
+                                                <p style="font-weight: 900;"><%=data.first_name %></p>
+                                                
+                                            </div> -->
+                                            
+                                            
+                                            <!-- <% for(data of data1){ %>
+                                            <div class="col-sm-4">
+                                                <label>Product Name</label>
+                                                <p style="font-weight: 900;"><%=data1.product_name %></p>
+                                                
+                                            </div>
+
+                                            <div class="col-sm-4 ">
+                                                <label>Unit Type</label>
+                                                <p style="font-weight: 900;"><%=data1.product_unit %></p>
+                                                
+                                            </div>
+
+                                            <div class="col-sm-4 ">
+                                                <label>Category Name</label>
+                                                <p style="font-weight: 900;"><%=data1.category_name %></p>
+                                                
+                                            </div>
+
+                                            <div class="col-sm-4">
+                                                <label>Unit Value</label>
+                                                <p style="font-weight: 900;"><%=data1.product_unit %></p>
+                                                
+                                            </div>
+                                           
+                                            <div class="col-sm-4 ">
+                                                <label>Quantity</label>
+                                                <p style="font-weight: 900;"><%=data1.quantity %></p>
+                                                
+                                            </div>
+
+                                            <div class="col-sm-4 pb-4">
+                                                <label>Price</label>
+                                                <p style="font-weight: 900;"><%=data1.product_price %></p>
+                                                
+                                            </div> -->
+                                            
+                                            <!-- <div class="col-sm-4">
+                                                <label> Start date</label>
+                                                <p style="font-weight: 900;"><%=data1.start_date %></p>
+                                                
+                                                
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <label> Assigned Date</label>
+                                                <p style="font-weight: 900;"><%=data1.assigned_date %></p>
+                                                
+                                                
+                                            </div> -->
+                                            <!-- <div class="col-sm-4">
+                                                <label>Subscription Start Date</label>
+                                                <p style="font-weight: 900;"><%=user.subscription_start_date ? user.subscription_start_date : "N/A"   %></p>
+                                            </div>
+                                            <div class="col-sm-4 mt-4">
+                                                <label>Status</label>
+                                                <p style="font-weight: 900;"><%=user.subscription_status %></p>
+                                               
+                                                
+                                            </div>
+                                            <div class="col-sm-4 mt-4">
+                                                <label>Subscription Type</label>
+                                                <p style="font-weight: 900;"><%=user.subscription_name %></p>
+                                               
+                                                
+                                            </div> -->
+                                            <!-- <% } %> -->
+                                            
+                                            <!-- <% if(user.customized_days){ %> 
+                                            <div class="col-sm-4 mt-4">
+                                                <label>Customized Days</label>
+                                                <div class="element-background">
+                                                    <ul class="list-icon">
+                                                        <% for(day of user.customized_days){ %> 
+                                                        <li>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                                                            <span style="font-weight: 900;" class="list-text"><%= day%></span>
+                                                        </li>
+                                                        <% } %> 
+                                                        
+                                                    </ul>
+                                                </div>
+                                                <% } %>
+                                            </div>
+                                            <% } %>  -->
+                                    </div>
+                                    
+                                    <div class="modal-footer">
+                                        
+                                        <button type="button" name="id" value="<%=user.id %>" class="btn btn-danger" id="addmodalClose" data-dismiss="modal"><i
+                                            class="flaticon-cancel-12"></i>Discard</button>
+                                            
+                                    </div>
+                           
+                        </div>
+                    </div>
+                </div>
+                </div>
+    
+                <!-- Assign -->
+                
+
+
+
+
+    
+    </div>
+    
+    
+    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    <% } %>
+                  
+              <!--end-->
+                </tbody>
+    
+            </table>
+        </div>
+        <div class="dt--bottom-section d-sm-flex justify-content-sm-between text-center pt-4 ">
+            <div class="dt--pages-count  mb-sm-0 mb-3">
+              <% let search_query =  is_search ? `&searchKeyword=${searchKeyword}` : "" %>
+            </div>
+            <div class="widget-content widget-content-area text-center">
+            <nav class="paginating-container " aria-label="...">
+                <ul class="pagination-default pagination">
+                    <% if(page > 1) { %> 
+                        <li class="prev">
+                            <a href="/super_admin/users_subscription/get_all_users?page=<%=page-1%><%= search_query %>"  style="padding-left: 5px;">Prev</a>
+                  
+                         <% } %>
+                   
+                         <% for(let i = iterator==0 ? 1 : iterator; i <= endingLink; i++) { %>
+                            <% if(i === page) { %>
+                                <li class="page-item active" style="padding-left: 5px;"><a  href="#"><%=i%></a></li>
+                              
+                                <% continue; %>
+                                <% } %>
+                                <li class="page-item" style="padding-left: 5px;"><a  href="/super_admin/users_subscription/get_all_users?page=<%=i%><%= search_query %>"><%=i%></a></li>
+                        <% } %>
+                    
+                    <% if(page < numberOfPages) { %>
+                        <li class="next" style="padding-left: 5px;">
+                            <a  href="/super_admin/users_subscription/get_all_users?page=<%=page+1%><%= search_query %>">Next</a>
+                        </li>
+                      
+                         <% } %>
+                         
+                </ul>
+            </nav>
+        </div>
+        </div>
+    </div>
+    <% } %>
+    <div id="DataTables_Table_1_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+        <div class="dt--top-section">
+            <div class="row">
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="multi-table table table-bordered table-hover non-hover dataTable" style="width: 100%;"
+                id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info">
+
+            </table>
+        </div>
+    </div>
+    </div>
+    </div>
+    </div>
