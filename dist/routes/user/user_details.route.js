@@ -33,7 +33,7 @@ userRouter.get("/get_empty_bottle", _authToken.authenticateJWT, _userDetail.getE
 userRouter.post("/get_bill_list", _userDetail.getBillList);
 userRouter.post("/get_single_bill_list", _authToken.authenticateJWT, _userDetail.getSingleBillList);
 userRouter.post("/user_address_change", _authToken.authenticateJWT, _userDetail.userAddressChange);
-userRouter.post("/single_calendar", _userDetail.getSingleCalendarEvent);
+userRouter.post("/single_calendar", _authToken.authenticateJWT, _userDetail.getSingleCalendarEvent);
 userRouter.post("/over_all_calendar", _authToken.authenticateJWT, _userDetail.getOverallCalendarEvent);
 
 // rider details 

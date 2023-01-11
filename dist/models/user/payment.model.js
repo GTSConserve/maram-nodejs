@@ -13,39 +13,44 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 var getPayment = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(amount, order_id, userId) {
-    var payment;
+    var signature;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             _context.next = 2;
-            return (0, _db["default"])('bill_history').select('bill_no', 'user_id')
-            // .where({"bill_history.user_id":userId})
-            .where({
-              "bill_history.bill_no": order_id,
-              "bill_history.user_id": userId,
-              "bill_history.grand_total": amount
+            return (0, _db["default"])('users').select('id').insert({
+              razorpay_payment_id: options.id
+            }).where({
+              "users.id": userId
             });
           case 2:
-            payment = _context.sent;
-            _context.prev = 3;
+            signature = _context.sent;
+            console.log(options[0].id);
+            // const payment = await knex('bill_history').select('bill_no','user_id')
+            // // .where({"bill_history.user_id":userId})
+            // .where({"bill_history.bill_no":order_id, "bill_history.user_id":userId,"bill_history.grand_total":amount})
+            // // knex.select('key','value').from('app_settings')
+
+            // console.log(payment)
+            _context.prev = 4;
             return _context.abrupt("return", {
               status: _responseCode["default"].SUCCESS,
               body: payment
             });
-          case 7:
-            _context.prev = 7;
-            _context.t0 = _context["catch"](3);
+          case 8:
+            _context.prev = 8;
+            _context.t0 = _context["catch"](4);
             return _context.abrupt("return", {
               status: _responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR,
               error: _context.t0
             });
-          case 10:
+          case 11:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[3, 7]]);
+    }, _callee, null, [[4, 8]]);
   }));
   return function getPayment(_x, _x2, _x3) {
     return _ref.apply(this, arguments);

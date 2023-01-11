@@ -50,7 +50,7 @@ userRouter.post("/edit_orders", authenticateJWT,Edit);
 userRouter.post("/change_plan", authenticateJWT,changePlan);
 userRouter.get("/get_empty_bottle", authenticateJWT, getEmptyBottle);
 
-userRouter.post("/get_bill_list", getBillList);
+userRouter.post("/get_bill_list", authenticateJWT,getBillList);
 userRouter.post("/get_single_bill_list",authenticateJWT,  getSingleBillList);
 userRouter.post("/user_address_change", authenticateJWT, userAddressChange);
 userRouter.post("/single_calendar",authenticateJWT,getSingleCalendarEvent);
