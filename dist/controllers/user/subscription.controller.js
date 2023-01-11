@@ -398,9 +398,13 @@ var getAllSubscription = /*#__PURE__*/function () {
           case 8:
             for (i = 0; i < subscription_product.data.length; i++) {
               subscription_product.data[i].image = process.env.BASE_URL + subscription_product.data[i].image;
+<<<<<<< HEAD
               subscription_product.data[i].quantity = subscription_product.data[i].quantity, subscription_product.data[i].price = subscription_product.data[i].price,
               // below next delivery date in static
               subscription_product.data[i].date = (0, _moment["default"])().format("YYYY-MM-DD");
+=======
+              subscription_product.data[i].quantity = subscription_product.data[i].quantity, subscription_product.data[i].price = subscription_product.data[i].price, subscription_product.data[i].date = (0, _moment["default"])().format("YYYY-MM-DD");
+>>>>>>> 731f554b595b64b9da28de43917b8a2f464b59db
               subscription_product.data[i].date = (0, _moment["default"])().format("YYYY-MM-DD");
               ;
               if (subscription_product.data[i].unit_value >= 500) {

@@ -1012,32 +1012,63 @@ var getBillList = /*#__PURE__*/function () {
               message: "User Not Found"
             }));
           case 8:
+<<<<<<< HEAD
             get_bill = {
               "id": user.id,
               "payment_status": "pending",
               "bill_no": "MA1673413428513",
               "sub_total": 1450
             };
+=======
+            // let get_bill = {};
+            // user.body.map((data) => {
+            //   get_bill.id = data.id;
+            //   get_bill.user_id = data.user_id;
+            //   get_bill.payment_id = data.id // payment id set to id
+            //   // ? process.env.BASE_URL + data.image
+            //   // : null;
+            //   get_bill.items = data.items;
+            //   get_bill.bill_no = data.bill_no
+            //   get_bill.bill_value = data.bill_value;
+            //   get_bill.status = data.status;
+            // });
+
+>>>>>>> 731f554b595b64b9da28de43917b8a2f464b59db
             res.status(_responseCode["default"].SUCCESS).json({
               status: true,
               data: user.body
             });
+<<<<<<< HEAD
             _context15.next = 16;
             break;
           case 12:
             _context15.prev = 12;
+=======
+            _context15.next = 15;
+            break;
+          case 11:
+            _context15.prev = 11;
+>>>>>>> 731f554b595b64b9da28de43917b8a2f464b59db
             _context15.t0 = _context15["catch"](0);
             console.log(_context15.t0);
             res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: "no user"
             });
+<<<<<<< HEAD
           case 16:
+=======
+          case 15:
+>>>>>>> 731f554b595b64b9da28de43917b8a2f464b59db
           case "end":
             return _context15.stop();
         }
       }
+<<<<<<< HEAD
     }, _callee15, null, [[0, 12]]);
+=======
+    }, _callee15, null, [[0, 11]]);
+>>>>>>> 731f554b595b64b9da28de43917b8a2f464b59db
   }));
   return function getBillList(_x29, _x30) {
     return _ref15.apply(this, arguments);
@@ -1066,15 +1097,16 @@ var getSingleBillList = /*#__PURE__*/function () {
             return (0, _user_details.get_single_bill)(bill_id, userId);
           case 6:
             list = _context16.sent;
+            console.log(list);
             if (list) {
-              _context16.next = 9;
+              _context16.next = 10;
               break;
             }
             return _context16.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
               message: "Cannot find bill list"
             }));
-          case 9:
+          case 10:
             for (i = 0; i < list.data.length; i++) {
               console.log(list);
               list.data[i].id = list.data[i].id;
@@ -1085,19 +1117,19 @@ var getSingleBillList = /*#__PURE__*/function () {
               status: true,
               data: list
             }));
-          case 13:
-            _context16.prev = 13;
+          case 14:
+            _context16.prev = 14;
             _context16.t0 = _context16["catch"](0);
             console.log(_context16.t0);
             res.status(500).json({
               status: false
             });
-          case 17:
+          case 18:
           case "end":
             return _context16.stop();
         }
       }
-    }, _callee16, null, [[0, 13]]);
+    }, _callee16, null, [[0, 14]]);
   }));
   return function getSingleBillList(_x31, _x32) {
     return _ref16.apply(this, arguments);

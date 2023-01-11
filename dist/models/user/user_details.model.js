@@ -449,7 +449,11 @@ var get_user_bill = /*#__PURE__*/function () {
         switch (_context9.prev = _context9.next) {
           case 0:
             _context9.next = 2;
+<<<<<<< HEAD
             return (0, _db["default"])("bill_history").join("bill_history_details", "bill_history_details.bill_history_id", "=", "bill_history.id").select("bill_history.id", "bill_history.payment_status", "bill_history.bill_no", "bill_history.sub_total", 'bill_history_details.total_qty as items').from("bill_history").where({
+=======
+            return _db["default"].select("id", "payment_status", "bill_no", "sub_total").from("bill_history").where({
+>>>>>>> 731f554b595b64b9da28de43917b8a2f464b59db
               user_id: userId
             });
           case 2:
@@ -500,22 +504,35 @@ var get_single_bill = /*#__PURE__*/function () {
           case 0:
             _context10.prev = 0;
             _context10.next = 3;
+<<<<<<< HEAD
             return (0, _db["default"])("bill_history").select("bill_history.id", "bill_history.bill_no as bill_id", "bill_history.sub_total as bill_value", "bill_history.date", "bill_history.razorpay_payment_id as payment_id", "bill_history.status as payment_status", "add_on_orders.sub_total as sub_total").join("payment_gateways", "payment_gateways.user_id", "=", "bill_history.user_id").join("add_on_orders", "add_on_orders.user_id", "=", "payment_gateways.user_id").where({
+=======
+            return (0, _db["default"])("bill_history").select("bill_history.id", "bill_history.bill_no as bill_id", "bill_history.sub_total as bill_value", "bill_history.date", "payment_gateways.id as payment_id", "payment_gateways.status as payment_status", "add_on_orders.sub_total as sub_total").join("payment_gateways", "payment_gateways.user_id", "=", "bill_history.user_id").join("add_on_orders", "add_on_orders.user_id", "=", "payment_gateways.user_id").where({
+>>>>>>> 731f554b595b64b9da28de43917b8a2f464b59db
               "bill_history.user_id": userId
             });
           case 3:
             getSingleBillList = _context10.sent;
             _context10.next = 6;
+<<<<<<< HEAD
             return (0, _db["default"])("subscribed_user_details as sub").select("sub.id as subscription_id", "sub.subscription_status", "products.name as product_name", "products.image as product_image", "products.unit_value as product_variation", "products.price as product_price", "sub.quantity as product_quantity", "unit_types.value as product_variation_type").join("products", "products.id", "=", "sub.user_id").join("unit_types", "unit_types.id", "=", "unit_type_id")
             // .join("subscription_type.id","=","products.unit_type_id")
             .where({
+=======
+            return (0, _db["default"])("subscribed_user_details as sub").select("sub.product_id", "sub.quantity", "unit_types.name", "unit_types.id", "products.price").join("products", "products.id", "=", "sub.user_id").join("unit_types", "unit_types.id", "=", "unit_type_id").where({
+>>>>>>> 731f554b595b64b9da28de43917b8a2f464b59db
               "sub.user_id": userId
             });
           case 6:
             subscription_products = _context10.sent;
             _context10.next = 9;
+<<<<<<< HEAD
             return (0, _db["default"])("subscribed_user_details AS sub").select("additional_orders.id as product_id", "additional_orders.quantity as no_quantity", "products.name as product_name", "products.price as product_total", "additional_orders.price as recipe_price", "products.unit_value as variation_id", "unit_types.value as variation_name").join("additional_orders", "additional_orders.user_id", "=", "sub.user_id").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").where({
               'additional_orders.user_id': userId
+=======
+            return (0, _db["default"])("add_on_order_items as add").select("add.product_id", "add.quantity", "unit_types.id as variation_id", "unit_types.name as variation_type", "products.unit_value", "add.total_price").join("products", "products.id", "=", "add.user_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").where({
+              "add.user_id": userId
+>>>>>>> 731f554b595b64b9da28de43917b8a2f464b59db
             });
           case 9:
             additional_order_product = _context10.sent;
@@ -564,10 +581,14 @@ var single_calendar_data = /*#__PURE__*/function () {
             _context11.next = 5;
             return (0, _db["default"])("subscribed_user_details AS sub").select("sub.id as subscription_id", "sub.subscription_status", "products.name as product_name", "products.image as product_image", "products.unit_value as product_variation", "products.price as product_price",
             // "products.quantity as product_quantity",
+<<<<<<< HEAD
             "unit_types.value as product_variation_type", "subscription_type.name as subscription_mode"
             // "additional_orders.id as additional_order_id",
             // "additional_orders.additional_orders_parent_id as additional_order_parent_id",
             ).join("additional_orders", "additional_orders.subscription_id", "=", "sub.id").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("subscription_type", "subscription_type.id", "=", "sub.subscribe_type_id").join("user_address", "user_address.id", "=", "sub.user_address_id").where({
+=======
+            "unit_types.value as product_variation_type", "subscription_type.name as subscription_mode", "additional_orders.id as additional_order_id", "additional_orders.additional_orders_parent_id as additional_order_parent_id").join("additional_orders", "additional_orders.subscription_id", "=", "sub.id").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("subscription_type", "subscription_type.id", "=", "sub.subscribe_type_id").join("user_address", "user_address.id", "=", "sub.user_address_id").where({
+>>>>>>> 731f554b595b64b9da28de43917b8a2f464b59db
               "sub.date": date
             });
           case 5:
@@ -580,6 +601,7 @@ var single_calendar_data = /*#__PURE__*/function () {
             });
           case 8:
             additional = _context11.sent;
+<<<<<<< HEAD
             //  console.log(additional)
             additional1.push(additional);
             _context11.next = 12;
@@ -598,6 +620,26 @@ var single_calendar_data = /*#__PURE__*/function () {
               status: false,
               message: "No Subscription Found"
             });
+=======
+            console.log(additional);
+            additional1.push(additional);
+            _context11.next = 13;
+            return (0, _db["default"])("add_on_orders").join("add_on_order_items", "add_on_order_items.add_on_order_id", "=", "add_on_orders.id").join("products", "products.id", "=", "add_on_order_items.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id as product_id", "products.name as product_name", "products.image as product_image", "products.unit_value as product_variation", "unit_types.value as product_variation_type", "products.price as product_price", "add_on_order_items.remove_status as remove_status").where({
+              "add_on_orders.user_id": userId
+            });
+          case 13:
+            additional2 = _context11.sent;
+            //  console.log(additional2)
+            add_product.push(additional2);
+            if (!(products.length === 0)) {
+              _context11.next = 17;
+              break;
+            }
+            return _context11.abrupt("return", {
+              status: false,
+              message: "No Subscription Found"
+            });
+>>>>>>> 731f554b595b64b9da28de43917b8a2f464b59db
           case 17:
             return _context11.abrupt("return", {
               status: true,
