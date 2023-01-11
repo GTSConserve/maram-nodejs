@@ -11,7 +11,7 @@ const subscriptionRouter = express.Router({
 
 subscriptionRouter.post("/new_subscription",authenticateJWT, newSubscription);
 subscriptionRouter.post("/get_all_subscription",authenticateJWT,getAllSubscription);
-subscriptionRouter.post("/single_subscription",authenticateJWT,singleSubscription);
+subscriptionRouter.post("/single_subscription",singleSubscription);
 
 subscriptionRouter.get("/get_subscription_plan",authenticateJWT,getSubscriptionPlan);
 

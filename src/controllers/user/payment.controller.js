@@ -131,14 +131,14 @@ export const getRazorpayMethod = async (req, res) => {
         const pay = await getPayment(amount, order_id, userId)
         
 
-        // console.log(pay)
+        
 
         if (!amount && !order_id) {
             return res
                 .status(responseCode.FAILURE.DATA_NOT_FOUND)
                 .json({ status: false, message: messages.MANDATORY_ERROR });
         }
-
+//console.log(pay);
         var razorpay = new Razorpay({
             key_id: process.env.RAZORPAY_KEY_ID,
             key_secret: process.env.RAZORPAY_KEY_SECRET,
@@ -156,9 +156,18 @@ export const getRazorpayMethod = async (req, res) => {
             receipt: order_id,
 
         };
+        // const signature = await knex('users').select('id')
+        // .insert({
+        //     razorpay_payment_id: options.id
+        // }) .where({"users.id":userId})
+        // console.log(options[0].id)
         const response = await razorpay.orders.create(options);
+
         
-        console.log(response)
+        //  .into('')
+       
+        
+        // console.log(signature)
 
         await sendNotification({
             include_external_user_ids: [order_id.toString()],
@@ -170,8 +179,8 @@ export const getRazorpayMethod = async (req, res) => {
                 category_id: 0,
                 product_type_id: 0,
                 type: 3,
-                receipt: response.receipt[0],
-                amount: options.amount[0],
+                receipt: options.receipt,
+                amount: options.amount,
             },
         });
 

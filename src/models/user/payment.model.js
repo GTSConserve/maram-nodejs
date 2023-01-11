@@ -8,7 +8,7 @@ export const getPayment = async (amount,order_id, userId) => {
     .where({"bill_history.bill_no":order_id, "bill_history.user_id":userId,"bill_history.grand_total":amount})
     // knex.select('key','value').from('app_settings')
 
-    console.log(payment)
+    // console.log(payment)
     
     try {
     return { status: responseCode.SUCCESS, body: payment }

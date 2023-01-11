@@ -618,7 +618,7 @@ export const getSingleCalendarEvent = async (req, res) => {
 
       for (let j = 0; j < sub.add_product.length; j++) {
 
-        sub.add_product[0][j].id = sub.add_product[0][j].id;
+        sub.add_product[0][j].product_id = sub.add_product[0][j].product_id;
         sub.add_product[0][j].image = sub.add_product[0][j].image;
 
 
@@ -789,7 +789,7 @@ export const getBillList = async (req, res) => {
 
 export const getSingleBillList = async (req, res) => {
   try {
-    const { bill_id } = req.body;
+    const { bill_id,userId } = req.body;
 
     if (!bill_id) {
       return res
@@ -797,7 +797,7 @@ export const getSingleBillList = async (req, res) => {
         .json({ status: false, message: "Cannot find bill list" });
     }
 
-    const list = await get_single_bill(bill_id);
+    const list = await get_single_bill(bill_id,userId);
     console.log(list)
 
     if (!list) {

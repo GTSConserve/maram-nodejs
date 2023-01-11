@@ -136,6 +136,8 @@ export const createTable = async (req, res) => {
           t.enu("status", ["0", "1"]).defaultTo("1");
           t.string("remember_token", 100).nullable();
           t.string("image", 2048).nullable();
+          t.string("razorpay_payment_id", 255);
+          t.string("razorpay_signature_id", 255);
           t.timestamp("first_otp_verified_at").nullable();
           t.timestamp("last_otp_verified_at").nullable();
           t.timestamps(true, true);

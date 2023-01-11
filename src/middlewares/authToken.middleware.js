@@ -54,7 +54,7 @@ export const authenticateJWT = async (req, res, next) => {
   if (token) {
     const currentTokenPayload = parseJwtPayload(token)
 
-    console.log(currentTokenPayload)
+    //console.log(currentTokenPayload)
 
     const checkUser = await getAccountModal({ userId: currentTokenPayload.user_id })
 
