@@ -53,7 +53,7 @@ userRouter.get("/get_empty_bottle", authenticateJWT, getEmptyBottle);
 userRouter.post("/get_bill_list", getBillList);
 userRouter.post("/get_single_bill_list",authenticateJWT,  getSingleBillList);
 userRouter.post("/user_address_change", authenticateJWT, userAddressChange);
-userRouter.post("/single_calendar",getSingleCalendarEvent);
+userRouter.post("/single_calendar",authenticateJWT,getSingleCalendarEvent);
 userRouter.post("/over_all_calendar", authenticateJWT,getOverallCalendarEvent);
 
 
