@@ -170,71 +170,72 @@ var single_subscription = /*#__PURE__*/function () {
             _context3.prev = 0;
             add_product = [];
             _context3.next = 4;
-            return (0, _db["default"])("subscribed_user_details AS sub").select("sub.id as subscription_id", "sub.customized_days", "sub.subscription_start_date", "sub.subscription_status", "sub.quantity", "products.name as product_name", "products.image", "products.demo_price", "products.unit_value", "unit_types.value as unit_type", "subscription_type.name as subscription_name", "user_address.address").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("subscription_type", "subscription_type.id", "=", "sub.subscribe_type_id").join("user_address", "user_address.id", "=", "sub.user_address_id").where({
+            return (0, _db["default"])("subscribed_user_details AS sub").select("sub.id as subscription_id", "sub.customized_days", "sub.subscription_start_date", "sub.subscription_status", "sub.quantity", "products.name as product_name", "products.image", "products.demo_price", "products.price", "products.unit_value", "unit_types.value as unit_type", "subscription_type.name as subscription_name", "user_address.address").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").join("subscription_type", "subscription_type.id", "=", "sub.subscribe_type_id").join("user_address", "user_address.id", "=", "sub.user_address_id").where({
               "sub.user_id": userId,
               "sub.id": sub_id
             });
           case 4:
             products = _context3.sent;
-            _context3.next = 7;
+            console.log(products);
+            _context3.next = 8;
             return (0, _db["default"])('additional_orders').select('id', 'subscription_id', 'user_id').where({
               subscription_id: sub_id
             });
-          case 7:
+          case 8:
             additional = _context3.sent;
             i = 0;
-          case 9:
+          case 10:
             if (!(i < additional.length)) {
-              _context3.next = 17;
+              _context3.next = 18;
               break;
             }
-            _context3.next = 12;
-            return (0, _db["default"])("subscribed_user_details AS sub").select("additional_orders.id", "additional_orders.id as id", "additional_orders.date ", "additional_orders.quantity", "additional_orders.status", "products.name as product_name", "products.image", "products.unit_value", "products.demo_price", "unit_types.value as unit_type").join("additional_orders", "additional_orders.user_id", "=", "sub.user_id").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").where({
+            _context3.next = 13;
+            return (0, _db["default"])("subscribed_user_details AS sub").select("additional_orders.id", "additional_orders.id as id", "additional_orders.date ", "additional_orders.quantity", "additional_orders.status", "products.name as product_name", "products.image", "products.demo_price", "products.price", "products.unit_value", "products.demo_price", "unit_types.value as unit_type").join("additional_orders", "additional_orders.user_id", "=", "sub.user_id").join("products", "products.id", "=", "sub.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").where({
               'additional_orders.user_id': additional[i].user_id
             });
-          case 12:
+          case 13:
             query = _context3.sent;
             add_product.push(query);
-          case 14:
+          case 15:
             i++;
-            _context3.next = 9;
+            _context3.next = 10;
             break;
-          case 17:
-            _context3.next = 19;
+          case 18:
+            _context3.next = 20;
             return (0, _db["default"])("users").select("one_liter_in_hand as delivered_orders", "one_liter_in_return as remaining_orders", "half_liter_in_hand as additional_delivered_orders", "one_liter_in_return as additional_remaining_orders").where({
               id: userId
             });
-          case 19:
+          case 20:
             this_month_item_detail = _context3.sent;
             if (!(products.length === 0)) {
-              _context3.next = 22;
+              _context3.next = 23;
               break;
             }
             return _context3.abrupt("return", {
               status: false,
               message: "No Subscription Found"
             });
-          case 22:
+          case 23:
             return _context3.abrupt("return", {
               status: true,
               data: products,
               add_product: add_product,
               this_month_item_detail: this_month_item_detail
             });
-          case 25:
-            _context3.prev = 25;
+          case 26:
+            _context3.prev = 26;
             _context3.t0 = _context3["catch"](0);
             console.log(_context3.t0);
             return _context3.abrupt("return", {
               status: false,
               message: "No Subscription Found"
             });
-          case 29:
+          case 30:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3, null, [[0, 25]]);
+    }, _callee3, null, [[0, 26]]);
   }));
   return function single_subscription(_x9, _x10) {
     return _ref3.apply(this, arguments);

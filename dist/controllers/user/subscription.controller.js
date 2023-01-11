@@ -467,7 +467,7 @@ var singleSubscription = /*#__PURE__*/function () {
             i = 0;
           case 10:
             if (!(i < sub.data.length)) {
-              _context9.next = 24;
+              _context9.next = 25;
               break;
             }
             sub.data[i].image = process.env.BASE_URL + sub.data[i].image;
@@ -476,12 +476,13 @@ var singleSubscription = /*#__PURE__*/function () {
             sub.data[i].address_id = sub.data[i].address_id;
             sub.data[i].quantity = sub.data[i].quantity;
             sub.data[i].price = sub.data[i].price;
-            sub.data[i].date = [(0, _moment["default"])().format("YYYY-MM-DD")];
+            sub.data[i].demo_price = sub.data[i].demo_price;
+            sub.data[i].date = (0, _moment["default"])().format("YYYY-MM-DD");
             for (j = 0; j < sub.add_product.length; j++) {
               console.log(sub.add_product[0][j].id);
               sub.add_product[0][j].id = sub.add_product[0][j].id;
               sub.add_product[0][j].image = sub.add_product[0][j].image;
-              sub.add_product[0][j].date = [(0, _moment["default"])().format("YYYY-MM-DD")];
+              sub.add_product[0][j].date = (0, _moment["default"])().format("YYYY-MM-DD");
               if (sub.data[i].unit_value >= 500) {
                 sub.data[i].unit = sub.data[i].unit_value / 1000 + " " + (sub.data[i].unit_type === "ml" ? "litre" : sub.data[i].unit_type);
               } else {
@@ -498,27 +499,27 @@ var singleSubscription = /*#__PURE__*/function () {
               status: true,
               data: _objectSpread(_objectSpread({}, sub.data[0]), response)
             }));
-          case 21:
+          case 22:
             i++;
             _context9.next = 10;
             break;
-          case 24:
-            _context9.next = 30;
+          case 25:
+            _context9.next = 31;
             break;
-          case 26:
-            _context9.prev = 26;
+          case 27:
+            _context9.prev = 27;
             _context9.t0 = _context9["catch"](0);
             console.log(_context9.t0);
             return _context9.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
               message: _messages["default"].DATA_NOT_FOUND
             }));
-          case 30:
+          case 31:
           case "end":
             return _context9.stop();
         }
       }
-    }, _callee9, null, [[0, 26]]);
+    }, _callee9, null, [[0, 27]]);
   }));
   return function singleSubscription(_x15, _x16) {
     return _ref9.apply(this, arguments);

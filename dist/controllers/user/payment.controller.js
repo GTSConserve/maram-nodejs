@@ -8,6 +8,7 @@ exports.getVerifyPaymentMethod = exports.getRazorpayMethod = exports.getPaymentS
 var _responseCode = _interopRequireDefault(require("../../constants/responseCode"));
 var _messages = _interopRequireDefault(require("../../constants/messages"));
 var _message = require("../../notifications/message.sender");
+var _payment = require("../../models/user/payment.model");
 var _crypto = _interopRequireWildcard(require("crypto"));
 var _db = _interopRequireDefault(require("../../services/db.service"));
 var _razorpay = _interopRequireDefault(require("razorpay"));
@@ -192,45 +193,50 @@ var getPaymentStatusUpdate = /*#__PURE__*/function () {
 exports.getPaymentStatusUpdate = getPaymentStatusUpdate;
 var getRazorpayMethod = /*#__PURE__*/function () {
   var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(req, res) {
-    var _req$body2, amount, order_id, razorpay, options, response;
+    var _req$body2, amount, order_id, userId, pay, razorpay, options, response;
     return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
             _context4.prev = 0;
-            _req$body2 = req.body, amount = _req$body2.amount, order_id = _req$body2.order_id;
+            _req$body2 = req.body, amount = _req$body2.amount, order_id = _req$body2.order_id, userId = _req$body2.userId; // console.log(userId)
+            _context4.next = 4;
+            return (0, _payment.getPayment)(amount, order_id, userId);
+          case 4:
+            pay = _context4.sent;
             if (!(!amount && !order_id)) {
-              _context4.next = 4;
+              _context4.next = 7;
               break;
             }
             return _context4.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
               message: _messages["default"].MANDATORY_ERROR
             }));
-          case 4:
+          case 7:
             razorpay = new _razorpay["default"]({
               key_id: process.env.RAZORPAY_KEY_ID,
               key_secret: process.env.RAZORPAY_KEY_SECRET
             });
             if (razorpay) {
-              _context4.next = 7;
+              _context4.next = 10;
               break;
             }
             return _context4.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
               message: "please check razorpay id"
             }));
-          case 7:
+          case 10:
             options = {
               amount: amount,
               currency: "INR",
               receipt: order_id
             };
-            _context4.next = 10;
-            return razorpay.orders.create(options);
-          case 10:
-            response = _context4.sent;
             _context4.next = 13;
+            return razorpay.orders.create(options);
+          case 13:
+            response = _context4.sent;
+            console.log(response);
+            _context4.next = 17;
             return (0, _message.sendNotification)({
               include_external_user_ids: [order_id.toString()],
               contents: {
@@ -249,27 +255,27 @@ var getRazorpayMethod = /*#__PURE__*/function () {
                 amount: options.amount[0]
               }
             });
-          case 13:
+          case 17:
             res.status(200).json({
               status: true,
               data: response
             });
-            _context4.next = 20;
+            _context4.next = 24;
             break;
-          case 16:
-            _context4.prev = 16;
+          case 20:
+            _context4.prev = 20;
             _context4.t0 = _context4["catch"](0);
             console.log(_context4.t0);
             res.status(500).json({
               status: false,
               message: "Razorpay method failed..."
             });
-          case 20:
+          case 24:
           case "end":
             return _context4.stop();
         }
       }
-    }, _callee4, null, [[0, 16]]);
+    }, _callee4, null, [[0, 20]]);
   }));
   return function getRazorpayMethod(_x7, _x8) {
     return _ref4.apply(this, arguments);

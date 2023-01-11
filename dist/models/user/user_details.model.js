@@ -449,7 +449,7 @@ var get_user_bill = /*#__PURE__*/function () {
         switch (_context9.prev = _context9.next) {
           case 0:
             _context9.next = 2;
-            return _db["default"].select("id", "items", "bill_no", "bill_value", "status").from("bill_history").where({
+            return _db["default"].select("id", "payment_status", "bill_no", "sub_total").from("bill_history").where({
               user_id: userId
             });
           case 2:
@@ -489,7 +489,9 @@ var get_single_bill = /*#__PURE__*/function () {
           case 0:
             _context10.prev = 0;
             _context10.next = 3;
-            return (0, _db["default"])("bill_history").select("bill_history.id", "bill_history.bill_no", "bill_history.bill_value", "bill_history.date", "payment_gateways.id as payment_id", "payment_gateways.status as payment_status", "add_on_orders.sub_total as sub_total").join("payment_gateways", "payment_gateways.user_id", "=", "bill_history.user_id").join("add_on_orders", "add_on_orders.user_id", "=", "payment_gateways.user_id");
+            return (0, _db["default"])("bill_history").select("bill_history.id", "bill_history.bill_no", "bill_history.sub_total as bill_value", "bill_history.date", "payment_gateways.id as payment_id", "payment_gateways.status as payment_status", "add_on_orders.sub_total as sub_total").join("payment_gateways", "payment_gateways.user_id", "=", "bill_history.user_id").join("add_on_orders", "add_on_orders.user_id", "=", "payment_gateways.user_id").where({
+              user_id: bill_id
+            });
           case 3:
             getSingleBillList = _context10.sent;
             _context10.next = 6;

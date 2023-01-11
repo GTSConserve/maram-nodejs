@@ -186,7 +186,8 @@ export const userLogin = async (password) => {
       const router = await knex('routes').select('id','name').where({rider_id:delivery_partner_id});
 
       const daily = await knex('daily_orders').select("status").where({router_id:router[0].id,status:"pending"})
-     if(daily.status !== "pending"){
+      console.log(daily[0].status)
+     if(daily[0].status !== "pending"){
       if(tour_status==2){
         const updatetour = await knex('rider_details').update({tour_status:'2'}).where({id:delivery_partner_id})
         

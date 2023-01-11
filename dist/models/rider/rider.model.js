@@ -462,81 +462,82 @@ var update_endtour = /*#__PURE__*/function () {
             });
           case 6:
             daily = _context10.sent;
-            if (!(daily.status !== "pending")) {
-              _context10.next = 28;
+            console.log(daily[0].status);
+            if (!(daily[0].status !== "pending")) {
+              _context10.next = 29;
               break;
             }
             if (!(tour_status == 2)) {
-              _context10.next = 25;
+              _context10.next = 26;
               break;
             }
-            _context10.next = 11;
+            _context10.next = 12;
             return (0, _db["default"])('rider_details').update({
               tour_status: '2'
             }).where({
               id: delivery_partner_id
             });
-          case 11:
+          case 12:
             updatetour = _context10.sent;
-            _context10.next = 14;
+            _context10.next = 15;
             return (0, _db["default"])('rider_daily_details').insert({
               router_id: router[0].id,
               rider_id: delivery_partner_id
             });
-          case 14:
+          case 15:
             rider1 = _context10.sent;
-            _context10.next = 17;
+            _context10.next = 18;
             return (0, _db["default"])('daily_orders').select('*').where({
               router_id: router[0].id
             });
-          case 17:
+          case 18:
             _daily = _context10.sent;
             // console.log(daily);
             json_array = JSON.stringify(_daily); // await knex('rider_daily_details').insert({
             //   order_details : daily[0],
             // });
-            _context10.next = 21;
+            _context10.next = 22;
             return (0, _db["default"])('rider_daily_details').update({
               "order_details": json_array
             }).where({
               router_id: router[0].id
             });
-          case 21:
+          case 22:
             rider2 = _context10.sent;
             return _context10.abrupt("return", {
               status: true,
               message: "successfully updated"
             });
-          case 25:
+          case 26:
             return _context10.abrupt("return", {
               status: false,
               message: "cannot updated"
             });
-          case 26:
-            _context10.next = 29;
+          case 27:
+            _context10.next = 30;
             break;
-          case 28:
+          case 29:
             return _context10.abrupt("return", {
               status: false,
               message: "your orders not completed"
             });
-          case 29:
-            _context10.next = 35;
+          case 30:
+            _context10.next = 36;
             break;
-          case 31:
-            _context10.prev = 31;
+          case 32:
+            _context10.prev = 32;
             _context10.t0 = _context10["catch"](0);
             console.log(_context10.t0);
             return _context10.abrupt("return", {
               status: false,
               message: "Cannot Update the status"
             });
-          case 35:
+          case 36:
           case "end":
             return _context10.stop();
         }
       }
-    }, _callee10, null, [[0, 31]]);
+    }, _callee10, null, [[0, 32]]);
   }));
   return function update_endtour(_x18, _x19, _x20) {
     return _ref10.apply(this, arguments);

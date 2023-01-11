@@ -842,11 +842,12 @@ var getSingleCalendarEvent = /*#__PURE__*/function () {
               delete sub.data[i].unit_type;
             }
             response = {
+              subscription_products: [sub.data[0]],
               addons_products: sub.add_product[0]
             };
             return _context13.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               status: true,
-              data: _objectSpread(_objectSpread({}, sub.data[0]), response)
+              data: _objectSpread({}, response)
             }));
           case 17:
             i++;
@@ -1063,15 +1064,16 @@ var getSingleBillList = /*#__PURE__*/function () {
             return (0, _user_details.get_single_bill)(bill_id);
           case 6:
             list = _context16.sent;
+            console.log(list);
             if (list) {
-              _context16.next = 9;
+              _context16.next = 10;
               break;
             }
             return _context16.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
               message: "Cannot find bill list"
             }));
-          case 9:
+          case 10:
             for (i = 0; i < list.data.length; i++) {
               console.log(list);
               list.data[i].id = list.data[i].id;
@@ -1082,19 +1084,19 @@ var getSingleBillList = /*#__PURE__*/function () {
               status: true,
               data: list
             }));
-          case 13:
-            _context16.prev = 13;
+          case 14:
+            _context16.prev = 14;
             _context16.t0 = _context16["catch"](0);
             console.log(_context16.t0);
             res.status(500).json({
               status: false
             });
-          case 17:
+          case 18:
           case "end":
             return _context16.stop();
         }
       }
-    }, _callee16, null, [[0, 13]]);
+    }, _callee16, null, [[0, 14]]);
   }));
   return function getSingleBillList(_x31, _x32) {
     return _ref16.apply(this, arguments);

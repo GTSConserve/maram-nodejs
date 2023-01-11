@@ -1,7 +1,7 @@
 import responseCode from "../../constants/responseCode";
 import messages from "../../constants/messages"
 import { sendNotification } from "../../notifications/message.sender";
-// import { PaymentMethod } from '../../models/user/payment.model';
+import { getPayment } from '../../models/user/payment.model';
 import crypto from "crypto";
 
 import { hmac } from "crypto";
@@ -124,7 +124,14 @@ export const getPaymentStatusUpdate = async (req, res) => {
 
 export const getRazorpayMethod = async (req, res) => {
     try {
-        const { amount, order_id } = req.body
+        const { amount, order_id, userId } = req.body
+
+        // console.log(userId)
+
+        const pay = await getPayment(amount, order_id, userId)
+        
+
+        // console.log(pay)
 
         if (!amount && !order_id) {
             return res
@@ -150,6 +157,8 @@ export const getRazorpayMethod = async (req, res) => {
 
         };
         const response = await razorpay.orders.create(options);
+        
+        console.log(response)
 
         await sendNotification({
             include_external_user_ids: [order_id.toString()],

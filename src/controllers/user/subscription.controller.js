@@ -300,13 +300,14 @@ export const singleSubscription = async (req, res) => {
       sub.data[i].address_id = sub.data[i].address_id;
       sub.data[i].quantity = sub.data[i].quantity;
       sub.data[i].price = sub.data[i].price;
-      sub.data[i].date = [moment().format("YYYY-MM-DD")];
-
+      sub.data[i].demo_price = sub.data[i].demo_price;
+      sub.data[i].date = moment().format("YYYY-MM-DD");
+      
       for (let j = 0; j < sub.add_product.length; j++) {  
         console.log( sub.add_product[0][j].id)    
       sub.add_product[0][j].id = sub.add_product[0][j].id;
       sub.add_product[0][j].image = sub.add_product[0][j].image;
-      sub.add_product[0][j].date = [moment().format("YYYY-MM-DD")];
+      sub.add_product[0][j].date = moment().format("YYYY-MM-DD");
 
       if (sub.data[i].unit_value >= 500) {
         sub.data[i].unit =

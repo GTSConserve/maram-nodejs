@@ -230,7 +230,7 @@ export const checkAddress = async (id) => {
 
 export const get_user_bill = async (userId) => {
   const getuser = await knex
-    .select("id", "items","bill_no", "bill_value", "status")
+    .select("id", "payment_status","bill_no", "sub_total")
     .from("bill_history")
     .where({ user_id: userId });
     console.log(getuser)
@@ -248,7 +248,7 @@ export const get_single_bill = async (bill_id,userId) => {
     .select(
       "bill_history.id",
       "bill_history.bill_no",
-      "bill_history.bill_value",
+      "bill_history.sub_total as bill_value",
       "bill_history.date",
       "payment_gateways.id as payment_id",
       "payment_gateways.status as payment_status",
@@ -256,7 +256,7 @@ export const get_single_bill = async (bill_id,userId) => {
     )
     .join("payment_gateways","payment_gateways.user_id","=","bill_history.user_id")
     .join("add_on_orders","add_on_orders.user_id","=","payment_gateways.user_id")
-    // .where({user_id: bill_id})
+    .where({user_id: bill_id})
    
 
     const sub_products = await knex("subscribed_user_details as sub").select(
