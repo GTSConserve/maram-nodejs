@@ -126,48 +126,42 @@ export const getRazorpayMethod = async (req, res) => {
     try {
         const { amount, order_id, userId } = req.body
 
-//         // console.log(userId)
+        // const pay = await getPayment(amount, order_id, userId)
+    
 
-        const pay = await getPayment(amount, order_id, userId)
+        if (!amount && !order_id) {
+            return res
+                .status(responseCode.FAILURE.DATA_NOT_FOUND)
+                .json({ status: false, message: messages.MANDATORY_ERROR });
+        }
+
+        var razorpay = new Razorpay({
+            key_id: process.env.RAZORPAY_KEY_ID,
+            key_secret: process.env.RAZORPAY_KEY_SECRET,
+        });
+
+        if (!razorpay) {
+            return res
+                .status(responseCode.FAILURE.DATA_NOT_FOUND)
+                .json({ status: false, message: "please check razorpay id" });
+        }
+
+        const options = {
+            amount,
+            currency: "INR",
+            receipt: order_id,
+
+        };
         
+        const response = await razorpay.orders.create(options);
 
-        
+        console.log(response)
 
-//         if (!amount && !order_id) {
-//             return res
-//                 .status(responseCode.FAILURE.DATA_NOT_FOUND)
-//                 .json({ status: false, message: messages.MANDATORY_ERROR });
-//         }
-// //console.log(pay);
-//         var razorpay = new Razorpay({
-//             key_id: process.env.RAZORPAY_KEY_ID,
-//             key_secret: process.env.RAZORPAY_KEY_SECRET,
-//         });
+        const signature = await knex('bill_history')
+        .insert({
+            razorpay_payment_id: response.id
+        }) .where({"bill_history.user_id":userId})
 
-//         if (!razorpay) {
-//             return res
-//                 .status(responseCode.FAILURE.DATA_NOT_FOUND)
-//                 .json({ status: false, message: "please check razorpay id" });
-//         }
-
-//         const options = {
-//             amount,
-//             currency: "INR",
-//             receipt: order_id,
-
-//         };
-//         // const signature = await knex('users').select('id')
-//         // .insert({
-//         //     razorpay_payment_id: options.id
-//         // }) .where({"users.id":userId})
-//         // console.log(options[0].id)
-//         const response = await razorpay.orders.create(options);
-
-        
-//         //  .into('')
-       
-        
-//         // console.log(signature)
 
         await sendNotification({
             include_external_user_ids: [userId.toString()],

@@ -990,19 +990,20 @@ var getBillList = /*#__PURE__*/function () {
           case 0:
             _context15.prev = 0;
             userId = req.body.userId;
-            _context15.next = 4;
+            console.log(userId);
+            _context15.next = 5;
             return (0, _user_details.get_user_bill)(userId);
-          case 4:
+          case 5:
             user = _context15.sent;
             if (!(user.body.length === 0)) {
-              _context15.next = 7;
+              _context15.next = 8;
               break;
             }
             return _context15.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
               message: "User Not Found"
             }));
-          case 7:
+          case 8:
             // let get_bill = {};
             // user.body.map((data) => {
             //   get_bill.id = data.id;
@@ -1020,22 +1021,22 @@ var getBillList = /*#__PURE__*/function () {
               status: true,
               data: user.body
             });
-            _context15.next = 14;
+            _context15.next = 15;
             break;
-          case 10:
-            _context15.prev = 10;
+          case 11:
+            _context15.prev = 11;
             _context15.t0 = _context15["catch"](0);
             console.log(_context15.t0);
             res.status(_responseCode["default"].FAILURE.INTERNAL_SERVER_ERROR).json({
               status: false,
               message: "no user"
             });
-          case 14:
+          case 15:
           case "end":
             return _context15.stop();
         }
       }
-    }, _callee15, null, [[0, 10]]);
+    }, _callee15, null, [[0, 11]]);
   }));
   return function getBillList(_x29, _x30) {
     return _ref15.apply(this, arguments);

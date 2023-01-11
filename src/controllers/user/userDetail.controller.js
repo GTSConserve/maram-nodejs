@@ -740,6 +740,7 @@ export const getOverallCalendarEvent = async (req, res) => {
 export const getBillList = async (req, res) => {
   try {
     const { userId } = req.body;
+    console.log(userId)
 
     const user = await get_user_bill(userId);
 
