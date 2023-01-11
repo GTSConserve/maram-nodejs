@@ -794,7 +794,7 @@ var userAddressChange = /*#__PURE__*/function () {
 exports.userAddressChange = userAddressChange;
 var getSingleCalendarEvent = /*#__PURE__*/function () {
   var _ref13 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee13(req, res) {
-    var _req$body7, date, userId, sub, i, j, response;
+    var _req$body7, date, userId, sub, i, j, _j, response;
     return _regeneratorRuntime().wrap(function _callee13$(_context13) {
       while (1) {
         switch (_context13.prev = _context13.next) {
@@ -826,15 +826,22 @@ var getSingleCalendarEvent = /*#__PURE__*/function () {
             i = 0;
           case 10:
             if (!(i < sub.data.length)) {
-              _context13.next = 20;
+              _context13.next = 21;
               break;
             }
             sub.data[i].product_image = process.env.BASE_URL + sub.data[i].image;
             sub.data[i].quantity = sub.data[i].quantity;
             sub.data[i].price = sub.data[i].price;
-            for (j = 0; j < sub.add_product.length; j++) {
-              sub.add_product[0][j].product_id = sub.add_product[0][j].product_id;
-              sub.add_product[0][j].image = sub.add_product[0][j].image;
+            for (j = 0; j < sub.additional1.length; j++) {
+              sub.additional1[0][j].product_id = sub.additional1[0][j].product_id;
+              sub.additional1[0][j].image = sub.additional1[0][j].image;
+              if (sub.data[i].product_variation_type >= 500) {
+                sub.data[i].product_variation_type = sub.data[i].product_variation_type / 1000 + " " + (sub.data[i].product_variation_type === "ml" ? "litre" : sub.data[i].unit_type);
+              }
+            }
+            for (_j = 0; _j < sub.add_product.length; _j++) {
+              sub.add_product[0][_j].product_id = sub.add_product[0][_j].product_id;
+              sub.add_product[0][_j].image = sub.add_product[0][_j].image;
               if (sub.data[i].product_variation_type >= 500) {
                 sub.data[i].product_variation_type = sub.data[i].product_variation_type / 1000 + " " + (sub.data[i].product_variation_type === "ml" ? "litre" : sub.data[i].unit_type);
               }
@@ -843,33 +850,34 @@ var getSingleCalendarEvent = /*#__PURE__*/function () {
             }
             response = {
               subscription_products: [sub.data[0]],
+              additional_order_products: sub.additional1[0],
               addons_products: sub.add_product[0]
             };
             return _context13.abrupt("return", res.status(_responseCode["default"].SUCCESS).json({
               status: true,
               data: _objectSpread({}, response)
             }));
-          case 17:
+          case 18:
             i++;
             _context13.next = 10;
             break;
-          case 20:
-            _context13.next = 26;
+          case 21:
+            _context13.next = 27;
             break;
-          case 22:
-            _context13.prev = 22;
+          case 23:
+            _context13.prev = 23;
             _context13.t0 = _context13["catch"](0);
             console.log(_context13.t0);
             return _context13.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
               message: _messages["default"].DATA_NOT_FOUND
             }));
-          case 26:
+          case 27:
           case "end":
             return _context13.stop();
         }
       }
-    }, _callee13, null, [[0, 22]]);
+    }, _callee13, null, [[0, 23]]);
   }));
   return function getSingleCalendarEvent(_x25, _x26) {
     return _ref13.apply(this, arguments);

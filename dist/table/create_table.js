@@ -130,8 +130,8 @@ var createTable = /*#__PURE__*/function () {
                   t.enu("status", ["0", "1"]).defaultTo("1");
                   t.string("remember_token", 100).nullable();
                   t.string("image", 2048).nullable();
-                  t.string("razorpay_payment_id", 255);
-                  t.string("razorpay_signature_id", 255);
+                  // t.string("razorpay_payment_id", 255);
+                  // t.string("razorpay_signature_id", 255);
                   t.timestamp("first_otp_verified_at").nullable();
                   t.timestamp("last_otp_verified_at").nullable();
                   t.timestamps(true, true);
@@ -497,6 +497,7 @@ var createTable = /*#__PURE__*/function () {
                   t.integer("product_id").unsigned().notNullable();
                   t.foreign("product_id").references("id").inTable("products");
                   t.enu("status", ["pending", "delivered", "undelivered", "removed", "cancelled"]).defaultTo("pending");
+                  t.enu("remove_status", ["0", "1"]).defaultTo("0");
                   t.string("quantity", 255).nullable();
                   t.integer("tax_price").nullable();
                   t.integer("price").nullable();
@@ -613,6 +614,8 @@ var createTable = /*#__PURE__*/function () {
                   t.integer("sub_total").nullable();
                   t.integer("discount").nullable();
                   t.integer("grand_total").nullable();
+                  t.string("razorpay_payment_id", 255);
+                  t.string("razorpay_signature_id", 255);
                   t.date("date").nullable();
                   t.enu("payment_status", ["pending", "success", "payment_failed"]).defaultTo("pending");
                   t.string("razorpay_bill_id", 255);

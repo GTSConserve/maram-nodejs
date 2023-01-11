@@ -469,27 +469,27 @@ var singleSubscription = /*#__PURE__*/function () {
             i = 0;
           case 12:
             if (!(i < sub.data.length)) {
-              _context9.next = 27;
+              _context9.next = 28;
               break;
             }
             sub.data[i].image = process.env.BASE_URL + sub.data[i].image;
             sub.data[i].subscription_start_date = (0, _moment["default"])().format("YYYY-MM-DD");
-            sub.data[i].customized_days = [sub.data[i].customized_days];
+            sub.data[i].customized_days = sub.data[i].customized_days != null ? [sub.data[i].customized_days] : [];
             sub.data[i].address_id = sub.data[i].address_id;
             sub.data[i].quantity = sub.data[i].quantity;
             sub.data[i].price = sub.data[i].price;
             sub.data[i].demo_price = sub.data[i].demo_price;
             sub.data[i].date = [(0, _moment["default"])().format("YYYY-MM-DD")];
+            if (sub.data[i].unit_value >= 500) {
+              sub.data[i].unit = sub.data[i].unit_value / 1000 + " " + (sub.data[i].unit_type == "ml" ? "litre" : sub.data[i].unit_type);
+            } else {
+              sub.data[i].unit = sub.data[i].unit_value + " " + sub.data[i].unit_type;
+            }
             for (j = 0; j < sub.add_product.length; j++) {
               console.log(sub.add_product[0][j].id);
               sub.add_product[0][j].id = sub.add_product[0][j].id;
               sub.add_product[0][j].image = sub.add_product[0][j].image;
               sub.add_product[0][j].date = [(0, _moment["default"])().format("YYYY-MM-DD")];
-              if (sub.data[i].unit_value >= 500) {
-                sub.data[i].unit = sub.data[i].unit_value / 1000 + " " + (sub.data[i].unit_type === "ml" ? "litre" : sub.data[i].unit_type);
-              } else {
-                sub.data[i].unit = sub.data[i].unit_value + " " + sub.data[i].unit_type;
-              }
               delete sub.data[i].unit_value;
               delete sub.data[i].unit_type;
             }
@@ -501,27 +501,27 @@ var singleSubscription = /*#__PURE__*/function () {
               status: true,
               data: _objectSpread(_objectSpread({}, sub.data[0]), response)
             }));
-          case 24:
+          case 25:
             i++;
             _context9.next = 12;
             break;
-          case 27:
-            _context9.next = 33;
+          case 28:
+            _context9.next = 34;
             break;
-          case 29:
-            _context9.prev = 29;
+          case 30:
+            _context9.prev = 30;
             _context9.t0 = _context9["catch"](0);
             console.log(_context9.t0);
             return _context9.abrupt("return", res.status(_responseCode["default"].FAILURE.DATA_NOT_FOUND).json({
               status: false,
               message: _messages["default"].DATA_NOT_FOUND
             }));
-          case 33:
+          case 34:
           case "end":
             return _context9.stop();
         }
       }
-    }, _callee9, null, [[0, 29]]);
+    }, _callee9, null, [[0, 30]]);
   }));
   return function singleSubscription(_x15, _x16) {
     return _ref9.apply(this, arguments);

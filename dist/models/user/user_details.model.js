@@ -549,55 +549,53 @@ var single_calendar_data = /*#__PURE__*/function () {
             });
           case 5:
             products = _context11.sent;
-            console.log(products);
-            _context11.next = 9;
-            return (0, _db["default"])("additional_orders").join("subscribed_user_details", "subscribed_user_details.id", "=", "additional_orders.subscription_id").join("products", "products.id", "=", "subscribed_user_details.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id as product_id", "products.name as product_name", "products.image as product_image", "products.unit_value as product_variation", "unit_types.value as product_variation_type", "products.price as product_price"
-            //  "products.quantity as product_quantity",
-            ).where({
+            _context11.next = 8;
+            return (0, _db["default"])("additional_orders").join("subscribed_user_details", "subscribed_user_details.id", "=", "additional_orders.subscription_id").join("products", "products.id", "=", "subscribed_user_details.product_id").join("subscription_type", "subscription_type.id", "=", "subscribed_user_details.subscribe_type_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("subscribed_user_details.id as subscription_id", "subscribed_user_details.subscription_status", "products.name as product_name", "products.image as product_image", "products.unit_value as product_variation", "products.price as product_price",
+            // "products.quantity as product_quantity",
+            "unit_types.value as product_variation_type", "subscription_type.name as subscription_mode", "additional_orders.id as additional_order_id").where({
               "subscribed_user_details.user_id": userId
             });
-          case 9:
+          case 8:
             additional = _context11.sent;
             console.log(additional);
             additional1.push(additional);
-            _context11.next = 14;
-            return (0, _db["default"])("add_on_orders").join("add_on_order_items", "add_on_order_items.add_on_order_id", "=", "add_on_orders.id").join("products", "products.id", "=", "add_on_order_items.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id as product_id", "products.name as product_name", "products.image as product_image", "products.unit_value as product_variation", "unit_types.value as product_variation_type", "products.price as product_price"
-            //  "products.quantity as product_quantity",
-            ).where({
+            _context11.next = 13;
+            return (0, _db["default"])("add_on_orders").join("add_on_order_items", "add_on_order_items.add_on_order_id", "=", "add_on_orders.id").join("products", "products.id", "=", "add_on_order_items.product_id").join("unit_types", "unit_types.id", "=", "products.unit_type_id").select("products.id as product_id", "products.name as product_name", "products.image as product_image", "products.unit_value as product_variation", "unit_types.value as product_variation_type", "products.price as product_price", "add_on_order_items.remove_status as remove_status").where({
               "add_on_orders.user_id": userId
             });
-          case 14:
+          case 13:
             additional2 = _context11.sent;
             //  console.log(additional2)
             add_product.push(additional2);
             if (!(products.length === 0)) {
-              _context11.next = 18;
+              _context11.next = 17;
               break;
             }
             return _context11.abrupt("return", {
               status: false,
               message: "No Subscription Found"
             });
-          case 18:
+          case 17:
             return _context11.abrupt("return", {
               status: true,
               data: products,
+              additional1: additional1,
               add_product: add_product
             });
-          case 21:
-            _context11.prev = 21;
+          case 20:
+            _context11.prev = 20;
             _context11.t0 = _context11["catch"](0);
             console.log(_context11.t0);
             return _context11.abrupt("return", {
               status: false,
               message: "No Subscription Found"
             });
-          case 25:
+          case 24:
           case "end":
             return _context11.stop();
         }
       }
-    }, _callee11, null, [[0, 21]]);
+    }, _callee11, null, [[0, 20]]);
   }));
   return function single_calendar_data(_x26, _x27, _x28, _x29) {
     return _ref11.apply(this, arguments);
