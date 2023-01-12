@@ -129,13 +129,7 @@ export const single_subscription = async (userId, sub_id) => {
         "products.name as product_name",
         "products.image",
         "products.demo_price",
-<<<<<<< HEAD
-
         "products.price",
-
-=======
-        "products.price",
->>>>>>> 731f554b595b64b9da28de43917b8a2f464b59db
         "products.unit_value",
         "unit_types.value as unit_type",
         "subscription_type.name as subscription_name",

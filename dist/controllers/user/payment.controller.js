@@ -233,12 +233,8 @@ var getRazorpayMethod = /*#__PURE__*/function () {
             response = _context4.sent;
             _context4.next = 13;
             return (0, _db["default"])('bill_history').update({
-<<<<<<< HEAD
               razorpay_payment_id: response.id,
               status: "1"
-=======
-              razorpay_payment_id: response.id
->>>>>>> 731f554b595b64b9da28de43917b8a2f464b59db
             }).where({
               user_id: userId,
               bill_no: order_id

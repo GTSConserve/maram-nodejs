@@ -97,16 +97,13 @@ app.get('/contact', function (req, res) {
   res.sendFile(path.join(__dirname, '../public/contact_us.html'));
 });
 app.get('/privacy_policy', function (req, res) {
-  res.sendFile(path.join(__dirname, '../public/privacy_policy.html'));
+  res.sendFile(path.join(__dirname, './static/privacy_policy.html'));
 });
 app.get('/corporates', function (req, res) {
   res.sendFile(path.join(__dirname, './static/Corporates.html'));
 });
 app.get('/terms_and_conditions', function (req, res) {
-  res.sendFile(path.join(__dirname, '../public/Terms & Conditions.html'));
-});
-app.get('/refund_policy', function (req, res) {
-  res.sendFile(path.join(__dirname, '../public/refund_policy.html'));
+  res.sendFile(path.join(__dirname, './static/Terms & Conditions.html'));
 });
 app.get('/news_and_media', function (req, res) {
   res.sendFile(path.join(__dirname, './static/news&media.html'));

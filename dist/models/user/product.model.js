@@ -333,22 +333,14 @@ var addon_order = /*#__PURE__*/function () {
 }();
 exports.addon_order = addon_order;
 var remove_addonorders = /*#__PURE__*/function () {
-<<<<<<< HEAD
   var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(product_id, delivery_date, userId) {
-=======
-  var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(userId, product_id, delivery_date) {
->>>>>>> 731f554b595b64b9da28de43917b8a2f464b59db
     var addon_status, select, select1, total, update, status;
     return _regeneratorRuntime().wrap(function _callee6$(_context6) {
       while (1) {
         switch (_context6.prev = _context6.next) {
           case 0:
             _context6.prev = 0;
-<<<<<<< HEAD
             console.log(userId);
-=======
-            console.log(product_id);
->>>>>>> 731f554b595b64b9da28de43917b8a2f464b59db
             _context6.next = 4;
             return (0, _db["default"])('add_on_orders').select('status', 'id').where({
               user_id: userId,
@@ -358,96 +350,56 @@ var remove_addonorders = /*#__PURE__*/function () {
             addon_status = _context6.sent;
             console.log(addon_status);
             if (!(addon_status[0] != "cancelled")) {
-<<<<<<< HEAD
               _context6.next = 29;
               break;
             }
             _context6.next = 9;
-=======
-              _context6.next = 26;
-              break;
-            }
-            _context6.next = 8;
->>>>>>> 731f554b595b64b9da28de43917b8a2f464b59db
             return (0, _db["default"])("add_on_order_items").update({
               status: "removed",
               remove_status: "1"
             }).where({
               product_id: product_id,
-              add_on_order_id: userId
+              add_on_order_id: addon_status[0].id
             });
-<<<<<<< HEAD
           case 9:
             _context6.next = 11;
-=======
-          case 8:
-            _context6.next = 10;
->>>>>>> 731f554b595b64b9da28de43917b8a2f464b59db
             return (0, _db["default"])('add_on_order_items').select("price").where({
               product_id: product_id,
-              add_on_order_id: addon_status[0].userId,
+              add_on_order_id: addon_status[0].id,
               status: "removed"
             });
-<<<<<<< HEAD
           case 11:
             select = _context6.sent;
             console.log(select);
             _context6.next = 15;
-=======
-          case 10:
-            select = _context6.sent;
-            _context6.next = 13;
->>>>>>> 731f554b595b64b9da28de43917b8a2f464b59db
             return (0, _db["default"])('add_on_orders').select("sub_total").where({
               id: addon_status[0].id,
               delivery_date: delivery_date
             });
-<<<<<<< HEAD
           case 15:
-=======
-          case 13:
->>>>>>> 731f554b595b64b9da28de43917b8a2f464b59db
             select1 = _context6.sent;
             console.log(select1);
             total = select1[0].sub_total - select[0].price; // console.log(total)
-<<<<<<< HEAD
             _context6.next = 20;
-=======
-            _context6.next = 17;
->>>>>>> 731f554b595b64b9da28de43917b8a2f464b59db
             return (0, _db["default"])('add_on_orders').update({
               sub_total: total
             }).where({
               id: addon_status[0].id,
               delivery_date: delivery_date
             });
-<<<<<<< HEAD
           case 20:
             update = _context6.sent;
             _context6.next = 23;
-=======
-          case 17:
-            update = _context6.sent;
-            _context6.next = 20;
->>>>>>> 731f554b595b64b9da28de43917b8a2f464b59db
             return (0, _db["default"])('add_on_orders').update({
               status: "cancelled"
             }).where({
               sub_total: 0
             });
-<<<<<<< HEAD
           case 23:
             status = _context6.sent;
             _context6.next = 26;
             return (0, _message.sendNotification)({
               include_external_user_ids: [userId.toString()],
-=======
-          case 20:
-            status = _context6.sent;
-            _context6.next = 23;
-            return sendNotification({
-              include_external_user_ids: [user_id.toString()],
->>>>>>> 731f554b595b64b9da28de43917b8a2f464b59db
               contents: {
                 en: "Your Add_on Remove SuccessFully"
               },
@@ -464,57 +416,33 @@ var remove_addonorders = /*#__PURE__*/function () {
                 bill_id: 0
               }
             });
-<<<<<<< HEAD
           case 26:
-=======
-          case 23:
->>>>>>> 731f554b595b64b9da28de43917b8a2f464b59db
             return _context6.abrupt("return", {
               status: true,
               message: "Successfully removed"
             });
-<<<<<<< HEAD
           case 29:
-=======
-          case 26:
->>>>>>> 731f554b595b64b9da28de43917b8a2f464b59db
             return _context6.abrupt("return", {
               status: false,
               message: "already cancelled"
             });
-<<<<<<< HEAD
           case 30:
             _context6.next = 36;
             break;
           case 32:
             _context6.prev = 32;
-=======
-          case 27:
-            _context6.next = 33;
-            break;
-          case 29:
-            _context6.prev = 29;
->>>>>>> 731f554b595b64b9da28de43917b8a2f464b59db
             _context6.t0 = _context6["catch"](0);
             console.log(_context6.t0);
             return _context6.abrupt("return", {
               status: false,
               message: "Cannot Remove addon order"
             });
-<<<<<<< HEAD
           case 36:
-=======
-          case 33:
->>>>>>> 731f554b595b64b9da28de43917b8a2f464b59db
           case "end":
             return _context6.stop();
         }
       }
-<<<<<<< HEAD
     }, _callee6, null, [[0, 32]]);
-=======
-    }, _callee6, null, [[0, 29]]);
->>>>>>> 731f554b595b64b9da28de43917b8a2f464b59db
   }));
   return function remove_addonorders(_x14, _x15, _x16) {
     return _ref6.apply(this, arguments);
