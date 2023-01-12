@@ -87,27 +87,6 @@ app.get('/', function (req, res) {
     'message': 'ok'
   });
 });
-app.get('/about', function (req, res) {
-  res.sendFile(path.join(__dirname, '../public/about_us.html'));
-});
-app.get('/blogs', function (req, res) {
-  res.sendFile(path.join(__dirname, '../public/Blogs.html'));
-});
-app.get('/contact', function (req, res) {
-  res.sendFile(path.join(__dirname, '../public/contact_us.html'));
-});
-app.get('/privacy_policy', function (req, res) {
-  res.sendFile(path.join(__dirname, './static/privacy_policy.html'));
-});
-app.get('/corporates', function (req, res) {
-  res.sendFile(path.join(__dirname, './static/Corporates.html'));
-});
-app.get('/terms_and_conditions', function (req, res) {
-  res.sendFile(path.join(__dirname, './static/Terms & Conditions.html'));
-});
-app.get('/news_and_media', function (req, res) {
-  res.sendFile(path.join(__dirname, './static/news&media.html'));
-});
 app.use('/api', _bodyParser2["default"], _user_main["default"]);
 var secret = "thisissecret";
 
@@ -234,11 +213,18 @@ app.get("/home", _authToken.authenticateJWTSession, function (req, res) {
     res.render("branch_admin/home/home");
   }
 });
-
-// app.get("/recovery",(req,res)=>{
-//   res.sendFile(path.join(__dirname, '../public/auth_pass_recovery.html'));
-// })
-
+app.get("/about_us", function (req, res) {
+  res.render("static/about_us");
+});
+app.get("/privacy_policy", function (req, res) {
+  res.render("static/privacy_policy");
+});
+app.get("/refund_policy", function (req, res) {
+  res.render("static/refund_policy");
+});
+app.get("/terms_and_conditions", function (req, res) {
+  res.render("static/terms_and_conditions");
+});
 app.use("/auth", _bodyParser2["default"], _auth_main["default"]);
 app.get("/insert_data", _insert_data.insertData);
 app.get("/create_table", _create_table.createTable);

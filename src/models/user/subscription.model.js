@@ -256,14 +256,15 @@ export const change_quantity = async (userId,subscription_id,quantity,) => {
        const change = await knex('subscribed_user_details').update({quantity:quantity}).where({id:subscription_id,user_id:userId});
 
        await sendNotification({
-        include_external_user_ids: [user_id.toString()],
-        contents: { en: `Your Additional Order Placed SuccessFully` },
+        include_external_user_ids: [userId.toString()],
+        contents: { en: `Your Subscription Quantity Was Updated` },
         headings: { en: "Subscription Notification" },
         name: "Remove Subscription",
         data: {
           subscription_status: "pending",
           category_id: 0,
           product_type_id: 0,
+          subscription_id: subscription_id,
           type: 2,
           bill_id: 0,
         },
@@ -299,7 +300,7 @@ export const change_quantity = async (userId,subscription_id,quantity,) => {
       const previous = await knex('subscribed_user_details').select("subscribe_type_id").where({id:subscription_id});
 
       await sendNotification({
-        include_external_user_ids: [userId].toString(),
+        include_external_user_ids: [userId.toString()],
         contents: { en: `Your Subscription Placed SuccessFully` },
         headings: { en: "Subscription Notification" },
         name: "Subscription Notification",
@@ -308,7 +309,7 @@ export const change_quantity = async (userId,subscription_id,quantity,) => {
           category_id: 0,
           product_type_id: 0,
           type: 2,
-          subscription_id: previous[0],
+          subscription_id: subscription_id,
           bill_id: 0,
         },
       });

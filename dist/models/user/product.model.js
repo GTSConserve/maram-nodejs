@@ -302,7 +302,7 @@ var addon_order = /*#__PURE__*/function () {
                 category_id: 0,
                 product_type_id: 0,
                 type: 2,
-                subscription_id: query.id[0],
+                subscription_id: 0,
                 bill_id: 0
               }
             });

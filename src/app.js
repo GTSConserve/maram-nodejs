@@ -91,32 +91,6 @@ app.get('/', (req, res) => {
 })
 
 
-app.get('/about', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/about_us.html'));
-})
-
-app.get('/blogs', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/Blogs.html'));
-})
-
-app.get('/contact', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/contact_us.html'));
-})
-
-app.get('/privacy_policy', (req, res) => {
-  res.sendFile(path.join(__dirname, './static/privacy_policy.html'));
-})
-
-app.get('/corporates', (req, res) => {
-  res.sendFile(path.join(__dirname, './static/Corporates.html'));
-})
-
-app.get('/terms_and_conditions', (req, res) => {
-  res.sendFile(path.join(__dirname, './static/Terms & Conditions.html'));
-})
-app.get('/news_and_media', (req, res) => {
-  res.sendFile(path.join(__dirname, './static/news&media.html'));
-})
 app.use('/api', bodyParsercheck, mainRouter)
 
 let secret = "thisissecret";
@@ -240,11 +214,18 @@ const {is_user_added} = req.query
   }
 });
 
-
-
-// app.get("/recovery",(req,res)=>{
-//   res.sendFile(path.join(__dirname, '../public/auth_pass_recovery.html'));
-// })
+app.get("/about_us",(req,res)=>{
+  res.render("static/about_us")
+})
+app.get("/privacy_policy",(req,res)=>{
+  res.render("static/privacy_policy")
+})
+app.get("/refund_policy",(req,res)=>{
+  res.render("static/refund_policy")
+})
+app.get("/terms_and_conditions",(req,res)=>{
+  res.render("static/terms_and_conditions")
+})
 
   
 app.use("/auth", bodyParsercheck, authRouter);

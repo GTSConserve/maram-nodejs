@@ -107,7 +107,7 @@
   // console.log(message.app_id)
 // };
 
-// import axios from "axios"
+import axios from "axios"
 import nodemailer from "nodemailer"
 
 export const sendNotification = async (data) => {
@@ -128,10 +128,9 @@ export const sendNotification = async (data) => {
       data
     );
 
-
     return { status: true };
   } catch (error) {
-    console.log(error.data);
+
     return { status: false };
   }
 };

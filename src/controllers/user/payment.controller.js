@@ -17,6 +17,8 @@ import shortid from "shortid"
 export const getPaymentReminder = async (req, res) => {
     try {
 
+        const {userId} = req.body
+
         const rule = new schedule.RecurrenceRule();
         rule.dayOfWeek = [0, new schedule.Range(4, 6)];
         rule.hour = 17;
@@ -31,7 +33,7 @@ export const getPaymentReminder = async (req, res) => {
         job.cancel();
 
         await sendNotification({
-            include_external_user_ids: [reminder.user_id].toString(),
+            include_external_user_ids: [userId.toString()],
             contents: { en: `Your Payment Reminder` },
             headings: { en: "Your Payment Reminder" },
             name: "Your Payment Reminder",
@@ -41,7 +43,7 @@ export const getPaymentReminder = async (req, res) => {
               product_type_id: 0,
               type: 3,
               messages: job,
-              reminder_id: reminder.user_id
+              reminder_id: userId
             //   amount: options.amount,
             },
           });

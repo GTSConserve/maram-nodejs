@@ -365,9 +365,9 @@ var change_quantity = /*#__PURE__*/function () {
             change = _context6.sent;
             _context6.next = 6;
             return (0, _message.sendNotification)({
-              include_external_user_ids: [user_id.toString()],
+              include_external_user_ids: [userId.toString()],
               contents: {
-                en: "Your Additional Order Placed SuccessFully"
+                en: "Your Subscription Quantity Was Updated"
               },
               headings: {
                 en: "Subscription Notification"
@@ -377,6 +377,7 @@ var change_quantity = /*#__PURE__*/function () {
                 subscription_status: "pending",
                 category_id: 0,
                 product_type_id: 0,
+                subscription_id: subscription_id,
                 type: 2,
                 bill_id: 0
               }
@@ -437,7 +438,7 @@ var change_subscriptionplan = /*#__PURE__*/function () {
             previous = _context7.sent;
             _context7.next = 10;
             return (0, _message.sendNotification)({
-              include_external_user_ids: [userId].toString(),
+              include_external_user_ids: [userId.toString()],
               contents: {
                 en: "Your Subscription Placed SuccessFully"
               },
@@ -450,7 +451,7 @@ var change_subscriptionplan = /*#__PURE__*/function () {
                 category_id: 0,
                 product_type_id: 0,
                 type: 2,
-                subscription_id: previous[0],
+                subscription_id: subscription_id,
                 bill_id: 0
               }
             });

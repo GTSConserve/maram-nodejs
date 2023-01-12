@@ -22,12 +22,13 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 var getPaymentReminder = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(req, res) {
-    var rule, job, reminder;
+    var userId, rule, job, reminder;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             _context.prev = 0;
+            userId = req.body.userId;
             rule = new _nodeSchedule["default"].RecurrenceRule();
             rule.dayOfWeek = [0, new _nodeSchedule["default"].Range(4, 6)];
             rule.hour = 17;
@@ -35,16 +36,16 @@ var getPaymentReminder = /*#__PURE__*/function () {
             job = _nodeSchedule["default"].scheduleJob(rule, function () {
               console.log('Please Pay Your Bill Amount....!');
             });
-            _context.next = 8;
+            _context.next = 9;
             return (0, _db["default"])('bill_history').select('user_id').where({
               payment_status: "success"
             });
-          case 8:
+          case 9:
             reminder = _context.sent;
             job.cancel();
-            _context.next = 12;
+            _context.next = 13;
             return (0, _message.sendNotification)({
-              include_external_user_ids: [reminder.user_id].toString(),
+              include_external_user_ids: [userId.toString()],
               contents: {
                 en: "Your Payment Reminder"
               },
@@ -58,33 +59,33 @@ var getPaymentReminder = /*#__PURE__*/function () {
                 product_type_id: 0,
                 type: 3,
                 messages: job,
-                reminder_id: reminder.user_id
+                reminder_id: userId
                 //   amount: options.amount,
               }
             });
-          case 12:
+          case 13:
             res.status(200).json({
               status: true,
               message: "Ok"
             });
 
             // res.status(200).json({ status: true,data: settings.body }) 
-            _context.next = 19;
+            _context.next = 20;
             break;
-          case 15:
-            _context.prev = 15;
+          case 16:
+            _context.prev = 16;
             _context.t0 = _context["catch"](0);
             console.log(_context.t0);
             res.status(500).json({
               status: false,
               error: _context.t0
             });
-          case 19:
+          case 20:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 15]]);
+    }, _callee, null, [[0, 16]]);
   }));
   return function getPaymentReminder(_x, _x2) {
     return _ref.apply(this, arguments);
